@@ -3,10 +3,21 @@
   "catalogue_id": 3405,
   "oracle_id": "eb5afbd7-4d21-4449-9204-eeb4ebf6a72a",
   "facts_sha256": "9f3f1c9b17f8e6c08359853be92596103fd477aec271cba85d13dea64c606fa7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "17d2e102535dc12031461972dd980900d697fb2b809dbf542ea8ce6be894d393"
   },
-  "physical_metadata_sha256": "45b0d5a09e68b91b779dc48b76a812c25986988e7209c19f743887e0c91101f7"
+  "physical_metadata_sha256": "45b0d5a09e68b91b779dc48b76a812c25986988e7209c19f743887e0c91101f7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RazorRings.java",
+  "java_sha256": "502ee804ea2fcb081553632fc841403e780887e0995bd619004cb4ec31b374f2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetAttackingOrBlockingCreature.java",
+      "sha256": "9189ffcb3f50a8a262aa70b884d39333a1b1681897b0957724c77eb0bb163f09"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_white_colorless/combat.rs"
 }

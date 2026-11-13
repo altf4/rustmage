@@ -190,6 +190,8 @@ impl Announcement {
         }
     }
     pub(super) fn initialize_cast_costs(&mut self, improvise: bool) {
+        let improvise =
+            improvise || self.item.kind == StackKind::Spell && self.tap_payment().is_some();
         self.initialize_alternative_life();
         if let Some(amount) = self.linked_origin_counter_cost() {
             self.add_cast_cost_clause(CastCostClause::Mana);
@@ -252,7 +254,7 @@ impl Announcement {
                 && self.additional_cost().is_some()
                 || self
                     .additional_cost()
-                    .is_some_and(|s| matches!(s.kind, EffectChoiceKind::DiscardOrLife(_))))
+                    .is_some_and(|s| s.kind.additional_life_payment().is_some()))
         {
             self.cast_costs.get_or_insert_with(Default::default);
         }
@@ -320,7 +322,7 @@ impl Announcement {
                 || improvise
                 || self
                     .additional_cost()
-                    .is_some_and(|s| matches!(s.kind, EffectChoiceKind::DiscardOrLife(_)))
+                    .is_some_and(|s| s.kind.additional_life_payment().is_some())
                 || self
                     .item
                     .cast
@@ -379,6 +381,9 @@ impl Game {
             if clause == CastCostClause::Mana {
                 costs.mana_paid = true;
                 self.pay_mana_contributors(a);
+                if a.item.kind == StackKind::Spell {
+                    self.record_spell_waterbend_costs(a);
+                }
             }
             if let CastCostClause::OriginCounters(amount) = clause {
                 let selected = a.creature_counter_cost.take().unwrap_or_default();
@@ -452,14 +457,12 @@ impl Game {
             CastCostClause::Mana => {
                 let delving = self.item_delve(&a.item);
                 let contributors = a.item.kind == StackKind::Spell
-                    && (self.item_convoke(&a.item) || self.item_improvise(&a.item) || delving);
+                    && (self.item_convoke(&a.item) || self.item_improvise(&a.item) || delving)
+                    || a.tap_payment().is_some();
                 if contributors && a.convoke.is_none() {
-                    a.convoke = Some(Box::new(convoke::ConvokeSelection {
-                        remaining: a.total_cost.expect("locked mana cost"),
-                        selected: Vec::new(),
-                        improvised: Vec::new(),
-                        delved: Vec::new(),
-                    }));
+                    a.convoke = Some(Box::new(convoke::ConvokeSelection::new(
+                        a.total_cost.expect("locked mana cost"),
+                    )));
                 }
                 self.state.pending = if self.item_convoke(&a.item) {
                     Pending::Convoke {
@@ -478,6 +481,15 @@ impl Game {
                 } else if delving {
                     Pending::Delve {
                         player: a.item.controller,
+                    }
+                } else if let Some(payment) = a.tap_payment() {
+                    match payment.kind {
+                        waterbend::TapPaymentKind::Waterbend(_) => Pending::Waterbend {
+                            player: a.item.controller,
+                        },
+                        waterbend::TapPaymentKind::Creatures => Pending::CreatureTapPayment {
+                            player: a.item.controller,
+                        },
                     }
                 } else {
                     Pending::PayCosts {

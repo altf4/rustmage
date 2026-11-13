@@ -234,7 +234,7 @@ impl Game {
             }
             let attachment = recipient(group_index);
             let token = group.token;
-            let tapped = group.tapped || self.opponent_entry_requires_tapped(token, controller);
+            let tapped = group.tapped || self.external_entry_requires_tapped(token, controller);
             for _ in 0..group.amount {
                 let (id, generation) = self.replay_frozen_mana_copy_slot().unwrap_or_else(|| {
                     match self.state.free_tokens.pop() {

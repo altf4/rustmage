@@ -3,10 +3,46 @@
   "catalogue_id": 2429,
   "oracle_id": "849e54f9-7662-4186-859c-e4f52afbccac",
   "facts_sha256": "965f76a8bd1256f7cdc8eaa47fd954d1f00e5afcc6e9f9ace59fa9dd86eb5c95",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "69a3570717579ee7d7c8bd0b8b868be96126db24e18af77b65dad30f13a56fc7"
   },
-  "physical_metadata_sha256": "0dc2e84bd01fcaecac00b74fc69c4680419826ba29f4b63e0e60f0cd0f20c34b"
+  "physical_metadata_sha256": "0dc2e84bd01fcaecac00b74fc69c4680419826ba29f4b63e0e60f0cd0f20c34b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KyoshiBattleFan.java",
+  "java_sha256": "36c33d08fc7ec96be17371693775a0c996505640af6ad037692e5d2409c14d38",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenAttachSourceEffect.java",
+      "sha256": "84a5d669cabd468eb41ca13d77f05eb715b6a25d2c0b19bea64e9e48efaed3cd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/AllyToken.java",
+      "sha256": "f923612258b7cffbdcb17f3d99f23d7519c956c0a499542f060ffef00ef99b1c"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_white_colorless/permanents.rs"
 }

@@ -3,10 +3,46 @@
   "catalogue_id": 3953,
   "oracle_id": "bdbec6d5-0f10-4114-b709-4402a44debdf",
   "facts_sha256": "992ab2ac71055791caca13400c4867d809f092c2e9964ca40ce781a38e5fdc72",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e9e127ed6a558a9ddf6469966913d2dcbe98ab0c55b9ccd8269a02c934fd58b1"
   },
-  "physical_metadata_sha256": "0ec7538bb7f6ecf12168294282428a19e5af002be718886c5eabae772f44ed2a"
+  "physical_metadata_sha256": "0ec7538bb7f6ecf12168294282428a19e5af002be718886c5eabae772f44ed2a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SokkaBoldBoomeranger.java",
+  "java_sha256": "57532a563450b2b6733f27da9d53b4080285b8cec2bf47179865a8efa1b36607",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardAndDrawThatManyEffect.java",
+      "sha256": "f188e2031a5963432940d75ad39ec5b881cdd84feed7c7e136bc404996e1f01d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterSpell.java",
+      "sha256": "50fd3169b7ed9ae7f81bce450a44155f4326c657186c1ba6713e2d0f8c3e3a6c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+      "sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_multicolor/ally.rs"
 }

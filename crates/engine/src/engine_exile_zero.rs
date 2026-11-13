@@ -245,6 +245,9 @@ impl Game {
             }
         } else {
             Self::configure_exile_free_cast(&mut item, flash_surcharge);
+            if let Some(permission) = terms.linked_exile_paid {
+                Self::configure_linked_paid_cast(&mut item, Some(permission));
+            }
         }
         if terms.exile_play_surcharge != 0 {
             Self::configure_taxed_exile_cast(&mut item, terms.exile_play_surcharge);

@@ -279,7 +279,7 @@ fn an_attack_or_block_requirement_follows_control_and_lasts_through_each_combat(
     game.state.pending = Pending::Attackers;
     reject(&mut game, Action::FinishAttackers);
     declare(&mut game, &[creature]);
-    game.add_combat();
+    game.add_combat(false);
     game.begin_step(Step::EndCombat);
     game.give_priority();
     pass_pair(&mut game);

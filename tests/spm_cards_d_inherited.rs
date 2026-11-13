@@ -362,7 +362,7 @@ fn vulture_lifts_only_other_controlled_villains_on_attack() {
 
     // The first combat's resolved grant still applies during another combat.
     let turn = game.state.turn;
-    game.add_combat();
+    game.add_combat(false);
     for _ in 0..16 {
         let action = match &game.state.pending {
             Pending::Attackers => break,

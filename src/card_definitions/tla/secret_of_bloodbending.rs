@@ -1,16 +1,20 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from the pinned Oracle and official release notes.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Spell(
+        one(TargetRule::Player {
+            opponent_only: true,
+        }),
+        &[
+            Instruction::IfWaterbendPaid { skip: 2 },
+            Instruction::ControlTargetPlayerNextTurn,
+            Instruction::Skip(1),
+            Instruction::ControlTargetPlayerNextCombat,
+            Instruction::ExileResolvingSpell,
+        ],
+    ),
+    extras: &CardExtras {
+        waterbend_additional: Some(WaterbendAdditional::Optional(10)),
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

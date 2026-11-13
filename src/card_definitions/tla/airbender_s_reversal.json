@@ -3,10 +3,41 @@
   "catalogue_id": 106,
   "oracle_id": "64e3791b-de99-4eed-af49-cbec218c28aa",
   "facts_sha256": "daae5874d03132389c15493a0861c23c6ae660eed19ba7e894a3a3b3ba7cb6d6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a258666fc1d1bdabbb6fd71049d1a550378446233ef1e901aebe6ad12f1359f1"
   },
-  "physical_metadata_sha256": "f531ef104b3219ea83e8921228120c0bd704f1e78754058a4839ff45d7222e5d"
+  "physical_metadata_sha256": "f531ef104b3219ea83e8921228120c0bd704f1e78754058a4839ff45d7222e5d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AirbendersReversal.java",
+  "java_sha256": "79791931ca360b72ca7252154310eab03983bac97cbe44e4a6b7abfd81832074",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Mode.java",
+      "sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/AirbendTargetEffect.java",
+      "sha256": "debe8f731f2374241dda2d23cbcc2a5feba816ebbf4e1d7b48845faa983cdcec"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetAttackingCreature.java",
+      "sha256": "363350ad2acb98ab5c6c846d03056ec043afe46651ae395550f1c25d56314965"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_white_colorless/combat.rs"
 }

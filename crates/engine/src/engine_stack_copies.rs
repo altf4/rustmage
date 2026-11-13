@@ -105,13 +105,36 @@ fn delayed_copy_all_spells(item: &SpellView) -> bool {
             )
     )
 }
+impl SpellView {
+    pub(super) fn with_captured_copies(&self) -> impl Iterator<Item = &SpellView> {
+        std::iter::successors(Some(self), |item| {
+            item.copy_event.as_deref().map(|event| &event.spell)
+        })
+    }
+
+    pub(super) fn visit_with_captured_copies_mut(&mut self, mut visit: impl FnMut(&mut SpellView)) {
+        let mut item = self;
+        loop {
+            visit(item);
+            let Some(event) = item.copy_event.as_deref_mut() else {
+                break;
+            };
+            item = &mut event.spell;
+        }
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    /// Retain the final characteristics of an activated ability for triggers
-    /// that refer to it after it leaves the stack. These packets are owned, so
-    /// rollback and copied triggers keep the same last-known targets.
-    pub(super) fn retain_departing_activation_for_triggers(&mut self, departed: &SpellView) {
-        if !matches!(departed.kind, StackKind::ActivatedAbility { .. }) {
+    /// Keep the final modes and targets of an ability referenced by a
+    /// nontargeting copy effect, even after it leaves the stack (CR608.2h).
+    pub(super) fn retain_departing_ability_for_triggers(&mut self, departed: &SpellView) {
+        if !matches!(
+            departed.kind,
+            StackKind::ActivatedAbility { .. }
+                | StackKind::TriggeredAbility { .. }
+                | StackKind::DecayedAttack
+        ) {
             return;
         }
         let retain = |packet: &mut SpellView| {
@@ -412,6 +435,7 @@ impl Game {
         stack: Option<usize>,
         first_trigger: usize,
         cast_event: Option<CastPaymentEvent>,
+        spell_subtypes: GrantedSubtypes,
     ) {
         let Some(index) = stack else { return };
         let spell = self.state.stack[index].clone();
@@ -422,6 +446,7 @@ impl Game {
             first_trigger,
             instant_or_sorcery,
             cast_event,
+            spell_subtypes,
         );
     }
 
@@ -431,6 +456,7 @@ impl Game {
         first_trigger: usize,
         instant_or_sorcery: bool,
         cast_event: Option<CastPaymentEvent>,
+        spell_subtypes: GrantedSubtypes,
     ) {
         let repeated = self
             .state
@@ -472,25 +498,36 @@ impl Game {
             SpellCopyCount::EarlierSpellsThisTurn => earlier_spells,
         };
         for trigger in &mut self.state.pending_triggers[first_trigger..] {
-            if let Some((_, program)) = trigger.program()
-                && let Some(amount) = program.iter().find_map(|i| match i {
-                    Instruction::CopyCapturedSpell { count, .. } => Some(copy_count(*count)),
-                    Instruction::CopyCastSpell {
-                        prior_spells: false,
-                    } => Some(1),
-                    Instruction::CopyCastSpell { prior_spells: true } if instant_or_sorcery => {
-                        Some(prior)
-                    }
-                    Instruction::CopyCastSpellChosenX if instant_or_sorcery => {
-                        Some(u64::from(spell.x.unwrap_or(0)))
-                    }
-                    Instruction::CopyPreparedCastSpell if instant_or_sorcery || prepared => Some(1),
-                    Instruction::CopyCapturedSpellModified { .. }
-                    | Instruction::FlipCoinForCapturedSpell { .. }
-                    | Instruction::MayCopyCastSpellWithKeywords(_) => Some(1),
-                    _ => None,
-                })
+            if let Some(event) = cast_event
+                && let StackKind::TriggeredAbility { ability } = trigger.kind
+                && trigger.source.is_some()
+                && let Some(template) = trigger
+                    .trigger_definition()
+                    .triggers()
+                    .get(usize::from(ability))
             {
+                trigger.bind_cast_spell_subtypes(template.program, event, spell_subtypes);
+            }
+            let Some((_, program)) = trigger.program() else {
+                continue;
+            };
+            if let Some(amount) = program.iter().find_map(|i| match i {
+                Instruction::CopyCapturedSpell { count, .. } => Some(copy_count(*count)),
+                Instruction::CopyCastSpell {
+                    prior_spells: false,
+                } => Some(1),
+                Instruction::CopyCastSpell { prior_spells: true } if instant_or_sorcery => {
+                    Some(prior)
+                }
+                Instruction::CopyCastSpellChosenX if instant_or_sorcery => {
+                    Some(u64::from(spell.x.unwrap_or(0)))
+                }
+                Instruction::CopyPreparedCastSpell if instant_or_sorcery || prepared => Some(1),
+                Instruction::CopyCapturedSpellModified { .. }
+                | Instruction::FlipCoinForCapturedSpell { .. }
+                | Instruction::MayCopyCastSpellWithKeywords(_) => Some(1),
+                _ => None,
+            }) {
                 trigger.copy_event = Some(Box::new(CopyEvent {
                     spell: spell.clone(),
                     amount,
@@ -517,6 +554,9 @@ impl Game {
                         && cast_event.is_some_and(|event| event.mana_value <= maximum)
                 }
                 TriggerCondition::DelayedSpellCastAny => true,
+                TriggerCondition::DelayedSpellCastSubtype(subtype) => {
+                    cast_event.is_some_and(|event| spell_subtypes.has(event.card, subtype))
+                }
                 _ => instant_or_sorcery,
             };
             if delayed_copy_all_spells(&trigger) || delayed_copy_exhaust(&trigger) || !matching_type
@@ -604,7 +644,13 @@ impl Game {
         // Preserve an actual spell object and stack id, while substituting the
         // existing prepared-face marker. Classification is explicitly non-instant.
         spell.source.as_mut().unwrap().card = Card::test_index(5458);
-        self.capture_cast_callbacks_classified(spell, first_trigger, false, None);
+        self.capture_cast_callbacks_classified(
+            spell,
+            first_trigger,
+            false,
+            None,
+            GrantedSubtypes::default(),
+        );
     }
     pub(super) fn allocate_spell_copy(
         &mut self,
@@ -828,6 +874,42 @@ impl Game {
             return false;
         }
         self.begin_ability_copies(template, item.controller, 1)
+    }
+
+    pub(super) fn capture_observed_trigger(&self, item: &mut SpellView) {
+        // The first APNAP pass has announced the cause's choices by now. An
+        // ability removed during announcement has no copyable stack packet.
+        if let Some(original) = self.live_related_triggered_ability(item) {
+            item.copy_event = Some(Box::new(CopyEvent {
+                spell: original.clone(),
+                amount: 1,
+            }));
+        }
+    }
+
+    fn live_related_triggered_ability(&self, item: &SpellView) -> Option<&SpellView> {
+        let link = item.related_stack?;
+        self.state.stack.iter().find(|candidate| {
+            candidate.id == link.id
+                && matches!(
+                    candidate.kind,
+                    StackKind::TriggeredAbility { .. } | StackKind::DecayedAttack
+                )
+        })
+    }
+
+    pub(super) fn related_triggered_ability<'a>(
+        &'a self,
+        item: &'a SpellView,
+    ) -> Option<&'a SpellView> {
+        self.live_related_triggered_ability(item)
+            .or_else(|| item.copy_event.as_deref().map(|event| &event.spell))
+    }
+
+    pub(super) fn copy_related_triggered_ability(&mut self, item: &SpellView) -> bool {
+        self.related_triggered_ability(item)
+            .cloned()
+            .is_some_and(|template| self.begin_ability_copies(template, item.controller, 1))
     }
 
     fn begin_ability_copies(

@@ -3,6 +3,29 @@ use super::*;
 use crate::cards::StaticAbilityFragment;
 use ability_world::CharacteristicWorld;
 
+/// The immediate mana pipeline stores these trigger templates as rule fragments.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn acquired_tap_mana_triggers<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    source: CardId,
+) -> impl Iterator<Item = &'static StaticAbilityFragment> {
+    borrowed_activations::chosen_trigger_donor(world, source)
+        .into_iter()
+        .flat_map(|grant| grant.definition.static_ability_groups())
+        .flat_map(|group| group.fragments)
+        .filter(|fragment| {
+            matches!(
+                fragment,
+                StaticAbilityFragment::ControlledLandTapManaBonus(_)
+                    | StaticAbilityFragment::ControlledCreatureTapManaBonus(_)
+                    | StaticAbilityFragment::ControlledLandColorlessTapManaBonus
+                    | StaticAbilityFragment::ControlledArtifactTokenTapManaBonus
+                    | StaticAbilityFragment::AttachmentManaBonus(_)
+                    | StaticAbilityFragment::BasicLandTapManaBonus(_)
+            )
+        })
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub(super) enum LandAtTap {
@@ -33,6 +56,8 @@ pub struct ManaTapBonus {
     pub(super) land_at_tap: Option<LandAtTap>,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub(super) artifact_token_at_tap: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub(super) creature_at_tap: bool,
     #[serde(skip)]
     multiplier: u64,
 }
@@ -45,6 +70,7 @@ impl Default for ManaTapBonus {
             colorless: 0,
             land_at_tap: None,
             artifact_token_at_tap: false,
+            creature_at_tap: false,
             multiplier: 1,
         }
     }
@@ -55,6 +81,7 @@ impl ManaTapBonus {
         self.has_trigger_bonuses()
             || self.land_at_tap.is_some()
             || self.artifact_token_at_tap
+            || self.creature_at_tap
             || self.multiplier != 1
     }
     pub(super) fn has_trigger_bonuses(self) -> bool {
@@ -87,7 +114,8 @@ impl ManaTapBonus {
         let artifact_token = kinds.map_or(self.artifact_token_at_tap, |kinds| {
             kinds & 16 != 0 && object.is_token()
         });
-        if land_kind.is_none() && !artifact_token {
+        let creature = kinds.map_or(self.creature_at_tap, |kinds| kinds & 1 != 0);
+        if land_kind.is_none() && !artifact_token && !creature {
             return receipt;
         }
         let query = characteristic_query::CharacteristicQuery::in_world(world);
@@ -96,16 +124,28 @@ impl ManaTapBonus {
             if provider.zone != Zone::Battlefield {
                 continue;
             }
-            for fragment in world
+            let native = world
                 .definition(source)
                 .static_ability_groups()
                 .iter()
                 .flat_map(|group| group.fragments)
-            {
-                let available = || {
+                .map(|fragment| (fragment, false));
+            let acquired = acquired_tap_mana_triggers(world, source)
+                .filter(|_| {
                     query.continuous_fragment_available(source, |candidate| {
-                        std::ptr::eq(candidate, fragment)
+                        matches!(
+                            candidate,
+                            StaticAbilityFragment::GrantChosenLinkedCreatureAbilities
+                        )
                     })
+                })
+                .map(|fragment| (fragment, true));
+            for (fragment, acquired) in native.chain(acquired) {
+                let available = || {
+                    acquired
+                        || query.continuous_fragment_available(source, |candidate| {
+                            std::ptr::eq(candidate, fragment)
+                        })
                 };
                 let (production, amount, colorless) = match *fragment {
                     StaticAbilityFragment::ControlledBasicLandManaMultiplier(factor)
@@ -123,6 +163,11 @@ impl ManaTapBonus {
                     }
                     StaticAbilityFragment::ControlledLandTapManaBonus(mana)
                         if provider.controller == actor && land_kind.is_some() =>
+                    {
+                        (Some(ManaProduction::Fixed(mana)), 0, 0)
+                    }
+                    StaticAbilityFragment::ControlledCreatureTapManaBonus(mana)
+                        if provider.controller == actor && creature =>
                     {
                         (Some(ManaProduction::Fixed(mana)), 0, 0)
                     }
@@ -374,6 +419,7 @@ pub(super) fn capture<W: CharacteristicWorld + ?Sized>(
     ManaTapBonus {
         land_at_tap: (kinds & 2 != 0).then(|| LandAtTap::from_card(world.definition(id))),
         artifact_token_at_tap: kinds & 16 != 0 && object.is_token(),
+        creature_at_tap: kinds & 1 != 0,
         ..ManaTapBonus::default()
     }
 }

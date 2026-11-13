@@ -3,10 +3,51 @@
   "catalogue_id": 4732,
   "oracle_id": "3726b9a0-67cb-4f45-ab50-62db50f93568",
   "facts_sha256": "a66d39e037b06c28d47d21bea4b8f481d283f771d527109995adc86221e4dd70",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "eb6c896a768841e0bbee0cba89dc1705312553a7caa76bff99a45a5cb0f9d6da"
   },
-  "physical_metadata_sha256": "3de43a8d4292023161129084fa861454d19a979072e9777eb428ab74e27df724"
+  "physical_metadata_sha256": "3de43a8d4292023161129084fa861454d19a979072e9777eb428ab74e27df724",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TyLeeArtfulAcrobat.java",
+  "java_sha256": "8c750a42ec26ad67993b80b05ae397d3d0b0fbc35f4ed794e3679267ef6b05ab",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+      "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockTargetEffect.java",
+      "sha256": "a8b1a9a047746f0ea70d42f8847828d3334cfe9c33dfb6af870717e1aec0ae5f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
+      "sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_red/permanents.rs"
 }

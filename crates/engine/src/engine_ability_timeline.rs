@@ -88,6 +88,7 @@ impl Card {
                             | StaticAbilityFragment::SourceCounterSubtype { .. }
                             | StaticAbilityFragment::SourceCounterCreature { .. }
                             | StaticAbilityFragment::SourceAdditionalCreature { .. }
+                            | StaticAbilityFragment::SourceArtifactCreatureWhileControlNamed { .. }
                             | StaticAbilityFragment::SourceCelebrationCreatureForm { .. }
                             | StaticAbilityFragment::SourceOffTurnCreature
                             | StaticAbilityFragment::ControlledCreatureSubtype { .. }
@@ -103,11 +104,14 @@ impl Card {
                             | StaticAbilityFragment::ChosenTypeKeywords(..)
                             | StaticAbilityFragment::ChosenBasicLandType
                             | StaticAbilityFragment::ControlledLandsAllBasicTypes
+                            | StaticAbilityFragment::ControlledNontokenArtifactsAreLands
+                            | StaticAbilityFragment::NonbasicLandTypeWhileCounter { .. }
                             | StaticAbilityFragment::ControlledNonlandAllColors
                             | StaticAbilityFragment::AttachedSubtype(..)
                             | StaticAbilityFragment::AttachedLegendary
                             | StaticAbilityFragment::KeywordGrant(..)
                             | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                            | StaticAbilityFragment::ControlledPermanentAllKindsKeywords { .. }
                             | StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
                             | StaticAbilityFragment::ConditionalEquippedCreatureKeywords { .. }
                             | StaticAbilityFragment::ControlledTappedKeywords { .. }
@@ -123,6 +127,7 @@ impl Card {
                             | StaticAbilityFragment::ControlledFaceDownCreatureActivation(_)
                             | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                             | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                            | StaticAbilityFragment::ControlledKindAndSubtypeKeywords { .. }
                             | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
                             | StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }
                             | StaticAbilityFragment::AttachmentKeywords(..)
@@ -135,10 +140,12 @@ impl Card {
                             | StaticAbilityFragment::AttachedTurnKeywords(..)
                             | StaticAbilityFragment::AttachmentTurnChoiceKeywords { .. }
                             | StaticAbilityFragment::HarnessedTrigger(..)
+                            | StaticAbilityFragment::SourceConditionalAttackTrigger { .. }
                             | StaticAbilityFragment::ConditionalWard { .. }
                             | StaticAbilityFragment::CounterBearingPermanentWard { .. }
                             | StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                             | StaticAbilityFragment::ControlledCreatureTrigger { .. }
+                            | StaticAbilityFragment::ControlledSubtypeCastTrigger { .. }
                             | StaticAbilityFragment::AttachmentTrigger(..)
                             | StaticAbilityFragment::AttachmentLookAtLibraryTop
                             | StaticAbilityFragment::AttachmentActivation { .. }
@@ -148,6 +155,7 @@ impl Card {
                             | StaticAbilityFragment::ControlledPermanentTapMana { .. }
                             | StaticAbilityFragment::ControlledTokenTapMana { .. }
                             | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
+                            | StaticAbilityFragment::ControlledKindOrSubtypeTapMana { .. }
                             | StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                             | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                             | StaticAbilityFragment::CounterKeyword(..)
@@ -205,6 +213,8 @@ impl Game {
                             | StaticAbilityFragment::ControlledArtifactFood(_)
                             | StaticAbilityFragment::OtherCreaturesFood(_)
                             | StaticAbilityFragment::ControlledLandsAllBasicTypes
+                            | StaticAbilityFragment::ControlledNontokenArtifactsAreLands
+                            | StaticAbilityFragment::NonbasicLandTypeWhileCounter { .. }
                             | StaticAbilityFragment::ControlledNonlandAllColors
                     )
                 })

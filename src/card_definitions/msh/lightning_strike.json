@@ -33,5 +33,6 @@
       "path": "Mage/src/main/java/mage/target/common/TargetPermanentOrPlayer.java",
       "sha256": "f43a3bbef4f7d2f923cddf063aa48211aad59848ccefcdace9b08a40b5cd67ab"
     }
-  ]
+  ],
+  "rules_tests": "tests/tla_cards_red/inherited.rs"
 }

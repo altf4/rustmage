@@ -208,6 +208,10 @@ impl Game {
         if proposal.declares_target_value_x() {
             return !self.target_value_x_intervals(&proposal).is_empty();
         }
+        let minimum = source.card.activation(ability).minimum_x();
+        if proposal.item.x.is_none() && minimum != 0 {
+            proposal.item.x = Some(minimum);
+        }
         if proposal.has_equip_discard_alternative()
             || proposal
                 .additional_cost()

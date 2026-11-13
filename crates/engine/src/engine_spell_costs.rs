@@ -233,6 +233,9 @@ impl Game {
             if let Some(cost) = a.source_mana_alternative() {
                 return cost;
             }
+            if let Some(cost) = a.waterbend_alternative() {
+                return cost;
+            }
             if a.item
                 .cast
                 .is_some_and(|cast| cast.method == CastMethod::GrantedHarmonize)
@@ -279,11 +282,15 @@ impl Game {
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Warp) {
                 return a.warp_spec().mana;
             }
-            if a.item.cast.is_some_and(|c| c.method == CastMethod::Airbend) {
-                return ManaCost {
-                    colored: [0; 6],
-                    generic: 2,
-                };
+            if a.item.cast.is_some_and(|cast| {
+                matches!(
+                    cast.method,
+                    CastMethod::Airbend
+                        | CastMethod::Foretell
+                        | CastMethod::GrantedFixedFlashback(_)
+                )
+            }) {
+                return a.fixed_alternative_cost().expect("exile cast cost");
             }
             if a.item.cast.is_some_and(|c| {
                 matches!(
@@ -342,6 +349,7 @@ impl Game {
                 .generic
                 .checked_add(a.behold_decline_generic())
                 .and_then(|generic| generic.checked_add(a.exile_play_surcharge()))
+                .and_then(|generic| generic.checked_add(a.fixed_waterbend_addition()))
                 .capacity("spell generic cost exhausted");
         }
         if a.forage
@@ -391,6 +399,7 @@ impl Game {
     ) -> bool {
         let definition = self.state.objects[card as usize].card;
         if definition.explicit_additional_mana().is_some()
+            || definition.waterbend_additional().is_some()
             || self.cast_requires_target_payment(actor, definition)
             || (self.state.objects[card as usize].zone == Zone::Library
                 && definition.x_symbols() > 0)
@@ -653,11 +662,24 @@ impl Game {
                     matches!(world.entry_value(world.reference(source)), Some(EntryChoiceValue::CreatureType(typ)) if subtypes.has(definition, typ.name()))
                 }
                 CastFilter::FirstQualifiedCreature(qualifier) => {
-                    qualifier.matches(definition)
-                        && self.state.players[actor.index()]
-                            .turn_facts
-                            .qualified_creature_cast_count(qualifier)
-                            == 0
+                    self.state.players[actor.index()]
+                        .turn_facts
+                        .qualified_creature_cast_count(qualifier)
+                        == 0
+                        && qualifier.matches(
+                            definition,
+                            || {
+                                if recipient.zone == Zone::Battlefield
+                                    || recipient.card != definition
+                                {
+                                    definition.keywords()
+                                } else {
+                                    characteristic_query::CharacteristicQuery::in_world(world)
+                                        .keywords(id)
+                                }
+                            },
+                            |subtype| subtypes.has(definition, subtype),
+                        )
                 }
                 CastFilter::CreatureToughnessGreaterThanPower => {
                     definition.is_creature() && {

@@ -61,7 +61,8 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             Instruction::Modal(modes)
             | Instruction::ModalOnce(modes)
             | Instruction::ModalOncePerTurn(modes)
-            | Instruction::ModalUpToX { modes, .. } => {
+            | Instruction::ModalUpToX { modes, .. }
+            | Instruction::ModalUpToStat { modes, .. } => {
                 for mode in modes {
                     read_counter_kinds(mode.program, kinds);
                     read_target_counter_kinds(mode.targets, kinds);
@@ -246,15 +247,17 @@ impl Game {
                     .map(|frame| &mut frame.announcement.item),
             )
         {
-            if item
-                .source
-                .is_some_and(|source| source.object == before.reference)
-            {
-                if before.zone == Zone::Battlefield {
-                    item.remember_source_types_at_departure(before);
+            item.visit_with_captured_copies_mut(|item| {
+                if item
+                    .source
+                    .is_some_and(|source| source.object == before.reference)
+                {
+                    if before.zone == Zone::Battlefield {
+                        item.remember_source_types_at_departure(before);
+                    }
+                    item.refresh_counter_quantities(|kind| before.counters.get(kind));
                 }
-                item.refresh_counter_quantities(|kind| before.counters.get(kind));
-            }
+            });
         }
     }
 }

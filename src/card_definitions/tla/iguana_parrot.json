@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c51c2ce6924b1c6732866df0abf8c7fc5e68539532263487b661614975229511"
   },
-  "physical_metadata_sha256": "48f8b3e28b1dc4c497060ab428a6a2a75516a1c29f40f7304bb9d068a3b28fb5"
+  "physical_metadata_sha256": "48f8b3e28b1dc4c497060ab428a6a2a75516a1c29f40f7304bb9d068a3b28fb5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/IguanaParrot.java",
+  "java_sha256": "ea785aab3b618bd7809138210dafeaf443e1792230f74528154948cfa5234f7b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
+      "sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_blue.rs"
 }

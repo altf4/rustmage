@@ -190,21 +190,18 @@ impl Game {
     }
 
     pub(super) fn self_attachment_triggers(&mut self, attachment: ObjectRef, recipient: ObjectRef) {
-        let card = self.state.objects[attachment.card as usize].card;
         let observes = |ability: &TriggeredAbility| {
             ability.condition.event() == TriggerCondition::SelfBecomesAttachedToCreature
         };
-        if !card.triggers().iter().any(observes)
+        if !self.has_trigger(attachment.card, observes)
             || !self.attachment_is_live(attachment, recipient)
             || !self.is_creature(recipient.card)
         {
             return;
         }
         let source = self.object_view(attachment.card);
-        for (index, _) in card
-            .triggers()
-            .iter()
-            .enumerate()
+        for (index, _) in source
+            .trigger_templates()
             .filter(|(_, ability)| observes(ability))
         {
             self.queue_attachment_trigger(&source, index, &source, recipient);

@@ -3,10 +3,41 @@
   "catalogue_id": 2221,
   "oracle_id": "8dd2e73a-d1b4-4d26-857f-9eb8e384c8ff",
   "facts_sha256": "90f6222307196ea576e1f21e0b2db424ae03257da5ec216127f42a34a888cf43",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3fe123e524db72d521a1f0d398fea9c23d2e3c3b60570deba985a8e1c389eefd"
   },
-  "physical_metadata_sha256": "f9a366ca02fb7a9929aaf963a371d0dbe90cae4ca36bc6e057d33661771c07be"
+  "physical_metadata_sha256": "f9a366ca02fb7a9929aaf963a371d0dbe90cae4ca36bc6e057d33661771c07be",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/IrohsDemonstration.java",
+  "java_sha256": "d3bd478518558fd21297fa461c1fbd1de8099a2f3f32fb47e83571602354cd31",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Mode.java",
+      "sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageAllEffect.java",
+      "sha256": "0b4150468bb32f733a8cbc6485ae511b5141e87a1efc8b744911d62a7648c313"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_red/spells.rs"
 }

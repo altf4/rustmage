@@ -1,16 +1,22 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from the pinned Oracle and XMage sources.
+use crate::engine::temporary_tokens::TokenCleanup;
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::REACH.union(Keywords::DEFENDER),
+    effect: Effect::Creature(0, 4),
+    keywords: Keywords::DEFENDER.union(Keywords::REACH),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::AttackDeclared {
+            minimum: 1,
+            power_min: None,
+            guard: StepGuard::Always,
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::CreateTokensThenCleanup {
+            token: Card(5710),
+            amount: 1,
+            attacking: true,
+            cleanup: TokenCleanup::NextEndStepSacrifice,
+        }],
+    }],
     ..CardRules::EMPTY
 };

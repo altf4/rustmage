@@ -707,6 +707,9 @@ impl Game {
                 ),
             )
             .is_some_and(|total| {
+                if a.tap_payment().is_some() {
+                    return self.waterbend_spell_total_fundable(a, total);
+                }
                 if a.independent_additional_mana().is_some() {
                     let mut proposal = a.clone();
                     proposal.cast_costs.get_or_insert_with(Default::default);

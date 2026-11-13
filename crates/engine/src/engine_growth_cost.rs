@@ -482,7 +482,7 @@ impl Game {
                 continue;
             }
             let source = self.object_view(id);
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 if ability.condition.event() == TriggerCondition::AttachedBecomesUntapped
                     && let Some(recipient) = source.attached_to
                     && self.queue_trigger(&source, index)
@@ -612,7 +612,7 @@ impl Game {
             if source.controller != self.state.active {
                 continue;
             }
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 if ability.condition.event()
                     != TriggerCondition::ControlledCreatureCombatDamageOwnTurn
                 {

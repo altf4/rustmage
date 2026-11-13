@@ -33,7 +33,8 @@ impl Game {
             rules.turn_callbacks.iter().any(|row| {
                 matches!(
                     row.event,
-                    TurnCallbackEvent::ControlledCreatureDeath
+                    TurnCallbackEvent::AnyCreatureDeath
+                        | TurnCallbackEvent::ControlledCreatureDeath
                         | TurnCallbackEvent::ControlledNontokenCreatureDeath
                 )
             })
@@ -47,14 +48,15 @@ impl Game {
                 && event.before.kinds & 1 != 0
             {
                 self.queue_matching_turn_callbacks(None, |row| {
-                    row.item.controller == event.before.controller
-                        && match row.event {
-                            TurnCallbackEvent::ControlledCreatureDeath => true,
-                            TurnCallbackEvent::ControlledNontokenCreatureDeath => {
-                                !event.before.is_token()
-                            }
-                            _ => false,
+                    let controlled = row.item.controller == event.before.controller;
+                    match row.event {
+                        TurnCallbackEvent::AnyCreatureDeath => true,
+                        TurnCallbackEvent::ControlledCreatureDeath => controlled,
+                        TurnCallbackEvent::ControlledNontokenCreatureDeath => {
+                            controlled && !event.before.is_token()
                         }
+                        _ => false,
+                    }
                 });
             }
         }
@@ -154,9 +156,9 @@ impl Game {
     pub(super) fn expire_next_turn_callbacks(&mut self) {
         if let Some(rules) = &mut self.state.combat_rules {
             let expiry = Some(TurnCallbackExpiry::EndOfTurn(self.state.turn));
-            rules
-                .turn_callbacks
-                .retain(|row| row.expiry.is_some() && row.expiry != expiry);
+            // This-turn delayed abilities can still see cleanup's state-based
+            // actions. The actual turn change removes rows without an expiry.
+            rules.turn_callbacks.retain(|row| row.expiry != expiry);
         }
     }
 

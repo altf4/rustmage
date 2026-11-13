@@ -32,6 +32,7 @@ pub struct PlayerCombatDamageView {
 pub(super) struct CombatRulesState {
     pub after_combat: Vec<AfterCombatPhaseView>,
     pub in_inserted_upkeep: bool,
+    pub land_creature_attackers_only: bool,
     pub after_main: Option<MainPhaseCombatView>,
     pub inserted_phases: Vec<Step>,
     pub end_steps: AdditionalEndStepsView,
@@ -71,6 +72,14 @@ struct ExcessDamage {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CombatRulesState {
+    pub(super) fn clear_phase_schedule(&mut self) {
+        self.after_combat.clear();
+        self.in_inserted_upkeep = false;
+        self.land_creature_attackers_only = false;
+        self.after_main = None;
+        self.inserted_phases.clear();
+        self.end_steps = AdditionalEndStepsView::default();
+    }
     pub(super) fn owned_bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.after_combat.len() * std::mem::size_of::<AfterCombatPhaseView>()
@@ -250,16 +259,12 @@ impl Game {
             return Vec::new();
         }
         let observes_excess = self.state.damage_sources.iter().any(|&id| {
-            self.state.objects[id as usize]
-                .card
-                .triggers()
-                .iter()
-                .any(|ability| {
-                    matches!(
-                        ability.condition.event(),
-                        TriggerCondition::ExcessNoncombatDamageToCreatures { .. }
-                    )
-                })
+            self.has_trigger(id, |ability| {
+                matches!(
+                    ability.condition.event(),
+                    TriggerCondition::ExcessNoncombatDamageToCreatures { .. }
+                )
+            })
         });
         if !observes_excess {
             return Vec::new();
@@ -670,6 +675,12 @@ impl Game {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ActivatedAbility {
     pub(crate) fn x_symbols(&self) -> u32 {
+        if matches!(
+            self.program.first(),
+            Some(Instruction::WaterbendXCost { .. })
+        ) {
+            return 1;
+        }
         if let Some(Instruction::ActivationXWithMinimum { symbols, .. }) = self.program.first() {
             return u32::from(*symbols);
         }
@@ -684,6 +695,7 @@ impl ActivatedAbility {
     pub(super) fn minimum_x(&self) -> u32 {
         match self.program.first() {
             Some(Instruction::ActivationXWithMinimum { minimum, .. }) => *minimum,
+            Some(Instruction::WaterbendXCost { minimum }) => *minimum,
             _ => 0,
         }
     }
@@ -802,7 +814,7 @@ impl Game {
             let count = selected.iter().filter(|&&(_, id)| id == a.card).count();
             let weight = self.block_requirement_weight(a.card);
             let minimum = self.minimum_blockers(a.card);
-            let max_one = self.keywords(a.card).contains(Keywords::MAX_ONE_BLOCKER);
+            let max_one = self.attacker_at_most_one_blocker(a.card);
             if count > 0 {
                 if max_one && (count > 1 || minimum > 1) {
                     return None;

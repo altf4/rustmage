@@ -276,7 +276,8 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::ChooseConspire { pay }
             | Action::ChooseOffspring { pay }
             | Action::ChooseLibraryCastPermission { with_counter: pay }
-            | Action::ChooseKicker { pay } => {
+            | Action::ChooseKicker { pay }
+            | Action::ChooseWaterbendCost { pay } => {
                 if *pay {
                     100
                 } else {
@@ -390,6 +391,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceFree { .. }
             | Action::AnnounceGrantedFlashback { .. }
             | Action::AnnounceGrantedZeroFlashback { .. }
+            | Action::AnnounceGrantedFixedFlashback { .. }
             | Action::AnnounceGrantedHarmonize { .. }
             | Action::AnnounceCounterGraveyard { .. }
             | Action::AnnounceGraveyardAdditionalCosts { .. }
@@ -403,9 +405,11 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceWarp { .. }
             | Action::AnnounceGrantedWarp { .. }
             | Action::AnnounceDisguise { .. }
+            | Action::AnnounceLinkedAlternative { .. }
             | Action::AnnounceDisguiseGraveyard { .. }
             | Action::AnnounceSneak { .. }
             | Action::AnnounceWebSlinging { .. }
+            | Action::AnnounceForetold { .. }
             | Action::AnnouncePlotted { .. }
             | Action::AnnouncePlottedFace { .. }
             | Action::AnnounceExile { .. }
@@ -420,6 +424,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceExileFree { .. }
             | Action::AnnounceLinkedFree { .. }
             | Action::AnnounceLinkedPaid { .. }
+            | Action::AnnounceLinkedWaterbend { .. }
             | Action::AnnounceLinkedExileCounterCost { .. }
             | Action::AnnounceFlashback { .. }
             | Action::AnnounceHarmonize { .. }
@@ -428,6 +433,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceRoom { .. }
             | Action::AnnounceSplit { .. } => 79,
             Action::AnnouncePlot { .. }
+            | Action::AnnounceForetell { .. }
             | Action::AnnounceLibraryTopPlot { .. }
             | Action::BeginFaceUp { .. }
             | Action::BeginFaceUpX { .. }
@@ -452,6 +458,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceGraveyardBorrowedMana { .. } => -2,
             Action::PayCosts { .. }
             | Action::PayPlot { .. }
+            | Action::PayForetell { .. }
             | Action::PayFaceUp { .. }
             | Action::PayRoomUnlock { .. }
             | Action::PayAttackCost { .. }
@@ -477,6 +484,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::CancelOutsideCard | Action::DeclineOutsideCards => -1,
             Action::ChooseSearch { .. }
             | Action::ChooseSearchBattlefield { .. }
+            | Action::ChooseSearchGraveyard { .. }
             | Action::ChooseLegendaryFound { .. } => 60,
             Action::ChooseLegendarySearchZones { library, outside } => {
                 60 + i128::from(*library) + i128::from(*outside)

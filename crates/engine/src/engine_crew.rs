@@ -542,18 +542,14 @@ impl Game {
                 .filter(|crewer| {
                     self.on_battlefield(crewer.card)
                         && self.object_ref(crewer.card) == **crewer
-                        && self.state.objects[crewer.card as usize]
-                            .card
-                            .triggers()
-                            .iter()
-                            .any(|ability| {
-                                ability.condition.event() == TriggerCondition::CrewedVehicleAttacks
-                            })
+                        && self.has_trigger(crewer.card, |ability| {
+                            ability.condition.event() == TriggerCondition::CrewedVehicleAttacks
+                        })
                 })
                 .map(|crewer| self.object_view(crewer.card))
                 .collect();
             for source in observers {
-                for (index, ability) in source.card.triggers().iter().enumerate() {
+                for (index, ability) in source.trigger_templates() {
                     if ability.condition.event() == TriggerCondition::CrewedVehicleAttacks
                         && self.queue_attack_trigger_from(&source, index, None)
                     {

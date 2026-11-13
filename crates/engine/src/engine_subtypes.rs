@@ -111,6 +111,9 @@ impl CreatureTypeSet {
     pub(super) fn is_empty(self) -> bool {
         self.0 == [0; CREATURE_TYPE_WORDS]
     }
+    pub(super) fn count(self) -> u32 {
+        self.0.into_iter().map(u64::count_ones).sum()
+    }
     fn insert(&mut self, typ: crate::cards::CreatureType) {
         self.insert_index(typ.index());
     }
@@ -122,6 +125,24 @@ impl CreatureTypeSet {
             *word |= extra;
         }
     }
+    pub(super) fn intersects(self, other: Self) -> bool {
+        self.0.into_iter().zip(other.0).any(|(a, b)| a & b != 0)
+    }
+    pub(super) fn indices(self) -> impl Iterator<Item = usize> {
+        self.0
+            .into_iter()
+            .enumerate()
+            .flat_map(|(block, mut word)| {
+                std::iter::from_fn(move || {
+                    if word == 0 {
+                        return None;
+                    }
+                    let offset = word.trailing_zeros() as usize;
+                    word &= word - 1;
+                    Some(block * u64::BITS as usize + offset)
+                })
+            })
+    }
     pub(super) fn contains(self, name: &str) -> bool {
         !self.is_empty()
             && crate::cards::CREATURE_TYPES
@@ -131,8 +152,7 @@ impl CreatureTypeSet {
 }
 impl Serialize for CreatureTypeSet {
     fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-        let count = self.0.iter().map(|word| word.count_ones() as usize).sum();
-        let mut out = serializer.serialize_seq(Some(count))?;
+        let mut out = serializer.serialize_seq(Some(self.count() as usize))?;
         for (index, name) in crate::cards::CREATURE_TYPES.iter().enumerate() {
             if self.0[index / 64] & (1 << (index % 64)) != 0 {
                 out.serialize_element(name)?;
@@ -331,6 +351,14 @@ impl GrantedSubtypes {
                 self.insert("Spider");
                 self.insert("Human");
                 self.insert("Hero");
+            }
+            if recipe.kinds() & CREATURE_OR_KINDRED != 0 {
+                if recipe.exceptions.add_hero_subtype {
+                    self.insert("Hero");
+                }
+                if recipe.exceptions.add_coward_subtype {
+                    self.insert("Coward");
+                }
             }
             if recipe.exceptions.shapeshifter_rogue {
                 self.insert("Shapeshifter");
@@ -749,6 +777,8 @@ pub struct BasicLandTypesEffectView {
     pub timestamp: u64,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub while_counter: Option<CounterKind>,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub until_cleanup: bool,
 }
 
 impl BasicLandTypesEffectView {
@@ -1281,6 +1311,72 @@ pub(super) struct BasicLandTimeline {
     pub ability_changes: Vec<(u64, BasicLandAbilityChange)>,
 }
 
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn nonbasic_land_type_setters<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+) -> impl Iterator<Item = (u64, crate::cards::BasicLandType)> {
+    let mut candidates = world.roles().into_iter().flat_map(move |roles| {
+        roles
+            .characteristic_sources
+            .iter()
+            .filter_map(move |&source| {
+                let object = world.object(source.card);
+                if object.zone != Zone::Battlefield || world.reference(source.card) != source {
+                    return None;
+                }
+                let kind = object
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .filter(|group| entry_modes::group_enabled(world, source, group))
+                    .flat_map(|group| group.fragments)
+                    .find_map(|fragment| match *fragment {
+                        StaticAbilityFragment::NonbasicLandTypeWhileCounter { kind, counter }
+                            if world.counter_count(source.card, counter) != 0 =>
+                        {
+                            Some(kind)
+                        }
+                        _ => None,
+                    })?;
+                let timestamp = roles
+                    .ability_timestamps
+                    .iter()
+                    .find(|row| row.source == source)?
+                    .timestamp;
+                Some((source, timestamp, kind))
+            })
+    });
+    let mut first = candidates.next();
+    let mut retained = Vec::new();
+    if let Some(second) = candidates.next() {
+        retained.push(first.take().expect("first setter candidate"));
+        retained.push(second);
+        retained.extend(candidates);
+        let oldest = *retained
+            .iter()
+            .min_by_key(|&&(source, timestamp, _)| (timestamp, source))
+            .expect("multiple setter candidates");
+        // A setter whose own source is a nonbasic land depends on the other
+        // setters. In a mutual dependency loop, the oldest sets the land
+        // types first and removes the other printed setters.
+        retained.retain(|&(source, _, _)| !is_nonbasic_land(world, source.card));
+        if retained.is_empty() {
+            retained.push(oldest);
+        }
+    }
+    first
+        .into_iter()
+        .chain(retained)
+        .map(|(_, timestamp, kind)| (timestamp, kind))
+}
+
+pub(super) fn is_nonbasic_land<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+) -> bool {
+    !world.object(id).card.is_basic_land() && world.kinds(id) & 2 != 0
+}
+
 /// Run all supported layer-four card-type and basic-land-type changes in
 /// timestamp order, recording precisely when intrinsic mana is lost or gained.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -1300,9 +1396,19 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
     let reference = world.reference(id);
     let printed_land = || world.recipe(id).kinds() & 2 != 0;
     let kind_events = characteristic_layers::land_kind_events(world, id);
-    let mut events: Vec<(u64, Event)> = kind_events
+    let land_since = kind_events.last().map_or_else(
+        || printed_land().then_some(0),
+        |&(time, land)| land.then_some(time),
+    );
+    let mut land_setters = nonbasic_land_type_setters(world).peekable();
+    let has_land_setters = land_since.is_some() && land_setters.peek().is_some();
+    let removes_printed = has_land_setters && !object.card.is_basic_land();
+    // A dependent effect must wait for land status. Effects waiting on the
+    // same transition still order among themselves by their own timestamps.
+    let land_effect_order = |time: u64| (time.max(land_since.unwrap_or(0)), time);
+    let mut events: Vec<((u64, u64), Event)> = kind_events
         .iter()
-        .map(|&(time, land)| (time, Event::Land(land)))
+        .map(|&(time, land)| ((time, 0), Event::Land(land)))
         .collect();
     events.extend(
         world
@@ -1310,7 +1416,7 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
             .into_iter()
             .flat_map(|state| &state.basic_land_types)
             .filter(|row| row.recipient == reference)
-            .map(|row| (row.timestamp, Event::Add(row.kind))),
+            .map(|row| (land_effect_order(row.timestamp), Event::Add(row.kind))),
     );
     events.extend(
         world
@@ -1322,14 +1428,18 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
                     && row.kind == SourceLinkedEffectKind::BlankLandWhileBlighted
                     && source_linked_effects::active(world, row)
             })
-            .map(|row| (row.timestamp, Event::Clear)),
+            .map(|row| ((row.timestamp, row.timestamp), Event::Clear)),
     );
-    if object.card.static_ability_groups().iter().any(|group| {
-        group
-            .fragments
-            .iter()
-            .any(|f| matches!(f, crate::cards::StaticAbilityFragment::ChosenBasicLandType))
-    }) && let Some(EntryChoiceValue::BasicLandType(kind)) = world.entry_value(reference)
+    // An external basic-type setter removes this native type-setting ability
+    // before it can apply. Keep the stored choice for when the setter leaves.
+    if !removes_printed
+        && object.card.static_ability_groups().iter().any(|group| {
+            group
+                .fragments
+                .iter()
+                .any(|f| matches!(f, StaticAbilityFragment::ChosenBasicLandType))
+        })
+        && let Some(EntryChoiceValue::BasicLandType(kind)) = world.entry_value(reference)
         && let Some(time) = world
             .roles()
             .and_then(|state| {
@@ -1340,35 +1450,22 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
             })
             .map(|row| row.timestamp)
     {
-        events.push((time, Event::Set(kind)));
+        events.push((land_effect_order(time), Event::Set(kind)));
     }
-    if world
-        .roles()
-        .is_some_and(|roles| !roles.characteristic_sources.is_empty())
-    {
-        let mut is_land = printed_land();
-        let mut added_at = 0;
-        for (time, land) in kind_events {
-            if land && !is_land {
-                added_at = time;
-            }
-            is_land = land;
-        }
-        if is_land {
-            // The land-only grant depends on type effects that make this
-            // recipient a land. A basic-subtype setter does not change that set.
-            events.extend(
-                characteristic_layers::controlled_characteristic_timestamps(
-                    world,
-                    id,
-                    |fragment| {
-                        matches!(
-                            fragment,
-                            StaticAbilityFragment::ControlledLandsAllBasicTypes
-                        )
-                    },
+    if land_since.is_some() {
+        events.extend(
+            characteristic_layers::controlled_characteristic_sources(world, id, |fragment| {
+                matches!(
+                    fragment,
+                    StaticAbilityFragment::ControlledLandsAllBasicTypes
                 )
-                .map(|time| (time.max(added_at), Event::AddAll)),
+            })
+            .filter(|(source, _)| !has_land_setters || !is_nonbasic_land(world, source.card))
+            .map(|(_, time)| (land_effect_order(time), Event::AddAll)),
+        );
+        if removes_printed {
+            events.extend(
+                land_setters.map(|(time, kind)| (land_effect_order(time), Event::Set(kind))),
             );
         }
     }
@@ -1395,7 +1492,7 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
     let mut present = initial_types;
     let mut lost_original_types = !is_land;
     let mut ability_changes = Vec::new();
-    for (time, event) in &events {
+    for ((time, _), event) in &events {
         match *event {
             Event::Land(false) => {
                 if is_land {
@@ -1502,24 +1599,70 @@ impl Game {
             })
             .map(|id| self.object_ref(id))
             .collect();
+        self.record_basic_land_types(source.object, &recipients, &[kind], while_counter, false);
+    }
+
+    pub(super) fn grant_all_basic_land_types_until_cleanup(&mut self, item: &SpellView) {
+        let Some(source) = item.source else { return };
+        let recipients: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                let id = id as CardId;
+                (object.zone == Zone::Battlefield
+                    && object.controller == item.controller
+                    && self.current_kinds(id) & 2 != 0)
+                    .then(|| self.object_ref(id))
+            })
+            .collect();
+        self.record_basic_land_types(
+            source.object,
+            &recipients,
+            &crate::cards::BasicLandType::ALL,
+            None,
+            true,
+        );
+    }
+
+    fn record_basic_land_types(
+        &mut self,
+        source: ObjectRef,
+        recipients: &[ObjectRef],
+        kinds: &[crate::cards::BasicLandType],
+        while_counter: Option<CounterKind>,
+        until_cleanup: bool,
+    ) {
         if recipients.is_empty() {
             return;
         }
         let timestamp = self.next_role_timestamp();
-        for recipient in recipients {
-            self.state
-                .roles
-                .get_or_insert_with(Default::default)
-                .basic_land_types
-                .push(BasicLandTypesEffectView {
-                    recipient,
-                    source: source.object,
-                    kind,
-                    timestamp,
-                    while_counter,
-                });
+        let effects = &mut self
+            .state
+            .roles
+            .get_or_insert_with(Default::default)
+            .basic_land_types;
+        for &recipient in recipients {
+            effects.extend(kinds.iter().map(|&kind| BasicLandTypesEffectView {
+                recipient,
+                source,
+                kind,
+                timestamp,
+                while_counter,
+                until_cleanup,
+            }));
         }
     }
+
+    pub(super) fn expire_basic_land_types(&mut self) -> bool {
+        self.state.roles.as_mut().is_some_and(|roles| {
+            let count = roles.basic_land_types.len();
+            roles.basic_land_types.retain(|row| !row.until_cleanup);
+            count != roles.basic_land_types.len()
+        })
+    }
+
     pub(super) fn set_creature_types(
         &mut self,
         item: &SpellView,

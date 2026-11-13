@@ -3,10 +3,51 @@
   "catalogue_id": 3952,
   "oracle_id": "87a97c72-143d-48a8-a1c5-3c44aa8e5a86",
   "facts_sha256": "d474e0d1f919398ad71177419d634af76cc9c022297204ed77b4ccbf675b0d4b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "21cc147419c7d90779a08c5cff4da7babc70a0ebe4d9fa22cc791b52af266a1f"
   },
-  "physical_metadata_sha256": "567fbd6e40e9560ba8500a25d283aad0f187794f0b5b52b2c0f6e40d6df870f2"
+  "physical_metadata_sha256": "567fbd6e40e9560ba8500a25d283aad0f187794f0b5b52b2c0f6e40d6df870f2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SokkasHaiku.java",
+  "java_sha256": "b5eb989becb7bde2c12a82c0975a11c542fef36c81d16d0b81562da7c2c5ceb0",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterTargetEffect.java",
+      "sha256": "49282767e8f8d631bb38ae1d35bc91a29ab2ae8173030e3a89d3da495c1cf233"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+      "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapTargetEffect.java",
+      "sha256": "69bec57593db2620ef750768e381badf6843aefaf7584c796037dcdf87f1b973"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetSpell.java",
+      "sha256": "349d67f29235bc2e3ad846c3b177f18dc1097e87e80327a77c852667289f94cc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetLandPermanent.java",
+      "sha256": "c0beb7517ef08eb7d86e58f64cc0fa9faee438dc46405c3a48c61b2bb580f43b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/SecondTargetPointer.java",
+      "sha256": "135cc53e0202fad251c5902855c6001ba5de1d05fb4dd4341c7f8a17ecec4ef2"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_blue.rs"
 }

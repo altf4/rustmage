@@ -3,10 +3,46 @@
   "catalogue_id": 3390,
   "oracle_id": "5be6f245-31cf-4294-ace0-ca6ce3463fed",
   "facts_sha256": "fed24fa3ebd098134a287bf7e210d0307ca834c9a0a0c402cec108c4ef954c91",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6c3989e782e95a644acb0a26feef9aba2fee194e229692416ec47cd8c96874fb"
   },
-  "physical_metadata_sha256": "466e62fbac5cf32b5714be0a1fd745b60a79063f3dc4b18a05457340b54af986"
+  "physical_metadata_sha256": "466e62fbac5cf32b5714be0a1fd745b60a79063f3dc4b18a05457340b54af986",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RaucousAudience.java",
+  "java_sha256": "ca4c14947203b097c660c9073a9de01c1969db549a5e0fb1171ac4959302f8a0",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/FerociousCondition.java",
+      "sha256": "4cb67672f9434ee2230c941595cd3489a6b27658508e5cadaa3cecacbc8e84fa"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalManaEffect.java",
+      "sha256": "20a8b39094b717a3dbf8e3cf97e04e283fd28308b91c7fb4280a2d0e097ea2d4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/hint/common/FerociousHint.java",
+      "sha256": "f8da304053e202617f65f5b24115dbd37451a21fde4e89147d4bc74ac266e05a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/SimpleManaAbility.java",
+      "sha256": "ffbd6c3be6ec8684aa67a8fc907e8ac29726751ae3f37cda50a024843e650bba"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_green/creatures.rs"
 }

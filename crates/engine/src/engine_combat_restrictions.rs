@@ -297,11 +297,18 @@ impl Game {
         let Some(object) = self.state.objects.get(id as usize) else {
             return false;
         };
-        if object.controller != actor
-            || object.zone != Zone::Battlefield
-            || !self.is_creature(id)
-            || self.current_kinds(id) & crate::cards::BATTLE_KIND != 0
-            || object.tapped
+        if object.controller != actor || object.zone != Zone::Battlefield || object.tapped {
+            return false;
+        }
+        let kinds = self.current_kinds(id);
+        if kinds & 1 == 0
+            || kinds & crate::cards::BATTLE_KIND != 0
+            || (kinds & 2 == 0
+                && self
+                    .state
+                    .combat_rules
+                    .as_ref()
+                    .is_some_and(|rules| rules.land_creature_attackers_only))
         {
             return false;
         }

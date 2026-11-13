@@ -146,6 +146,28 @@ impl Game {
         object: ObjectRef,
         destination: LibraryDestination,
     ) -> bool {
+        let card = self.state.objects[object.card as usize].card;
+        let Some(event) = self.move_object_to_library_position(object, destination) else {
+            return false;
+        };
+        // Publish only this targeted public movement. Later private looks,
+        // rearrangements and draws leave this record alone.
+        self.state.last_target_library_move = Some(Box::new(TargetLibraryMovement {
+            source,
+            card,
+            target_before: object,
+            target_after: event.after,
+            owner: event.before.owner,
+            destination,
+        }));
+        true
+    }
+
+    fn move_object_to_library_position(
+        &mut self,
+        object: ObjectRef,
+        destination: LibraryDestination,
+    ) -> Option<ZoneChange> {
         assert!(matches!(
             destination,
             LibraryDestination::Top
@@ -154,7 +176,6 @@ impl Game {
                 | LibraryDestination::NthFromTop(_)
         ));
         let owner = self.state.objects[object.card as usize].owner;
-        let card = self.state.objects[object.card as usize].card;
         let physical = self.state.objects[object.card as usize].is_card();
         let prior = self.capture_library_top_knowledge(owner);
         let nth_position = if let LibraryDestination::NthFromTop(n) = destination {
@@ -212,19 +233,19 @@ impl Game {
                 }
             }
             self.restore_library_top_knowledge(owner, prior);
-            // Publish only this targeted public movement. This is a historical
-            // record; later private looks, rearrangements and draws leave it alone.
-            self.state.last_target_library_move = Some(Box::new(TargetLibraryMovement {
-                source,
-                card,
-                target_before: object,
-                target_after: event.after,
-                owner,
-                destination,
-            }));
         }
-        placed
+        placed.then_some(event)
     }
+
+    pub(super) fn put_source_on_library_bottom(&mut self, item: &SpellView) {
+        if let Some(source) = item.source
+            && self.on_battlefield(source.id)
+            && self.object_ref(source.id) == source.object
+        {
+            let _ = self.move_object_to_library_position(source.object, LibraryDestination::Bottom);
+        }
+    }
+
     pub(super) fn put_targets_nth_from_top(&mut self, item: &SpellView, n: u16) {
         assert!(n > 0, "library positions are one-based");
         let Some(source) = item.source else { return };

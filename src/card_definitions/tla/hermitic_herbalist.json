@@ -3,10 +3,41 @@
   "catalogue_id": 2012,
   "oracle_id": "9928773d-3f35-4b0e-965d-4233e04398fb",
   "facts_sha256": "baa3f3f4543f945491fdebbe0ae33e70272afae8d7aa621645cedab0fd980f8c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "106db368b68b97a9fa585c2715db81e9821569538a193ff905f909e9f1d6e7b3"
   },
-  "physical_metadata_sha256": "9ac5a7cab6f0623982da4aa437bdef6f802eaac8e74c024f87d881dbce39ba0a"
+  "physical_metadata_sha256": "9ac5a7cab6f0623982da4aa437bdef6f802eaac8e74c024f87d881dbce39ba0a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HermiticHerbalist.java",
+  "java_sha256": "088262ce197a846090980e291ab352a87b077cd05408be4bb4f443a30d08779a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ConditionalAnyColorManaAbility.java",
+      "sha256": "2042d72737462646216eea22a1ecdd05d338f1f2b3bfbb3c19fdb273f067c736"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/conditional/ConditionalSpellManaBuilder.java",
+      "sha256": "ce56830a429737325b5010a205e0d800b41ac7f2e4c59367598f4fa99e1d246e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterSpell.java",
+      "sha256": "50fd3169b7ed9ae7f81bce450a44155f4326c657186c1ba6713e2d0f8c3e3a6c"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_multicolor/utility.rs"
 }

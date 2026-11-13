@@ -163,7 +163,7 @@ impl Game {
         // complete simultaneous cost; these triggers wait until casting finishes.
         for id in ids {
             let source = self.object_view(id);
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 if matches!(
                     ability.condition.event(),
                     TriggerCondition::SelfPaysTeamwork

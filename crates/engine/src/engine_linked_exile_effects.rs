@@ -8,6 +8,7 @@ pub(super) enum LinkedExileMode {
     CopyMutant,
     CopyCreatureUntilEndOfTurn,
     CopyWhileAttached,
+    BorrowCreatureAbilities,
 }
 
 fn mutant_copy(card: Card) -> CopyRecipe {
@@ -223,7 +224,10 @@ impl Game {
                 })
                 .collect(),
             Some(LinkedExileMode::CopyMutant) => self.linked_exile_for_item(&resolution.item),
-            Some(LinkedExileMode::CopyCreatureUntilEndOfTurn) => {
+            Some(
+                LinkedExileMode::CopyCreatureUntilEndOfTurn
+                | LinkedExileMode::BorrowCreatureAbilities,
+            ) => {
                 if !self.on_battlefield(source.card) || self.object_ref(source.card) != source {
                     return Vec::new();
                 }
@@ -339,6 +343,10 @@ impl Game {
                     self.apply_temporary_copy(source, recipe, CopyDeadline::EndOfTurn);
                 }
             }
+            LinkedExileMode::BorrowCreatureAbilities => {
+                let item = resolution.item.clone();
+                self.select_linked_creature_abilities(&item, object);
+            }
             LinkedExileMode::CopyMutant => {
                 let recipe = mutant_copy(self.state.objects[object.card as usize].card);
                 self.stage_copy_creation(player, recipe, 1);
@@ -393,8 +401,12 @@ impl Game {
         }
     }
 
-    pub(super) fn start_linked_exile_cast(&mut self, item: &SpellView) -> bool {
-        let remaining = self.linked_exile_for_item(item);
+    pub(super) fn start_linked_exile_cast(&mut self, item: &SpellView, owned_paid: bool) -> bool {
+        let mut remaining = self.linked_exile_for_item(item);
+        if owned_paid {
+            remaining
+                .retain(|object| self.state.objects[object.card as usize].owner == item.controller);
+        }
         if remaining.is_empty() {
             return false;
         }
@@ -405,7 +417,12 @@ impl Game {
             uncast_to_hand: false,
             siege_transformed: false,
             spell_kinds: 0,
-            paid: None,
+            paid: owned_paid.then_some(cast_origins::ResolutionPaidCast {
+                kinds: u8::MAX,
+                exile_instants_sorceries: false,
+                bottom_on_graveyard: false,
+                spend_any_mana: false,
+            }),
             casts_remaining: Some(1),
             pending_cast: None,
             remaining_mana_value: None,

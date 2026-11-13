@@ -1008,10 +1008,9 @@ impl Game {
         let Some(a) = self.state.announcing.as_ref() else {
             return false;
         };
-        let Some(AdditionalCost {
-            kind: EffectChoiceKind::DiscardOrLife(amount),
-            ..
-        }) = a.additional_cost()
+        let Some(amount) = a
+            .additional_cost()
+            .and_then(|cost| cost.kind.additional_life_payment())
         else {
             return false;
         };
@@ -1380,7 +1379,7 @@ impl Game {
             a.additional_paid = true;
             return;
         }
-        if let EffectChoiceKind::DiscardOrLife(amount) = spec.kind.payment_kind()
+        if let Some(amount) = spec.kind.additional_life_payment()
             && a.additional_life
         {
             self.pay_life(a.item.controller, i128::from(amount));
@@ -1458,8 +1457,11 @@ impl Game {
             | EffectChoiceKind::KeepSharedCreatureTypes
             | EffectChoiceKind::DeployFromHandOrGraveyard { .. }
             | EffectChoiceKind::KeepCreaturesByPowerForEachPlayer(_)
+            | EffectChoiceKind::KeepCreaturesWithinTotalPower(_)
+            | EffectChoiceKind::ExileOpposingPermanentsByEachPlayer(_)
             | EffectChoiceKind::DestroyNonbasicLandsForEachPlayer
             | EffectChoiceKind::ColorCounter { .. }
+            | EffectChoiceKind::CounterDistribution { .. }
             | EffectChoiceKind::CountersOnTarget { .. }
             | EffectChoiceKind::RemoveLoreForSourceCounters(_)
             | EffectChoiceKind::EquipmentRecipient
@@ -1485,9 +1487,11 @@ impl Game {
             | EffectChoiceKind::BottomHand
             | EffectChoiceKind::ExileCardFromAnyGraveyard
             | EffectChoiceKind::ExileCardFromAnyGraveyardRemember
+            | EffectChoiceKind::ExileNoncreatureNonlandFromGraveyard { .. }
             | EffectChoiceKind::ExileCreatureAndGraveyard
             | EffectChoiceKind::ExileControlledForLinkedReturn
             | EffectChoiceKind::ExileControlledLinked
+            | EffectChoiceKind::ExileGraveyardLinked
             | EffectChoiceKind::ExileGrantingAttachment
             | EffectChoiceKind::ReturnRememberedCreature
             | EffectChoiceKind::ReturnCraftedCreatureAttacking
@@ -1556,6 +1560,7 @@ impl Game {
             | EffectChoiceKind::ExileCraftMaterials(_)
             | EffectChoiceKind::ExilePermanentsForTargetManaValue { .. }
             | EffectChoiceKind::DiscardOrLife(_)
+            | EffectChoiceKind::PayLife(_)
             | EffectChoiceKind::SacrificeAttachedEquipment
             | EffectChoiceKind::SacrificeAttachedPermanent
             | EffectChoiceKind::ReturnTappedCreature => unreachable!(),

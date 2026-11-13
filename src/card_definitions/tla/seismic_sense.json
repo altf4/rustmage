@@ -3,10 +3,36 @@
   "catalogue_id": 3773,
   "oracle_id": "9d586c74-b1dd-4fcb-a24a-c703d250fa63",
   "facts_sha256": "209f6d140486523872fc9858a0faa8402702dd3e6a6c20fe43dfb7217a02b3f7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1751294cfe715b0786e6a9bff524d4c2937e05c6ff4a9c48d6f15dfb7ee39bc2"
   },
-  "physical_metadata_sha256": "6cf7fb5b026cda18b7ba58f83cd346d6d3b3ba1a76d7401931b63ad8142d1ae9"
+  "physical_metadata_sha256": "6cf7fb5b026cda18b7ba58f83cd346d6d3b3ba1a76d7401931b63ad8142d1ae9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SeismicSense.java",
+  "java_sha256": "a5b952b959ae4cb6fa081d6ba5363a20da12057ba715763a8e8bb04d83339143",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/LandsYouControlCount.java",
+      "sha256": "5d39300c382c862538f44ba6be1565cb60cfed952c2a95515f3d4b9daee3483e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/hint/common/LandsYouControlHint.java",
+      "sha256": "0d426836c0b651641885b7eda5ea89a55a831428ea003df44497a81ae2f608d0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_green/spells.rs"
 }

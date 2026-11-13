@@ -85,6 +85,7 @@ impl Game {
         caster: Player,
         card: Card,
         stack: Option<usize>,
+        spell_traits: programs::SpellCastTraits,
     ) {
         let Some(rows) = self.state.temporary_abilities.as_ref() else {
             return;
@@ -109,11 +110,6 @@ impl Game {
         let owner = event
             .as_ref()
             .map(|e| self.state.objects[e.object.card as usize].owner);
-        let spell_subtypes = stack
-            .and_then(|i| self.state.stack[i].source)
-            .map_or_else(GrantedSubtypes::default, |source| {
-                self.granted_subtypes(source.id)
-            });
         let origin = stack
             .and_then(|index| self.state.stack[index].cast)
             .map(|cast| (cast.origin, owner == Some(caster)));
@@ -160,7 +156,7 @@ impl Game {
                     caster,
                     &source,
                     stack.map_or(&[][..], |i| self.state.stack[i].targets.as_slice()),
-                    spell_subtypes,
+                    spell_traits,
                 )
             {
                 continue;
@@ -186,7 +182,7 @@ impl Game {
                         caster,
                         &source,
                         &self.state.stack[i].targets,
-                        spell_subtypes,
+                        spell_traits,
                     )
                 });
                 let item = self.state.pending_triggers.last_mut().unwrap();

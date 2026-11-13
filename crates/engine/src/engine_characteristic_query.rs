@@ -380,6 +380,29 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                                 .capacity("scaled group toughness exhausted"),
                         };
                     }
+                    if let StaticAbilityFragment::ControlledCreatureBonusPerSubtype {
+                        exclude,
+                        maximum,
+                    } = *fragment
+                        && object.controller == self.object(id).controller
+                        && self.continuous_fragment_available(source, |candidate| {
+                            std::ptr::eq(candidate, fragment)
+                        })
+                    {
+                        let subtypes = self.subtypes(id);
+                        let card = self.definition(id);
+                        if !subtypes.has(card, exclude) {
+                            let amount = subtypes
+                                .creature_type_set(card)
+                                .count()
+                                .min(u32::from(maximum));
+                            let amount = i128::from(amount);
+                            stats += Stats {
+                                power: amount,
+                                toughness: amount,
+                            };
+                        }
+                    }
                     if let StaticAbilityFragment::ControlledLegendaryCreatureBonus(bonus) =
                         *fragment
                         && object.controller == self.object(id).controller
@@ -670,6 +693,14 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         Keywords::SPLIT_SECOND
                     }
                     StaticAbilityFragment::ControlledInstantSorceryKeywords(grant) => grant,
+                    StaticAbilityFragment::ControlledInstantSorcerySubtypeKeywords {
+                        subtype,
+                        keywords: grant,
+                    } if CharacteristicWorld::subtypes(self, id)
+                        .has(self.effective_spell_card(id), subtype) =>
+                    {
+                        grant
+                    }
                     _ => continue,
                 };
                 if !keywords.contains(grant)
@@ -756,14 +787,24 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         {
                             keywords = keywords.union(grant)
                         }
-                        StaticAbilityFragment::ControlledSubtypeKeywords {
-                            subtype,
+                        StaticAbilityFragment::ControlledPermanentAllKindsKeywords {
+                            kinds,
                             keywords: grant,
                         } if target.controller == object.controller
-                            && CharacteristicWorld::subtypes(self, id)
-                                .has(CharacteristicWorld::definition(self, id), subtype) =>
+                            && CharacteristicWorld::kinds(self, id) & kinds == kinds =>
                         {
                             keywords = keywords.union(grant)
+                        }
+                        StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                        | StaticAbilityFragment::ControlledKindAndSubtypeKeywords { .. } => {
+                            if let Some(grant) = ability_evaluation::controlled_subtype_keywords(
+                                self,
+                                *fragment,
+                                self.object_ref(source),
+                                id,
+                            ) {
+                                keywords = keywords.union(grant);
+                            }
                         }
                         StaticAbilityFragment::GrantRiotToOtherControlledSubtype(subtype)
                             if target.controller == object.controller
@@ -1352,6 +1393,9 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             prepared: self.is_prepared(self.object_ref(id)),
             harnessed: CharacteristicWorld::harnessed(self, id).then_some(true),
             abilities: self.ability_availability(id),
+            acquired_triggers: borrowed_activations::chosen_trigger_donor(self, id)
+                .filter(|_| self.printed_abilities_available(id))
+                .map(Box::new),
             kinds,
             colors: CharacteristicWorld::colors(self, id),
             effective_legendary: {
@@ -1532,6 +1576,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     }
     fn life(&self, player: Player) -> i128 {
         self.world.life(player)
+    }
+    fn unspent_mana(&self, player: Player) -> u128 {
+        self.world.unspent_mana(player)
     }
     fn gained_life(&self, player: Player) -> bool {
         self.world.gained_life(player)

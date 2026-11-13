@@ -21,6 +21,8 @@ pub struct LinkedFreeCastApprovalView {
 pub(super) struct LinkedExilePaidCast {
     pub source: ObjectRef,
     pub entry_counter: Option<CounterKind>,
+    pub grants_flash: bool,
+    pub spend_any_mana: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
@@ -52,6 +54,7 @@ impl Game {
             .any(|link| {
                 link.source == source
                     && link.ability_origin == origin
+                    && link.acquired_link_cohort.is_none()
                     && link.exiled == self.object_ref(card)
                     && (!this_turn || link.exiled_turn == self.state.turn)
             })
@@ -71,6 +74,7 @@ impl Game {
         self.state.linked_choices.as_ref().is_some_and(|state| {
             state.links.iter().any(|link| {
                 link.exiled == exact
+                    && link.acquired_link_cohort.is_none()
                     && self
                         .live_linked_source(player, link.source)
                         .is_some_and(|(_, origin)| origin == link.ability_origin)
@@ -167,35 +171,56 @@ impl Game {
         object: ObjectRef,
         face: CastFace,
     ) -> Option<LinkedExilePaidCast> {
+        let physical = self.state.objects.get(object.card as usize)?.card;
+        self.linked_paid_spell_permission(player, source, object, face.definition(physical)?)
+    }
+
+    fn linked_paid_spell_permission(
+        &self,
+        player: Player,
+        source: ObjectRef,
+        object: ObjectRef,
+        spell: Card,
+    ) -> Option<LinkedExilePaidCast> {
+        if self.object_ref(object.card) != object
+            || spell.is_land()
+            || matches!(spell.effect(), Effect::Unsupported)
+        {
+            return None;
+        }
         let provider = self.linked_source_definition(player, source, object.card, false)?;
         let exiled = &self.state.objects[object.card as usize];
-        if self.object_ref(object.card) != object || exiled.owner != player {
-            return None;
-        }
-        let spell = face.definition(exiled.card)?;
-        if spell.is_land() || matches!(spell.effect(), Effect::Unsupported) {
-            return None;
-        }
         provider
             .static_ability_groups()
             .iter()
             .flat_map(|group| group.fragments)
             .find_map(|fragment| {
-                let StaticAbilityFragment::LinkedExilePaidCast {
-                    filter,
-                    entry_counter,
-                } = *fragment
-                else {
-                    return None;
+                let permission = match *fragment {
+                    StaticAbilityFragment::LinkedExilePaidCast {
+                        filter,
+                        entry_counter,
+                    } if exiled.owner == player && filter.matches(spell) => LinkedExilePaidCast {
+                        source,
+                        entry_counter,
+                        grants_flash: false,
+                        spend_any_mana: false,
+                    },
+                    StaticAbilityFragment::LinkedExilePaidCastOnOwnTurnWithFlash
+                        if self.state.active == player =>
+                    {
+                        LinkedExilePaidCast {
+                            source,
+                            entry_counter: None,
+                            grants_flash: true,
+                            spend_any_mana: true,
+                        }
+                    }
+                    _ => return None,
                 };
-                (filter.matches(spell)
-                    && self.continuous_fragment_available(source.card, |found| {
-                        std::ptr::eq(found, fragment)
-                    }))
-                .then_some(LinkedExilePaidCast {
-                    source,
-                    entry_counter,
+                self.continuous_fragment_available(source.card, |found| {
+                    std::ptr::eq(found, fragment)
                 })
+                .then_some(permission)
             })
     }
     pub(super) fn visit_linked_source_casts(
@@ -236,8 +261,13 @@ impl Game {
                     }
                 }
             }
+            let object = self.object_ref(card);
+            if self.state.active == player
+                && self.visit_linked_alternatives(player, object, source, emit)
+            {
+                return true;
+            }
             for face in CastFace::choices(self.state.objects[card as usize].card) {
-                let object = self.object_ref(card);
                 if let Some(permission) = self.linked_paid_permission(player, source, object, face)
                 {
                     if self.visit_exile_zero_face(
@@ -330,15 +360,116 @@ impl Game {
         }
         false
     }
-    pub(super) fn configure_linked_paid_cast(item: &mut SpellView) {
+    fn linked_alternative_permission(
+        &self,
+        player: Player,
+        object: ObjectRef,
+        source: ObjectRef,
+        method: CastMethod,
+    ) -> Option<LinkedExilePaidCast> {
+        match method {
+            CastMethod::Disguise => self.linked_paid_spell_permission(
+                player,
+                source,
+                object,
+                self.disguise_cast_definition(object.card)?,
+            ),
+            CastMethod::Sneak => {
+                self.linked_paid_permission(player, source, object, CastFace::Normal)
+            }
+            _ => None,
+        }
+        .filter(|grant| grant.grants_flash)
+    }
+
+    fn visit_linked_alternatives(
+        &self,
+        player: Player,
+        object: ObjectRef,
+        source: ObjectRef,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let card = object.card;
+        let sneak = (self.state.step == Step::Blockers && self.has_sneak_cost(player, card))
+            .then_some(CastMethod::Sneak);
+        for method in std::iter::once(CastMethod::Disguise).chain(sneak) {
+            let Some(permission) =
+                self.linked_alternative_permission(player, object, source, method)
+            else {
+                continue;
+            };
+            if self.permitted_cast_with_alternative(
+                player,
+                card,
+                method,
+                CastFace::Normal,
+                false,
+                false,
+                None,
+                None,
+                None,
+                false,
+                cast_permissions::OriginAlternative {
+                    linked_exile_paid: Some(permission),
+                    ..Default::default()
+                },
+            ) && emit(Action::AnnounceLinkedAlternative {
+                object,
+                source,
+                method,
+            }) {
+                return true;
+            }
+        }
+        false
+    }
+
+    pub(super) fn start_linked_alternative(
+        &mut self,
+        player: Player,
+        object: ObjectRef,
+        source: ObjectRef,
+        method: CastMethod,
+    ) {
+        let permission = self
+            .linked_alternative_permission(player, object, source, method)
+            .expect("approved linked casting permission");
+        let mut item = match method {
+            CastMethod::Disguise => {
+                let mut item = self.cast_disguised_item(player, object.card);
+                item.cast.as_mut().unwrap().method = CastMethod::Disguise;
+                item
+            }
+            CastMethod::Sneak => {
+                let mut item = self.cast_item(player, object.card, [0; 6]);
+                Self::configure_sneak(&mut item);
+                item
+            }
+            _ => unreachable!("approved linked alternative"),
+        };
+        self.select_linked_paid_cast(&mut item, Some(permission));
+        self.open_payment_announcement_configured(item, Counters::default(), None, None, |a| {
+            a.limited_cast_permission =
+                Some(Box::new(LimitedCastPermission::LinkedExilePaid(permission)));
+        });
+    }
+
+    pub(super) fn configure_linked_paid_cast(
+        item: &mut SpellView,
+        permission: Option<LinkedExilePaidCast>,
+    ) {
         let cast = item.cast.as_mut().expect("paid spell");
-        cast.spend_any_mana = false;
+        cast.spend_any_mana = permission.is_some_and(|grant| grant.spend_any_mana);
         cast.exile_on_graveyard = false;
         cast.stash_origin = false;
     }
 
-    pub(super) fn select_linked_paid_cast(&mut self, item: &mut SpellView) {
-        Self::configure_linked_paid_cast(item);
+    pub(super) fn select_linked_paid_cast(
+        &mut self,
+        item: &mut SpellView,
+        permission: Option<LinkedExilePaidCast>,
+    ) {
+        Self::configure_linked_paid_cast(item, permission);
         if let Some(data) = &mut self.state.linked_choices {
             data.play_approvals.retain(|row| row.0 != item.id);
         }
@@ -357,7 +488,7 @@ impl Game {
             .expect("approved exact linked permission");
         let mut item = self.cast_item(player, object.card, [0; 6]);
         self.set_cast_face(&mut item, face);
-        self.select_linked_paid_cast(&mut item);
+        self.select_linked_paid_cast(&mut item, Some(permission));
         item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
         self.open_payment_announcement_configured(item, Counters::default(), None, None, |a| {
             a.limited_cast_permission =

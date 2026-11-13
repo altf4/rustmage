@@ -3,10 +3,61 @@
   "catalogue_id": 2679,
   "oracle_id": "b1727c07-c829-4d64-a1c5-8b53c743888a",
   "facts_sha256": "a4b8058feb410f2d309821d962f45a1a6525d10c18e42c95cf666cc63d429fc1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "59fb6e47bfb2f477d3121b6df23ed848a942492cbcb963a3f611574061a882e6"
   },
-  "physical_metadata_sha256": "57b7f7c2d16be8d50e135c3cd46f8f59d6e926685cd6bcc2347fd2b83df9c476"
+  "physical_metadata_sha256": "57b7f7c2d16be8d50e135c3cd46f8f59d6e926685cd6bcc2347fd2b83df9c476",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MasterPakku.java",
+  "java_sha256": "bd2de4094d42bdb4a55d75065e8381c49b631dbe0ebb267bc640b0e1a1bf1915",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+      "sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/LessonsInGraveCondition.java",
+      "sha256": "919914e0997c75d2cd2113b586c13bc87ea70f949f1e2788aea4ecb74174c0e2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+      "sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardsInControllerGraveyardCount.java",
+      "sha256": "1681b71d7aeed7c96c0e4b1963a4ebec63874299ad681fd1bf7b9f1b539ba297"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsTargetEffect.java",
+      "sha256": "5a01d741ed0a7d1449d5d4591025205bc130e7e5eb5f861d2761b1fd64557365"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
+      "sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterCard.java",
+      "sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPlayer.java",
+      "sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_blue.rs"
 }

@@ -3,10 +3,31 @@
   "catalogue_id": 502,
   "oracle_id": "acd881eb-f3b4-4174-9fc2-e3c7c213886b",
   "facts_sha256": "738bf25467f5efdbeb6c91df5a9b248110007b89f12950623d6530fb6aafbe30",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e8615393ea32483176356685aa3218b44c0c2222333f22a11fcaf128ac665520"
   },
-  "physical_metadata_sha256": "3b95b78a671807dd23c5b24be36c39aa4877883f07f9bf9dd861286421d9b1ea"
+  "physical_metadata_sha256": "3b95b78a671807dd23c5b24be36c39aa4877883f07f9bf9dd861286421d9b1ea",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BoomerangBasics.java",
+  "java_sha256": "41f08922e0690da4aa3712c34039061bc83adbd7b37bfb0837add0b0c224c2b9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetNonlandPermanent.java",
+      "sha256": "6e4720e1386bdaa8f84eaf97cc8d6646845307f0be8697190c25cd1285ba598a"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_blue.rs"
 }

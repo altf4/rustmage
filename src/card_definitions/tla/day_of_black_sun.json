@@ -15,13 +15,39 @@
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesAllEffect.java",
-      "sha256": "d27e324d8451b20f1e33cd26b0df6c5f50ef6d5491a6fbab576a2553aeb3de8f"
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+      "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
     },
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyAllEffect.java",
       "sha256": "ff52578966339bd976dc24cb1505f5862e3ee9b7b1abf41d2d8fac78cb43b48d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesAllEffect.java",
+      "sha256": "d27e324d8451b20f1e33cd26b0df6c5f50ef6d5491a6fbab576a2553aeb3de8f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+      "sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+      "sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/ObjectSourcePlayer.java",
+      "sha256": "0caa8e0aa45f57ac07bec12591861979c9ee35f9f76b57b30ec11234f2f2c794"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/ObjectSourcePlayerPredicate.java",
+      "sha256": "b0592932e613775e26f24f44f1faa95dcc20df826c86d4b592ff1479a1264973"
     }
-  ]
+  ],
+  "rules_tests": "tests/tla_cards_black.rs"
 }

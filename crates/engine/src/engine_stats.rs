@@ -37,6 +37,15 @@ impl Game {
         }) {
             self.state.step_sources.push(id);
         }
+        if triggers.iter().any(|ability| {
+            ability.condition.origin() == Some(TargetZone::Graveyard)
+                && matches!(
+                    ability.condition.event(),
+                    TriggerCondition::CardDrawn { .. }
+                )
+        }) {
+            self.state.draw_sources.push(id);
+        }
         if triggers.iter().any(|a| {
             a.condition.origin() == Some(TargetZone::Graveyard)
                 && matches!(
@@ -85,6 +94,9 @@ impl Game {
         if self.state.step_sources.contains(&id) {
             self.state.step_sources.retain(|&source| source != id);
         }
+        if self.state.draw_sources.contains(&id) {
+            self.state.draw_sources.retain(|&source| source != id);
+        }
         if self.state.damage_sources.contains(&id) {
             self.state.damage_sources.retain(|&source| source != id);
         }
@@ -106,6 +118,7 @@ impl Game {
     }
     pub(super) fn register_battlefield_providers(&mut self, id: CardId) {
         self.register_expend_source(id);
+        self.register_bend_source(id);
         self.register_trigger_multiplier_source(id);
         self.register_activation_observer(id);
         self.register_zone_rule_card(self.state.objects[id as usize].card);
@@ -119,8 +132,35 @@ impl Game {
             self.state.attachment_sources.push(id);
         }
         self.register_ability_target_source(id);
-        let triggers = self.state.objects[id as usize].card.triggers();
-        if triggers.iter().any(|a| {
+        self.register_battlefield_observer_indexes(id, false);
+        self.register_remaining_static_sources(id);
+    }
+
+    pub(super) fn register_chosen_link_triggers(&mut self, id: CardId) {
+        self.register_expend_source(id);
+        self.register_bend_source(id);
+        self.register_activation_observer(id);
+        self.register_ability_target_source(id);
+        self.register_battlefield_observer_indexes(id, true);
+    }
+
+    fn register_battlefield_observer_indexes(&mut self, id: CardId, already_registered: bool) {
+        let card = self.state.objects[id as usize].card;
+        let acquired = borrowed_activations::chosen_trigger_donor(self, id);
+        let triggers = || {
+            card.triggers().iter().chain(
+                acquired
+                    .into_iter()
+                    .flat_map(|grant| grant.definition.triggers())
+                    .filter(|a| !a.condition.is_granted()),
+            )
+        };
+        let register = |sources: &mut Vec<CardId>| {
+            if !already_registered || !sources.contains(&id) {
+                sources.push(id);
+            }
+        };
+        if triggers().any(|a| {
             matches!(
                 a.condition.event(),
                 TriggerCondition::OtherCreatureCountersAdded { .. }
@@ -133,9 +173,9 @@ impl Game {
                     | TriggerCondition::StateCounterAtLeast { .. }
             )
         }) {
-            self.state.counter_sources.push(id);
+            register(&mut self.state.counter_sources);
         }
-        if triggers.iter().any(|a| {
+        if triggers().any(|a| {
             matches!(
                 a.condition.event(),
                 TriggerCondition::AttachedCreatureBecomesTapped
@@ -145,15 +185,12 @@ impl Game {
                     | TriggerCondition::OpponentCreatureTappedByYou { .. }
             )
         }) {
-            self.state.tap_sources.push(id);
+            register(&mut self.state.tap_sources);
         }
-        if triggers
-            .iter()
-            .any(|a| a.condition.event() == TriggerCondition::EvidenceCollected)
-        {
+        if triggers().any(|a| a.condition.event() == TriggerCondition::EvidenceCollected) {
             self.register_evidence_source(id);
         }
-        if triggers.iter().any(|a| {
+        if triggers().any(|a| {
             matches!(
                 a.condition.event(),
                 TriggerCondition::CreatureExploresYou
@@ -162,7 +199,7 @@ impl Game {
         }) {
             self.register_explore_source(id);
         }
-        if triggers.iter().any(|ability| {
+        if triggers().any(|ability| {
             matches!(
                 ability.condition.event(),
                 TriggerCondition::CreatureAttacksYou { .. }
@@ -175,6 +212,7 @@ impl Game {
                     | TriggerCondition::FirstAttackWithTotalPowerAtLeast(_)
                     | TriggerCondition::AttackPlayer(_)
                     | TriggerCondition::AttackPlayerExcludingSubtype(_)
+                    | TriggerCondition::AttackPlayerWithPowerAtLeast(_)
                     | TriggerCondition::ControlledCreatureAttacksAlone
                     | TriggerCondition::ControlledCreatureAttacksOrBlocks
                     | TriggerCondition::ControlledCreatureAttacks
@@ -184,6 +222,7 @@ impl Game {
                     | TriggerCondition::ControlledSubtypeAttacksAny(_)
                     | TriggerCondition::ControlledSubtypeAttackAtLeast { .. }
                     | TriggerCondition::ControlledCreatureAttacksWithKeyword(_)
+                    | TriggerCondition::ControlledCreatureWithKeywordAttackDeclaration(_)
                     | TriggerCondition::ControlledCreatureAttacksWithCounter(_)
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
                     | TriggerCondition::OpponentCreatureBlocksSmall
@@ -192,44 +231,42 @@ impl Game {
                     | TriggerCondition::ControlledEquippedCreatureAttacks
             )
         }) {
-            self.state.attack_sources.push(id);
+            register(&mut self.state.attack_sources);
         }
-        if triggers
-            .iter()
+        if triggers()
             .any(|ability| ability.condition.event() == TriggerCondition::OpponentTakesPermanent)
         {
-            self.state
-                .roles
-                .get_or_insert_default()
-                .control_change_sources
-                .get_or_insert_default()
-                .push(id);
+            register(
+                self.state
+                    .roles
+                    .get_or_insert_default()
+                    .control_change_sources
+                    .get_or_insert_default(),
+            );
         }
-        if triggers
-            .iter()
-            .any(|ability| ability.condition.event() == TriggerCondition::ScryOrSurveil)
-        {
-            self.state.scry_sources.push(id);
+        if triggers().any(|ability| ability.condition.event() == TriggerCondition::ScryOrSurveil) {
+            register(&mut self.state.scry_sources);
         }
-        if triggers.iter().any(|ability| {
-            matches!(
-                ability.condition.event(),
-                TriggerCondition::CardDrawn { .. }
-                    | TriggerCondition::LibrarySearched { .. }
-                    | TriggerCondition::DiscoveredYou
-            )
+        if triggers().any(|ability| {
+            ability.condition.origin() != Some(TargetZone::Graveyard)
+                && matches!(
+                    ability.condition.event(),
+                    TriggerCondition::CardDrawn { .. }
+                        | TriggerCondition::LibrarySearched { .. }
+                        | TriggerCondition::DiscoveredYou
+                )
         }) {
-            self.state.draw_sources.push(id);
+            register(&mut self.state.draw_sources);
         }
-        if triggers.iter().any(|ability| {
+        if triggers().any(|ability| {
             matches!(
                 ability.condition.event(),
                 TriggerCondition::Discarded { .. } | TriggerCondition::DiscardedKinds { .. }
             )
         }) {
-            self.state.discard_sources.push(id);
+            register(&mut self.state.discard_sources);
         }
-        if triggers.iter().any(|ability| {
+        if triggers().any(|ability| {
             matches!(
                 ability.condition.event(),
                 TriggerCondition::PlayerDamaged { .. }
@@ -251,9 +288,9 @@ impl Game {
                     | TriggerCondition::ControlledCreatureCombatDamageOwnTurn
             )
         }) {
-            self.state.damage_sources.push(id);
+            register(&mut self.state.damage_sources);
         }
-        if triggers.iter().any(|ability| {
+        if triggers().any(|ability| {
             matches!(
                 ability.condition.event(),
                 TriggerCondition::LifeGained { .. }
@@ -261,9 +298,9 @@ impl Game {
                     | TriggerCondition::LifeGainedOrLostOwnTurn
             )
         }) {
-            self.state.life_sources.push(id);
+            register(&mut self.state.life_sources);
         }
-        if triggers.iter().any(|ability| {
+        if triggers().any(|ability| {
             matches!(
                 ability.condition.event(),
                 TriggerCondition::PermanentCardsEnterYourGraveyard
@@ -306,42 +343,35 @@ impl Game {
                     | TriggerCondition::SacrificedByAny { .. }
             )
         }) {
-            self.state.death_sources.push(id);
+            register(&mut self.state.death_sources);
         }
-        if self.state.objects[id as usize]
-            .card
-            .triggers()
-            .iter()
-            .any(|ability| {
-                ability.condition.origin() != Some(TargetZone::Graveyard)
-                    && matches!(
-                        ability.condition.event(),
-                        TriggerCondition::AtStep { .. }
-                            | TriggerCondition::Chapter { .. }
-                            | TriggerCondition::OwnUntapStepUntaps
-                    )
-            })
-        {
-            self.state.step_sources.push(id);
+        if triggers().any(|ability| {
+            ability.condition.origin() != Some(TargetZone::Graveyard)
+                && matches!(
+                    ability.condition.event(),
+                    TriggerCondition::AtStep { .. }
+                        | TriggerCondition::Chapter { .. }
+                        | TriggerCondition::OwnUntapStepUntaps
+                )
+        }) {
+            register(&mut self.state.step_sources);
         }
-        if self.state.objects[id as usize]
-            .card
-            .triggers()
-            .iter()
-            .any(|ability| {
-                ability.condition.origin() != Some(TargetZone::Graveyard)
-                    && matches!(
-                        ability.condition.event(),
-                        TriggerCondition::SpellCast { .. }
-                            | TriggerCondition::SpellCastUsingSourceMana(_)
-                            | TriggerCondition::SpellCastOrLandPlayed
-                            | TriggerCondition::ModalSpellCastByYou
-                            | TriggerCondition::FirstSpellKindOrOtherCreatureType { .. }
-                    )
-            })
-        {
-            self.state.cast_sources.push(id);
+        if triggers().any(|ability| {
+            ability.condition.origin() != Some(TargetZone::Graveyard)
+                && matches!(
+                    ability.condition.event(),
+                    TriggerCondition::SpellCast { .. }
+                        | TriggerCondition::SpellCastUsingSourceMana(_)
+                        | TriggerCondition::SpellCastOrLandPlayed
+                        | TriggerCondition::ModalSpellCastByYou
+                        | TriggerCondition::FirstSpellKindOrOtherCreatureType { .. }
+                )
+        }) {
+            register(&mut self.state.cast_sources);
         }
+    }
+
+    fn register_remaining_static_sources(&mut self, id: CardId) {
         if self.state.objects[id as usize]
             .card
             .static_ability_groups()
@@ -352,6 +382,7 @@ impl Game {
                         fragment,
                         crate::cards::StaticAbilityFragment::ControlledInstantSorcerySplitSecond
                             | crate::cards::StaticAbilityFragment::ControlledInstantSorceryKeywords(_)
+                            | crate::cards::StaticAbilityFragment::ControlledInstantSorcerySubtypeKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ReplaceLifePaymentWithLibraryExile
                             | crate::cards::StaticAbilityFragment::NoSpellsOrNonmanaDuringCombat
                             | crate::cards::StaticAbilityFragment::OpponentsWhoAttackedControllerOrPlaneswalkerCannotCast
@@ -362,6 +393,8 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_)
                             | crate::cards::StaticAbilityFragment::ControlledActivationReduction { .. }
                             | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_)
+                            | crate::cards::StaticAbilityFragment::ControlledCreatureTapManaBonus(_)
+                            | crate::cards::StaticAbilityFragment::GrantChosenLinkedCreatureAbilities
                             | crate::cards::StaticAbilityFragment::ControlledLandColorlessTapManaBonus
                             | crate::cards::StaticAbilityFragment::ControlledArtifactTokenTapManaBonus
                             | crate::cards::StaticAbilityFragment::AttachmentManaBonus(_)
@@ -390,11 +423,13 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::AttachedActivationsProhibited
                             | crate::cards::StaticAbilityFragment::PlotCostReduction(_)
                             | crate::cards::StaticAbilityFragment::RoomUnlockReduction(_)
+                            | crate::cards::StaticAbilityFragment::ExpiringManaBecomesRed
                             | crate::cards::StaticAbilityFragment::PlotFromLibraryTop
                             | crate::cards::StaticAbilityFragment::LandMana { .. }
                             | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. }
                             | crate::cards::StaticAbilityFragment::ControlledTokenTapMana { .. }
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeTapMana { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledKindOrSubtypeTapMana { .. }
                             | crate::cards::StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                             | crate::cards::StaticAbilityFragment::ControlledArtifactFood(_)
                             | crate::cards::StaticAbilityFragment::OtherCreaturesFood(_)
@@ -404,6 +439,9 @@ impl Game {
                         | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                             | crate::cards::StaticAbilityFragment::ChosenBasicLandType
                             | crate::cards::StaticAbilityFragment::ControlledLandsAllBasicTypes
+                            | crate::cards::StaticAbilityFragment::ControlledNontokenArtifactsAreLands
+                            | crate::cards::StaticAbilityFragment::NonbasicLandTypeWhileCounter { .. }
+                            | crate::cards::StaticAbilityFragment::NonbasicLandsEnterTapped
                             | crate::cards::StaticAbilityFragment::ControlledNonlandAllColors
                             | crate::cards::StaticAbilityFragment::SpellImprovise(_)
                             | crate::cards::StaticAbilityFragment::EntryMode(_)
@@ -426,12 +464,15 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedByCreaturesWithLessPower
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedByCreaturesWithPowerAtLeast(_)
                             | crate::cards::StaticAbilityFragment::ControlledCreaturesCannotBeBlockedIfPowerOrToughnessAtMost(_)
+                            | crate::cards::StaticAbilityFragment::ControlledCreaturesWithPowerAtLeastMaxOneBlocker(_)
                             | crate::cards::StaticAbilityFragment::ControlledCreaturesCannotBeBlockedByPower { .. }
                             | crate::cards::StaticAbilityFragment::ConditionalWard { .. }
                             | crate::cards::StaticAbilityFragment::CounterBearingPermanentWard { .. }
                             | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                             | crate::cards::StaticAbilityFragment::ControlledCreatureTrigger { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledSubtypeCastTrigger { .. }
                             | crate::cards::StaticAbilityFragment::HarnessedTrigger(..)
+                            | crate::cards::StaticAbilityFragment::SourceConditionalAttackTrigger { .. }
                             | crate::cards::StaticAbilityFragment::PlayerHexproofIfSourceCounter { .. }
                             | crate::cards::StaticAbilityFragment::PlayerHexproof
                             | crate::cards::StaticAbilityFragment::PlayerProtectionFromOpponents
@@ -479,6 +520,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. }
                             | crate::cards::StaticAbilityFragment::ControlledCreatureKindBonus { .. }
                             | crate::cards::StaticAbilityFragment::CreatureGroupScaling { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledCreatureBonusPerSubtype { .. }
                             | crate::cards::StaticAbilityFragment::ControlledLegendaryCreatureBonus(_)
                             | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. }
                             | crate::cards::StaticAbilityFragment::ChosenCreatureSubtypeAcrossZones
@@ -486,12 +528,14 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::SourceOffTurnCreature
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
                             | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledPermanentAllKindsKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
                             | crate::cards::StaticAbilityFragment::ConditionalEquippedCreatureKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ControlledOtherTappedLegendaryCreatureKeywords { .. }
                             | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledKindAndSubtypeKeywords { .. }
                             | crate::cards::StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
                             | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }
                             | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. }

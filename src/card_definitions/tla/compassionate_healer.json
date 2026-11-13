@@ -3,10 +3,31 @@
   "catalogue_id": 819,
   "oracle_id": "6ef464bd-2ed0-4f99-af4a-ebf276f55384",
   "facts_sha256": "077e0d6818c6c710889c14412f496da61d4d1d362c17eb735552b8936c406600",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "37beb0ba187810b6f62a2e8643fa52901051cde9f340465ff701ad92e1c08b16"
   },
-  "physical_metadata_sha256": "2f99971beb7cbb6a7dd238c110225282933cae6d2af9d34d7bd9f254b83e6d8c"
+  "physical_metadata_sha256": "2f99971beb7cbb6a7dd238c110225282933cae6d2af9d34d7bd9f254b83e6d8c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CompassionateHealer.java",
+  "java_sha256": "683c199a1bdecc728f6927ca626ddc0b8cb92862d497054c75a176b23a6ae7be",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+      "sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+      "sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_white_colorless/permanents.rs"
 }

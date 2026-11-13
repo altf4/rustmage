@@ -95,6 +95,7 @@ impl ManaOutput {
             | ManaProduction::AnyColorChangingSource(_)
             | ManaProduction::ChoiceStat { .. }
             | ManaProduction::TapSourcePowerChoice { .. }
+            | ManaProduction::TapGreatestControlledCreaturePower { .. }
             | ManaProduction::DistinctCreaturePowers
             | ManaProduction::LinkedExileCardColor => {
                 let mut colors = selected.iter().enumerate().filter(|(_, n)| **n != 0);
@@ -120,7 +121,15 @@ impl ManaOutput {
             instance,
             controller,
             quality,
-            source_power: world.power(instance.source.card),
+            // Only recipes that can fall back to departed-source power need
+            // its announcement-time value. Fixed outputs and other dynamic
+            // recipes never read this field.
+            source_power: match recipe {
+                ManaProduction::SourcePower { .. }
+                | ManaProduction::TapSourcePowerChoice { .. }
+                | ManaProduction::SourcePowerSplit { .. } => world.power(instance.source.card),
+                _ => 0,
+            },
             deferred_cost: None,
             resume: None,
         }
@@ -240,6 +249,7 @@ impl ManaProduction {
                 | Self::SourcePowerSplit { .. }
                 | Self::Split(_)
                 | Self::TapSourcePowerChoice { .. }
+                | Self::TapGreatestControlledCreaturePower { .. }
                 | Self::DistinctCreaturePowers
                 | Self::LinkedExileCardColor
         )
@@ -266,6 +276,7 @@ impl ManaProduction {
         let late_dynamic = matches!(
             self.base(),
             Self::TapSourcePowerChoice { .. }
+                | Self::TapGreatestControlledCreaturePower { .. }
                 | Self::DistinctCreaturePowers
                 | Self::ChoiceStat { .. }
         );

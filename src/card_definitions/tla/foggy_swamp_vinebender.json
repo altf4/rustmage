@@ -3,10 +3,46 @@
   "catalogue_id": 1578,
   "oracle_id": "82fefb82-a436-488d-8ecd-594686117e34",
   "facts_sha256": "c22e43d267f7c44782db85e5050dfcc944db87a3105cbbcecf290d78d8fe3aa2",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d75418248c0b903104ff604ee480435b003abcd3b410c8f1539d4119a21ed10f"
   },
-  "physical_metadata_sha256": "5345ab8b46a4702630b8c3dd7238651f9d84af7aff738fa45412c9b3786a59bb"
+  "physical_metadata_sha256": "5345ab8b46a4702630b8c3dd7238651f9d84af7aff738fa45412c9b3786a59bb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FoggySwampVinebender.java",
+  "java_sha256": "7627ae9431f78ce671348f7fbcc64763ea18a6d3a9a46992fbc3cfa8ea7f9bc7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateIfConditionActivatedAbility.java",
+      "sha256": "9f9d45f4e624eaa78c99f720c00a3302f6936e7b5246bf76ae15f9e75ba327b0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/MyTurnCondition.java",
+      "sha256": "a6c7cf96d2fdec34c9c999ad4b486627d257eeac9b7e7de139f104ac1ef45d90"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/WaterbendCost.java",
+      "sha256": "216fa6e097077e73b5fcc3a1e71fe59ef6d16d27dd33681202db95643b7c451b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DauntAbility.java",
+      "sha256": "c993aad0af01a2479b23a8752136b1fda361fc28da3e1b921be9d6d945906a02"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_green/creatures.rs"
 }

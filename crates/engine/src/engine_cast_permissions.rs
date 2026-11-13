@@ -311,16 +311,68 @@ impl Game {
         if face != CastFace::Normal && face.split_half().is_none() {
             return false;
         }
-        for (kind, method) in [
-            (GraveyardCastKind::Flashback, CastMethod::GrantedFlashback),
-            (
-                GraveyardCastKind::FlashbackZero,
-                CastMethod::GrantedZeroFlashback,
-            ),
-        ] {
-            if !self.has_graveyard_cast(player, card, kind) {
-                continue;
+        let object = &self.state.objects[card as usize];
+        let Some(definition) = face.definition(object.card) else {
+            return false;
+        };
+        if object.zone != Zone::Graveyard
+            || object.owner != player
+            || !object.is_card()
+            || definition.kind_mask() & (4 | 8) == 0
+        {
+            return false;
+        }
+        let mut printed = self.has_graveyard_cast(player, card, GraveyardCastKind::Flashback);
+        let zero = self.has_graveyard_cast(player, card, GraveyardCastKind::FlashbackZero);
+        let mut fixed = Vec::new();
+        if self.state.active == player {
+            let physical = object.card;
+            for &source in &self.state.static_sources {
+                let provider = &self.state.objects[source as usize];
+                if provider.zone != Zone::Battlefield || provider.controller != player {
+                    continue;
+                }
+                for fragment in provider
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .flat_map(|group| group.fragments)
+                {
+                    let available = || {
+                        self.continuous_fragment_available(source, |candidate| {
+                            std::ptr::eq(fragment, candidate)
+                        })
+                    };
+                    match *fragment {
+                        StaticAbilityFragment::OwnTurnGraveyardFlashbackExceptSubtype(subtype)
+                            if !printed
+                                && physical.kind_mask() & (4 | 8) != 0
+                                && !physical.has_subtype(subtype)
+                                && available() =>
+                        {
+                            printed = true;
+                        }
+                        StaticAbilityFragment::OwnTurnGraveyardSubtypeFlashback {
+                            subtype,
+                            cost,
+                        } if physical.has_subtype(subtype)
+                            && !fixed.contains(&cost)
+                            && !(zero && cost == ManaCost::ZERO)
+                            && available() =>
+                        {
+                            fixed.push(cost);
+                        }
+                        _ => {}
+                    }
+                }
             }
+        }
+        let methods = printed
+            .then_some(CastMethod::GrantedFlashback)
+            .into_iter()
+            .chain(zero.then_some(CastMethod::GrantedZeroFlashback))
+            .chain(fixed.into_iter().map(CastMethod::GrantedFixedFlashback));
+        for method in methods {
             for flash_surcharge in [false, true] {
                 if (allow_surcharge || !flash_surcharge)
                     && self.permitted_cast_available(
@@ -338,15 +390,25 @@ impl Game {
                             method,
                             flash_surcharge,
                         }
-                    } else if kind == GraveyardCastKind::FlashbackZero {
-                        Action::AnnounceGrantedZeroFlashback {
-                            card,
-                            flash_surcharge,
-                        }
                     } else {
-                        Action::AnnounceGrantedFlashback {
-                            card,
-                            flash_surcharge,
+                        match method {
+                            CastMethod::GrantedZeroFlashback => {
+                                Action::AnnounceGrantedZeroFlashback {
+                                    card,
+                                    flash_surcharge,
+                                }
+                            }
+                            CastMethod::GrantedFixedFlashback(cost) => {
+                                Action::AnnounceGrantedFixedFlashback {
+                                    card,
+                                    cost,
+                                    flash_surcharge,
+                                }
+                            }
+                            _ => Action::AnnounceGrantedFlashback {
+                                card,
+                                flash_surcharge,
+                            },
                         }
                     })
                 {
@@ -701,6 +763,11 @@ impl Game {
         if method == CastMethod::Plot && definition.is_land() {
             return false;
         }
+        if method == CastMethod::Foretell
+            && (definition.is_land() || definition.foretell_cost().is_none())
+        {
+            return false;
+        }
         if method.is_mayhem()
             && (definition.is_land()
                 || object.owner != actor
@@ -730,6 +797,7 @@ impl Game {
             return false;
         }
         let normal_timing = sorcery
+            || linked_exile_paid.is_some_and(|grant| grant.grants_flash)
             || definition.is_instant()
             || definition.info().keywords.contains(Keywords::FLASH)
             || self.cast_timing_granted_with_types(
@@ -779,13 +847,19 @@ impl Game {
         if linked_exile_paid.is_some()
             || source_alternative && method == CastMethod::LinkedExileCounterCost
         {
-            Self::configure_linked_paid_cast(&mut item);
+            Self::configure_linked_paid_cast(&mut item, linked_exile_paid);
         }
         if let Some(permission) = paid_graveyard {
             item.add_cast_creature_types(permission.additional_types);
         }
         if method == CastMethod::Airbend {
             Self::configure_airbend_cast(&mut item, flash_surcharge);
+        }
+        if method == CastMethod::Foretell {
+            Self::configure_foretold_cast(&mut item, flash_surcharge);
+        }
+        if method == CastMethod::LinkedExileWaterbend {
+            Self::configure_linked_waterbend_cast(&mut item, flash_surcharge);
         }
         if method.pays_life_for_mana_value() {
             Self::configure_mana_value_life_cast(&mut item, method, flash_surcharge);
@@ -797,10 +871,13 @@ impl Game {
             || matches!(
                 method,
                 CastMethod::Airbend
+                    | CastMethod::LinkedExileWaterbend
                     | CastMethod::Free
                     | CastMethod::Plot
+                    | CastMethod::Foretell
                     | CastMethod::Flashback
                     | CastMethod::GrantedZeroFlashback
+                    | CastMethod::GrantedFixedFlashback(_)
                     | CastMethod::Harmonize
                     | CastMethod::Mayhem
                     | CastMethod::WebSlinging
@@ -842,10 +919,13 @@ impl Game {
                             | CastMethod::ExileLife
                             | CastMethod::LibraryLife
                             | CastMethod::Airbend
+                            | CastMethod::LinkedExileWaterbend
                             | CastMethod::Free
                             | CastMethod::Plot
+                            | CastMethod::Foretell
                             | CastMethod::Flashback
                             | CastMethod::GrantedZeroFlashback
+                            | CastMethod::GrantedFixedFlashback(_)
                             | CastMethod::Harmonize
                             | CastMethod::GrantedHarmonize
                             | CastMethod::GrantedMayhem
@@ -857,7 +937,9 @@ impl Game {
             },
             |spec| spec.x_symbols > 0,
         );
-        let scalar_x = !source_alternative && scalar_x;
+        let waterbend_x =
+            definition.waterbend_additional() == Some(crate::cards::WaterbendAdditional::RequiredX);
+        let scalar_x = waterbend_x || !source_alternative && scalar_x;
         if object.zone == Zone::Library
             && library_top.is_none()
             && method != CastMethod::LibraryLife
@@ -873,6 +955,7 @@ impl Game {
             return false;
         }
         if scalar_x
+            && !waterbend_x
             && definition.explicit_additional_mana().is_none()
             && !self.cast_requires_target_payment(actor, definition)
             && origin_life_cost.is_none()
@@ -935,6 +1018,7 @@ impl Game {
         if let Some(permission) = paid_graveyard {
             a.set_paid_graveyard_cast_permission(permission);
         }
+        a.plan = self.target_spec(&a.item);
         if resolution_discard {
             a.add_origin_discard_cost();
         }

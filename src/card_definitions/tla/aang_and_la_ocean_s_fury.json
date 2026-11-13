@@ -13,7 +13,7 @@
     "index": 1,
     "sha256": "574f3727a5b35ed54e3e9940fbe524c04372fa3c4ead5d3814b0a433e08378bd"
   },
-  "rules_tests": "src/assurance/requested_aang.rs",
+  "rules_tests": "tests/tla_cards_multicolor/inherited.rs",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

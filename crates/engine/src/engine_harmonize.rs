@@ -11,14 +11,19 @@ impl CastMethod {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Announcement {
     pub(super) fn payment_x_symbols(&self) -> u32 {
+        let waterbend_x = u32::from(matches!(
+            self.spell_waterbend_additional(),
+            Some(crate::cards::WaterbendAdditional::RequiredX)
+        ));
         if self.source_mana_alternative().is_some() {
-            return 0;
+            return waterbend_x;
         }
         let card = self.item.source.expect("object-backed cost").card;
-        match self.item.cast.map(|cast| cast.method) {
+        let base_x = match self.item.cast.map(|cast| cast.method) {
             Some(CastMethod::Harmonize) => u32::from(card.harmonize_x_symbols()),
             Some(
                 CastMethod::Sneak
+                | CastMethod::LinkedExileWaterbend
                 | CastMethod::Mayhem
                 | CastMethod::WebSlinging
                 | CastMethod::GrantedZeroFlashback,
@@ -29,7 +34,8 @@ impl Announcement {
                     .map_or(0, |cost| cost.x_symbols)
             }
             _ => u32::from(card.x_symbols()),
-        }
+        };
+        base_x + waterbend_x
     }
 }
 

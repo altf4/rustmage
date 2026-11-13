@@ -310,7 +310,7 @@
     4,
     4,
     16,
-    0,
+    16,
     20,
     0,
     4,
@@ -1848,7 +1848,7 @@
     1,
     1,
     16,
-    0,
+    2,
     1,
     8,
     1,
@@ -5703,7 +5703,20 @@
     24,
     5,
     12,
-    18
+    18,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    4,
+    0,
+    8,
+    8,
+    16,
+    8,
+    0
   ],
   "aliases": [
     [
@@ -7015,6 +7028,30 @@
       5488
     ],
     [
+      "@token/tla-ballistic-boulder",
+      5710
+    ],
+    [
+      "@token/tla-bear",
+      5708
+    ],
+    [
+      "@token/tla-dragon-firebending",
+      5707
+    ],
+    [
+      "@token/tla-monk-prowess",
+      5709
+    ],
+    [
+      "@token/tla-soldier-firebending",
+      5706
+    ],
+    [
+      "@token/tla-spirit",
+      5705
+    ],
+    [
       "@token/treefolk_3_4_green_reach",
       5420
     ],
@@ -7071,12 +7108,24 @@
       21
     ],
     [
+      "Aang, Destined Savior",
+      5698
+    ],
+    [
+      "Aang, Master of Elements",
+      5699
+    ],
+    [
       "Aang, Swift Savior",
       22
     ],
     [
       "Aang, Swift Savior // Aang and La, Ocean's Fury",
       22
+    ],
+    [
+      "Aang, at the Crossroads",
+      23
     ],
     [
       "Aang, at the Crossroads // Aang, Destined Savior",
@@ -8147,6 +8196,10 @@
       274
     ],
     [
+      "Avatar Aang",
+      275
+    ],
+    [
       "Avatar Aang // Aang, Master of Elements",
       275
     ],
@@ -8157,6 +8210,22 @@
     [
       "Avatar Enthusiasts",
       277
+    ],
+    [
+      "Avatar Kuruk",
+      5700
+    ],
+    [
+      "Avatar Kyoshi",
+      5701
+    ],
+    [
+      "Avatar Roku",
+      5702
+    ],
+    [
+      "Avatar Yangchen",
+      5703
     ],
     [
       "Avatar of Burgeoning Echoes",
@@ -13633,6 +13702,10 @@
     [
       "Fire Lord Azula",
       1516
+    ],
+    [
+      "Fire Lord Sozin",
+      5704
     ],
     [
       "Fire Lord Zuko",
@@ -26543,16 +26616,32 @@
       4462
     ],
     [
+      "The Legend of Kuruk",
+      4463
+    ],
+    [
       "The Legend of Kuruk // Avatar Kuruk",
       4463
+    ],
+    [
+      "The Legend of Kyoshi",
+      4464
     ],
     [
       "The Legend of Kyoshi // Avatar Kyoshi",
       4464
     ],
     [
+      "The Legend of Roku",
+      4465
+    ],
+    [
       "The Legend of Roku // Avatar Roku",
       4465
+    ],
+    [
+      "The Legend of Yangchen",
+      4466
     ],
     [
       "The Legend of Yangchen // Avatar Yangchen",
@@ -26657,6 +26746,10 @@
     [
       "The Regalia",
       4489
+    ],
+    [
+      "The Rise of Sozin",
+      4490
     ],
     [
       "The Rise of Sozin // Fire Lord Sozin",
@@ -30953,6 +31046,42 @@
       "name": "Voja Fenstalker",
       "subtypes": "Wolf",
       "colors": 17
+    },
+    {
+      "factory_identity": "@token/tla-spirit",
+      "name": "Spirit Token",
+      "subtypes": "Spirit",
+      "colors": 0
+    },
+    {
+      "factory_identity": "@token/tla-soldier-firebending",
+      "name": "Soldier Token",
+      "subtypes": "Soldier",
+      "colors": 8
+    },
+    {
+      "factory_identity": "@token/tla-dragon-firebending",
+      "name": "Dragon Token",
+      "subtypes": "Dragon",
+      "colors": 8
+    },
+    {
+      "factory_identity": "@token/tla-bear",
+      "name": "Bear Token",
+      "subtypes": "Bear",
+      "colors": 16
+    },
+    {
+      "factory_identity": "@token/tla-monk-prowess",
+      "name": "Monk Token",
+      "subtypes": "Monk",
+      "colors": 8
+    },
+    {
+      "factory_identity": "@token/tla-ballistic-boulder",
+      "name": "Ballistic Boulder",
+      "subtypes": "Construct",
+      "colors": 0
     }
   ],
   "emblems": [
@@ -32266,7 +32395,26 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Aang, at the Crossroads",
+        "mana_cost": "{2}{G}{W}{U}",
+        "type_line": "Legendary Creature — Human Avatar Ally",
+        "colored": [
+          1,
+          1,
+          0,
+          0,
+          1,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": [
+          "Flying",
+          "Transform"
+        ]
+      },
+      "back_face": 5698
     },
     {
       "index": 24,
@@ -39473,7 +39621,27 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Avatar Aang",
+        "mana_cost": "{R}{G}{W}{U}",
+        "type_line": "Legendary Creature — Human Avatar Ally",
+        "colored": [
+          1,
+          1,
+          0,
+          1,
+          1,
+          0
+        ],
+        "generic": 0,
+        "oracle_keywords": [
+          "Flying",
+          "Firebending",
+          "Transform"
+        ]
+      },
+      "back_face": 5699
     },
     {
       "index": 276,
@@ -40285,18 +40453,20 @@
     {
       "index": 304,
       "module": "card_0304",
-      "path": "legacy/badgermole_cub.rs",
-      "set": "legacy",
+      "path": "tla/badgermole_cub.rs",
+      "set": "tla",
       "category": "physical",
       "name": "Badgermole Cub",
-      "oracle_id": null,
-      "facts_sha256": null,
-      "mana_cost": "",
-      "type_line": "",
-      "oracle_keywords": [],
+      "oracle_id": "2b0afb89-0944-4861-b9c3-e909e2ac215e",
+      "facts_sha256": "a5df44b7d0bfed7c0159290d9f3a283cb93d9708e1e52261aa7032a6a10b8c77",
+      "mana_cost": "{1}{G}",
+      "type_line": "Creature — Badger Mole",
+      "oracle_keywords": [
+        "Earthbend"
+      ],
       "standard_legal": false,
       "legendary": false,
-      "kind": 0,
+      "kind": 1,
       "basic": false,
       "mana_color": null,
       "colored": [
@@ -40304,10 +40474,10 @@
         0,
         0,
         0,
-        0,
+        1,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 305,
@@ -73330,7 +73500,7 @@
         0,
         0,
         0,
-        0,
+        3,
         0,
         0
       ],
@@ -84479,23 +84649,23 @@
     {
       "index": 1842,
       "module": "card_1842",
-      "path": "legacy/gran_gran.rs",
-      "set": "legacy",
+      "path": "tla/gran_gran.rs",
+      "set": "tla",
       "category": "physical",
       "name": "Gran-Gran",
-      "oracle_id": null,
-      "facts_sha256": null,
-      "mana_cost": "",
-      "type_line": "",
+      "oracle_id": "0259a9ed-0558-4183-b737-871ed5573c32",
+      "facts_sha256": "6fead642f521b3623392469088e567392dd3846af081bf76ed4f8bb59e436d2d",
+      "mana_cost": "{U}",
+      "type_line": "Legendary Creature — Human Peasant Ally",
       "oracle_keywords": [],
       "standard_legal": false,
-      "legendary": false,
-      "kind": 0,
+      "legendary": true,
+      "kind": 1,
       "basic": false,
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
@@ -160297,7 +160467,26 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "The Legend of Kuruk",
+        "mana_cost": "{2}{U}{U}",
+        "type_line": "Enchantment — Saga",
+        "colored": [
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": [
+          "Scry",
+          "Transform"
+        ]
+      },
+      "back_face": 5700
     },
     {
       "index": 4464,
@@ -160327,7 +160516,26 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "The Legend of Kyoshi",
+        "mana_cost": "{4}{G}{G}",
+        "type_line": "Enchantment — Saga",
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0
+        ],
+        "generic": 4,
+        "oracle_keywords": [
+          "Earthbend",
+          "Transform"
+        ]
+      },
+      "back_face": 5701
     },
     {
       "index": 4465,
@@ -160357,7 +160565,25 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "The Legend of Roku",
+        "mana_cost": "{2}{R}{R}",
+        "type_line": "Enchantment — Saga",
+        "colored": [
+          0,
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": [
+          "Transform"
+        ]
+      },
+      "back_face": 5702
     },
     {
       "index": 4466,
@@ -160388,7 +160614,25 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "The Legend of Yangchen",
+        "mana_cost": "{3}{W}{W}",
+        "type_line": "Enchantment — Saga",
+        "colored": [
+          2,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 3,
+        "oracle_keywords": [
+          "Transform"
+        ]
+      },
+      "back_face": 5703
     },
     {
       "index": 4467,
@@ -161081,7 +161325,25 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "The Rise of Sozin",
+        "mana_cost": "{4}{B}{B}",
+        "type_line": "Enchantment — Saga",
+        "colored": [
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        "generic": 4,
+        "oracle_keywords": [
+          "Transform"
+        ]
+      },
+      "back_face": 5704
     },
     {
       "index": 4491,
@@ -195516,6 +195778,390 @@
         0,
         0,
         1,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5698,
+      "module": "card_5698",
+      "path": "tla/aang_destined_savior.rs",
+      "set": "tla",
+      "category": "back_face",
+      "name": "Aang, Destined Savior",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Avatar Ally",
+      "oracle_keywords": [
+        "Flying",
+        "Earthbend"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "face_parent": 23
+    },
+    {
+      "index": 5699,
+      "module": "card_5699",
+      "path": "tla/aang_master_of_elements.rs",
+      "set": "tla",
+      "category": "back_face",
+      "name": "Aang, Master of Elements",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Avatar Ally",
+      "oracle_keywords": [
+        "Flying",
+        "Transform"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "face_parent": 275
+    },
+    {
+      "index": 5700,
+      "module": "card_5700",
+      "path": "tla/avatar_kuruk.rs",
+      "set": "tla",
+      "category": "back_face",
+      "name": "Avatar Kuruk",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Avatar",
+      "oracle_keywords": [
+        "Exhaust",
+        "Waterbend"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "face_parent": 4463
+    },
+    {
+      "index": 5701,
+      "module": "card_5701",
+      "path": "tla/avatar_kyoshi.rs",
+      "set": "tla",
+      "category": "back_face",
+      "name": "Avatar Kyoshi",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Avatar",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "face_parent": 4464
+    },
+    {
+      "index": 5702,
+      "module": "card_5702",
+      "path": "tla/avatar_roku.rs",
+      "set": "tla",
+      "category": "back_face",
+      "name": "Avatar Roku",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Avatar",
+      "oracle_keywords": [
+        "Firebending"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "face_parent": 4465
+    },
+    {
+      "index": 5703,
+      "module": "card_5703",
+      "path": "tla/avatar_yangchen.rs",
+      "set": "tla",
+      "category": "back_face",
+      "name": "Avatar Yangchen",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Avatar",
+      "oracle_keywords": [
+        "Flying",
+        "Airbend"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "face_parent": 4466
+    },
+    {
+      "index": 5704,
+      "module": "card_5704",
+      "path": "tla/fire_lord_sozin.rs",
+      "set": "tla",
+      "category": "back_face",
+      "name": "Fire Lord Sozin",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Human Noble",
+      "oracle_keywords": [
+        "Menace",
+        "Firebending"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "face_parent": 4490
+    },
+    {
+      "index": 5705,
+      "module": "card_5705",
+      "path": "tla/token_spirit.rs",
+      "set": "tla",
+      "category": "token",
+      "name": "@token/tla-spirit",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Spirit",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5706,
+      "module": "card_5706",
+      "path": "tla/token_soldier_firebending.rs",
+      "set": "tla",
+      "category": "token",
+      "name": "@token/tla-soldier-firebending",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Soldier",
+      "oracle_keywords": [
+        "Firebending"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5707,
+      "module": "card_5707",
+      "path": "tla/token_dragon_firebending.rs",
+      "set": "tla",
+      "category": "token",
+      "name": "@token/tla-dragon-firebending",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Dragon",
+      "oracle_keywords": [
+        "Flying",
+        "Firebending"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5708,
+      "module": "card_5708",
+      "path": "tla/token_bear.rs",
+      "set": "tla",
+      "category": "token",
+      "name": "@token/tla-bear",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Bear",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5709,
+      "module": "card_5709",
+      "path": "tla/token_monk_prowess.rs",
+      "set": "tla",
+      "category": "token",
+      "name": "@token/tla-monk-prowess",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Monk",
+      "oracle_keywords": [
+        "Prowess"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5710,
+      "module": "card_5710",
+      "path": "tla/token_ballistic_boulder.rs",
+      "set": "tla",
+      "category": "token",
+      "name": "@token/tla-ballistic-boulder",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact Creature — Construct",
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 17,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
         0
       ],
       "generic": 0

@@ -3,10 +3,31 @@
   "catalogue_id": 107,
   "oracle_id": "e101b744-9175-4aa5-bf80-d6944359e538",
   "facts_sha256": "3c20d036cdf06a3f48a9c7c9ffac8e976cd88cd5b7f39c89d662d4269289eb90",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0e45711a36fc8d6277f18f9834e1e3e46fad8237e83a1f9c67cdb6063bbc4c37"
   },
-  "physical_metadata_sha256": "16059810e3b82eb5cd30678916cc66fbd8004eac47b9e435d7c7f96c6cf8792e"
+  "physical_metadata_sha256": "16059810e3b82eb5cd30678916cc66fbd8004eac47b9e435d7c7f96c6cf8792e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AirbendingLesson.java",
+  "java_sha256": "c5be8371f74f7dd488f7164e36e2f7752f949d9774a5b22c8fd1a7bc532c07e8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/AirbendTargetEffect.java",
+      "sha256": "debe8f731f2374241dda2d23cbcc2a5feba816ebbf4e1d7b48845faa983cdcec"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetNonlandPermanent.java",
+      "sha256": "6e4720e1386bdaa8f84eaf97cc8d6646845307f0be8697190c25cd1285ba598a"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_white_colorless/combat.rs"
 }

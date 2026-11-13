@@ -78,6 +78,7 @@ impl DepartureRule {
             && (!self.nontoken || !before.is_token())
             && (!self.modified || before.modified)
             && (self.kinds == 0 || before.kinds & self.kinds != 0)
+            && before.kinds & self.excluded_kinds == 0
             && self
                 .subtype
                 .is_none_or(|subtype| before.has_subtype(subtype))
@@ -154,8 +155,7 @@ impl Game {
                 if object.zone != Zone::Battlefield {
                     return None;
                 }
-                let triggers = object.card.triggers();
-                let chosen_creature = if triggers.iter().any(|ability| {
+                let chosen_creature = if self.has_trigger(id, |ability| {
                     ability.condition.event() == TriggerCondition::ChosenCreatureLeaves
                 }) {
                     let source = self.object_ref(id);
@@ -170,7 +170,7 @@ impl Game {
                 } else {
                     None
                 };
-                let observes_greatest_power = triggers.iter().any(|ability| {
+                let observes_greatest_power = self.has_trigger(id, |ability| {
                     ability.condition.event() == TriggerCondition::OpponentHighestPowerCreatureDies
                 });
                 let greatest_opposing_power = observes_greatest_power
@@ -196,7 +196,7 @@ impl Game {
                     .flatten();
                 (chosen_creature.is_some()
                     || observes_greatest_power
-                    || triggers.iter().any(|ability| {
+                    || self.has_trigger(id, |ability| {
                         matches!(
                             ability.condition.event(),
                             TriggerCondition::PermanentLeaves(_)
@@ -216,7 +216,7 @@ impl Game {
             return None;
         }
         let reads_mana_value = sources.iter().any(|observer| {
-            observer.source.card.triggers().iter().any(|trigger| {
+            observer.source.trigger_templates().any(|(_, trigger)| {
                 matches!(
                     trigger.condition.event(),
                     TriggerCondition::BattlefieldDeparture(_)
@@ -248,7 +248,7 @@ impl Game {
         let before = &event.before;
         for observer in &sources.sources {
             let source = &observer.source;
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 let matched = match ability.condition.event() {
                     TriggerCondition::PermanentLeaves(filter) => {
                         DepartureRule::from_legacy(filter).matches(source, event)
@@ -292,7 +292,7 @@ impl Game {
 
             for observer in &observers.sources {
                 let source = &observer.source;
-                for (index, ability) in source.card.triggers().iter().enumerate() {
+                for (index, ability) in source.trigger_templates() {
                     let TriggerCondition::BattlefieldDepartureBatch(rule) =
                         ability.condition.event()
                     else {
@@ -344,6 +344,7 @@ impl Game {
                 instruction,
                 Instruction::ExileDeathCounterTotalUntilNextEnd
                     | Instruction::PutEventCountersOnTargets
+                    | Instruction::PutEventCounters { .. }
                     | Instruction::CreateTokensScaled {
                         amount: AmountValue::DepartureCounterCount(_),
                         ..
@@ -375,6 +376,7 @@ impl Game {
                     AmountValue::DeathEventToughness | AmountValue::DeathEventPower
                 ) | Instruction::DrawScaled(_, AmountValue::DeathEventPower)
                     | Instruction::DamageScaled(AmountValue::DeathEventPower)
+                    | Instruction::Mill(_, MillAmount::Amount(AmountValue::DeathEventPower))
                     | Instruction::DamageRememberPlayersScaled(AmountValue::DeathEventPower)
                     | Instruction::PutCountersScaled {
                         amount: AmountValue::DeathEventPower,

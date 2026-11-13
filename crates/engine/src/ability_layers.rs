@@ -89,6 +89,12 @@ pub enum StaticAbilityFragment {
     CastLinkedExileAtThreshold,
     /// Play cards exiled by this source during your turn, using life to cast spells.
     PlayLinkedExileOnOwnTurnForLife,
+    /// Instants and sorceries without this subtype gain printed-cost flashback.
+    OwnTurnGraveyardFlashbackExceptSubtype(&'static str),
+    OwnTurnGraveyardSubtypeFlashback {
+        subtype: &'static str,
+        cost: ManaCost,
+    },
     /// An optional {0} alternative for a spell independently authorized from exile.
     ExileCastForZeroOncePerTurn,
     /// Optional fixed mana base for spells the controller can already cast.
@@ -103,11 +109,15 @@ pub enum StaticAbilityFragment {
     SkipEmptyLibraryDraws,
     LinkedExileFreeCastBySubtypeUnion(&'static [&'static str]),
     LinkedExileCreatureCounterCasting(u16),
+    /// This permanent has the activated and triggered abilities of its chosen linked card.
+    GrantChosenLinkedCreatureAbilities,
     /// Cast owned cards linked to this permanent using ordinary mana costs.
     LinkedExilePaidCast {
         filter: CastFilter,
         entry_counter: Option<CounterKind>,
     },
+    /// Cast linked cards on your turn as though they had flash, spending mana of any type.
+    LinkedExilePaidCastOnOwnTurnWithFlash,
     /// Use live toughness rather than power when paying Crew or Saddle costs.
     CrewSaddleWithToughness,
     /// A layer-six activated-ability template granted to this source at max speed.
@@ -126,6 +136,8 @@ pub enum StaticAbilityFragment {
         leave_one_mana: bool,
     },
     ControlledLandTapManaBonus(Mana),
+    /// Triggered mana when the controller taps a creature for mana.
+    ControlledCreatureTapManaBonus(Mana),
     /// Add one {C} when a controlled land's tap ability produces {C}.
     ControlledLandColorlessTapManaBonus,
     /// Add one mana of a type actually produced by a controlled artifact token tapped for mana.
@@ -139,6 +151,11 @@ pub enum StaticAbilityFragment {
     ControlledInstantSorcerySplitSecond,
     /// Grant keywords to controlled instant and sorcery spells on the stack.
     ControlledInstantSorceryKeywords(Keywords),
+    /// Grant keywords to controlled instant and sorcery spells of this subtype.
+    ControlledInstantSorcerySubtypeKeywords {
+        subtype: &'static str,
+        keywords: Keywords,
+    },
     /// Permanents controlled by this source's controller cannot be sacrificed.
     ControlledPermanentsCannotBeSacrificed,
     /// No player may activate abilities of matching battlefield permanent kinds.
@@ -333,6 +350,14 @@ pub enum StaticAbilityFragment {
     ChosenBasicLandType,
     /// Add all five basic land subtypes to each controlled land in layer four.
     ControlledLandsAllBasicTypes,
+    /// This controller’s nontoken artifacts are also lands.
+    ControlledNontokenArtifactsAreLands,
+    NonbasicLandsEnterTapped,
+    /// Set all nonbasic land subtypes while the source has the specified counter.
+    NonbasicLandTypeWhileCounter {
+        kind: BasicLandType,
+        counter: CounterKind,
+    },
     /// Set every controlled nonland permanent's color to all five colors.
     ControlledNonlandAllColors,
     OtherSubtypeEntryCounters(&'static str),
@@ -375,6 +400,11 @@ pub enum StaticAbilityFragment {
         other: bool,
         keywords: Keywords,
     },
+    /// Grant keywords to controlled battlefield permanents that have every listed card type.
+    ControlledPermanentAllKindsKeywords {
+        kinds: u16,
+        keywords: Keywords,
+    },
     /// Live grant to equipped creatures, independent of the Equipment controller.
     ControlledEquippedCreatureKeywords(Keywords),
     ConditionalEquippedCreatureKeywords {
@@ -401,6 +431,12 @@ pub enum StaticAbilityFragment {
         subtype: &'static str,
         keywords: Keywords,
     },
+    /// Grant keywords to controlled permanents with both this card kind and subtype.
+    ControlledKindAndSubtypeKeywords {
+        kind: u16,
+        subtype: &'static str,
+        keywords: Keywords,
+    },
     /// Each other controlled permanent of this subtype has an instance of Riot.
     GrantRiotToOtherControlledSubtype(&'static str),
     /// Live layer-six grant; virtual taps and control/subtype changes requalify recipients.
@@ -419,6 +455,11 @@ pub enum StaticAbilityFragment {
     },
     /// Real immutable trigger template, present only on the harnessed source.
     HarnessedTrigger(u16),
+    /// Grant this source a separate self-attack trigger while the condition holds.
+    SourceConditionalAttackTrigger {
+        condition: StatValue,
+        ability: u16,
+    },
     CantLoseGameAndOpponentsCantWin,
     /// The controller does not lose the state-based action for life at or below zero.
     CantLoseFromNonpositiveLife,
@@ -453,6 +494,8 @@ pub enum StaticAbilityFragment {
     RetainDamageDuringCleanup,
     /// This ability's controller keeps mana of the specified color at boundaries.
     RetainManaColor(ChoiceColor),
+    /// This controller's mana that would expire becomes red.
+    ExpiringManaBecomesRed,
     NoMaximumHandSize,
     MaximumHandSize(u16),
     /// While the controller has at least this many card types in their graveyard,
@@ -519,6 +562,11 @@ pub enum StaticAbilityFragment {
         subtypes: &'static [&'static str],
         keywords: Keywords,
     },
+    /// Add artifact and creature while controlling enough permanents with this name.
+    SourceArtifactCreatureWhileControlNamed {
+        name: &'static str,
+        minimum: u16,
+    },
     /// This source becomes a creature with these subtypes and keywords while it
     /// has the required counters, optionally only on its controller's turn. Its type change
     /// starts in layer four; the same ability's base stats are a separate
@@ -577,6 +625,12 @@ pub enum StaticAbilityFragment {
         other: bool,
         nontoken: bool,
     },
+    /// Each controlled permanent of this subtype owns the indexed cast trigger.
+    ControlledSubtypeCastTrigger {
+        ability: u16,
+        other: bool,
+        subtype: &'static str,
+    },
     /// A real Ward instance granted by a live conditional static ability.
     ConditionalWard {
         condition: StatValue,
@@ -624,6 +678,12 @@ pub enum StaticAbilityFragment {
         subtype: &'static str,
         production: ManaProduction,
     },
+    /// Grant one tap mana ability to controlled permanents of either qualification.
+    ControlledKindOrSubtypeTapMana {
+        kinds: u16,
+        subtype: &'static str,
+        production: ManaProduction,
+    },
     /// Other controlled permanents of this subtype gain the indexed mana ability.
     OtherControlledSubtypeTapManaActivation {
         subtype: &'static str,
@@ -658,6 +718,12 @@ pub enum StaticAbilityFragment {
         filters: &'static [CreatureFilter],
         value: StatValue,
         stats: Stats,
+    },
+    /// Each controlled creature without the specified subtype gets +1/+1 per
+    /// effective creature subtype, up to the cap.
+    ControlledCreatureBonusPerSubtype {
+        exclude: &'static str,
+        maximum: u8,
     },
     /// A layer-7c bonus to the source controller's current legendary creatures.
     ControlledLegendaryCreatureBonus(Stats),
@@ -716,6 +782,8 @@ pub enum StaticAbilityFragment {
     AuraEnchantedCantAttackController,
     /// The source's evasion ability excludes blockers with an effective subtype.
     CannotBeBlockedBySubtype(&'static str),
+    /// The source can block or be blocked only by creatures of this effective subtype.
+    CanOnlyBlockOrBeBlockedBySubtype(&'static str),
     ControlledSubtypeCannotBeBlockedByKeyword {
         subtype: &'static str,
         blocker_keyword: Keywords,
@@ -730,6 +798,7 @@ pub enum StaticAbilityFragment {
     CanBlockOnlyFlying,
     /// Controlled creatures meeting either live stat bound cannot be blocked.
     ControlledCreaturesCannotBeBlockedIfPowerOrToughnessAtMost(i128),
+    ControlledCreaturesWithPowerAtLeastMaxOneBlocker(i128),
     /// A controlled attacker and its proposed blocker must both meet these
     /// effective power bounds for the restriction to apply.
     ControlledCreaturesCannotBeBlockedByPower {

@@ -36,6 +36,7 @@ pub(super) struct EffectChoice {
     pub selected: [Vec<ObjectRef>; 2],
     pub skip_to: Option<usize>,
     pub greatest_value: [Option<i128>; 2],
+    negative_power_totals: [i128; 2],
     pub discard_mana_value_life: Option<Player>,
     pub hand_defender: Option<CombatDefender>,
     pub entry_life_bonus: Option<(&'static str, u16)>,
@@ -108,6 +109,7 @@ impl Game {
             selected,
             skip_to: None,
             greatest_value: [None; 2],
+            negative_power_totals: [0; 2],
             discard_mana_value_life: None,
             hand_defender: None,
             entry_life_bonus: None,
@@ -134,6 +136,7 @@ impl Game {
             selected: std::array::from_fn(|_| Vec::new()),
             skip_to: None,
             greatest_value: [None; 2],
+            negative_power_totals: [0; 2],
             discard_mana_value_life: None,
             hand_defender: None,
             entry_life_bonus: None,
@@ -162,6 +165,7 @@ impl Game {
             selected: std::array::from_fn(|_| Vec::new()),
             skip_to: None,
             greatest_value: [None; 2],
+            negative_power_totals: [0; 2],
             discard_mana_value_life: None,
             hand_defender: None,
             entry_life_bonus: None,
@@ -249,6 +253,9 @@ impl Game {
                     self.state.objects[selected.card as usize].controller != o.controller
                 });
         }
+        if choice.kind.ordered_permanent_choice() {
+            return self.ordered_permanent_candidate(choice, player, object);
+        }
         if let EffectChoiceKind::KeepCreaturesByPowerForEachPlayer(maximum) = choice.kind {
             return self.object_ref(object.card) == object
                 && self.creature_survives_sweep(object.card, maximum)
@@ -304,6 +311,10 @@ impl Game {
         }
         if let EffectChoiceKind::ColorCounter { color, subtype } = choice.kind {
             return self.color_counter_candidate(player, color, subtype, object);
+        }
+        if let EffectChoiceKind::CounterDistribution { filter, .. } = choice.kind {
+            return self.object_ref(object.card) == object
+                && self.battlefield_filter_matches(filter, player, object.card);
         }
         if let EffectChoiceKind::CountersOnTarget { group, .. }
         | EffectChoiceKind::DamageAmongTargetGroup { group, .. } = choice.kind
@@ -442,6 +453,12 @@ impl Game {
                 && o.is_card()
                 && self.object_ref(object.card) == object
                 && !choice.selected[player.index()].contains(&object)
+                && match choice.kind {
+                    EffectChoiceKind::ExileNoncreatureNonlandFromGraveyard { owner } => {
+                        o.owner == owner && self.current_kinds(object.card) & 3 == 0
+                    }
+                    _ => true,
+                }
                 && (choice.kind != EffectChoiceKind::ExileCardFromAnyGraveyardRemember
                     || !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
                         self,
@@ -791,6 +808,7 @@ impl Game {
             selected: std::array::from_fn(|_| Vec::new()),
             skip_to: None,
             greatest_value: [None; 2],
+            negative_power_totals: [0; 2],
             discard_mana_value_life: None,
             hand_defender: None,
             entry_life_bonus: None,
@@ -887,6 +905,7 @@ impl Game {
             selected: std::array::from_fn(|_| Vec::new()),
             skip_to: Some(pc),
             greatest_value: [None; 2],
+            negative_power_totals: [0; 2],
             discard_mana_value_life: None,
             hand_defender: None,
             entry_life_bonus: None,
@@ -1413,6 +1432,7 @@ impl Game {
             selected: std::array::from_fn(|_| Vec::new()),
             skip_to: Some(pc),
             greatest_value: [None; 2],
+            negative_power_totals: [0; 2],
             discard_mana_value_life: None,
             hand_defender: None,
             entry_life_bonus: None,
@@ -1540,6 +1560,7 @@ impl Game {
             }),
             skip_to: None,
             greatest_value: [None; 2],
+            negative_power_totals: [0; 2],
             discard_mana_value_life: None,
             hand_defender: None,
             entry_life_bonus: None,
@@ -1788,10 +1809,16 @@ impl Game {
             required: [0; 2],
             selected: std::array::from_fn(|_| Vec::new()),
             greatest_value: [None; 2],
+            negative_power_totals: [0; 2],
             skip_to: optional_skip.map(|skip| pc.checked_add(skip).expect("program offset")),
         };
         if let Some(skip_to) = choice.skip_to {
             assert!(skip_to <= self.state.resolving.as_ref().unwrap().program.len());
+        }
+        if kind.ordered_permanent_choice() {
+            self.prepare_ordered_permanent_choices(&mut choice, item.controller);
+            self.state.resolving.as_mut().unwrap().choice = Some(Box::new(choice));
+            return self.advance_effect_choice();
         }
         if let EffectChoiceKind::KeepCreaturesByPowerForEachPlayer(maximum) = kind {
             let mut eligible = [false; 2];
@@ -1863,6 +1890,10 @@ impl Game {
                     self.effect_choice_candidate(&choice, player, self.object_ref(*id as CardId))
                 })
                 .count();
+            if matches!(kind, EffectChoiceKind::CounterDistribution { .. }) {
+                choice.required[player.index()] = if available == 0 { 0 } else { amount };
+                continue;
+            }
             if let EffectChoiceKind::GraveyardCreatures {
                 maximum,
                 total_mana_value,
@@ -1948,6 +1979,152 @@ impl Game {
         }
         self.state.resolving.as_mut().unwrap().choice = Some(Box::new(choice));
         self.advance_effect_choice()
+    }
+
+    fn prepare_ordered_permanent_choices(&self, choice: &mut EffectChoice, controller: Player) {
+        match choice.kind {
+            EffectChoiceKind::KeepCreaturesWithinTotalPower(_) => {
+                let query = self.characteristic_query();
+                for (index, object) in self.state.objects.iter().enumerate() {
+                    let id = index as CardId;
+                    if object.zone == Zone::Battlefield && query.kinds(id) & 1 != 0 {
+                        let seat = object.controller.index();
+                        choice.required[seat] += 1;
+                        choice.negative_power_totals[seat] = choice.negative_power_totals[seat]
+                            .checked_add(query.stats(id).power.min(0))
+                            .capacity("combined creature power exhausted");
+                    }
+                }
+            }
+            EffectChoiceKind::ExileOpposingPermanentsByEachPlayer(minimum) => {
+                let available = self
+                    .state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .any(|(index, object)| {
+                        object.zone == Zone::Battlefield
+                            && object.controller != controller
+                            && self.object_mana_value(index as CardId) >= minimum
+                    });
+                choice.required = [u32::from(available); 2];
+            }
+            _ => unreachable!("ordered permanent choice"),
+        }
+    }
+
+    fn ordered_permanent_candidate(
+        &self,
+        choice: &EffectChoice,
+        player: Player,
+        object: ObjectRef,
+    ) -> bool {
+        let candidate = &self.state.objects[object.card as usize];
+        let selected = &choice.selected[player.index()];
+        if candidate.zone != Zone::Battlefield
+            || self.object_ref(object.card) != object
+            || selected.contains(&object)
+        {
+            return false;
+        }
+        match choice.kind {
+            EffectChoiceKind::KeepCreaturesWithinTotalPower(maximum) => {
+                if candidate.controller != player || !self.is_creature(object.card) {
+                    return false;
+                }
+                // Every negative-power creature remains available when finding
+                // a feasible completion. A positive prefix can exceed the cap.
+                let query = self.characteristic_query();
+                selected
+                    .iter()
+                    .copied()
+                    .chain(std::iter::once(object))
+                    .map(|reference| query.stats(reference.card).power.max(0))
+                    .try_fold(
+                        choice.negative_power_totals[player.index()],
+                        i128::checked_add,
+                    )
+                    .capacity("combined creature power exhausted")
+                    <= maximum
+            }
+            EffectChoiceKind::ExileOpposingPermanentsByEachPlayer(minimum) => {
+                candidate.controller != self.state.resolving.as_ref().unwrap().item.controller
+                    && self.object_mana_value(object.card) >= minimum
+            }
+            _ => unreachable!("ordered permanent choice"),
+        }
+    }
+
+    pub(super) fn can_finish_ordered_permanent_choice(
+        &self,
+        choice: &EffectChoice,
+        player: Player,
+    ) -> bool {
+        match choice.kind {
+            EffectChoiceKind::KeepCreaturesWithinTotalPower(maximum) => {
+                let query = self.characteristic_query();
+                choice.selected[player.index()]
+                    .iter()
+                    .map(|reference| query.stats(reference.card).power)
+                    .try_fold(0i128, i128::checked_add)
+                    .capacity("combined creature power exhausted")
+                    <= maximum
+            }
+            EffectChoiceKind::ExileOpposingPermanentsByEachPlayer(_) => true,
+            _ => false,
+        }
+    }
+
+    pub(super) fn finish_ordered_permanent_choice(&mut self, player: Player) -> bool {
+        let choice = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .choice
+            .as_mut()
+            .unwrap();
+        choice.required[player.index()] = u32::try_from(choice.selected[player.index()].len())
+            .capacity("permanent choice count exhausted");
+        self.advance_effect_choice()
+    }
+
+    fn apply_ordered_permanent_choices(&mut self, choice: EffectChoice) {
+        match choice.kind {
+            EffectChoiceKind::KeepCreaturesWithinTotalPower(_) => {
+                let query = self.characteristic_query();
+                let sacrifices = self
+                    .state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter_map(|(index, object)| {
+                        let id = index as CardId;
+                        (object.zone == Zone::Battlefield
+                            && query.kinds(id) & 1 != 0
+                            && !choice.selected[object.controller.index()]
+                                .contains(&self.object_ref(id)))
+                        .then_some((object.controller, id))
+                    })
+                    .collect::<Vec<_>>();
+                self.sacrifice_batch(&sacrifices);
+            }
+            EffectChoiceKind::ExileOpposingPermanentsByEachPlayer(_) => {
+                let mut cards = choice
+                    .selected
+                    .into_iter()
+                    .flatten()
+                    .map(|reference| reference.card)
+                    .collect::<Vec<_>>();
+                cards.sort_unstable();
+                cards.dedup();
+                if !cards.is_empty() {
+                    let events = self.move_objects_raw(&cards, Zone::Exile);
+                    self.finish_zone_events(&events, &[]);
+                }
+            }
+            _ => unreachable!("ordered permanent choice"),
+        }
     }
 
     pub(super) fn finish_creature_and_land_selection(&mut self) {
@@ -2079,7 +2256,15 @@ impl Game {
             self.state.pending = Pending::EffectChoice { player };
             return true;
         }
-        for player in [self.state.active, self.state.active.other()] {
+        let first = if matches!(
+            choice.kind,
+            EffectChoiceKind::ExileOpposingPermanentsByEachPlayer(_)
+        ) {
+            self.state.resolving.as_ref().unwrap().item.controller
+        } else {
+            self.state.active
+        };
+        for player in [first, first.other()] {
             if choice.selected[player.index()].len() < choice.required[player.index()] as usize {
                 self.state.pending = Pending::EffectChoice { player };
                 return true;
@@ -2323,6 +2508,10 @@ impl Game {
             .choice
             .take()
             .unwrap();
+        if choice.kind.ordered_permanent_choice() {
+            self.apply_ordered_permanent_choices(*choice);
+            return false;
+        }
         if matches!(
             choice.kind,
             EffectChoiceKind::KeepCreaturesByPowerForEachPlayer(_)
@@ -2412,14 +2601,23 @@ impl Game {
             }
             return false;
         }
-        if choice.kind == EffectChoiceKind::ExileControlledLinked {
+        if matches!(
+            choice.kind,
+            EffectChoiceKind::ExileControlledLinked | EffectChoiceKind::ExileGraveyardLinked
+        ) {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
+            let origin = if choice.kind == EffectChoiceKind::ExileControlledLinked {
+                Zone::Battlefield
+            } else {
+                Zone::Graveyard
+            };
             let ids = choice
                 .selected
                 .into_iter()
                 .flatten()
                 .filter(|&object| {
-                    self.on_battlefield(object.card) && self.object_ref(object.card) == object
+                    self.state.objects[object.card as usize].zone == origin
+                        && self.object_ref(object.card) == object
                 })
                 .map(|object| object.card)
                 .collect::<Vec<_>>();
@@ -2551,6 +2749,16 @@ impl Game {
                 .iter()
                 .flatten()
                 .map(|&object| (object, Counters::of(kind, u64::from(amount))))
+                .collect();
+            self.effect_counters(changes, replacements::ResumeMode::Program);
+            return false;
+        }
+        if let EffectChoiceKind::CounterDistribution { kind, .. } = choice.kind {
+            let mut selected: Vec<_> = choice.selected.into_iter().flatten().collect();
+            selected.sort_unstable();
+            let changes = selected
+                .chunk_by(|left, right| left == right)
+                .map(|group| (group[0], Counters::of(kind, group.len() as u64)))
                 .collect();
             self.effect_counters(changes, replacements::ResumeMode::Program);
             return false;
@@ -2776,6 +2984,17 @@ impl Game {
                     for event in &events {
                         if event.moved && event.destination == Zone::Exile {
                             self.grant_taxed_exile_play(event.before.owner, event.after, surcharge);
+                        }
+                    }
+                }
+                if matches!(
+                    choice.kind,
+                    EffectChoiceKind::ExileNoncreatureNonlandFromGraveyard { .. }
+                ) {
+                    let item = self.state.resolving.as_ref().unwrap().item.clone();
+                    for event in &events {
+                        if event.moved && event.destination == Zone::Exile {
+                            self.grant_linked_waterbend_cast(&item, event.after);
                         }
                     }
                 }
@@ -3394,6 +3613,7 @@ impl Game {
             amount: choice.amount,
             optional: choice.skip_to.is_some()
                 || choice.kind.any_number_selection()
+                || choice.kind.ordered_permanent_choice()
                 || matches!(
                     choice.kind,
                     EffectChoiceKind::ReturnUpToGraveyardToHand { .. }
@@ -3473,6 +3693,7 @@ impl Game {
                 selected: std::array::from_fn(|_| Vec::new()),
                 skip_to: None,
                 greatest_value: [None; 2],
+                negative_power_totals: [0; 2],
                 discard_mana_value_life: None,
                 hand_defender: None,
                 entry_life_bonus: None,

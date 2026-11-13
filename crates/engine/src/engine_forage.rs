@@ -101,7 +101,7 @@ impl Game {
             if matching.is_empty() {
                 continue;
             }
-            for (index, a) in source.card.triggers().iter().enumerate() {
+            for (index, a) in source.trigger_templates() {
                 if a.condition.event() == TriggerCondition::FoodsSacrificed
                     && self.queue_trigger(source, index)
                 {
@@ -540,18 +540,17 @@ impl Game {
             .objects
             .iter()
             .enumerate()
-            .filter(|(_, o)| {
+            .filter(|(id, o)| {
                 o.zone == Zone::Battlefield
                     && o.controller == player
-                    && o.card
-                        .triggers()
-                        .iter()
-                        .any(|a| a.condition.event() == TriggerCondition::Foraged)
+                    && self.has_trigger(*id as CardId, |a| {
+                        a.condition.event() == TriggerCondition::Foraged
+                    })
             })
             .map(|(id, _)| self.object_view(id as CardId))
             .collect();
         for source in sources {
-            for (index, a) in source.card.triggers().iter().enumerate() {
+            for (index, a) in source.trigger_templates() {
                 if a.condition.event() == TriggerCondition::Foraged {
                     self.queue_trigger(&source, index);
                 }

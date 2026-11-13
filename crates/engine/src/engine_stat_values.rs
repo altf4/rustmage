@@ -119,6 +119,9 @@ impl Game {
         W: CharacteristicWorld + ?Sized,
     {
         match value {
+            StatValue::UnspentMana => {
+                i128::try_from(world.unspent_mana(owner)).unwrap_or(i128::MAX)
+            }
             StatValue::UnlockedRoomDoors => rooms::door_names(world, owner).count() as i128,
             StatValue::DifferentUnlockedRoomNames => rooms::door_names(world, owner)
                 .map(crate::card_names::comparison_key)
@@ -130,12 +133,19 @@ impl Game {
             StatValue::DeclaredAttackersThisTurn => {
                 self.declared_attackers_this_turn(owner) as i128
             }
+            StatValue::ElementsBentThisTurn => i128::from(
+                self.state.players[owner.index()]
+                    .turn_facts
+                    .bent_elements
+                    .count_ones(),
+            ),
             StatValue::DistinctDeclaredAttackersThisTurn => {
                 self.state.attacked_this_turn.len() as i128
             }
             StatValue::DeclaredSubtypeAttackersThisTurn(subtype) => {
                 self.declared_subtype_attackers(owner, subtype) as i128
             }
+            StatValue::LandsEnteredThisTurn => i128::from(world.lands_entered_this_turn(owner)),
             StatValue::ArtifactEnteredThisTurn => i128::from(
                 self.state.players[owner.index()]
                     .turn_facts
@@ -193,6 +203,14 @@ impl Game {
                     })
                     .count() as i128
             }
+            StatValue::ControlledLandCounters(kind) => objects()
+                .filter(|&(id, object)| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == owner
+                        && kinds(id, object) & 2 != 0
+                })
+                .map(|(id, _)| i128::from(counter_count(id, kind)))
+                .sum(),
             StatValue::DistinctCreatureCounterKinds => {
                 // No allocation or source-owned counter copy, including sparse kinds.
                 let mut present = [false; CounterKind::ALL.len()];
@@ -288,6 +306,13 @@ impl Game {
                             } != source)
                         && kinds(*id, object) & 1 != 0
                         && legendary(*id)
+                })
+                .count() as i128,
+            StatValue::OwnedPermanentsOpponentsControl => objects()
+                .filter(|(_, object)| {
+                    object.zone == Zone::Battlefield
+                        && object.owner == owner
+                        && object.controller != owner
                 })
                 .count() as i128,
             StatValue::TappedCount(filter) | StatValue::UntappedCount(filter) => {
@@ -757,6 +782,19 @@ impl Game {
                     .count(),
             )
             .capacity("stat count exhausted"),
+            StatValue::LargestControlledCreatureTypeGroup => {
+                let mut counts = [0usize; crate::cards::CREATURE_TYPES.len()];
+                for (id, object) in objects().filter(|&(id, object)| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == owner
+                        && kinds(id, object) & 1 != 0
+                }) {
+                    for index in subtypes(id).creature_type_set(object.card).indices() {
+                        counts[index] += 1;
+                    }
+                }
+                counts.into_iter().max().unwrap_or(0) as i128
+            }
             StatValue::CreaturesOfChosenType => {
                 let Some(EntryChoiceValue::CreatureType(typ)) = world.entry_value(source) else {
                     return 0;
@@ -1034,11 +1072,13 @@ impl Game {
             }
             AmountValue::PaidSourceCounterQuantity(_)
             | AmountValue::TargetPlayerHandSize
+            | AmountValue::TargetDamagedThisTurn(_)
             | AmountValue::TargetPlayerLibraryToGraveyardThisTurn
             | AmountValue::TargetPlayerCreatureCount
             | AmountValue::TargetPlayersCreatureCount
             | AmountValue::DelayedExiledCardCount
             | AmountValue::MilledCreatures
+            | AmountValue::MilledSubtypeCount(_)
             | AmountValue::MovedCount
             | AmountValue::RememberedCount
             | AmountValue::PaidAdditionalCostCount

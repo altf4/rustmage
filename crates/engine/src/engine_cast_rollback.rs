@@ -164,6 +164,14 @@ impl Game {
     // A private choice may move any of the choosing player's hand cards.
     // Keeping a public reference for an unchosen card would disclose that choice.
     pub(super) fn obscure_private_hand_selection(&mut self, player: Player) {
+        self.obscure_private_hand_selection_matching(player, |_| true);
+    }
+
+    pub(super) fn obscure_private_hand_selection_matching(
+        &mut self,
+        player: Player,
+        matches: impl Fn(Card) -> bool,
+    ) {
         if self.state.cast_rollback.is_some() {
             let candidates: Vec<_> = self
                 .state
@@ -171,8 +179,11 @@ impl Game {
                 .iter()
                 .enumerate()
                 .filter_map(|(id, object)| {
-                    (object.zone == Zone::Hand && object.owner == player && object.is_card())
-                        .then_some(id as CardId)
+                    (object.zone == Zone::Hand
+                        && object.owner == player
+                        && object.is_card()
+                        && matches(object.card))
+                    .then_some(id as CardId)
                 })
                 .collect();
             for id in candidates {
@@ -182,7 +193,8 @@ impl Game {
         let objects = &self.state.objects;
         self.state.known_hand.retain(|reference| {
             objects.get(reference.card as usize).is_some_and(|object| {
-                object.owner != player && object.generation == reference.generation
+                object.generation == reference.generation
+                    && (object.owner != player || !matches(object.card))
             })
         });
     }
@@ -251,7 +263,10 @@ impl Game {
             self.state.cast_rollback = Some(Box::new(rollback));
             return;
         }
-        if matches!(action, Action::BeginRoomUnlock { .. }) {
+        if matches!(
+            action,
+            Action::BeginRoomUnlock { .. } | Action::AnnounceForetell { .. }
+        ) {
             let rollback = CastRollback::new(self.state.clone(), actor, CardId::MAX);
             self.state.cast_rollback = Some(Box::new(rollback));
             return;
@@ -289,6 +304,7 @@ impl Game {
             | Action::AnnounceFlashback { card }
             | Action::AnnounceGrantedFlashback { card, .. }
             | Action::AnnounceGrantedZeroFlashback { card, .. }
+            | Action::AnnounceGrantedFixedFlashback { card, .. }
             | Action::AnnounceFree { card, .. }
             | Action::AnnounceFreeCounterGraveyard { card, .. }
             | Action::AnnounceFreeGraveyardPermanent { card, .. }
@@ -299,13 +315,16 @@ impl Game {
             | Action::AnnounceGraveyardFinality { card, .. }
             | Action::Cast { card, .. }
             | Action::BeginCast { card, .. } => card,
-            Action::CastExiledDuringResolution { object, .. }
+            Action::AnnounceForetold { object, .. }
+            | Action::AnnounceLinkedAlternative { object, .. }
+            | Action::CastExiledDuringResolution { object, .. }
             | Action::CastFreeDuringResolution { object, .. }
             | Action::AnnounceTaxedExile { object, .. }
             | Action::AnnounceExileForZero { object, .. }
             | Action::AnnounceCastWithManaAlternative { object, .. }
             | Action::AnnounceCastWithEvidenceAlternative { object, .. }
             | Action::AnnounceLinkedPaid { object, .. }
+            | Action::AnnounceLinkedWaterbend { object, .. }
             | Action::AnnounceGraveyardPaid { object, .. }
             | Action::AnnounceLibraryTop { object, .. }
             | Action::AnnounceSelfGraveyardWithCounter { object, .. }
@@ -422,7 +441,8 @@ impl Game {
         if (!casting
             && self.state.combat_payment.is_none()
             && self.face_up_payment().is_none()
-            && self.state.room_unlock_payment().is_none())
+            && self.state.room_unlock_payment().is_none()
+            && !self.plot_payment().is_some_and(|request| request.foretell))
             || self.outcome().is_some()
         {
             self.state.cast_rollback = None;

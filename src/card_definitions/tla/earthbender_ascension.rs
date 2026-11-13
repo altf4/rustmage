@@ -16,12 +16,12 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             })),
             program: &[
                 Instruction::AnimateEarthbendTargets,
-                Instruction::RegisterEarthbendReturn,
                 Instruction::PutCounters {
                     subject: Subject::Targets,
                     kind: CounterKind::PlusOne,
                     amount: 2,
                 },
+                Instruction::RegisterEarthbendReturn,
                 Instruction::Search(SearchSpec {
                     filter: SearchFilter::BasicLand,
                     maximum: 1,

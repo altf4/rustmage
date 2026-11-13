@@ -47,6 +47,7 @@ impl Game {
                 .earthbend_returns
                 .get_or_insert_default()
                 .push(row);
+            self.record_bend(item.controller, bending::BendKind::Earth);
         }
     }
     pub(super) fn queue_earthbend_returns(&mut self, events: &[ZoneChange]) {

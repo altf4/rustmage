@@ -3,10 +3,41 @@
   "catalogue_id": 1861,
   "oracle_id": "79e69a91-d580-47fb-be76-1e32c50d2fa0",
   "facts_sha256": "0202e8fd593132e0da3b6e90218defe5e74bc5c2d544d04b258f0dd955e64724",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4f24c2ba56a1557a0fd7d98dd3f189aaad0b5c3e644283db81c22a8409c7c7d0"
   },
-  "physical_metadata_sha256": "8b206f37caa77ef998e583457aee472004beb83a8d09f3d2fea1a1bd37443097"
+  "physical_metadata_sha256": "8b206f37caa77ef998e583457aee472004beb83a8d09f3d2fea1a1bd37443097",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GreatDivideGuide.java",
+  "java_sha256": "8e03ee5e1c0b471fd516f9bfca7aacf2ae29c366680f0b5228c3942d427f9a15",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+      "sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+      "sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_green/creatures.rs"
 }

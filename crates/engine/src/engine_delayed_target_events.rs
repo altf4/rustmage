@@ -59,8 +59,8 @@ impl Game {
         };
         assert_eq!(trigger.condition, condition);
         assert!(
-            !trigger.targets.has_targets(),
-            "delayed target template must be untargeted"
+            event == DelayedTargetEvent::DiesOnce || !trigger.targets.has_targets(),
+            "only delayed death templates may choose targets"
         );
     }
 

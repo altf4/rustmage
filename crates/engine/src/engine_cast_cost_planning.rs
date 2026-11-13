@@ -34,6 +34,7 @@ pub(super) struct CostContext {
     teammates: Vec<ObjectRef>,
     teamwork_exact: bool,
     delve_selected: bool,
+    pub(super) tap_payment_used: usize,
     /// Existing announcement phase, retained only in this private query context.
     mana_closed: bool,
 }
@@ -89,6 +90,10 @@ impl CostContext {
         }
         Some(Box::new(Self {
             delve_selected: a.convoke.as_ref().is_some_and(|f| !f.delved.is_empty()),
+            tap_payment_used: a
+                .convoke
+                .as_ref()
+                .map_or(0, |frame| frame.substituted.len()),
             mana_closed: c.mana_closed,
             source_tap_reserved,
             source_counter_reservation,
@@ -455,6 +460,7 @@ impl FundingState<'_> {
                                 | BasicLandTapManaBonus(_)
                                 | ControlledBasicLandManaMultiplier(_)
                                 | ControlledLandTapManaBonus(_)
+                                | ControlledCreatureTapManaBonus(_)
                                 | ControlledLandColorlessTapManaBonus
                                 | ControlledArtifactTokenTapManaBonus => false,
                                 // This replacement changes only damage amounts;
@@ -560,6 +566,7 @@ impl FundingState<'_> {
         }
     }
     pub(super) fn set_payment_context(&mut self, a: &Announcement) {
+        self.set_tap_payment(a.tap_payment());
         self.payment_source = a.item.source.map(|s| s.object);
         self.exhaust_source_reuse_authorized = a.exhaust_reuse_authorized;
         self.source_use_independent = a.item.self_granted_activation.is_some();
@@ -1604,6 +1611,7 @@ impl FundingState<'_> {
                                 | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. }
                                 | crate::cards::StaticAbilityFragment::ControlledTokenTapMana { .. }
                                 | crate::cards::StaticAbilityFragment::ControlledSubtypeTapMana { .. }
+                                | StaticAbilityFragment::ControlledKindOrSubtypeTapMana { .. }
                         | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                                 | crate::cards::StaticAbilityFragment::NoMaximumHandSize
                                 | crate::cards::StaticAbilityFragment::MaximumHandSize(_)
@@ -1654,7 +1662,7 @@ impl FundingState<'_> {
             mana_lots::available(self.mana, &self.lots, purpose),
             cost.colored,
             cost.generic,
-            &self.convoke_masks(),
+            &self.contribution_masks(c.tap_payment_used),
         )
     }
     fn complete_convoke_clause(
@@ -1705,13 +1713,19 @@ impl FundingState<'_> {
             }
             let colors = CharacteristicWorld::colors(self, resource.id);
             let kinds = CharacteristicWorld::kinds(self, resource.id);
-            let choices: &[ConvokeContribution] = if self.convoke_available() && kinds & 1 != 0 {
-                &convoke::contributions()
-            } else if self.improvise_available() && kinds & 16 != 0 {
-                &[ConvokeContribution::Generic]
-            } else {
-                continue;
-            };
+            let (choices, substitution): (&[ConvokeContribution], bool) =
+                if self.convoke_available() && kinds & 1 != 0 {
+                    (&convoke::contributions(), false)
+                } else if self.improvise_available() && kinds & 16 != 0 {
+                    (&[ConvokeContribution::Generic], false)
+                } else if self.activation_tap_payment.is_some_and(|payment| {
+                    (c.tap_payment_used as u64) < payment.cap()
+                        && payment.eligible(self, c.actor, object)
+                }) {
+                    (&[ConvokeContribution::Generic], true)
+                } else {
+                    continue;
+                };
             for &contribution in choices {
                 let mut remaining = cost;
                 if !contribution.apply(colors, &mut remaining) {
@@ -1726,6 +1740,7 @@ impl FundingState<'_> {
                 next.resources[i].object.tapped = true;
                 let mut context = c.clone();
                 context.mana = Some(remaining);
+                context.tap_payment_used += usize::from(substitution);
                 if next.complete_convoke_clause(&context, later, rest) {
                     return true;
                 }
@@ -1780,6 +1795,23 @@ impl FundingState<'_> {
         if !self.improvise_available() || !improvise::eligible(self, self.actor, object) {
             return false;
         }
+        self.project_generic_tapper(object)
+    }
+    pub(in crate::engine) fn project_substituter(&mut self, object: ObjectRef) -> bool {
+        let Some(payment) = self.activation_tap_payment else {
+            return false;
+        };
+        if !self.cast_costs.as_ref().is_some_and(|context| {
+            (context.tap_payment_used as u64) < payment.cap()
+                && payment.eligible(self, self.actor, object)
+        }) || !self.project_generic_tapper(object)
+        {
+            return false;
+        }
+        self.cast_costs.as_mut().unwrap().tap_payment_used += 1;
+        true
+    }
+    fn project_generic_tapper(&mut self, object: ObjectRef) -> bool {
         let Some(index) = self
             .resources
             .iter()
@@ -1885,7 +1917,7 @@ impl FundingState<'_> {
                 world.complete_cost_rows(later, remaining)
             });
         }
-        if let EffectChoiceKind::DiscardOrLife(life) = spec.kind.payment_kind() {
+        if let Some(life) = spec.kind.additional_life_payment() {
             if !c.exact && self.life >= i128::from(life) {
                 let mut next = self.clone();
                 next.pay_projected_life(next.actor, life, &[]);
@@ -1893,7 +1925,7 @@ impl FundingState<'_> {
                     return true;
                 }
             }
-            if c.additional_life {
+            if c.additional_life || matches!(spec.kind, EffectChoiceKind::PayLife(_)) {
                 return false;
             }
             spec.kind = EffectChoiceKind::Discard;
@@ -2309,6 +2341,7 @@ impl Game {
         let mana_closed = world.cast_costs.as_ref().is_some_and(|c| c.mana_closed);
         world.install_cost_context(Some(Box::new(CostContext {
             delve_selected: false,
+            tap_payment_used: 0,
             mana_closed,
             actor: goal.actor,
             source: *source,
@@ -2414,6 +2447,7 @@ impl Game {
             ),
         );
         world.set_purpose(self.purpose_for_item(&a.item));
+        world.set_tap_payment(a.tap_payment());
         world.set_cost_context(Some(a));
         world
     }
@@ -2714,6 +2748,7 @@ impl Game {
         if world.cast_costs.is_none() {
             world.install_cost_context(Some(Box::new(CostContext {
                 delve_selected: false,
+                tap_payment_used: 0,
                 mana_closed: false,
                 teammates: Vec::new(),
                 teamwork_exact: false,
@@ -2799,10 +2834,8 @@ impl Game {
             )
         }) || delve::potential(self)
             || additional.is_some_and(|a| {
-                matches!(
-                    a.kind.payment_kind(),
-                    EffectChoiceKind::DiscardOrLife(_) | EffectChoiceKind::BlightCost(_)
-                )
+                a.kind.additional_life_payment().is_some()
+                    || matches!(a.kind.payment_kind(), EffectChoiceKind::BlightCost(_))
             })
             || additional.is_some()
                 && (convoke::potential(self, spell.card)
@@ -2934,6 +2967,7 @@ impl Game {
                 }
                 let context = CostContext {
                     delve_selected: false,
+                    tap_payment_used: 0,
                     mana_closed: current
                         .and_then(|a| a.cast_costs.as_ref())
                         .is_some_and(|c| c.mana_closed),
@@ -3022,6 +3056,7 @@ impl Game {
         let mana_closed = world.cast_costs.as_ref().is_some_and(|c| c.mana_closed);
         world.install_cost_context(Some(Box::new(CostContext {
             delve_selected: false,
+            tap_payment_used: 0,
             mana_closed,
             actor: goal.actor,
             source,

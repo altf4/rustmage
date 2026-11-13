@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "874a2cb942eeb197dbda86b87bf29563cc1a12ee2441d5cec2edfbfcc5ed9437"
   },
-  "physical_metadata_sha256": "81b423b7244c8134e153fa6bde079263023b563def771c940002fbd1693c5c50"
+  "physical_metadata_sha256": "81b423b7244c8134e153fa6bde079263023b563def771c940002fbd1693c5c50",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MerchantOfManyHats.java",
+  "java_sha256": "c0156336493b20026ad76abfda152fe5b538135411dd8b427529fe5f225643aa",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToHandEffect.java",
+      "sha256": "36a1255bbe73cc6e97976aa6749cbc9c458b58b2fa3541010a79722ca4e78e70"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_black.rs"
 }

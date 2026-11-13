@@ -3,10 +3,41 @@
   "catalogue_id": 1725,
   "oracle_id": "dfdcb451-a597-46fe-893c-49e6dbda5f71",
   "facts_sha256": "e9e9a7f298d045a7d7251c6b0c409e858d40b8f133be96e28c0bfcb23cc7429b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "144c77e10339637969b8ffaa4d8c2dd24b5f933a15edabb0fd9d83884fb532d1"
   },
-  "physical_metadata_sha256": "90a45b4344c27a0caa371d7c0d441a4699564df80c0d2c664f9502277a3f8d91"
+  "physical_metadata_sha256": "90a45b4344c27a0caa371d7c0d441a4699564df80c0d2c664f9502277a3f8d91",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GeyserLeaper.java",
+  "java_sha256": "5df0b8eafac1edd1851b400710cb5386dd562bb498966ba62c50da458cbbed2c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/WaterbendCost.java",
+      "sha256": "216fa6e097077e73b5fcc3a1e71fe59ef6d16d27dd33681202db95643b7c451b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_blue.rs"
 }

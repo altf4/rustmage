@@ -3,10 +3,36 @@
   "catalogue_id": 2630,
   "oracle_id": "b5029f21-e0d6-4f22-9afd-79452de26490",
   "facts_sha256": "01beecb124f7bf34c547c9404f32f94dc1621cd7b147ceee0e10142a703478ab",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5318a4f4b0dd79de85b10f9946c7950a64ad8f225abbd225d22ea92ca16d878d"
   },
-  "physical_metadata_sha256": "1e2b0df2929c0a6959c6155e64de7974f4513f1655a2cfe662dce017a125ef5c"
+  "physical_metadata_sha256": "1e2b0df2929c0a6959c6155e64de7974f4513f1655a2cfe662dce017a125ef5c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MaiJadedEdge.java",
+  "java_sha256": "d63d9e241918616362225578f348f8763b188618bdc343c3485ee96731fe0e87",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+      "sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
+      "sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_red/permanents.rs"
 }

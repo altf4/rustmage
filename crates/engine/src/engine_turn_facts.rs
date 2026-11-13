@@ -149,6 +149,9 @@ pub struct TurnFactsView {
     /// Human and legendary creature casts, each capped at two.
     #[serde(skip_serializing_if = "no_qualified_creature_casts")]
     pub qualified_creature_casts: [u8; 2],
+    /// Committed casts of flying non-Lemur creature spells, capped at two.
+    #[serde(skip_serializing_if = "is_zero")]
+    pub flying_non_lemur_creature_casts: u8,
     /// Actual committed activation history, retained even before a provider enters.
     #[serde(skip_serializing_if = "is_false")]
     pub exhaust_activated_this_turn: bool,
@@ -170,6 +173,9 @@ pub struct TurnFactsView {
     /// An exact face-down object entered as a creature under this player's control.
     #[serde(skip_serializing_if = "is_false")]
     pub face_down_creature_entered: bool,
+    /// Bending completed this turn, in air, earth, fire, water bit order.
+    #[serde(skip_serializing_if = "is_zero")]
+    pub bent_elements: u8,
 }
 
 fn no_qualified_creature_casts(counts: &[u8; 2]) -> bool {
@@ -179,13 +185,23 @@ fn no_qualified_creature_casts(counts: &[u8; 2]) -> bool {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl TurnFactsView {
     pub(super) fn qualified_creature_cast_count(self, qualifier: CreatureCastQualifier) -> u8 {
-        self.qualified_creature_casts[qualifier.index()]
+        match qualifier {
+            CreatureCastQualifier::FlyingNonLemur => self.flying_non_lemur_creature_casts,
+            _ => self.qualified_creature_casts[qualifier.index()],
+        }
     }
 
-    pub(super) fn record_qualified_creature_cast(&mut self, card: Card) {
+    pub(super) fn record_qualified_creature_cast(
+        &mut self,
+        card: Card,
+        traits: programs::SpellCastTraits,
+    ) {
         for qualifier in CreatureCastQualifier::ALL {
-            let count = &mut self.qualified_creature_casts[qualifier.index()];
-            if *count < 2 && qualifier.matches(card) {
+            let count = match qualifier {
+                CreatureCastQualifier::FlyingNonLemur => &mut self.flying_non_lemur_creature_casts,
+                _ => &mut self.qualified_creature_casts[qualifier.index()],
+            };
+            if *count < 2 && traits.matches_qualifier(qualifier, card) {
                 *count += 1;
             }
         }
@@ -299,7 +315,8 @@ fn condition_uses_facts(condition: TriggerCondition) -> bool {
         TriggerCondition::SpellCast {
             filter: CastFilter::FirstQualifiedCreature(_),
             ..
-        } => true,
+        }
+        | TriggerCondition::BendsYou => true,
         TriggerCondition::When { guard, event }
         | TriggerCondition::InterveningIf { guard, event } => {
             guard_uses_facts(guard) || condition_uses_facts(*event)
@@ -446,10 +463,12 @@ impl Game {
         // Suppression does not hide a publicly known definition; old queued packets
         // keep the facts visible after their source leaves or changes controller.
         let observer = self.state.players.iter().any(|p| {
-            p.turn_facts.exhaust_activated_this_turn || p.turn_facts.coin_flipped_this_turn
-        }) || self.state.objects.iter().any(|o| {
+            p.turn_facts.exhaust_activated_this_turn
+                || p.turn_facts.coin_flipped_this_turn
+                || p.turn_facts.bent_elements != 0
+        }) || self.state.objects.iter().enumerate().any(|(id, o)| {
             o.zone == Zone::Battlefield
-                && (o.card.triggers().iter().any(trigger_uses_facts)
+                && (self.has_trigger(id as CardId, trigger_uses_facts)
                     || o.card.static_ability_groups().iter().any(|group| {
                         group.fragments.iter().any(|fragment| match fragment {
                             StaticAbilityFragment::KeywordGrant(_, grant) => {

@@ -1,0 +1,511 @@
+{
+  "decks": [
+    {
+      "id": "wu-air",
+      "name": "White-blue Airbend and flying",
+      "cards": [
+        {
+          "name": "Aang's Iceberg",
+          "oracle_id": "646f9ad8-9d18-4b42-954a-e21a62e9f0e8",
+          "count": 4
+        },
+        {
+          "name": "Aang, Swift Savior // Aang and La, Ocean's Fury",
+          "oracle_id": "cbf09050-39d0-463b-96db-9e22011ae0d8",
+          "count": 4
+        },
+        {
+          "name": "Air Nomad Legacy",
+          "oracle_id": "9e830359-ab92-4bfd-82b3-d9c67ac80cf7",
+          "count": 4
+        },
+        {
+          "name": "Airbender Ascension",
+          "oracle_id": "c4d2fdf9-637d-4e97-ae33-45f2d27bf8cd",
+          "count": 4
+        },
+        {
+          "name": "Airbending Lesson",
+          "oracle_id": "e101b744-9175-4aa5-bf80-d6944359e538",
+          "count": 4
+        },
+        {
+          "name": "Appa, Steadfast Guardian",
+          "oracle_id": "03c141ca-11e4-4927-a6bd-980ee1203c73",
+          "count": 4
+        },
+        {
+          "name": "Invasion Reinforcements",
+          "oracle_id": "185316ff-6fb7-4b5c-8a60-3238674562a6",
+          "count": 4
+        },
+        {
+          "name": "Island",
+          "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+          "count": 10
+        },
+        {
+          "name": "Katara, Water Tribe's Hope",
+          "oracle_id": "234fb291-0b62-4092-9071-81311c71bd53",
+          "count": 4
+        },
+        {
+          "name": "Momo, Friendly Flier",
+          "oracle_id": "a3c56e71-0de6-447a-a9b4-0971f56c2362",
+          "count": 4
+        },
+        {
+          "name": "North Pole Gates",
+          "oracle_id": "3fcd1432-66d0-40e1-85ef-b57a6fa94b7c",
+          "count": 4
+        },
+        {
+          "name": "Plains",
+          "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "id": "ub-water",
+      "name": "Blue-black Waterbend and graveyard casting",
+      "cards": [
+        {
+          "name": "Accumulate Wisdom",
+          "oracle_id": "a63eb744-71c4-447d-9372-c3a734f022c5",
+          "count": 4
+        },
+        {
+          "name": "Crashing Wave",
+          "oracle_id": "c8d3936f-4c08-4ffe-83c9-7ed26fb8f9cd",
+          "count": 4
+        },
+        {
+          "name": "Hama, the Bloodbender",
+          "oracle_id": "ef80e174-78e8-412d-a6fe-89c7af746669",
+          "count": 4
+        },
+        {
+          "name": "Island",
+          "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+          "count": 10
+        },
+        {
+          "name": "Koh, the Face Stealer",
+          "oracle_id": "2bbb33e3-7d03-457c-92bb-b0c943615fa1",
+          "count": 4
+        },
+        {
+          "name": "Serpent's Pass",
+          "oracle_id": "f715f701-a735-42ab-b31a-8e1bd04ac5ff",
+          "count": 4
+        },
+        {
+          "name": "Swamp",
+          "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+          "count": 10
+        },
+        {
+          "name": "Teo, Spirited Glider",
+          "oracle_id": "ea74940f-01de-4804-92ed-b273fddf6d62",
+          "count": 4
+        },
+        {
+          "name": "Waterbender Ascension",
+          "oracle_id": "aeddfdc2-149b-4703-ba57-8d844b25ef08",
+          "count": 4
+        },
+        {
+          "name": "Waterbending Lesson",
+          "oracle_id": "3d28886c-46bf-4d2e-a257-cb9016cc3573",
+          "count": 4
+        },
+        {
+          "name": "Watery Grasp",
+          "oracle_id": "520b2799-66bd-40bf-9bc0-9cd3aed321f5",
+          "count": 4
+        },
+        {
+          "name": "Wolfbat",
+          "oracle_id": "adc47a25-daab-49c7-93a5-5bbf2bc20cf9",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "ubr-fire",
+      "name": "Blue-black-red Firebending and exile casts",
+      "cards": [
+        {
+          "name": "Airship Engine Room",
+          "oracle_id": "01ed9139-293d-4477-a145-3c6fe59266c7",
+          "count": 4
+        },
+        {
+          "name": "Azula, Cunning Usurper",
+          "oracle_id": "7c9e351d-2e6c-4050-9c3d-b15bb9255a4d",
+          "count": 4
+        },
+        {
+          "name": "Boiling Rock Prison",
+          "oracle_id": "6caabc45-4644-4941-a2f3-f04ee7b50a89",
+          "count": 4
+        },
+        {
+          "name": "Dai Li Indoctrination",
+          "oracle_id": "5591efbc-1b2c-489a-b4f3-935c9b6bd71a",
+          "count": 4
+        },
+        {
+          "name": "Fire Lord Azula",
+          "oracle_id": "2631130e-63e2-43a3-914a-648e76722203",
+          "count": 4
+        },
+        {
+          "name": "Fire Nation Attacks",
+          "oracle_id": "399fba23-fc13-440b-ab67-192eede6ecab",
+          "count": 4
+        },
+        {
+          "name": "Fire Nation Raider",
+          "oracle_id": "b37e9bc5-6a2c-4f08-b856-3f8d0d16defb",
+          "count": 4
+        },
+        {
+          "name": "Firebender Ascension",
+          "oracle_id": "96cc63af-69d1-4493-b241-0cb244a9e48a",
+          "count": 4
+        },
+        {
+          "name": "Firebending Lesson",
+          "oracle_id": "a9282f91-638e-414b-8b3d-9a99e30aec96",
+          "count": 4
+        },
+        {
+          "name": "Island",
+          "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+          "count": 2
+        },
+        {
+          "name": "Mountain",
+          "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+          "count": 6
+        },
+        {
+          "name": "Serpent's Pass",
+          "oracle_id": "f715f701-a735-42ab-b31a-8e1bd04ac5ff",
+          "count": 4
+        },
+        {
+          "name": "Sozin's Comet",
+          "oracle_id": "bc0da02c-2b85-4ddc-9ce0-63934dd14164",
+          "count": 4
+        },
+        {
+          "name": "Swamp",
+          "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+          "count": 4
+        },
+        {
+          "name": "Zuko, Exiled Prince",
+          "oracle_id": "3231ce2e-d4f8-44fc-872d-aeafa59aed4b",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "grw-earth",
+      "name": "Green-red-white Earthbend and artifacts",
+      "cards": [
+        {
+          "name": "Earth Kingdom General",
+          "oracle_id": "e43c31ee-1bac-4f96-8b74-334b3238ab73",
+          "count": 4
+        },
+        {
+          "name": "Earth Kingdom Jailer",
+          "oracle_id": "1b799c30-4a43-403d-b822-0555bd513913",
+          "count": 4
+        },
+        {
+          "name": "Earth Kingdom Soldier",
+          "oracle_id": "4289f2d4-3db2-4dd1-9c18-af3f78309844",
+          "count": 4
+        },
+        {
+          "name": "Earth Rumble Wrestlers",
+          "oracle_id": "1de17747-27e8-40bb-b6f7-6d5402d4705c",
+          "count": 4
+        },
+        {
+          "name": "Earthbender Ascension",
+          "oracle_id": "f8966fd5-2926-4ba0-b7d6-cfea40cd4e05",
+          "count": 4
+        },
+        {
+          "name": "Forest",
+          "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+          "count": 8
+        },
+        {
+          "name": "Kyoshi Battle Fan",
+          "oracle_id": "849e54f9-7662-4186-859c-e4f52afbccac",
+          "count": 4
+        },
+        {
+          "name": "Kyoshi Village",
+          "oracle_id": "da81b78b-89fd-4fc1-9395-b5b01b96be70",
+          "count": 4
+        },
+        {
+          "name": "Mountain",
+          "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+          "count": 4
+        },
+        {
+          "name": "Omashu City",
+          "oracle_id": "6f9a4bb2-5959-4a5c-83af-c2729e6673df",
+          "count": 4
+        },
+        {
+          "name": "Plains",
+          "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+          "count": 4
+        },
+        {
+          "name": "Toph, the Blind Bandit",
+          "oracle_id": "2ce20f43-9357-448f-bb40-7315feb08433",
+          "count": 4
+        },
+        {
+          "name": "Toph, the First Metalbender",
+          "oracle_id": "fbfef028-b10c-4ade-9503-d9af5b0c211b",
+          "count": 4
+        },
+        {
+          "name": "Unlucky Cabbage Merchant",
+          "oracle_id": "d8f7d4c8-bc50-4bcf-b930-797dcb3c2a21",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "gr-land",
+      "name": "Green-red land creatures and fire counters",
+      "cards": [
+        {
+          "name": "Bumi, Unleashed",
+          "oracle_id": "1fef13d8-5da2-46a6-91ed-7a31bd46e538",
+          "count": 4
+        },
+        {
+          "name": "Earthbender Ascension",
+          "oracle_id": "f8966fd5-2926-4ba0-b7d6-cfea40cd4e05",
+          "count": 4
+        },
+        {
+          "name": "Earthbending Lesson",
+          "oracle_id": "5e113f0f-4469-4276-82e1-0a804f3de444",
+          "count": 4
+        },
+        {
+          "name": "Fated Firepower",
+          "oracle_id": "13daa21c-278d-45bd-9a6e-a77d6a558453",
+          "count": 4
+        },
+        {
+          "name": "Flopsie, Bumi's Buddy",
+          "oracle_id": "a8966245-501c-47e4-8ce0-849dcb532eb2",
+          "count": 4
+        },
+        {
+          "name": "Forest",
+          "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+          "count": 10
+        },
+        {
+          "name": "Great Divide Guide",
+          "oracle_id": "79e69a91-d580-47fb-be76-1e32c50d2fa0",
+          "count": 4
+        },
+        {
+          "name": "Mountain",
+          "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+          "count": 10
+        },
+        {
+          "name": "Omashu City",
+          "oracle_id": "6f9a4bb2-5959-4a5c-83af-c2729e6673df",
+          "count": 4
+        },
+        {
+          "name": "Raucous Audience",
+          "oracle_id": "5be6f245-31cf-4294-ace0-ca6ce3463fed",
+          "count": 4
+        },
+        {
+          "name": "Solstice Revelations",
+          "oracle_id": "310c1280-dee8-426f-8440-6132a634a1e0",
+          "count": 4
+        },
+        {
+          "name": "The Earth King",
+          "oracle_id": "d5770b0f-4493-42e9-a2d7-0e74a28da4ba",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "rw-allies",
+      "name": "Red-white Allies, donation and attack triggers",
+      "cards": [
+        {
+          "name": "Earth Kingdom Protectors",
+          "oracle_id": "3bfb3913-808d-444b-97c3-a90af3bc585b",
+          "count": 4
+        },
+        {
+          "name": "Firebending Lesson",
+          "oracle_id": "a9282f91-638e-414b-8b3d-9a99e30aec96",
+          "count": 4
+        },
+        {
+          "name": "Iroh, Tea Master",
+          "oracle_id": "87adda41-113b-4126-8978-25a258b31bdd",
+          "count": 4
+        },
+        {
+          "name": "Mountain",
+          "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+          "count": 10
+        },
+        {
+          "name": "Plains",
+          "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+          "count": 10
+        },
+        {
+          "name": "Suki, Courageous Rescuer",
+          "oracle_id": "70ea1a9d-ec52-4c11-8c4d-0d957e5491ad",
+          "count": 4
+        },
+        {
+          "name": "Sun Warriors",
+          "oracle_id": "513a2fca-fea4-434e-9b25-b0c0d7f322b2",
+          "count": 4
+        },
+        {
+          "name": "Sun-Blessed Peak",
+          "oracle_id": "d188a397-c7d9-4f16-bc21-d9e1b5ffc951",
+          "count": 4
+        },
+        {
+          "name": "United Front",
+          "oracle_id": "c23f260b-b7d3-4c25-a08a-dabdb99e1791",
+          "count": 4
+        },
+        {
+          "name": "Wandering Musicians",
+          "oracle_id": "7166bf81-05c2-457d-a0bb-a175175b8e79",
+          "count": 4
+        },
+        {
+          "name": "Wartime Protestors",
+          "oracle_id": "6557813b-4ee7-4881-a37c-10c8ea097360",
+          "count": 4
+        },
+        {
+          "name": "Water Tribe Rallier",
+          "oracle_id": "64acb083-a0a3-46ec-9c93-b2ac36878703",
+          "count": 4
+        }
+      ]
+    }
+  ],
+  "pairings": [
+    {
+      "p0": "wu-air",
+      "p1": "ub-water",
+      "runs": [
+        {
+          "seed": 2026111200,
+          "starting_player": 0
+        },
+        {
+          "seed": 2026111201,
+          "starting_player": 1
+        }
+      ]
+    },
+    {
+      "p0": "ub-water",
+      "p1": "gr-land",
+      "runs": [
+        {
+          "seed": 2026111202,
+          "starting_player": 0
+        },
+        {
+          "seed": 2026111203,
+          "starting_player": 1
+        }
+      ]
+    },
+    {
+      "p0": "gr-land",
+      "p1": "ubr-fire",
+      "runs": [
+        {
+          "seed": 2026111204,
+          "starting_player": 0
+        },
+        {
+          "seed": 2026111205,
+          "starting_player": 1
+        }
+      ]
+    },
+    {
+      "p0": "ubr-fire",
+      "p1": "rw-allies",
+      "runs": [
+        {
+          "seed": 2026111206,
+          "starting_player": 0
+        },
+        {
+          "seed": 2026111207,
+          "starting_player": 1
+        }
+      ]
+    },
+    {
+      "p0": "rw-allies",
+      "p1": "grw-earth",
+      "runs": [
+        {
+          "seed": 2026111208,
+          "starting_player": 0
+        },
+        {
+          "seed": 2026111209,
+          "starting_player": 1
+        }
+      ]
+    },
+    {
+      "p0": "grw-earth",
+      "p1": "wu-air",
+      "runs": [
+        {
+          "seed": 2026111210,
+          "starting_player": 0
+        },
+        {
+          "seed": 2026111211,
+          "starting_player": 1
+        }
+      ]
+    }
+  ]
+}

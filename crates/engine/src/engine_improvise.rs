@@ -107,7 +107,10 @@ impl Game {
     pub fn improvise_choice(&self) -> Option<ImproviseChoiceView> {
         if !matches!(
             self.state.pending,
-            Pending::Convoke { .. } | Pending::Improvise { .. } | Pending::Delve { .. }
+            Pending::Convoke { .. }
+                | Pending::Improvise { .. }
+                | Pending::Delve { .. }
+                | Pending::Waterbend { .. }
         ) {
             return None;
         }
@@ -161,17 +164,16 @@ impl Game {
                 .iter()
                 .all(|s| self.convoke_eligible(a.item.controller, s.object))
             && (f.improvised.is_empty()
-                || self
-                    .item_activation_tap_payment(&a.item)
-                    .is_some_and(|payment| {
-                        f.improvised.len() as u64 <= payment.cap()
-                            && f.improvised
-                                .iter()
-                                .all(|&r| payment.eligible(self, a.item.controller, r))
-                    })
                 || self.item_improvise(&a.item)
                     && f.improvised
                         .iter()
                         .all(|&r| eligible(self, a.item.controller, r)))
+            && (f.substituted.is_empty()
+                || a.tap_payment().is_some_and(|payment| {
+                    f.substituted.len() as u64 <= payment.cap()
+                        && f.substituted
+                            .iter()
+                            .all(|&r| payment.eligible(self, a.item.controller, r))
+                }))
     }
 }

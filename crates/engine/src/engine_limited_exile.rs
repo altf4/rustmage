@@ -6,8 +6,20 @@ use super::*;
 pub struct LimitedExilePlay {
     pub source: ObjectRef,
     pub ability_origin: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acquired_link_cohort: Option<u64>,
     pub player: Player,
     pub remaining: u32,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl LimitedExilePlay {
+    fn same_ability(self, other: Self) -> bool {
+        self.source == other.source
+            && self.ability_origin == other.ability_origin
+            && self.acquired_link_cohort == other.acquired_link_cohort
+            && self.player == other.player
+    }
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -16,27 +28,25 @@ impl Game {
         let Some(source) = item.source else {
             return;
         };
+        let approval = LimitedExilePlay {
+            source: source.object,
+            ability_origin: item.source_ability_origin,
+            acquired_link_cohort: item.linked_activation_cohort(),
+            player: item.controller,
+            remaining: 1,
+        };
         let grants = &mut self
             .state
             .linked_choices
             .get_or_insert_default()
             .play_grants;
-        if let Some(grant) = grants.iter_mut().find(|grant| {
-            grant.source == source.object
-                && grant.ability_origin == item.source_ability_origin
-                && grant.player == item.controller
-        }) {
+        if let Some(grant) = grants.iter_mut().find(|grant| grant.same_ability(approval)) {
             grant.remaining = grant
                 .remaining
                 .checked_add(1)
                 .capacity("linked play allowance exhausted");
         } else {
-            grants.push(LimitedExilePlay {
-                source: source.object,
-                ability_origin: item.source_ability_origin,
-                player: item.controller,
-                remaining: 1,
-            });
+            grants.push(approval);
         }
     }
 
@@ -57,6 +67,7 @@ impl Game {
                 && state.links.iter().any(|link| {
                     link.source == grant.source
                         && link.ability_origin == grant.ability_origin
+                        && link.acquired_link_cohort == grant.acquired_link_cohort
                         && link.exiled == exiled
                 })
         })
@@ -82,11 +93,7 @@ impl Game {
             .unwrap()
             .play_grants
             .iter_mut()
-            .find(|grant| {
-                grant.source == approval.source
-                    && grant.player == approval.player
-                    && grant.ability_origin == approval.ability_origin
-            })
+            .find(|grant| grant.same_ability(approval))
             .expect("approved linked play");
         grant.remaining = grant
             .remaining
@@ -114,8 +121,10 @@ impl Game {
                 && !matches!(
                     cast.method,
                     CastMethod::Airbend
+                        | CastMethod::LinkedExileWaterbend
                         | CastMethod::ExileLife
                         | CastMethod::Plot
+                        | CastMethod::Foretell
                         | CastMethod::Warp
                 )
         }) {

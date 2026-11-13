@@ -3,10 +3,36 @@
   "catalogue_id": 135,
   "oracle_id": "c15e5e93-2eff-407d-ae75-437e36ef85ba",
   "facts_sha256": "784bb7164075f25a419c6b084810bc917cce89aed3631edbdc6e6d1574a2a989",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9213ea88f790e0927512059dcc38537ef244b743a7b0432c7040d18c3bf900dd"
   },
-  "physical_metadata_sha256": "65889909df9fa65fdc5d84f62af9bb140f1aea01cb5f449d1fb50fc4afa12544"
+  "physical_metadata_sha256": "65889909df9fa65fdc5d84f62af9bb140f1aea01cb5f449d1fb50fc4afa12544",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AlliesAtLast.java",
+  "java_sha256": "ae802144646d292c53801d18bf59406ee22d3d9fd4b215c22cc576fe940e102a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TargetsDamageTargetsEffect.java",
+      "sha256": "9ef40a905c680d20d0f46e9d7d5e1e6e3176e7684bddd45d0d63fe0a5d3d3f4f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/AffinityAbility.java",
+      "sha256": "b1b523671266f687df90eb3003d186bb0f68f9ca99ccaffe675f25ed11f40547"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+      "sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_green/spells.rs"
 }

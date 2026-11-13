@@ -349,6 +349,44 @@ fn attack_damage_keeps_the_defending_player_and_counts_current_equipped_creature
     }
 }
 
+const POWER_DECLARATION_OBSERVER: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::CreaturesAttackDeclared {
+            minimum: 1,
+            power_min: Some(4),
+            guard: StepGuard::Always,
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::DrawScaled(
+            PlayerSet::Controller,
+            AmountValue::DeclaredAttackerCount,
+        )],
+    }],
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn a_power_filtered_declaration_counts_the_original_qualifying_objects() {
+    let _rules = fixture_rules::activate(&[(Card::GoblinPiker, &POWER_DECLARATION_OBSERVER)]);
+    let player = Player::P1;
+    let mut game = scenario(player);
+    put(&mut game, player, "Goblin Piker", Zone::Battlefield);
+    let first = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let second = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let small = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    for card in [first, second] {
+        game.add_counter(card, CounterKind::PlusOne, 1);
+    }
+    game.begin_step(Step::BeginCombat);
+    declare(&mut game, &[first, second, small]);
+    assert_eq!(game.state.stack.len(), 1);
+    game.move_object(first, Zone::Exile);
+    game.state.objects[second as usize].growth.power = -2;
+    pass_pair(&mut game);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 2);
+}
+
 const BIRD_OBSERVER: CardRules = CardRules {
     effect: Effect::Creature(3, 5),
     triggers: &[

@@ -227,6 +227,7 @@ impl Game {
                     once_per_turn: true,
                     shared: false,
                     craft: true,
+                    chosen_cohort: None,
                 });
         }
     }

@@ -3,10 +3,61 @@
   "catalogue_id": 3394,
   "oracle_id": "f75ac0a3-8795-48b4-91fd-4717900ef5b7",
   "facts_sha256": "f4a7d933d2c741437bae4bbec64cceca233c596947d77ac351b8cc6cb4827d08",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cf9a08be60aa1913e0ba047c6b2fca58c79fc5ce530e2ac828da573b7b9fe4cd"
   },
-  "physical_metadata_sha256": "273fa9b147a50b082d27d88f216bfab4bb643b570abed095161869bb98e7ec94"
+  "physical_metadata_sha256": "273fa9b147a50b082d27d88f216bfab4bb643b570abed095161869bb98e7ec94",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RavenEagle.java",
+  "java_sha256": "bc9d32074bed0a025de816dc96a82623ab7356d4f6fa347ebf3d6497f335c556",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DrawNthCardTriggeredAbility.java",
+      "sha256": "095cd64414b755c8b1ccc32a24549901ecc2600dd2483688c6a44c0dacca1b55"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrAttacksSourceTriggeredAbility.java",
+      "sha256": "b5c87d096aa0a689c9915ee2c8c8f8b6eb0fcd2acd4ad8c0c8696c6204f27224"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+      "sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/ClueArtifactToken.java",
+      "sha256": "711939b0212d808576d149e8c95b0007df2e003c29095ddb26c4cdce94a3ddd8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInGraveyard.java",
+      "sha256": "906e86825eed8b6d1a0e9e72c0761aa181aabdc61abbf99fd526f2d3531020b7"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_black.rs"
 }

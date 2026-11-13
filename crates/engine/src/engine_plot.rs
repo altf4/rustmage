@@ -1,4 +1,4 @@
-//! Plot is a paid special action; only its later alternative cast is a spell.
+//! Plot and foretell are paid special actions with independent later casts.
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -16,6 +16,8 @@ pub struct PlotPaymentView {
     pub cost: ManaCost,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub from_library: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub foretell: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub x_symbols: Option<std::num::NonZeroU32>,
 }
@@ -58,15 +60,37 @@ impl PlotPaymentView {
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct ForetoldCardView {
+    pub serial: u64,
+    pub owner: Player,
+    pub foretold_turn: u32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub object: Option<ObjectRef>,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+struct ForetoldCard {
+    serial: u64,
+    object: ObjectRef,
+    owner: Player,
+    foretold_turn: u32,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct PlotState {
     pub cards: Vec<PlottedCard>,
+    foretold: Vec<ForetoldCard>,
     pub payment: Option<PlotPaymentView>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl PlotState {
     pub fn bytes(&self) -> usize {
-        std::mem::size_of::<Self>() + self.cards.len() * std::mem::size_of::<PlottedCard>()
+        std::mem::size_of::<Self>()
+            + self.cards.len() * std::mem::size_of::<PlottedCard>()
+            + self.foretold.len() * std::mem::size_of::<ForetoldCard>()
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -110,6 +134,7 @@ impl Game {
                 self.state.objects[card as usize].card.plot_cost().unwrap(),
             ),
             from_library: false,
+            foretell: false,
             x_symbols: None,
         });
     }
@@ -140,12 +165,13 @@ impl Game {
         }
         let object = self.object_ref(id);
         let mut visit = |cost, x_symbols| {
-            self.library_top_plot_fundable(PlotPaymentView {
+            self.plot_payment_fundable(PlotPaymentView {
                 object,
                 source_card: source.card,
                 controller: actor,
                 cost,
                 from_library: true,
+                foretell: false,
                 x_symbols,
             }) && emit(Action::AnnounceLibraryTopPlot {
                 object,
@@ -191,6 +217,7 @@ impl Game {
             controller: actor,
             cost,
             from_library: true,
+            foretell: false,
             x_symbols,
         });
     }
@@ -213,7 +240,7 @@ impl Game {
         let mut maximum = (u32::MAX - request.cost.generic) / symbols;
         while minimum < maximum {
             let midpoint = minimum + (maximum - minimum).div_ceil(2);
-            if self.library_top_plot_fundable(request.choose_x(midpoint)) {
+            if self.plot_payment_fundable(request.choose_x(midpoint)) {
                 minimum = midpoint;
             } else {
                 maximum = midpoint - 1;
@@ -239,8 +266,13 @@ impl Game {
     pub(super) fn finish_plot(&mut self, payment: Mana) {
         let pending = self.state.plot.as_mut().unwrap().payment.take().unwrap();
         self.spend_mana(pending.controller, payment);
-        let event = self.move_object(pending.object.card, Zone::Exile);
-        self.commit_plotted_move(&event);
+        if pending.foretell {
+            self.foretell(pending);
+        } else {
+            let event = self.move_object(pending.object.card, Zone::Exile);
+            self.commit_plotted_move(&event);
+        }
+        self.clear_empty_plot_state();
         self.state.pending = Pending::Priority;
         self.state.priority = pending.controller;
         self.state.passes = 0;
@@ -305,18 +337,156 @@ impl Game {
             }
         }
         let source = self.object_view(object.card);
-        for (index, ability) in source.card.triggers().iter().enumerate() {
+        for (index, ability) in source.trigger_templates() {
             if ability.condition.event() == TriggerCondition::SelfBecomesPlotted {
                 self.queue_trigger(&source, index);
             }
         }
     }
-    pub(super) fn remove_plotted(&mut self, object: ObjectRef) {
-        if let Some(p) = self.state.plot.as_mut() {
-            p.cards.retain(|p| p.object != object);
-            if p.cards.is_empty() && p.payment.is_none() {
-                self.state.plot = None;
-            }
+    pub(super) fn remove_plot_and_foretell(&mut self, object: ObjectRef) {
+        if let Some(state) = &mut self.state.plot {
+            state.cards.retain(|card| card.object != object);
+            state.foretold.retain(|card| card.object != object);
+        }
+        self.clear_empty_plot_state();
+    }
+    fn clear_empty_plot_state(&mut self) {
+        if self.state.plot.as_ref().is_some_and(|state| {
+            state.cards.is_empty() && state.foretold.is_empty() && state.payment.is_none()
+        }) {
+            self.state.plot = None;
+        }
+    }
+
+    fn foretell_request(&self, actor: Player, object: ObjectRef) -> PlotPaymentView {
+        PlotPaymentView {
+            object,
+            source_card: self.state.objects[object.card as usize].card,
+            controller: actor,
+            cost: ManaCost {
+                colored: [0; 6],
+                generic: 2,
+            },
+            from_library: false,
+            foretell: true,
+            x_symbols: None,
+        }
+    }
+
+    pub(super) fn visit_foretell(
+        &self,
+        actor: Player,
+        card: CardId,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let candidate = &self.state.objects[card as usize];
+        if actor != self.state.active
+            || candidate.zone != Zone::Hand
+            || candidate.owner != actor
+            || !candidate.is_card()
+            || candidate.card.foretell_cost().is_none()
+        {
+            return false;
+        }
+        let object = self.object_ref(card);
+        self.plot_payment_fundable(self.foretell_request(actor, object))
+            && emit(Action::AnnounceForetell { object })
+    }
+
+    pub(super) fn begin_foretell(&mut self, actor: Player, object: ObjectRef) {
+        self.start_plot_payment(self.foretell_request(actor, object));
+    }
+
+    fn foretell(&mut self, request: PlotPaymentView) {
+        self.obscure_private_hand_selection_matching(request.controller, |card| {
+            card.foretell_cost().is_some()
+        });
+        let event = self.move_object_raw(request.object.card, Zone::Exile);
+        if event.moved && event.destination == Zone::Exile && event.was_card {
+            self.remember_face_down_exile(event.after, 1 << request.controller.index(), None);
+            let serial = self.next_role_timestamp();
+            self.state
+                .plot
+                .as_mut()
+                .unwrap()
+                .foretold
+                .push(ForetoldCard {
+                    serial,
+                    object: event.after,
+                    owner: request.controller,
+                    foretold_turn: self.state.turn,
+                });
+        }
+        self.finish_zone_events(std::slice::from_ref(&event), &[]);
+    }
+
+    pub(super) fn is_foretold(&self, object: ObjectRef) -> bool {
+        self.state
+            .plot
+            .as_ref()
+            .is_some_and(|state| state.foretold.iter().any(|card| card.object == object))
+    }
+
+    pub(super) fn foretold_cards(&self, viewer: Player) -> Vec<ForetoldCardView> {
+        self.state.plot.as_ref().map_or_else(Vec::new, |state| {
+            state
+                .foretold
+                .iter()
+                .map(|card| ForetoldCardView {
+                    serial: card.serial,
+                    owner: card.owner,
+                    foretold_turn: card.foretold_turn,
+                    object: self
+                        .can_view_hideaway(viewer, card.object)
+                        .then_some(card.object),
+                })
+                .collect()
+        })
+    }
+
+    pub(super) fn visit_foretold_casts(
+        &self,
+        actor: Player,
+        card: CardId,
+        sorcery: bool,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let Some(state) = &self.state.plot else {
+            return false;
+        };
+        let object = self.object_ref(card);
+        if !state.foretold.iter().any(|row| {
+            row.object == object && row.owner == actor && self.state.turn > row.foretold_turn
+        }) {
+            return false;
+        }
+        CastFace::choices(self.state.objects[card as usize].card).any(|face| {
+            [false, true].into_iter().any(|flash_surcharge| {
+                self.permitted_cast_available(
+                    actor,
+                    card,
+                    CastMethod::Foretell,
+                    face,
+                    sorcery,
+                    flash_surcharge,
+                ) && emit(Action::AnnounceForetold {
+                    object,
+                    face,
+                    flash_surcharge,
+                })
+            })
+        })
+    }
+
+    pub(super) fn configure_foretold_cast(item: &mut SpellView, flash_surcharge: bool) {
+        let cast = item.cast.as_mut().expect("foretold spell");
+        cast.method = CastMethod::Foretell;
+        cast.flash_surcharge = flash_surcharge;
+        cast.spend_any_mana = false;
+        cast.exile_on_graveyard = false;
+        cast.stash_origin = false;
+        if item.source.expect("foretold spell source").card.x_symbols() > 0 {
+            item.x = Some(0);
         }
     }
     pub(super) fn has_plotted_permission(&self, actor: Player, card: CardId) -> bool {

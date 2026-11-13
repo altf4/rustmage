@@ -259,7 +259,7 @@ impl Game {
         suppression: u16,
     ) {
         for source in sources {
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 let (other, predicate) = match ability.condition.event() {
                     TriggerCondition::CreaturesFromGraveyardEnterYou { other } => (other, None),
                     TriggerCondition::FilteredEntersBatchYou { predicate, other }

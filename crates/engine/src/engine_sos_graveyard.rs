@@ -22,7 +22,7 @@ impl Game {
         // observe it; a departing or newly blanked source can.
         for source in observers.iter().filter(|source| {
             source.printed_abilities_available()
-                && source.card.triggers().iter().any(|ability| {
+                && source.trigger_templates().any(|(_, ability)| {
                     ability.condition.event()
                         == TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
                 })
@@ -56,7 +56,7 @@ impl Game {
                         && self.current_kinds(object.card) & 1 != 0
                 })
                 .collect();
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 if ability.condition.event()
                     == TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
                     && self.queue_trigger(source, index)
@@ -90,7 +90,7 @@ impl Game {
             .iter()
             .filter(|source| source.printed_abilities_available())
         {
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 if ability.condition.event()
                     == TriggerCondition::CardsExiledFromBattlefieldOrGraveyard
                     && self.queue_trigger(source, index)
@@ -114,17 +114,13 @@ impl Game {
             .death_sources
             .iter()
             .any(|&id| {
-                self.state.objects[id as usize]
-                    .card
-                    .triggers()
-                    .iter()
-                    .any(|ability| {
-                        matches!(
-                            ability.condition.event(),
-                            TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
-                                | TriggerCondition::CardsExiledFromBattlefieldOrGraveyard
-                        )
-                    })
+                self.has_trigger(id, |ability| {
+                    matches!(
+                        ability.condition.event(),
+                        TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
+                            | TriggerCondition::CardsExiledFromBattlefieldOrGraveyard
+                    )
+                })
             })
             .then(|| self.freeze_graveyard_observers())
             .flatten()
@@ -135,9 +131,9 @@ impl Game {
             .objects
             .iter()
             .enumerate()
-            .filter(|(_, o)| {
+            .filter(|(id, o)| {
                 o.zone == Zone::Battlefield
-                    && o.card.triggers().iter().any(|a| {
+                    && self.has_trigger(*id as CardId, |a| {
                         matches!(
                             a.condition.event(),
                             TriggerCondition::CardsLeaveGraveyard
@@ -176,7 +172,7 @@ impl Game {
             if !departed[source.controller.index()] {
                 continue;
             }
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 match ability.condition.event() {
                     TriggerCondition::CardsLeaveGraveyardKinds(_)
                     | TriggerCondition::CardsLeaveGraveyard => {
@@ -277,8 +273,7 @@ impl Game {
             if source.zone != Zone::Battlefield || !entered[source.controller.index()] {
                 continue;
             }
-            let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
-            for (index, ability) in definition.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates_from(grant.as_ref()) {
                 if ability.condition.event() != condition {
                     continue;
                 }

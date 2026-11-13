@@ -30,7 +30,8 @@ fn selected_for(program: &[Instruction], cave_only: bool) -> bool {
         Instruction::Modal(modes)
         | Instruction::ModalOnce(modes)
         | Instruction::ModalOncePerTurn(modes)
-        | Instruction::ModalUpToX { modes, .. } => {
+        | Instruction::ModalUpToX { modes, .. }
+        | Instruction::ModalUpToStat { modes, .. } => {
             modes.iter().any(|m| selected_for(m.program, cave_only))
         }
         Instruction::SelectLibraryTo(effect)

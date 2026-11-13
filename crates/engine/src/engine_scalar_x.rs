@@ -501,6 +501,16 @@ impl Game {
                     }
                 })
                 .unwrap_or(0),
+            AmountValue::TargetDamagedThisTurn(group) => {
+                u128::from(item.targets.iter().any(|&bound| {
+                    bound.group == group
+                        && self.same_target_object(bound)
+                        && matches!(
+                            bound.target,
+                            Target::Card(id) if self.state.objects[id as usize].damaged_this_turn
+                        )
+                }))
+            }
             AmountValue::DelayedExiledCardCount => self.count_delayed_exiled_cards(item) as u128,
             AmountValue::TargetPlayerCreatureCount | AmountValue::TargetPlayersCreatureCount => {
                 let mut chosen = 0u8;
@@ -784,11 +794,7 @@ impl Game {
             AmountValue::EquippedCreaturesYouControl => {
                 self.equipped_creature_count(item.controller)
             }
-            AmountValue::DeclaredAttackerCount => item
-                .reflexive_subject
-                .as_deref()
-                .filter(|subjects| !subjects.action)
-                .map_or(0, |subjects| 1 + subjects.additional_objects.len() as u128),
+            AmountValue::DeclaredAttackerCount => item.declared_attacker_count(),
             AmountValue::SourceEquipmentCount => self.source_equipment_quantity(item),
             AmountValue::SourcePower => item.source.map_or(0, |source| {
                 if self.on_battlefield(source.id) && self.object_ref(source.id) == source.object {
@@ -831,6 +837,20 @@ impl Game {
                     object.generation == reference.generation
                         && object.zone == Zone::Graveyard
                         && object.card.is_creature()
+                })
+                .count() as u128,
+            AmountValue::MilledSubtypeCount(subtype) => self
+                .state
+                .resolving
+                .as_ref()
+                .unwrap()
+                .milled
+                .iter()
+                .copied()
+                .filter(|&reference| {
+                    self.public_milled_object(reference)
+                        && !self.exiled_face_down(reference)
+                        && self.has_subtype(reference.card, subtype)
                 })
                 .count() as u128,
             AmountValue::Divided { value, divisor } => {

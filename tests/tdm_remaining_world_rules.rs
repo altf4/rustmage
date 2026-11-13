@@ -1870,9 +1870,9 @@ fn prevention_callback_can_read_both_the_damage_actor_and_its_latest_controller(
 #[test]
 fn source_prevention_layout_matches_the_integrated_shared_state_budget() {
     assert_eq!(std::mem::size_of::<Object>(), 160);
-    // The shared state includes turn history and owned receipts for pending
-    // casts and events. The permanent record stays at 160 bytes.
-    assert_eq!(std::mem::size_of::<State>(), 5472);
+    // The shared state includes bend history and owned cast and event
+    // receipts. The permanent record stays at 160 bytes.
+    assert_eq!(std::mem::size_of::<State>(), 5552);
     if let Ok(path) = std::env::var("RUSTMAGE_TDM_WORLD_LAYOUT") {
         let layout = serde_json::json!({
             "Object":std::mem::size_of::<Object>(),"ObjectView":std::mem::size_of::<ObjectView>(),

@@ -3,10 +3,36 @@
   "catalogue_id": 5176,
   "oracle_id": "5cf18398-9552-415e-a61f-2c149e35ec3d",
   "facts_sha256": "1a1fd5f75807e143d228a1b57701085783e0c44d287e69972aeb0d54fa6b368e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "31230264ff7b04a64c1c3bb4103e033acce4b9b20eafdad07506c5b07a26524f"
   },
-  "physical_metadata_sha256": "2597c2041bc943a0ce1de15296d0db4c83d17fb41037e090988e7ac7db16a3aa"
+  "physical_metadata_sha256": "2597c2041bc943a0ce1de15296d0db4c83d17fb41037e090988e7ac7db16a3aa",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/z/ZukosExile.java",
+  "java_sha256": "f04fbfda4f88cdb564575e9d53dac435d5022b5755dcc2f2bfd513b3682f9e26",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenControllerTargetEffect.java",
+      "sha256": "ee33348ac4782cb614e73ec2dfab077cbf80dd86c9d71f5fdb7cd45c6c0c7139"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/ClueArtifactToken.java",
+      "sha256": "711939b0212d808576d149e8c95b0007df2e003c29095ddb26c4cdce94a3ddd8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_white_colorless/combat.rs"
 }

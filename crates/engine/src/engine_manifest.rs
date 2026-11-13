@@ -832,10 +832,7 @@ impl Game {
             .map(|(id, _)| id as CardId)
             .collect();
         for (source, grant) in self.indexed_trigger_sources(&ids) {
-            let definition = grant
-                .as_ref()
-                .map_or(source.card, |grant| grant.granting_card);
-            for (index, ability) in definition.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates_from(grant.as_ref()) {
                 let matched = match ability.condition.event() {
                     TriggerCondition::SelfTurnedFaceUp
                     | TriggerCondition::SelfEntersOrTurnsFaceUp => source.reference == object,
@@ -893,10 +890,7 @@ impl Game {
             .map(|(id, _)| id as CardId)
             .collect();
         for (source, grant) in self.indexed_trigger_sources(&ids) {
-            let definition = grant
-                .as_ref()
-                .map_or(source.card, |grant| grant.granting_card);
-            for (index, ability) in definition.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates_from(grant.as_ref()) {
                 if ability.condition.event() == TriggerCondition::YouManifestDread
                     && source.controller == event.player
                     && self.queue_trigger_from(&source, index, grant.map(Box::new))

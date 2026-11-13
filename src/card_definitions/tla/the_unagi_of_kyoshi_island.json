@@ -3,10 +3,46 @@
   "catalogue_id": 4511,
   "oracle_id": "be922360-ee9f-4cfb-bf10-d481c5de5cb1",
   "facts_sha256": "583b68a4b5cbfe2e803897a11a20cf4038206fadbe058c102a8ac6d0270083b9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e58341bd099efbcc2fefe6a55542db4de6232a584d83fda7003a9c1fa10b7127"
   },
-  "physical_metadata_sha256": "11349a69017f292bfa99e7a35106a88678e7fb00242ed35d3ec92bc067cbf1bd"
+  "physical_metadata_sha256": "11349a69017f292bfa99e7a35106a88678e7fb00242ed35d3ec92bc067cbf1bd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheUnagiOfKyoshiIsland.java",
+  "java_sha256": "a51c02f65edea5a2fb956f1d4c7a4a7d87c386c5db87f9c26c29851ae557f9c0",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DrawNthCardTriggeredAbility.java",
+      "sha256": "095cd64414b755c8b1ccc32a24549901ecc2600dd2483688c6a44c0dacca1b55"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/WaterbendCost.java",
+      "sha256": "216fa6e097077e73b5fcc3a1e71fe59ef6d16d27dd33681202db95643b7c451b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_blue.rs"
 }

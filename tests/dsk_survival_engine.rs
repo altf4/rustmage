@@ -239,6 +239,7 @@ fn lifetime_limit_is_owned_and_counts_a_countered_occurrence_until_blink() {
         definition: Card::GrizzlyBears,
         ability: 0,
         origin: None,
+        acquired_link_cohort: None,
     };
     for viewer in [player, player.other()] {
         assert_eq!(raw.observe(viewer).triggered_this_incarnation, vec![used]);

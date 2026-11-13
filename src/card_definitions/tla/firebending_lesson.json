@@ -8,5 +8,36 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8656cb7ebc99d33ee0c2f3a6f9d7f0ae1aee70695c635efd83b8be41e5cc46cd"
   },
-  "physical_metadata_sha256": "fd202ba93624478e319dc88325315ccf3cedfabd09caa871a675c496d0e83846"
+  "physical_metadata_sha256": "fd202ba93624478e319dc88325315ccf3cedfabd09caa871a675c496d0e83846",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FirebendingLesson.java",
+  "java_sha256": "ad24dc87effa858d5e5d95f9b985c32d490ceda7b597b87e376bb4ed1a9d1820",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/KickedCondition.java",
+      "sha256": "6c4e759d58e4d9a85bcf6d6262fcae06b43a04d08ffbf3c71d7d850dbfba5a04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/KickerAbility.java",
+      "sha256": "fa52c368056b1e9798f37a5af5bb70a0fe935aaf23a71dcf592a67eae3e13650"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_red/inherited.rs"
 }

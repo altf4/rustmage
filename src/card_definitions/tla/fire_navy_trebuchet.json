@@ -3,10 +3,66 @@
   "catalogue_id": 1525,
   "oracle_id": "1f018a8c-6ceb-4d03-94a7-8713467c9cf5",
   "facts_sha256": "de2166f4d331cfcbf6014c3c65863697c8197a07c61bd48db6a086d3734911f8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "86bdd30d88c8db39f33f932063df9ffcade4a00a67a8f937a0aa0093ab3fd0c7"
   },
-  "physical_metadata_sha256": "bdca2462d96f38bb8628a71f8e805b75295336fd2f502edf4f0e8a9bf0cdd288"
+  "physical_metadata_sha256": "bdca2462d96f38bb8628a71f8e805b75295336fd2f502edf4f0e8a9bf0cdd288",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FireNavyTrebuchet.java",
+  "java_sha256": "2909a45527e69649d2116551d8766d420fa1130fefa481e16455657e31e45833",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+      "sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfNextEndStepDelayedTriggeredAbility.java",
+      "sha256": "9f3272690e0ade9a48526bd13165b3015a71d8bbed9d86a997af960d5f3214a5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeTargetEffect.java",
+      "sha256": "c45c32e2c47bd7f62480c732af33864bcac93ec246a9cf7e292dd32a2d10917c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DefenderAbility.java",
+      "sha256": "ad5269c8613d7ef2e18e64fb3ea53099a4649870fae2cc0a54ad80a50ca0755e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/BallisticBoulderToken.java",
+      "sha256": "c83136511299c390b65f4a2f01ea020f609b9c88d245eac3acc18b9fab5ae30c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Token.java",
+      "sha256": "77098d7376c01bf204d0fed3cd83eb2a99b55b03525dfeff9188e1dbce27903f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+      "sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_black.rs"
 }

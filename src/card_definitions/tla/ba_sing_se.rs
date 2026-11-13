@@ -60,12 +60,12 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             })),
             program: &[
                 Instruction::AnimateEarthbendTargets,
-                Instruction::RegisterEarthbendReturn,
                 Instruction::PutCounters {
                     subject: Subject::Targets,
                     kind: CounterKind::PlusOne,
                     amount: 2,
                 },
+                Instruction::RegisterEarthbendReturn,
             ],
             sorcery: true,
             once_per_turn: false,

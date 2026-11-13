@@ -1,0 +1,29 @@
+{
+  "name": "@token/tla-spirit",
+  "catalogue_id": 5705,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "e456a42595cbefc89b00619f47bb2fd4f36f5790c6d2f800dfbcd846501dfd1e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/SpiritWorldToken.java",
+  "java_sha256": "ae57f7f264662e2acafc67264ee8b81a68b750e914b15b79077620a6383f976d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByCreaturesSourceEffect.java",
+      "sha256": "db532584552c032f8fed7fb9a2cb025e45f58c4710c0d3bb1406f6aab7a338f5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockCreaturesSourceEffect.java",
+      "sha256": "04911b8d87dbbfcdf993ef4e614e43b2477480468c7d8aa4bafec75d4aa40a04"
+    }
+  ],
+  "rules_tests": "tests/tla_token_cards.rs"
+}

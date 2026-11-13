@@ -13,6 +13,7 @@ pub(super) const DONOR_SLOT_WIDTH: u64 = 1;
 // Reserve separate ranges below the exact JSON integer limit. Fresh inherited
 // link cohorts share the inherited range with slots so the two cannot alias.
 const INHERITED_SLOT_BASE: u64 = 1 << 52;
+const CHOSEN_LINK_COHORT_BASE: u64 = 1 << 51;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -51,6 +52,8 @@ pub(super) struct Link {
     pub shared: bool,
     /// Materials remain associated with the crafted permanent through copy changes.
     pub craft: bool,
+    /// The sole selected donor for this source ability origin, with a shared link cohort.
+    pub chosen_cohort: Option<u64>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -68,6 +71,39 @@ pub struct BorrowedAbilityView {
     /// any restriction printed on the donor.
     #[serde(skip_serializing_if = "is_false")]
     pub acquired_once_per_turn: bool,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct AcquiredTriggersView {
+    pub exiled: ObjectRef,
+    pub definition: Card,
+    pub cohort: u64,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn chosen_trigger_donor<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+) -> Option<AcquiredTriggersView> {
+    let links = world.game().state.borrowed_links.as_ref()?;
+    let object = world.object(id);
+    if object.zone != Zone::Battlefield || !object.card.grants_chosen_linked_creature_abilities() {
+        return None;
+    }
+    let source = world.reference(id);
+    let origin = world.ability_origin(id);
+    let link = links.iter().find(|link| {
+        link.chosen_cohort.is_some() && link.source == source && link.origin == origin
+    })?;
+    let donor = world.object(link.exiled.card);
+    (donor.zone == Zone::Exile
+        && world.reference(link.exiled.card) == link.exiled
+        && !world.game().exiled_face_down(link.exiled))
+    .then(|| AcquiredTriggersView {
+        exiled: link.exiled,
+        definition: donor.card,
+        cohort: link.chosen_cohort.expect("chosen linked donor"),
+    })
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -316,12 +352,25 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
         {
             continue;
         }
-        for (index, _) in card.card.activations().iter().enumerate() {
+        let chosen_link = link.chosen_cohort.map(|id| LinkCohort {
+            id,
+            paired: true,
+            live: true,
+        });
+        if chosen_link.is_some()
+            && (!source.card.grants_chosen_linked_creature_abilities()
+                || !card.is_card()
+                || world.game().exiled_face_down(link.exiled))
+        {
+            continue;
+        }
+        for (index, activation) in card.card.activations().iter().enumerate() {
             if card.card.legacy_subtype_mana_activation(index as u16) {
                 continue;
             }
             if card.card.grants_activation(index as u16)
                 || card.card.self_granted_activation_template(index as u16)
+                || chosen_link.is_some() && activation.source_zone() != Zone::Battlefield
             {
                 continue;
             }
@@ -334,7 +383,7 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
                 definition: card.card,
                 ability: index as u16,
                 slot,
-                link: None,
+                link: chosen_link,
                 used: false,
                 once_per_turn: link.once_per_turn,
                 acquisition: link.first_slot,
@@ -361,7 +410,7 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
                     definition: card.card,
                     ability: crate::cards::activation_slots::intrinsic(color),
                     slot,
-                    link: None,
+                    link: chosen_link,
                     used: false,
                     once_per_turn: link.once_per_turn,
                     acquisition: link.first_slot,
@@ -381,7 +430,7 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
                 definition: card.card,
                 ability: u16::MAX,
                 slot,
-                link: None,
+                link: chosen_link,
                 used: false,
                 once_per_turn: link.once_per_turn,
                 acquisition: link.first_slot,
@@ -430,7 +479,10 @@ pub(super) fn assign_slot<W: CharacteristicWorld + ?Sized>(
         desired.slot
     };
     ability.used = world.borrowed_activation_used(ability.source, ability.slot);
-    if !inherited && paired_ghost_activation(ability.definition, ability.ability) {
+    if !inherited
+        && ability.link.is_none()
+        && paired_ghost_activation(ability.definition, ability.ability)
+    {
         ability.link = rows
             .iter()
             .filter(|row| {
@@ -455,9 +507,14 @@ fn next_identity(rows: &[SlotRow], source: ObjectRef, inherited: bool) -> u64 {
         .map(|row| row.link.map_or(row.slot, |link| row.slot.max(link.id)))
         .max()
         .map_or(start, |previous| previous + 1);
-    (identity < start + INHERITED_SLOT_BASE)
-        .then_some(identity)
-        .capacity("borrowed ability slots exhausted")
+    (identity
+        < if inherited {
+            start + INHERITED_SLOT_BASE
+        } else {
+            CHOSEN_LINK_COHORT_BASE
+        })
+    .then_some(identity)
+    .capacity("borrowed ability slots exhausted")
 }
 
 /// CR607.5: an uninterrupted set of granted abilities shares one link. A new
@@ -661,7 +718,50 @@ impl Game {
                 once_per_turn: false,
                 shared,
                 craft: false,
+                chosen_cohort: None,
             });
+    }
+
+    pub(super) fn select_linked_creature_abilities(&mut self, item: &SpellView, exiled: ObjectRef) {
+        let Some(source) = item.source.map(|source| source.object) else {
+            return;
+        };
+        // An acquired choice can read its own paired exiles. The static
+        // ability of the recipient is linked only to its printed choice.
+        if item.linked_activation_cohort().is_some() {
+            return;
+        }
+        let origin = item.source_ability_origin;
+        let same_choice = |link: &Link| {
+            link.source == source && link.origin == origin && link.chosen_cohort.is_some()
+        };
+        if self.state.borrowed_links.as_ref().is_some_and(|links| {
+            links
+                .iter()
+                .any(|link| same_choice(link) && link.exiled == exiled)
+        }) {
+            return;
+        }
+        let timestamp = self.next_role_timestamp();
+        assert!(
+            timestamp < CHOSEN_LINK_COHORT_BASE,
+            "linked creature grant capacity"
+        );
+        let first_slot = graveyard_borrowing::next_slot(self, source);
+        let links = self.state.borrowed_links.get_or_insert_default();
+        links.retain(|link| !same_choice(link));
+        links.push(Link {
+            source,
+            origin,
+            exiled,
+            first_slot,
+            width: DONOR_SLOT_WIDTH,
+            once_per_turn: false,
+            shared: false,
+            craft: false,
+            chosen_cohort: Some(CHOSEN_LINK_COHORT_BASE + timestamp),
+        });
+        self.register_chosen_link_triggers(source.card);
     }
     pub(super) fn borrowed_descriptor(
         &self,
@@ -926,70 +1026,31 @@ impl Game {
                             },
                         );
                     }
-                    if descriptor.inherited.is_some() {
-                        let packet = self.borrowed_activation_packet(actor, *descriptor);
-                        let targets_available = ability.declares_target_value_x()
-                            || ability.modes().map_or_else(
-                                || self.item_targets_available(&packet, self.target_spec(&packet)),
-                                |modes| {
-                                    modes.iter().enumerate().any(|(index, mode)| {
-                                        self.item_mode_eligible(&packet, index)
-                                            && self.modal_choice_unused(&packet, index)
-                                            && self.item_targets_available(&packet, mode.targets)
-                                    })
-                                },
-                            );
-                        return targets_available
-                            && self.initial_activation_packet_target_fundable(
-                                &packet,
-                                &counter_payment,
-                            )
-                            && emit(Action::AnnounceInheritedAbility {
-                                source: descriptor.source,
-                                slot: descriptor.slot,
-                                counter_payment,
-                            });
-                    }
-                    let fundable = self
-                        .activation_mana_costs(card, descriptor.definition, descriptor.ability, 0)
-                        .any(|cost| {
-                            self.initial_activation_target_fundable(
-                                FundingGoal {
-                                    actor,
-                                    required: cost.colored,
-                                    generic: cost.generic,
-                                    reserve: None,
-                                    source: Some((
-                                        descriptor.source,
-                                        descriptor.ability,
-                                        counter_payment.clone(),
-                                        descriptor.definition,
-                                        Some(descriptor.slot),
-                                    )),
-                                },
-                                ability.targets,
-                            )
-                        });
-                    let modes = ability.modes();
+                    let packet = self.borrowed_activation_packet(actor, *descriptor);
                     let targets_available = ability.declares_target_value_x()
-                        || modes.map_or_else(
-                            || self.targets_available(ability.targets, actor, descriptor.source),
+                        || ability.modes().map_or_else(
+                            || self.item_targets_available(&packet, self.target_spec(&packet)),
                             |modes| {
-                                let packet = self.borrowed_activation_packet(actor, *descriptor);
-                                modes.iter().enumerate().any(|(mode_index, mode)| {
-                                    self.modal_choice_unused(&packet, mode_index)
-                                        && self.targets_available(
-                                            mode.targets,
-                                            actor,
-                                            descriptor.source,
-                                        )
+                                modes.iter().enumerate().any(|(index, mode)| {
+                                    self.item_mode_eligible(&packet, index)
+                                        && self.modal_choice_unused(&packet, index)
+                                        && self.item_targets_available(&packet, mode.targets)
                                 })
                             },
                         );
-                    if !fundable || !targets_available {
+                    if !targets_available
+                        || !self
+                            .initial_activation_packet_target_fundable(&packet, &counter_payment)
+                    {
                         return false;
                     }
-                    emit(if descriptor.zone == Zone::Graveyard {
+                    emit(if descriptor.inherited.is_some() {
+                        Action::AnnounceInheritedAbility {
+                            source: descriptor.source,
+                            slot: descriptor.slot,
+                            counter_payment,
+                        }
+                    } else if descriptor.zone == Zone::Graveyard {
                         Action::AnnounceGraveyardBorrowedAbility {
                             card,
                             graveyard: descriptor.donor,

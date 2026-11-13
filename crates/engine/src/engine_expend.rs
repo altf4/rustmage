@@ -14,13 +14,15 @@ pub(super) fn owned_bytes(sources: &Sources) -> usize {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn register_expend_source(&mut self, id: CardId) {
-        let object = &self.state.objects[id as usize];
-        if object.card.triggers().iter().any(|ability| {
+        if self.has_trigger(id, |ability| {
             ability.condition.origin() != Some(TargetZone::Graveyard)
                 && !ability.condition.is_granted()
                 && matches!(ability.condition.event(), TriggerCondition::Expend(_))
         }) {
-            self.state.expend_sources.get_or_insert_default().push(id);
+            let sources = self.state.expend_sources.get_or_insert_default();
+            if !sources.contains(&id) {
+                sources.push(id);
+            }
         }
     }
 
@@ -49,7 +51,7 @@ impl Game {
                 continue;
             }
             let source = self.object_view(id);
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 if let TriggerCondition::Expend(threshold) = ability.condition.event()
                     && before < threshold
                     && threshold <= after

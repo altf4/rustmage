@@ -151,11 +151,10 @@ impl Game {
             {
                 continue;
             }
-            let abilities = self.state.objects[reference.card as usize].card.triggers();
-            let wants_total = abilities
-                .iter()
-                .any(|ability| ability.condition.minimum_dealt_damage().is_some());
-            let wants_recipients = abilities.iter().any(|ability| {
+            let wants_total = self.has_trigger(reference.card, |ability| {
+                ability.condition.minimum_dealt_damage().is_some()
+            });
+            let wants_recipients = self.has_trigger(reference.card, |ability| {
                 matches!(
                     ability.condition.event(),
                     TriggerCondition::SourceDealtDamageToCreatureSubtype(_)
@@ -180,7 +179,7 @@ impl Game {
         }
         for (reference, (amount, recipients)) in hits {
             let source = self.object_view(reference.card);
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 if let TriggerCondition::SourceDealtDamageToCreatureSubtype(subtype) =
                     ability.condition.event()
                 {
@@ -261,10 +260,7 @@ impl Game {
             if observer.controller != controller {
                 continue;
             }
-            let definition = grant
-                .as_ref()
-                .map_or(observer.card, |grant| grant.granting_card);
-            for (index, ability) in definition.triggers().iter().enumerate() {
+            for (index, ability) in observer.trigger_templates_from(grant.as_ref()) {
                 if ability.condition.event()
                     == TriggerCondition::ControlledSpellDamagesSoleCreatureTarget
                     && self.queue_trigger_from(&observer, index, grant.map(Box::new))
@@ -289,13 +285,12 @@ impl Game {
     /// the counters placed by wither. Damage already marked never changes toughness.
     pub(super) fn creature_toughness_damage_triggers(&mut self, events: &[DamageEvent]) {
         let condition = TriggerCondition::ControlledNoncombatDamageMatchesCreatureToughness;
-        if !self.state.damage_sources.iter().any(|&id| {
-            self.state.objects[id as usize]
-                .card
-                .triggers()
-                .iter()
-                .any(|ability| ability.condition.event() == condition)
-        }) {
+        if !self
+            .state
+            .damage_sources
+            .iter()
+            .any(|&id| self.has_trigger(id, |ability| ability.condition.event() == condition))
+        {
             return;
         }
         let mut hits = std::collections::BTreeMap::new();
@@ -320,8 +315,7 @@ impl Game {
             return;
         }
         for (observer, grant) in self.indexed_trigger_sources(&self.state.damage_sources) {
-            let definition = grant.map_or(observer.card, |grant| grant.granting_card);
-            for (index, ability) in definition.triggers().iter().enumerate() {
+            for (index, ability) in observer.trigger_templates_from(grant.as_ref()) {
                 if ability.condition.event() != condition {
                     continue;
                 }
@@ -382,8 +376,7 @@ impl Game {
         }
         let sources = self.indexed_trigger_sources(&self.state.damage_sources);
         for (source, grant) in sources {
-            let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
-            for (index, ability) in definition.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates_from(grant.as_ref()) {
                 let condition = ability.condition.event();
                 if condition == TriggerCondition::CombatDamageToController {
                     let player = source.controller;
@@ -514,8 +507,7 @@ impl Game {
             return;
         }
         for (source, grant) in self.indexed_trigger_sources(&self.state.damage_sources) {
-            let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
-            for (index, ability) in definition.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates_from(grant.as_ref()) {
                 let TriggerCondition::ExcessNoncombatDamageToCreatures { relation } =
                     ability.condition.event()
                 else {
@@ -539,19 +531,15 @@ impl Game {
     /// particular, post-event continuous effects qualify both observer and victim.
     pub(super) fn creature_received_damage_triggers(&mut self, events: &[DamageEvent]) {
         let has_printed_observers = self.state.damage_sources.iter().any(|&id| {
-            self.state.objects[id as usize]
-                .card
-                .triggers()
-                .iter()
-                .any(|ability| {
-                    matches!(
-                        ability.condition.event(),
-                        TriggerCondition::CreatureDamaged { .. }
-                            | TriggerCondition::SelfDamaged
-                            | TriggerCondition::SelfDamagedAtLeast(_)
-                            | TriggerCondition::AttachedCreatureDamaged
-                    )
-                })
+            self.has_trigger(id, |ability| {
+                matches!(
+                    ability.condition.event(),
+                    TriggerCondition::CreatureDamaged { .. }
+                        | TriggerCondition::SelfDamaged
+                        | TriggerCondition::SelfDamagedAtLeast(_)
+                        | TriggerCondition::AttachedCreatureDamaged
+                )
+            })
         });
         let has_temporary_observers =
             self.state
@@ -588,8 +576,7 @@ impl Game {
         }
         let sources = self.indexed_trigger_sources(&self.state.damage_sources);
         for (source, grant) in sources {
-            let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
-            for (index, ability) in definition.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates_from(grant.as_ref()) {
                 let condition = ability.condition.event();
                 if !matches!(
                     condition,
@@ -730,13 +717,12 @@ impl Game {
         if !self.queue_trigger_from(source, index, grant.map(Box::new)) {
             return;
         }
-        let ability = &self
+        let ability = self
             .state
             .pending_triggers
             .last()
             .unwrap()
-            .trigger_definition()
-            .triggers()[index];
+            .triggered_ability();
         let program = ability.program;
         let copy_dealer = program.iter().any(|instruction| {
             matches!(

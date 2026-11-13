@@ -1,0 +1,2408 @@
+{
+  "schema": 1,
+  "set": "TLA",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "table": {
+    "source": "Mage.Sets/src/mage/sets/AvatarTheLastAirbender.java",
+    "sha256": "0d9290dfe44424b54a251905a7e7571c7ef0d0cee7bfc1f2f1db843320937334",
+    "printing_count": 392
+  },
+  "scope": "All physical set card identities, including reprints and starter products; cosmetic printings counted once",
+  "card_count": 286,
+  "cards": [
+    {
+      "name": "Aang's Iceberg",
+      "oracle_id": "646f9ad8-9d18-4b42-954a-e21a62e9f0e8",
+      "facts_sha256": "ab0cc169697cdd2786ceb0c262dff54b3c31379bb30cfe747ce904a1a8995c3b",
+      "printings": [
+        "336",
+        "5"
+      ]
+    },
+    {
+      "name": "Aang's Journey",
+      "oracle_id": "ddf461b9-a205-4dc7-a9c3-c047b1ff709f",
+      "facts_sha256": "0d5dab99b64659a66c9fd632b577f1f05779ab05bae7df703205702a72262186",
+      "printings": [
+        "1"
+      ]
+    },
+    {
+      "name": "Aang, Swift Savior // Aang and La, Ocean's Fury",
+      "oracle_id": "cbf09050-39d0-463b-96db-9e22011ae0d8",
+      "facts_sha256": "8bf460980a4d1740931d332ede32ad1106ad7048af498b58b68f529de788635f",
+      "printings": [
+        "204",
+        "298",
+        "347",
+        "359"
+      ]
+    },
+    {
+      "name": "Aang, at the Crossroads // Aang, Destined Savior",
+      "oracle_id": "96e5d4a1-e59f-4140-823f-a17e15ee5d8d",
+      "facts_sha256": "49a22ee8e15845ae4b94e02aad834aba1656d125103c3c9e1a9413f2542d123f",
+      "printings": [
+        "203",
+        "304",
+        "346"
+      ]
+    },
+    {
+      "name": "Aang, the Last Airbender",
+      "oracle_id": "70564c3a-858f-498e-8b92-acb3ca54ae7e",
+      "facts_sha256": "972df1ad0ced3eff43089639dcd3c9dafa943479826b6e2acbd3c90e6488926b",
+      "printings": [
+        "4"
+      ]
+    },
+    {
+      "name": "Abandon Attachments",
+      "oracle_id": "82333385-631f-4abf-b159-bb367f1c6fd9",
+      "facts_sha256": "6135cc5bfb5300b8a56ef805e161a44b4b1dbf36530b4c894870acbfab0f0886",
+      "printings": [
+        "205"
+      ]
+    },
+    {
+      "name": "Abandoned Air Temple",
+      "oracle_id": "9575d7ce-f26d-4b90-87a3-6329e9799572",
+      "facts_sha256": "146cad49e337b1873923cefa6f37652585a0fa740f48476045cdff4bb0d20ab1",
+      "printings": [
+        "263",
+        "386"
+      ]
+    },
+    {
+      "name": "Accumulate Wisdom",
+      "oracle_id": "a63eb744-71c4-447d-9372-c3a734f022c5",
+      "facts_sha256": "409c013d342a491194ecfffa6efe7d5d8b253121521367633ca012d2e9402404",
+      "printings": [
+        "44"
+      ]
+    },
+    {
+      "name": "Agna Qel'a",
+      "oracle_id": "22d0a848-2126-48f0-9050-38daaf93b1d0",
+      "facts_sha256": "3c5c6f7707911f01ceb532aa9621cf92a563906d10b8af17d55a47cd8f10995a",
+      "printings": [
+        "264",
+        "387"
+      ]
+    },
+    {
+      "name": "Air Nomad Legacy",
+      "oracle_id": "9e830359-ab92-4bfd-82b3-d9c67ac80cf7",
+      "facts_sha256": "d3a785d362ca8797fb6b7e47018a1ff52435cdeae253ee6544e991504e68044a",
+      "printings": [
+        "206"
+      ]
+    },
+    {
+      "name": "Airbender Ascension",
+      "oracle_id": "c4d2fdf9-637d-4e97-ae33-45f2d27bf8cd",
+      "facts_sha256": "8f143c329ed283f249463265025ac690bc141abad68ae5e1a2e0bd3dab134c53",
+      "printings": [
+        "364",
+        "6"
+      ]
+    },
+    {
+      "name": "Airbender's Reversal",
+      "oracle_id": "64e3791b-de99-4eed-af49-cbec218c28aa",
+      "facts_sha256": "daae5874d03132389c15493a0861c23c6ae660eed19ba7e894a3a3b3ba7cb6d6",
+      "printings": [
+        "7"
+      ]
+    },
+    {
+      "name": "Airbending Lesson",
+      "oracle_id": "e101b744-9175-4aa5-bf80-d6944359e538",
+      "facts_sha256": "3c20d036cdf06a3f48a9c7c9ffac8e976cd88cd5b7f39c89d662d4269289eb90",
+      "printings": [
+        "8"
+      ]
+    },
+    {
+      "name": "Airship Engine Room",
+      "oracle_id": "01ed9139-293d-4477-a145-3c6fe59266c7",
+      "facts_sha256": "ce34439950ffc399d1c2e0ec50da2bf8ab3c43aaab43e478aaf37d198dae3dba",
+      "printings": [
+        "265"
+      ]
+    },
+    {
+      "name": "Allies at Last",
+      "oracle_id": "c15e5e93-2eff-407d-ae75-437e36ef85ba",
+      "facts_sha256": "784bb7164075f25a419c6b084810bc917cce89aed3631edbdc6e6d1574a2a989",
+      "printings": [
+        "164"
+      ]
+    },
+    {
+      "name": "Appa, Loyal Sky Bison",
+      "oracle_id": "c6e28cf0-81c7-4f52-a29b-988cc6fd31ee",
+      "facts_sha256": "7f2826c89ae7a4966488bf171922ef69ceff38d090eeb3ae4b99741e365ae5dd",
+      "printings": [
+        "9"
+      ]
+    },
+    {
+      "name": "Appa, Steadfast Guardian",
+      "oracle_id": "03c141ca-11e4-4927-a6bd-980ee1203c73",
+      "facts_sha256": "0b68fcb6b78d2a2037b65f17efa91902b0d2189cd0013b2599059c4ae70e2ec1",
+      "printings": [
+        "10",
+        "316"
+      ]
+    },
+    {
+      "name": "Avatar Aang // Aang, Master of Elements",
+      "oracle_id": "b4872bac-5822-4c35-9b73-38c4e3ffa477",
+      "facts_sha256": "729c36ee2c354be35a52ceb2b91f2582bbfecbe9686615bad6fcae49abd8e5ee",
+      "printings": [
+        "207",
+        "308",
+        "363"
+      ]
+    },
+    {
+      "name": "Avatar Destiny",
+      "oracle_id": "ecb81888-589b-4486-a444-e0c26384854e",
+      "facts_sha256": "8cc54eb512ed7d8233214de092100468cb53a334257357b4ab2fa712b793cc1f",
+      "printings": [
+        "165",
+        "333"
+      ]
+    },
+    {
+      "name": "Avatar Enthusiasts",
+      "oracle_id": "7b0d9d79-2e86-4079-8db3-500483c8807e",
+      "facts_sha256": "50a9ef649822218979d9b4cd816583665381674d9fb3fd15d5efb43fbc9ab64a",
+      "printings": [
+        "11"
+      ]
+    },
+    {
+      "name": "Avatar's Wrath",
+      "oracle_id": "e3431dae-969c-4896-9f9e-a80e7bec4bdf",
+      "facts_sha256": "9bc407d6c74e3708eece3916f9f2540467d96769e1434f7b4b8420924af67ae3",
+      "printings": [
+        "12",
+        "365"
+      ]
+    },
+    {
+      "name": "Azula Always Lies",
+      "oracle_id": "f56c6c35-d09b-4bee-a685-98e9afed13d1",
+      "facts_sha256": "0631402a0e65e20fe79dc514e158c8bca8ee173642d594b3ea403388282d947c",
+      "printings": [
+        "84"
+      ]
+    },
+    {
+      "name": "Azula, Cunning Usurper",
+      "oracle_id": "7c9e351d-2e6c-4050-9c3d-b15bb9255a4d",
+      "facts_sha256": "2966e10b9dc40f60c92e5d61b23d6c08d7c147b3b6ab28563243e8256034432b",
+      "printings": [
+        "208",
+        "303"
+      ]
+    },
+    {
+      "name": "Azula, On the Hunt",
+      "oracle_id": "89f96032-5cba-404d-82b0-38d2be963e4b",
+      "facts_sha256": "21eb5132ba8f90d008c5185b839c1435d06670f17b454e7c79f64a897e7798af",
+      "printings": [
+        "85"
+      ]
+    },
+    {
+      "name": "Ba Sing Se",
+      "oracle_id": "de1ae205-ca5b-4d26-8194-ca85f1406e53",
+      "facts_sha256": "0eb111a1c7563889de1fab500c8543ba53e09274f79208cb4b863643b93cd83f",
+      "printings": [
+        "266",
+        "388"
+      ]
+    },
+    {
+      "name": "Badgermole",
+      "oracle_id": "2084a7f6-226b-4fb4-a30e-703f674d33b4",
+      "facts_sha256": "a4433155f783fa0fa22f811e2aa3987ac261a2355ecfce0a490715f024c526af",
+      "printings": [
+        "166"
+      ]
+    },
+    {
+      "name": "Badgermole Cub",
+      "oracle_id": "2b0afb89-0944-4861-b9c3-e909e2ac215e",
+      "facts_sha256": "a5df44b7d0bfed7c0159290d9f3a283cb93d9708e1e52261aa7032a6a10b8c77",
+      "printings": [
+        "167",
+        "326"
+      ]
+    },
+    {
+      "name": "Barrels of Blasting Jelly",
+      "oracle_id": "c6cd520c-106b-4ee5-bc02-6c5fbdbc78dd",
+      "facts_sha256": "0525cbbcb9793b5082872342ed55f8c249432ba020cf27e1d7751e55bc6af53a",
+      "printings": [
+        "254"
+      ]
+    },
+    {
+      "name": "Beetle-Headed Merchants",
+      "oracle_id": "0e6609b4-f359-4bf1-a06e-f4317a0e7b3c",
+      "facts_sha256": "6456146286bc4ad54c1723fab1544ddb92a8e95b3fc1cde6a1a09d4ee13fe5ec",
+      "printings": [
+        "86"
+      ]
+    },
+    {
+      "name": "Beifong's Bounty Hunters",
+      "oracle_id": "8561b088-56b3-4732-82e9-8da1e3affd55",
+      "facts_sha256": "6f72e5cbf33d24f5bf55a6b3c5360c72f5381b113ea4ead720fbdc2f00cc780b",
+      "printings": [
+        "209",
+        "379"
+      ]
+    },
+    {
+      "name": "Bender's Waterskin",
+      "oracle_id": "3bc46467-323f-4cbf-9d0a-f3d2ae3c3a34",
+      "facts_sha256": "d5a6cac6f3ce7b94a6f81f8f6778f40e32118f678e424ef53977ad0cbea0687e",
+      "printings": [
+        "255"
+      ]
+    },
+    {
+      "name": "Benevolent River Spirit",
+      "oracle_id": "12d91743-1ccb-4f2b-b2a9-1c2b34f7c8eb",
+      "facts_sha256": "f807d66e88814f7fdad05db2a65300edc6d7288d1880c309081476ae4a5b6854",
+      "printings": [
+        "45"
+      ]
+    },
+    {
+      "name": "Bitter Work",
+      "oracle_id": "e9a24ed8-e844-4c50-b386-bc28da9989b1",
+      "facts_sha256": "35bf6bd21205105448b5df9d48e9ac7783b40fbe854bccb8726f032b47d9ddac",
+      "printings": [
+        "210"
+      ]
+    },
+    {
+      "name": "Boar-q-pine",
+      "oracle_id": "551e4356-5b1f-475c-a64b-9c50ea9b0368",
+      "facts_sha256": "be0b53980ff34bdb31f73c3efc3531f5348aea3f8a833b158223787d43a8dd35",
+      "printings": [
+        "124"
+      ]
+    },
+    {
+      "name": "Boiling Rock Prison",
+      "oracle_id": "6caabc45-4644-4941-a2f3-f04ee7b50a89",
+      "facts_sha256": "df396c8b55bba817b54ae26a9cf694f3a83f7be288cd7081cf8c30239f1b689e",
+      "printings": [
+        "267"
+      ]
+    },
+    {
+      "name": "Boiling Rock Rioter",
+      "oracle_id": "5193172c-9024-409e-bd9e-0387971d65fe",
+      "facts_sha256": "effc59b7fe080ff5c45191302bf56c4ff27ea54b61c55c2d200c84d23d5a9d10",
+      "printings": [
+        "372",
+        "87"
+      ]
+    },
+    {
+      "name": "Boomerang Basics",
+      "oracle_id": "acd881eb-f3b4-4174-9fc2-e3c7c213886b",
+      "facts_sha256": "738bf25467f5efdbeb6c91df5a9b248110007b89f12950623d6530fb6aafbe30",
+      "printings": [
+        "46"
+      ]
+    },
+    {
+      "name": "Bumi Bash",
+      "oracle_id": "629f247c-1e64-4c32-8892-0716ed469d1c",
+      "facts_sha256": "654797d2af7d071f3ef3117a768e2d53d9b5128c2f0de01e725847c00ce1c957",
+      "printings": [
+        "125"
+      ]
+    },
+    {
+      "name": "Bumi, King of Three Trials",
+      "oracle_id": "f7493bcf-5c17-4562-a759-37082ec49ff8",
+      "facts_sha256": "7e9b67e7fd5202758919e21da9d2c01097ed9d66bcf909381f3588c9bf83db43",
+      "printings": [
+        "169"
+      ]
+    },
+    {
+      "name": "Bumi, Unleashed",
+      "oracle_id": "1fef13d8-5da2-46a6-91ed-7a31bd46e538",
+      "facts_sha256": "c0fa3cc54535fde5bdf653baf607e33e5c789466f2986e502183cdb46208d851",
+      "printings": [
+        "211",
+        "348"
+      ]
+    },
+    {
+      "name": "Buzzard-Wasp Colony",
+      "oracle_id": "29fd050c-dd1d-4e1b-b3cc-f7d8d18e4dcb",
+      "facts_sha256": "dfbb726b3fd8c23f47e913779ea00df7d791fa653096efac6a87007a4b0efab5",
+      "printings": [
+        "88"
+      ]
+    },
+    {
+      "name": "Callous Inspector",
+      "oracle_id": "5d950fd4-8956-4b1a-ab0f-ab31bcffce4e",
+      "facts_sha256": "5a2729787cc3bea3738eb3ee35a288321ad79b05b3274447d9f76414285e9192",
+      "printings": [
+        "89"
+      ]
+    },
+    {
+      "name": "Canyon Crawler",
+      "oracle_id": "bac94fc9-808b-4dc9-b405-408dd2aa6194",
+      "facts_sha256": "91489d9782f79945ddc3554c9505530a7b1a6a0e6e202bcb4d46b34d82fd6346",
+      "printings": [
+        "90"
+      ]
+    },
+    {
+      "name": "Cat-Gator",
+      "oracle_id": "349e6b9e-40a8-49bc-9cd3-4a22f5363fa5",
+      "facts_sha256": "9f065805f6ce527077a860195a52122dffe7b2cabd34be39c1998d6ff550b6ed",
+      "printings": [
+        "91"
+      ]
+    },
+    {
+      "name": "Cat-Owl",
+      "oracle_id": "ba6840a6-b6fd-4b91-ac1a-a61b7b15849a",
+      "facts_sha256": "55baa894acccee17072662cdae0ce712a2a10b2a468226691e4dd79f1ad31d37",
+      "printings": [
+        "212"
+      ]
+    },
+    {
+      "name": "Combustion Man",
+      "oracle_id": "533b107c-fd66-45ef-b74e-e6bd9b75ea8f",
+      "facts_sha256": "e04096265e8778706f97fc8237f9ee0398ccb477b3588d72ff720068019487dc",
+      "printings": [
+        "127"
+      ]
+    },
+    {
+      "name": "Combustion Technique",
+      "oracle_id": "522a04ff-cbfe-47b0-bd29-ef6fc27a6905",
+      "facts_sha256": "adcf40b4c469e8494e8383ef2695a71db2e70bb597dd38884177a2d04a7f2b3b",
+      "printings": [
+        "128",
+        "301"
+      ]
+    },
+    {
+      "name": "Compassionate Healer",
+      "oracle_id": "6ef464bd-2ed0-4f99-af4a-ebf276f55384",
+      "facts_sha256": "077e0d6818c6c710889c14412f496da61d4d1d362c17eb735552b8936c406600",
+      "printings": [
+        "13"
+      ]
+    },
+    {
+      "name": "Corrupt Court Official",
+      "oracle_id": "ec84201d-757f-4a7a-b3a2-85ccd5ee81ae",
+      "facts_sha256": "559ffaa61c4588d2ab91062a49e922d8fb36c220075677d07a5d12f8fad7c7e7",
+      "printings": [
+        "92"
+      ]
+    },
+    {
+      "name": "Crashing Wave",
+      "oracle_id": "c8d3936f-4c08-4ffe-83c9-7ed26fb8f9cd",
+      "facts_sha256": "956ea0b41391575c80c71d8962afe2969e1d8f75dad81006dd2430b2fbb7daf4",
+      "printings": [
+        "300",
+        "47"
+      ]
+    },
+    {
+      "name": "Crescent Island Temple",
+      "oracle_id": "2886f95e-c4e8-4770-b7de-40985f336cfb",
+      "facts_sha256": "17177d3ddc45216ee2e1a0ae3bd66c113c88f651da6c1a4ecf05c78af1b3dfb7",
+      "printings": [
+        "129"
+      ]
+    },
+    {
+      "name": "Cruel Administrator",
+      "oracle_id": "24a691f3-88dc-47a5-b5cd-e02bb8026470",
+      "facts_sha256": "62a6e17943d986b54a662c467063a34bc839ad73d040aa12b9319ff7d81bf6c9",
+      "printings": [
+        "213"
+      ]
+    },
+    {
+      "name": "Cunning Maneuver",
+      "oracle_id": "96335212-ec57-4beb-bab1-11c8eaa62119",
+      "facts_sha256": "8a71646043873cf980b84a89e35d9311d1b272c59d9b555991b43013e7db4d5d",
+      "printings": [
+        "130"
+      ]
+    },
+    {
+      "name": "Curious Farm Animals",
+      "oracle_id": "e451b5aa-5832-42b3-8d72-f67e126a529f",
+      "facts_sha256": "9b0b4efabc56e1294b7106a8b47f70383d8f34927a8ce3fc6dfc5bbb8a532644",
+      "printings": [
+        "14"
+      ]
+    },
+    {
+      "name": "Cycle of Renewal",
+      "oracle_id": "77eda626-5cef-496d-b291-cfa1ee6fc1fb",
+      "facts_sha256": "5a4dffa18b022be78d00f71bd418527b600cb888cf4bc6e9ccfed4d998060dd0",
+      "printings": [
+        "170"
+      ]
+    },
+    {
+      "name": "Dai Li Agents",
+      "oracle_id": "8c05e716-b6eb-4f95-866b-7e43a898ebe2",
+      "facts_sha256": "84d02ddc9a204a196fab3b85c3aceeac429f106753847e6305eb7208c28bfac7",
+      "printings": [
+        "214",
+        "306"
+      ]
+    },
+    {
+      "name": "Dai Li Indoctrination",
+      "oracle_id": "5591efbc-1b2c-489a-b4f3-935c9b6bd71a",
+      "facts_sha256": "d731c86d4fb6af74ebe36c87b05323b04b95a0821316add271e8e660c2ee4b2c",
+      "printings": [
+        "93"
+      ]
+    },
+    {
+      "name": "Day of Black Sun",
+      "oracle_id": "dc857129-533c-41d1-8e8b-1c0443030d69",
+      "facts_sha256": "9dc7783c48c2dc9645f7482dfbf13734161994047b437b6ca58e51ccfb8aa605",
+      "printings": [
+        "373",
+        "94"
+      ]
+    },
+    {
+      "name": "Deadly Precision",
+      "oracle_id": "d23ca3d2-0731-4df4-a3c6-69ddf0c58601",
+      "facts_sha256": "2ec651f686eebc7fdca367230648321b8dcb794ada0e13d053ed4d8d16cbcf4a",
+      "printings": [
+        "95"
+      ]
+    },
+    {
+      "name": "Deserter's Disciple",
+      "oracle_id": "73ca3132-d849-4cf9-beba-75ba09789332",
+      "facts_sha256": "b75eb34b5ac2f9bdaedc0e5720488f0752dedad152bad13b87ae3c5dba0a5d35",
+      "printings": [
+        "131"
+      ]
+    },
+    {
+      "name": "Destined Confrontation",
+      "oracle_id": "9703140f-36ee-4427-a390-c1dbdb9e4ee9",
+      "facts_sha256": "46152a67f3c5614309df9af2c59577045ac3b9ee867a02b06a992d223f415516",
+      "printings": [
+        "15"
+      ]
+    },
+    {
+      "name": "Diligent Zookeeper",
+      "oracle_id": "6a84a8a4-c8b0-45ce-af6f-605fcffc395b",
+      "facts_sha256": "e1c84b9c69dbc5b3c98dbee1c30b0779220c4266143917ab06366ad04c3c000a",
+      "printings": [
+        "171",
+        "327"
+      ]
+    },
+    {
+      "name": "Dragonfly Swarm",
+      "oracle_id": "83abf1d0-04e4-49e5-bf63-59f77829ffd1",
+      "facts_sha256": "2fcd8138f742e6ce51822dab647a79af1e777cbf1fa20b57b0ba0a6b22729536",
+      "printings": [
+        "215"
+      ]
+    },
+    {
+      "name": "Earth King's Lieutenant",
+      "oracle_id": "9da9248d-1201-447f-b6c2-2b64af4f71c4",
+      "facts_sha256": "b73af7b25972f83b13e51c717b5d996c87b383f6eae3ca89245c8b1e9f536b79",
+      "printings": [
+        "217",
+        "380"
+      ]
+    },
+    {
+      "name": "Earth Kingdom General",
+      "oracle_id": "e43c31ee-1bac-4f96-8b74-334b3238ab73",
+      "facts_sha256": "8c3875f0c7f55cb6eeab514698b4ceb0a14c0ddace02c8f5fcc76e58d740ef7d",
+      "printings": [
+        "173"
+      ]
+    },
+    {
+      "name": "Earth Kingdom Jailer",
+      "oracle_id": "1b799c30-4a43-403d-b822-0555bd513913",
+      "facts_sha256": "c5a4c8fdb1e9e5660ba5bb8c82edabd59630b2d3a87f7d1155c39883c51195ee",
+      "printings": [
+        "16"
+      ]
+    },
+    {
+      "name": "Earth Kingdom Protectors",
+      "oracle_id": "3bfb3913-808d-444b-97c3-a90af3bc585b",
+      "facts_sha256": "e7fac64914a423890dc632e444935971f6d41073ec643028ac4cde6faf20d1df",
+      "printings": [
+        "17"
+      ]
+    },
+    {
+      "name": "Earth Kingdom Soldier",
+      "oracle_id": "4289f2d4-3db2-4dd1-9c18-af3f78309844",
+      "facts_sha256": "ea696bb4d782e3529ccd96da9e10e510d291fac4ccf70c76c6c3fe2ea73f3628",
+      "printings": [
+        "216"
+      ]
+    },
+    {
+      "name": "Earth Rumble",
+      "oracle_id": "f04a7763-5fba-42e5-a45a-b3dc2daba902",
+      "facts_sha256": "2a35ca4139e6e3067febf466ab7079491daf86188115727c2843c617b559a962",
+      "printings": [
+        "174"
+      ]
+    },
+    {
+      "name": "Earth Rumble Wrestlers",
+      "oracle_id": "1de17747-27e8-40bb-b6f7-6d5402d4705c",
+      "facts_sha256": "8e0b972b1b1df7652d67575cd49692e1c4c5e4a1605095ba9a09d218653f0b63",
+      "printings": [
+        "218"
+      ]
+    },
+    {
+      "name": "Earth Village Ruffians",
+      "oracle_id": "0380e99c-18f9-4472-8223-bb208e5f0963",
+      "facts_sha256": "686509e3ee036891da586398a1ff0ea856bdef59f0bcbc40eb91e583f3f54e21",
+      "printings": [
+        "219"
+      ]
+    },
+    {
+      "name": "Earthbender Ascension",
+      "oracle_id": "f8966fd5-2926-4ba0-b7d6-cfea40cd4e05",
+      "facts_sha256": "2823f7413c93e92097a4d95c47a3f2620ac42a3b5673426ee96e817c7a66aeaa",
+      "printings": [
+        "175",
+        "307"
+      ]
+    },
+    {
+      "name": "Earthbending Lesson",
+      "oracle_id": "5e113f0f-4469-4276-82e1-0a804f3de444",
+      "facts_sha256": "a07ba21e425a548423019d77d8879e51e1e1735e658be8057a4dcf4ca013fe66",
+      "printings": [
+        "176"
+      ]
+    },
+    {
+      "name": "Earthen Ally",
+      "oracle_id": "913bca28-faf9-42e6-a8c0-469cd9bc0208",
+      "facts_sha256": "7a3df779c94c497cfd2c304f967533ca80e52e20c655c8f85e31842c4d3b2dbc",
+      "printings": [
+        "177",
+        "377"
+      ]
+    },
+    {
+      "name": "Elemental Teachings",
+      "oracle_id": "7255705c-b788-4bb1-824a-9262f4a0864e",
+      "facts_sha256": "65ab8070a2bd60145225f28e376764fe48a0c060b9c422ec9a84279d1c33cb5e",
+      "printings": [
+        "178",
+        "378"
+      ]
+    },
+    {
+      "name": "Ember Island Production",
+      "oracle_id": "0b786547-67ed-49fa-9981-35c4c2175f62",
+      "facts_sha256": "1629aa4064837c1bb2a3f34e9e31f03ee3a187e20a81e94b1c23f2483c9fc65d",
+      "printings": [
+        "48"
+      ]
+    },
+    {
+      "name": "Energybending",
+      "oracle_id": "c4c1e49d-5f14-486c-acf2-1952512b12b2",
+      "facts_sha256": "3ef273d00aafab044c13d0f85004e9e27a8b43d037c8793ebff20058faf92455",
+      "printings": [
+        "2"
+      ]
+    },
+    {
+      "name": "Enter the Avatar State",
+      "oracle_id": "4e552be1-0702-4e18-822f-98611f8a8e70",
+      "facts_sha256": "c88e05c2dc3f878919e021a5fb5e7d1bf8fef27cb18e80cce368a96368f06983",
+      "printings": [
+        "18"
+      ]
+    },
+    {
+      "name": "Epic Downfall",
+      "oracle_id": "ed5d6aba-0b8d-48b3-a84c-618f45fb67b1",
+      "facts_sha256": "d0a1317133e5a9f430d15f68089ef2aab85f559fc6ab98091ffc17616f2dabe9",
+      "printings": [
+        "96"
+      ]
+    },
+    {
+      "name": "Fancy Footwork",
+      "oracle_id": "c5648a32-98b0-4625-aae1-ae56e0ef0197",
+      "facts_sha256": "80bdc7c3854eb1dd9e80385af85770104f497a75b8ef97ce0a022c36c9727a48",
+      "printings": [
+        "19"
+      ]
+    },
+    {
+      "name": "Fatal Fissure",
+      "oracle_id": "202e45d6-8c7a-46db-85fb-634aa77b4097",
+      "facts_sha256": "9597425145b8bad733a2945f97a2cc59bf26784ea9f140ac503bd7320c1f3fac",
+      "printings": [
+        "97"
+      ]
+    },
+    {
+      "name": "Fated Firepower",
+      "oracle_id": "13daa21c-278d-45bd-9a6e-a77d6a558453",
+      "facts_sha256": "af550421f03965feeb53012b698f42fd575cf25205d9a6f08d6cffea28ad6218",
+      "printings": [
+        "132",
+        "297",
+        "341"
+      ]
+    },
+    {
+      "name": "Fire Lord Azula",
+      "oracle_id": "2631130e-63e2-43a3-914a-648e76722203",
+      "facts_sha256": "89fd04ad99ae1da2cd21c5bfab1a83de8dec5888937964bf4eaad34cca2829f6",
+      "printings": [
+        "220",
+        "313",
+        "334"
+      ]
+    },
+    {
+      "name": "Fire Lord Zuko",
+      "oracle_id": "a129423d-c886-4120-96f7-c2517ea7eb83",
+      "facts_sha256": "201e09cc98056f6ad8ef0af5b467a0c30b8edff4e905597eec1c198e49ad5d81",
+      "printings": [
+        "221",
+        "315",
+        "360"
+      ]
+    },
+    {
+      "name": "Fire Nation Attacks",
+      "oracle_id": "399fba23-fc13-440b-ab67-192eede6ecab",
+      "facts_sha256": "9243763e98c0b1c15ac23f2ed633f0bfe614b4ecbaddee63c83be89724b01766",
+      "printings": [
+        "133",
+        "299"
+      ]
+    },
+    {
+      "name": "Fire Nation Cadets",
+      "oracle_id": "5ebfa3f5-f80a-4845-bba7-75c4ddb88682",
+      "facts_sha256": "753d8fe739e8a7c8d0455737f6ef5a23c6d62bf7aaffab3dce7efd17e9de5cb5",
+      "printings": [
+        "134"
+      ]
+    },
+    {
+      "name": "Fire Nation Engineer",
+      "oracle_id": "9a983666-376b-48a8-9f82-8d041d32ae93",
+      "facts_sha256": "2246fec15aafd24640b057622ec04977a012a96de7832129386460cb3b8af6e6",
+      "printings": [
+        "99"
+      ]
+    },
+    {
+      "name": "Fire Nation Palace",
+      "oracle_id": "f2000fb8-39c6-4ad6-a020-5245faaa1eba",
+      "facts_sha256": "cbab1ee2babf9e919e49a131baaff7023f6a45c97be78808d3a81b28d295021f",
+      "printings": [
+        "268",
+        "389"
+      ]
+    },
+    {
+      "name": "Fire Nation Raider",
+      "oracle_id": "b37e9bc5-6a2c-4f08-b856-3f8d0d16defb",
+      "facts_sha256": "a42f9fe2bc8ba13ef94d2e8635ba3a19e0b63577b5cf61c6de3adfa8c7d2c192",
+      "printings": [
+        "135"
+      ]
+    },
+    {
+      "name": "Fire Nation Warship",
+      "oracle_id": "987aab63-a889-400f-a3bd-feaef978b407",
+      "facts_sha256": "e1402edfd535d623b77efb3b1c8b4019f0731b1a90547ef3a89f84a6f862220d",
+      "printings": [
+        "256"
+      ]
+    },
+    {
+      "name": "Fire Navy Trebuchet",
+      "oracle_id": "1f018a8c-6ceb-4d03-94a7-8713467c9cf5",
+      "facts_sha256": "de2166f4d331cfcbf6014c3c65863697c8197a07c61bd48db6a086d3734911f8",
+      "printings": [
+        "100"
+      ]
+    },
+    {
+      "name": "Fire Sages",
+      "oracle_id": "08d1940a-ddc6-4b6d-b6c9-9d2aa470b906",
+      "facts_sha256": "c187a176a06ffacdda8d7947bbc8bf8a9d3a5946b54763564d2ce62ee763ff3f",
+      "printings": [
+        "136"
+      ]
+    },
+    {
+      "name": "Firebender Ascension",
+      "oracle_id": "96cc63af-69d1-4493-b241-0cb244a9e48a",
+      "facts_sha256": "fcd8413f79108611a8a06c0dd2ae99abc64d5c9969dc3c7d4ea217a81bbf1550",
+      "printings": [
+        "137",
+        "312"
+      ]
+    },
+    {
+      "name": "Firebending Lesson",
+      "oracle_id": "a9282f91-638e-414b-8b3d-9a99e30aec96",
+      "facts_sha256": "eab1a23e161713cf5d47c9f7e6519f66fde6d08d032f578b5f99f0bf89b0e73b",
+      "printings": [
+        "138"
+      ]
+    },
+    {
+      "name": "Firebending Student",
+      "oracle_id": "1ad3be51-f68b-46d6-b58e-400b50e384f1",
+      "facts_sha256": "bc9aca79031420b1db65a3aa65fedd211bf74e1b67b6d68c2d91a64cad224996",
+      "printings": [
+        "139",
+        "342",
+        "393"
+      ]
+    },
+    {
+      "name": "First-Time Flyer",
+      "oracle_id": "cbbea4e2-4b36-4965-89b6-00d2a564f146",
+      "facts_sha256": "16c33ca923764d6db8ad79866b2b67dd4fd0276f7d02f21377840c72f9cd0455",
+      "printings": [
+        "49"
+      ]
+    },
+    {
+      "name": "Flexible Waterbender",
+      "oracle_id": "8cf88fa8-2f47-4125-a59d-9c2b2d4765a7",
+      "facts_sha256": "a6bc155101a4771e501abd2658a1d679d2056e780a848e2da7f03dd30c60275a",
+      "printings": [
+        "50"
+      ]
+    },
+    {
+      "name": "Flopsie, Bumi's Buddy",
+      "oracle_id": "a8966245-501c-47e4-8ce0-849dcb532eb2",
+      "facts_sha256": "2c5c623aeb506fd208de698f9b1e8cd37c42db5ccdce9a73b97dc8b79b28a7b8",
+      "printings": [
+        "179"
+      ]
+    },
+    {
+      "name": "Foggy Bottom Swamp",
+      "oracle_id": "b56bb8cb-457e-4b85-9bf9-5e891e79f1dd",
+      "facts_sha256": "43fe43a3dc119fa8b38cd6b012be37032eb66bdfff7ed0362a952c48d32edd9e",
+      "printings": [
+        "269"
+      ]
+    },
+    {
+      "name": "Foggy Swamp Hunters",
+      "oracle_id": "1941cf7a-ad53-4bce-beea-104951619a30",
+      "facts_sha256": "40a35cb235d1f00b5ba2d66664691d3d5242efe12cb9cce8cf319629ab93061a",
+      "printings": [
+        "101"
+      ]
+    },
+    {
+      "name": "Foggy Swamp Spirit Keeper",
+      "oracle_id": "faecfb8d-2f63-4b98-a842-b11448f0d538",
+      "facts_sha256": "b5313fdc0b2d9ce03edff9c1a21cd2047c2f8454e01165bf941aad35ef7bced9",
+      "printings": [
+        "222"
+      ]
+    },
+    {
+      "name": "Foggy Swamp Vinebender",
+      "oracle_id": "82fefb82-a436-488d-8ecd-594686117e34",
+      "facts_sha256": "c22e43d267f7c44782db85e5050dfcc944db87a3105cbbcecf290d78d8fe3aa2",
+      "printings": [
+        "180"
+      ]
+    },
+    {
+      "name": "Foggy Swamp Visions",
+      "oracle_id": "16af0a22-833e-47c6-ac27-002702194595",
+      "facts_sha256": "8353568de4012da7c2214297f583fbc55435cdfcf5be1e04d8eb4c65bf08438e",
+      "printings": [
+        "102",
+        "339"
+      ]
+    },
+    {
+      "name": "Forecasting Fortune Teller",
+      "oracle_id": "a5a05edd-2a30-414b-b766-f0651d5783f5",
+      "facts_sha256": "943da70bf89684913f20476d54a4da0864c062d4b153cd10668b977142932ace",
+      "printings": [
+        "51"
+      ]
+    },
+    {
+      "name": "Forest",
+      "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+      "facts_sha256": "191d17171bc11d7b26d625ceb8f828799439304fc668127c733de3e0f65bdbd6",
+      "printings": [
+        "286",
+        "291",
+        "296"
+      ]
+    },
+    {
+      "name": "Gather the White Lotus",
+      "oracle_id": "db69c3c9-d809-4361-8055-8c2dd4c6dd67",
+      "facts_sha256": "8060e406987784aa3cc9e0f20a2cf203510bbf5c5f6d095da2f59cf9ca520e30",
+      "printings": [
+        "20"
+      ]
+    },
+    {
+      "name": "Geyser Leaper",
+      "oracle_id": "dfdcb451-a597-46fe-893c-49e6dbda5f71",
+      "facts_sha256": "e9e9a7f298d045a7d7251c6b0c409e858d40b8f133be96e28c0bfcb23cc7429b",
+      "printings": [
+        "52"
+      ]
+    },
+    {
+      "name": "Giant Koi",
+      "oracle_id": "c93bb65a-a74a-499b-a538-65272079aab8",
+      "facts_sha256": "9052c9ba32bd378a0adb09ffbccf5a38bdb43e16c33887918d19f29b5858c5be",
+      "printings": [
+        "53"
+      ]
+    },
+    {
+      "name": "Glider Kids",
+      "oracle_id": "ff5ce28b-25be-4136-a7b2-8f25c08a6455",
+      "facts_sha256": "920a587defb51c4430c66368a9c880a7b689593a8fb80e089c8a465fa3681ce1",
+      "printings": [
+        "21"
+      ]
+    },
+    {
+      "name": "Glider Staff",
+      "oracle_id": "823006a8-098c-457a-8546-77ae2457c459",
+      "facts_sha256": "df4cbe7fe67552164f60c37c21f0dba2e9d02da63e6ffe0dc2f0bfe660933483",
+      "printings": [
+        "22"
+      ]
+    },
+    {
+      "name": "Gran-Gran",
+      "oracle_id": "0259a9ed-0558-4183-b737-871ed5573c32",
+      "facts_sha256": "6fead642f521b3623392469088e567392dd3846af081bf76ed4f8bb59e436d2d",
+      "printings": [
+        "54"
+      ]
+    },
+    {
+      "name": "Great Divide Guide",
+      "oracle_id": "79e69a91-d580-47fb-be76-1e32c50d2fa0",
+      "facts_sha256": "0202e8fd593132e0da3b6e90218defe5e74bc5c2d544d04b258f0dd955e64724",
+      "printings": [
+        "181",
+        "345"
+      ]
+    },
+    {
+      "name": "Guru Pathik",
+      "oracle_id": "4dcd7b78-ce5a-43eb-a16d-3b9ea411795d",
+      "facts_sha256": "2d22f992e850f1edb8a6e73c6602ca6a53c2df894c781a7d87c5fa2f2bc5f59e",
+      "printings": [
+        "223"
+      ]
+    },
+    {
+      "name": "Hakoda, Selfless Commander",
+      "oracle_id": "de3a469a-e38b-456b-994d-abec1b010e42",
+      "facts_sha256": "f6d3c9df3b12dd59c3a31d6b67200028143e69a45f48d4eecf35997042fc0db9",
+      "printings": [
+        "23",
+        "366"
+      ]
+    },
+    {
+      "name": "Hama, the Bloodbender",
+      "oracle_id": "ef80e174-78e8-412d-a6fe-89c7af746669",
+      "facts_sha256": "a2380b957779307e1e65b5ccb3825ae72f814e5543122f31f138166547fbea25",
+      "printings": [
+        "224"
+      ]
+    },
+    {
+      "name": "Haru, Hidden Talent",
+      "oracle_id": "7488ce54-37c6-475c-b327-59f52f2b1424",
+      "facts_sha256": "75d8c0223e2a01677b77f619d99ca4a74405bad5f85fde2647496d3cc2211067",
+      "printings": [
+        "182"
+      ]
+    },
+    {
+      "name": "Heartless Act",
+      "oracle_id": "3641d572-8335-4804-88ad-edf4dc67a8e4",
+      "facts_sha256": "fc0d6720db02bf91576a4eb4e80648f6ce0951ee4107446be227a4fa31b52b38",
+      "printings": [
+        "103"
+      ]
+    },
+    {
+      "name": "Hei Bai, Spirit of Balance",
+      "oracle_id": "8f709660-bb26-409f-9650-e5228ac8db7e",
+      "facts_sha256": "f3d98d80c3a0ea2b353eaf31e607324ed3c664b891a1fb6808abe85935b3f869",
+      "printings": [
+        "225"
+      ]
+    },
+    {
+      "name": "Hermitic Herbalist",
+      "oracle_id": "9928773d-3f35-4b0e-965d-4233e04398fb",
+      "facts_sha256": "baa3f3f4543f945491fdebbe0ae33e70272afae8d7aa621645cedab0fd980f8c",
+      "printings": [
+        "226"
+      ]
+    },
+    {
+      "name": "Hog-Monkey",
+      "oracle_id": "e11591ee-7074-488e-8d2f-f8c89e385a55",
+      "facts_sha256": "e20571c8507b0ce05dc7073e3d5adbc07964de6955dcb0d6c346aec72166b615",
+      "printings": [
+        "104"
+      ]
+    },
+    {
+      "name": "Honest Work",
+      "oracle_id": "12956c07-e679-471b-8dcb-2a2d15b0be55",
+      "facts_sha256": "f2f7d1ed463f5f679717a728fe4e4210ebcbbe42e8fbd22a47494ef9b0be7b3b",
+      "printings": [
+        "55"
+      ]
+    },
+    {
+      "name": "How to Start a Riot",
+      "oracle_id": "268d0056-0d3e-438a-ab17-625a6f5ec68a",
+      "facts_sha256": "282b279d41188027fe50dbc8a44d4362a30d05eb143b6a0f16c84d96f162509e",
+      "printings": [
+        "140"
+      ]
+    },
+    {
+      "name": "Iguana Parrot",
+      "oracle_id": "edd3a3ea-6bde-408c-8b16-85ed3cc312b2",
+      "facts_sha256": "37e3a9daea921ab4372a49ab1a88444a37cac46be8df1a7055df5083050924ab",
+      "printings": [
+        "56"
+      ]
+    },
+    {
+      "name": "Invasion Reinforcements",
+      "oracle_id": "185316ff-6fb7-4b5c-8a60-3238674562a6",
+      "facts_sha256": "75388766c846c676da47b5173738b742eaba0ce5f41a78ca6c0907521931870a",
+      "printings": [
+        "24"
+      ]
+    },
+    {
+      "name": "Invasion Submersible",
+      "oracle_id": "97369152-3b85-4cf1-aeb9-b3a8f1c37611",
+      "facts_sha256": "6e880beb12c2b15f8bcb7e17aac5fe95a5fd17b708a204ba23aca222d6b8cdbb",
+      "printings": [
+        "57"
+      ]
+    },
+    {
+      "name": "Invasion Tactics",
+      "oracle_id": "eef63cb4-96de-4c9d-84aa-62a3b52a3c7f",
+      "facts_sha256": "ab163ff28019445edb1c2e78c283eab5b678b442fd86ce472a7bb7e6a28ffc41",
+      "printings": [
+        "183"
+      ]
+    },
+    {
+      "name": "Iroh's Demonstration",
+      "oracle_id": "8dd2e73a-d1b4-4d26-857f-9eb8e384c8ff",
+      "facts_sha256": "90f6222307196ea576e1f21e0b2db424ae03257da5ec216127f42a34a888cf43",
+      "printings": [
+        "141"
+      ]
+    },
+    {
+      "name": "Iroh, Grand Lotus",
+      "oracle_id": "ee8e6ef3-eb96-48bd-8619-8a9112b3d4f0",
+      "facts_sha256": "01c5fca19266831dd3c6f70421577c804d1ffd066214d408a1bf7b84458d0d29",
+      "printings": [
+        "227",
+        "349"
+      ]
+    },
+    {
+      "name": "Iroh, Tea Master",
+      "oracle_id": "87adda41-113b-4126-8978-25a258b31bdd",
+      "facts_sha256": "ec410038357a0cecb58c72d48365632668089758c061ae0f2334bd46f4f1afb9",
+      "printings": [
+        "228",
+        "381"
+      ]
+    },
+    {
+      "name": "Island",
+      "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+      "facts_sha256": "9663433a19f0b70520d2598600be1ddac39dd97fd02f80811dcce06dd0cbaf26",
+      "printings": [
+        "283",
+        "288",
+        "293"
+      ]
+    },
+    {
+      "name": "It'll Quench Ya!",
+      "oracle_id": "cb184995-700f-4900-994a-4ce7fd12f942",
+      "facts_sha256": "de794487342e61fd05fde89849aad87fc12cefcc599ecdab6b9237b33c218061",
+      "printings": [
+        "58"
+      ]
+    },
+    {
+      "name": "Jasmine Dragon Tea Shop",
+      "oracle_id": "d9a24444-289f-473f-9985-8df275257555",
+      "facts_sha256": "3bcf04f92c2bd4b23fd414e06a8dde415d2ffc7fd03436a5c179bba5b5ae140c",
+      "printings": [
+        "270",
+        "390"
+      ]
+    },
+    {
+      "name": "Jeong Jeong's Deserters",
+      "oracle_id": "6a06d281-3ca2-498f-91d0-e13e7b0869f9",
+      "facts_sha256": "d7a73b59a844195be0a8f54445c3b2d33787406052dd67e5201e26afbebaa3f4",
+      "printings": [
+        "25"
+      ]
+    },
+    {
+      "name": "Jeong Jeong, the Deserter",
+      "oracle_id": "2158c73d-421b-4c94-af06-dd89cb8d3126",
+      "facts_sha256": "c12920aa13039214d156e23e6dff14d71d0934f42f2f8c645af9911b80ad61b7",
+      "printings": [
+        "142"
+      ]
+    },
+    {
+      "name": "Jet's Brainwashing",
+      "oracle_id": "5cca85e0-43e8-4b97-a43b-1b8f23f541d1",
+      "facts_sha256": "9a2edc48bd10dc19778b982a8ee171314d737556b6e078303ad43a2d1c89f916",
+      "printings": [
+        "143"
+      ]
+    },
+    {
+      "name": "Jet, Freedom Fighter",
+      "oracle_id": "77cd2246-6906-4dce-8580-4c9d2e68c477",
+      "facts_sha256": "10ccc6d3afb107b85e078a5f394120846f078ffd00ceae842ed224665be33a5b",
+      "printings": [
+        "229"
+      ]
+    },
+    {
+      "name": "Joo Dee, One of Many",
+      "oracle_id": "4601ed7b-716e-4c89-b733-1eeabe8bf5a2",
+      "facts_sha256": "a0cb6ecd5e278b92352e85169220161daf62860af5595eefdae81e20627bdd77",
+      "printings": [
+        "105"
+      ]
+    },
+    {
+      "name": "June, Bounty Hunter",
+      "oracle_id": "1779869a-5e54-4ab5-86b8-d4d20e2e1ba4",
+      "facts_sha256": "22687a17545a7e1bcd1fcbf4a631b821f7bc2b6f7b483326675bad23f7c86e40",
+      "printings": [
+        "106"
+      ]
+    },
+    {
+      "name": "Katara, Bending Prodigy",
+      "oracle_id": "55adde23-c818-40fe-9bba-123de93568a5",
+      "facts_sha256": "2b6505b06d5e4f066ca88f01adb219b572f6268724b7e17727cc2270f365a72a",
+      "printings": [
+        "59"
+      ]
+    },
+    {
+      "name": "Katara, Water Tribe's Hope",
+      "oracle_id": "234fb291-0b62-4092-9071-81311c71bd53",
+      "facts_sha256": "da460474d3728f4047d40570f244919e44c953540b18cb11da621d8aef98d6a9",
+      "printings": [
+        "231",
+        "351"
+      ]
+    },
+    {
+      "name": "Katara, the Fearless",
+      "oracle_id": "0972d46e-423b-454e-87c7-a2d40fb6fb6d",
+      "facts_sha256": "9c11c2a5a3f994654862af86541db37533627acd52a0048881da9a2f0309e899",
+      "printings": [
+        "230",
+        "305",
+        "350",
+        "361"
+      ]
+    },
+    {
+      "name": "Knowledge Seeker",
+      "oracle_id": "bdc2d980-ca14-4040-a9a1-786d724dc65c",
+      "facts_sha256": "c1a4402fb9130f15c194ff395389e67a74dae6665ad7635ce967f6257a5efa5e",
+      "printings": [
+        "60"
+      ]
+    },
+    {
+      "name": "Koh, the Face Stealer",
+      "oracle_id": "2bbb33e3-7d03-457c-92bb-b0c943615fa1",
+      "facts_sha256": "81e73ea687b82f7d728396f3b40ef02e172a0feb11aae320616d6d98c0f5a122",
+      "printings": [
+        "107",
+        "322"
+      ]
+    },
+    {
+      "name": "Kyoshi Battle Fan",
+      "oracle_id": "849e54f9-7662-4186-859c-e4f52afbccac",
+      "facts_sha256": "965f76a8bd1256f7cdc8eaa47fd954d1f00e5afcc6e9f9ace59fa9dd86eb5c95",
+      "printings": [
+        "257"
+      ]
+    },
+    {
+      "name": "Kyoshi Island Plaza",
+      "oracle_id": "c0cdc333-6c5a-401c-9810-220d2027f2fe",
+      "facts_sha256": "8a00b5df3768b62b92fbbf80aa347649b715c51b96ef01575c7ed716f9b5b82c",
+      "printings": [
+        "184"
+      ]
+    },
+    {
+      "name": "Kyoshi Village",
+      "oracle_id": "da81b78b-89fd-4fc1-9395-b5b01b96be70",
+      "facts_sha256": "8408536f7d5b42a87eff6b302a90260a4960b7bd84d24e384b02a2755f238f5e",
+      "printings": [
+        "271"
+      ]
+    },
+    {
+      "name": "Kyoshi Warriors",
+      "oracle_id": "b29abb09-75ea-431c-ab60-f2940d002e83",
+      "facts_sha256": "709eba31666e01c34e5f8d5825a29610f1c056b6bbeb4495090cb632cf2b1447",
+      "printings": [
+        "26"
+      ]
+    },
+    {
+      "name": "Leaves from the Vine",
+      "oracle_id": "7c4abd72-29b0-4c82-9e67-b481cf7e8775",
+      "facts_sha256": "fcbf1568fdc14db8959dd7e499a2ee23762048e1ad23630b0dd8d5765ae7f526",
+      "printings": [
+        "185"
+      ]
+    },
+    {
+      "name": "Lightning Strike",
+      "oracle_id": "f34b9bc4-7bfe-47fd-ba23-4eeeb46026eb",
+      "facts_sha256": "0f71624f371316e9bf2b90c154f73cc9eb1c9ae61cd5b90b49c77bc97b7285a3",
+      "printings": [
+        "146"
+      ]
+    },
+    {
+      "name": "Lo and Li, Twin Tutors",
+      "oracle_id": "ad643992-eb9f-4a4a-9b74-a5aee2337f30",
+      "facts_sha256": "5145c76af0a2ce9f1f57f58d03d827446e235cb597969d9185f74f7973178545",
+      "printings": [
+        "108"
+      ]
+    },
+    {
+      "name": "Long Feng, Grand Secretariat",
+      "oracle_id": "9bf9fe83-b0df-4ef8-ac54-c0d223d4e410",
+      "facts_sha256": "930ae65084f6a0dc8078d3a6e04d163cec743c585540aa4a962d3f5727694f5c",
+      "printings": [
+        "233"
+      ]
+    },
+    {
+      "name": "Lost Days",
+      "oracle_id": "3bc47eae-cf6f-4b5e-96e1-94a4f307f474",
+      "facts_sha256": "45f16e83dd1bd686f8aba2f86650cdba0f7f797fee03c4e0355c2092e84498ae",
+      "printings": [
+        "62"
+      ]
+    },
+    {
+      "name": "Mai, Jaded Edge",
+      "oracle_id": "b5029f21-e0d6-4f22-9afd-79452de26490",
+      "facts_sha256": "01beecb124f7bf34c547c9404f32f94dc1621cd7b147ceee0e10142a703478ab",
+      "printings": [
+        "147"
+      ]
+    },
+    {
+      "name": "Mai, Scornful Striker",
+      "oracle_id": "953a2bd3-5bca-41fc-8785-66b2d7fa381a",
+      "facts_sha256": "a6c3e4742a609b3570ba95cf184d16b1c7ad0ab8cc397c81c927f942da01e1db",
+      "printings": [
+        "109",
+        "374"
+      ]
+    },
+    {
+      "name": "Master Pakku",
+      "oracle_id": "b1727c07-c829-4d64-a1c5-8b53c743888a",
+      "facts_sha256": "a4b8058feb410f2d309821d962f45a1a6525d10c18e42c95cf666cc63d429fc1",
+      "printings": [
+        "63"
+      ]
+    },
+    {
+      "name": "Master Piandao",
+      "oracle_id": "e294d9d2-df91-4410-85d3-8ffb13fb2285",
+      "facts_sha256": "09540e59baa2f819b631bb1f8fbd9c6ab69f6e672e88e8d2b401b90bc099771c",
+      "printings": [
+        "28"
+      ]
+    },
+    {
+      "name": "Meditation Pools",
+      "oracle_id": "66208129-20fb-4cb4-8f00-8d4574c9c653",
+      "facts_sha256": "42deed7eb80075b67bf8c431482356eb4e5490482ebbb0ad40ce15ef21fa39af",
+      "printings": [
+        "272"
+      ]
+    },
+    {
+      "name": "Merchant of Many Hats",
+      "oracle_id": "23820b45-2f3a-4b6e-99ea-d84caccb7e37",
+      "facts_sha256": "45bd9814096173bc0c627d3181c51906e0b834531f912e9c0d45a94769c8e7b6",
+      "printings": [
+        "110"
+      ]
+    },
+    {
+      "name": "Messenger Hawk",
+      "oracle_id": "4029e884-8154-42b3-ae29-3cb98374a294",
+      "facts_sha256": "19d8f06411f1fcee93333ec714f8eda4ea4afd65975cff7ab3643de451009dd5",
+      "printings": [
+        "234"
+      ]
+    },
+    {
+      "name": "Meteor Sword",
+      "oracle_id": "181965fb-e685-4b1f-9bd6-3a33bed933b2",
+      "facts_sha256": "ece4472db11b2c8cc122028421d33637901413a6e279f5fce5d411ccebfda17e",
+      "printings": [
+        "258"
+      ]
+    },
+    {
+      "name": "Misty Palms Oasis",
+      "oracle_id": "dfd2c57a-4557-4df1-8f6f-da2cbd317f12",
+      "facts_sha256": "83554a4b0f920d89dfc1a8a7028c57801f4396982f05a9d0284dc6cba67b1dfe",
+      "printings": [
+        "273"
+      ]
+    },
+    {
+      "name": "Momo, Friendly Flier",
+      "oracle_id": "a3c56e71-0de6-447a-a9b4-0971f56c2362",
+      "facts_sha256": "8b2f7fe4186e5f6e19d3d57b828928948ec9db66756d1f09ded225d6efb77660",
+      "printings": [
+        "29",
+        "317",
+        "394"
+      ]
+    },
+    {
+      "name": "Momo, Playful Pet",
+      "oracle_id": "85ee8ab6-8db5-45d7-85ae-64838771146a",
+      "facts_sha256": "738fe1542c3e0c88f5bd5bb5308cf3f5d841c2269b821b55deaae2dd760c914f",
+      "printings": [
+        "30"
+      ]
+    },
+    {
+      "name": "Mongoose Lizard",
+      "oracle_id": "a9bae56c-9666-42e8-94ec-03b0a964b142",
+      "facts_sha256": "1b77fb93e567b95df77ee221ece64c4d10fb856e194ba2c20657c64d4b6597e5",
+      "printings": [
+        "148"
+      ]
+    },
+    {
+      "name": "Mountain",
+      "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+      "facts_sha256": "dc8fd7c2b9340114200a1478f7e78bc91e28a0949ef1353a3bb0b2e39e65f366",
+      "printings": [
+        "285",
+        "290",
+        "295"
+      ]
+    },
+    {
+      "name": "North Pole Gates",
+      "oracle_id": "3fcd1432-66d0-40e1-85ef-b57a6fa94b7c",
+      "facts_sha256": "e6dae01790d241c94e44020d8372c7feedcd5f6df07b97d6e0abffde73dcc415",
+      "printings": [
+        "274"
+      ]
+    },
+    {
+      "name": "North Pole Patrol",
+      "oracle_id": "a1230e78-0bfa-489e-a1b9-3c227bceb6fb",
+      "facts_sha256": "e6060ae4dc9b51cee42062ed56ec7ccb8e08379e5a7d0c8262799a476ece0a0e",
+      "printings": [
+        "65"
+      ]
+    },
+    {
+      "name": "Northern Air Temple",
+      "oracle_id": "28a2ad5b-d637-4634-8d4b-889e1fc88319",
+      "facts_sha256": "0ab09c36c63a978501a824c0314504ddd2e26b6a029f7728cfd45ec3cdb3435a",
+      "printings": [
+        "111"
+      ]
+    },
+    {
+      "name": "Obsessive Pursuit",
+      "oracle_id": "7e7abb44-47b0-4d80-b8a1-36f0c1032aa3",
+      "facts_sha256": "2a29fb4e37112c7ee61c6318705a74c9be6086a83babc8bd961eb14ec3c09801",
+      "printings": [
+        "112",
+        "340"
+      ]
+    },
+    {
+      "name": "Octopus Form",
+      "oracle_id": "6fec368d-374d-4318-861b-ff478ba51a3c",
+      "facts_sha256": "66aa6b3999b8fcd508057d1f0efeb3b7f883b249bae3793ae3f9e6910cecd6f9",
+      "printings": [
+        "66"
+      ]
+    },
+    {
+      "name": "Omashu City",
+      "oracle_id": "6f9a4bb2-5959-4a5c-83af-c2729e6673df",
+      "facts_sha256": "eaa0431bfe349ac0519b10a70d92a24e57d18c96fd1c4bc66f2bf3de5e988d92",
+      "printings": [
+        "275"
+      ]
+    },
+    {
+      "name": "Origin of Metalbending",
+      "oracle_id": "177113f8-1188-4e5e-8ad7-34a7bb8ca7f1",
+      "facts_sha256": "e9ce086d888851bbb90a89a8ff16b8eb46813723b2640732a67b8a1db9d33c4b",
+      "printings": [
+        "187"
+      ]
+    },
+    {
+      "name": "Ostrich-Horse",
+      "oracle_id": "2b6cb199-1564-4214-b24f-624dc962c907",
+      "facts_sha256": "82f790e91538130dbf2f0a5b0ec8fc3fe063d8d7707bcacc374756f180ba17c8",
+      "printings": [
+        "188"
+      ]
+    },
+    {
+      "name": "Otter-Penguin",
+      "oracle_id": "e2171c48-a816-41b2-aa55-e0ba2503fd6a",
+      "facts_sha256": "844f2ad6d30409ea69c1ea6b266499da3ff4782c0f08bbc9010434ee4f56c4c6",
+      "printings": [
+        "67"
+      ]
+    },
+    {
+      "name": "Ozai's Cruelty",
+      "oracle_id": "aba5c046-2f8c-4749-b347-9a7d8cb1c865",
+      "facts_sha256": "b59932346cb5db7628e2ff4a54e037caaf72a48d619947a2cd2f342feb962831",
+      "printings": [
+        "113"
+      ]
+    },
+    {
+      "name": "Ozai, the Phoenix King",
+      "oracle_id": "7472af8e-2e93-43b2-bc32-a3741f6d7502",
+      "facts_sha256": "b31fdd0700f50a922e14c8ab75e07766cddd332ce257cfdd90d7d3e6f8a4ac3c",
+      "printings": [
+        "235",
+        "311",
+        "335"
+      ]
+    },
+    {
+      "name": "Path to Redemption",
+      "oracle_id": "ac94860b-70b8-4624-9758-4bb024a56f60",
+      "facts_sha256": "c60c12c30169d0e1875b6bb39a82ab36d3a1d2cd7a5ea729328c738a9e6f2699",
+      "printings": [
+        "31"
+      ]
+    },
+    {
+      "name": "Phoenix Fleet Airship",
+      "oracle_id": "6ffe71c0-acb5-4ba9-8c2f-719330e1ea69",
+      "facts_sha256": "4394b141822fc44e16b290d8e94325783bd2c881155ab5190afed152f7dd031a",
+      "printings": [
+        "114",
+        "323"
+      ]
+    },
+    {
+      "name": "Pillar Launch",
+      "oracle_id": "a39c758d-82be-4d8c-bb3e-8ee8a6c6788b",
+      "facts_sha256": "7d146cfdd6db580dae74e3aefbf2154c21d712f4fe5b56a932bd18455dbcc2d8",
+      "printings": [
+        "189"
+      ]
+    },
+    {
+      "name": "Pirate Peddlers",
+      "oracle_id": "4771a871-576e-4a14-92f0-b5b41c63d615",
+      "facts_sha256": "ea5a3b4e6932389f4f17ea4e9ee2f14a4cbe3a5cee3a55661849075b6d60f578",
+      "printings": [
+        "115"
+      ]
+    },
+    {
+      "name": "Plains",
+      "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+      "facts_sha256": "a46fdb7aed01739b4f3c48497e4bf8b5ded78b5a5cf67d3fe57a045f47ee35c1",
+      "printings": [
+        "282",
+        "287",
+        "292"
+      ]
+    },
+    {
+      "name": "Planetarium of Wan Shi Tong",
+      "oracle_id": "f89d093d-c815-4df7-a348-2005aa227586",
+      "facts_sha256": "20a9b37e712110e44233452874b0b7ec27fff097ef7fba48cc4d1c152a109a25",
+      "printings": [
+        "259",
+        "385"
+      ]
+    },
+    {
+      "name": "Platypus-Bear",
+      "oracle_id": "933e4e8a-01ea-4f58-8f5e-4f6c43f4e105",
+      "facts_sha256": "5757346de8f1102771d07c6dad1f63131a28d746f219c2931701ef01af07d251",
+      "printings": [
+        "236"
+      ]
+    },
+    {
+      "name": "Pretending Poxbearers",
+      "oracle_id": "fefef024-3a05-4221-bb74-419ee08716e5",
+      "facts_sha256": "4a5c353c410840e35667c47c8bc3b33dc3410fb0c9140062d55e558f05fe6b16",
+      "printings": [
+        "237"
+      ]
+    },
+    {
+      "name": "Price of Freedom",
+      "oracle_id": "5e6faa98-cf55-430d-87ce-8085f68aa20a",
+      "facts_sha256": "8cb8624698e7c7cb03f10f1b432692560e7dd10fbb572c0a6569ed8ca4f7c478",
+      "printings": [
+        "149"
+      ]
+    },
+    {
+      "name": "Professor Zei, Anthropologist",
+      "oracle_id": "59a10335-72df-44a5-a514-5bac392cd282",
+      "facts_sha256": "1609452126fc3ff4262f44431e16d2aa59386ba9ba2c24685d23f3ee33ccff66",
+      "printings": [
+        "238"
+      ]
+    },
+    {
+      "name": "Rabaroo Troop",
+      "oracle_id": "48252207-d345-455c-b655-c2027664e6a6",
+      "facts_sha256": "f9de0e75381ddf9c7b1ddc75e491944a2d81a882e37222f3aba0cc2e36245e6e",
+      "printings": [
+        "32"
+      ]
+    },
+    {
+      "name": "Ran and Shaw",
+      "oracle_id": "a728685f-8670-4db2-ae02-3cf74eb3c402",
+      "facts_sha256": "9a30a758e1a0fa701795a02f9b57c86600bf91cfb1fc4ad6627c7c20b7298101",
+      "printings": [
+        "150",
+        "325"
+      ]
+    },
+    {
+      "name": "Raucous Audience",
+      "oracle_id": "5be6f245-31cf-4294-ace0-ca6ce3463fed",
+      "facts_sha256": "fed24fa3ebd098134a287bf7e210d0307ca834c9a0a0c402cec108c4ef954c91",
+      "printings": [
+        "190"
+      ]
+    },
+    {
+      "name": "Raven Eagle",
+      "oracle_id": "f75ac0a3-8795-48b4-91fd-4717900ef5b7",
+      "facts_sha256": "f4a7d933d2c741437bae4bbec64cceca233c596947d77ac351b8cc6cb4827d08",
+      "printings": [
+        "116",
+        "324"
+      ]
+    },
+    {
+      "name": "Razor Rings",
+      "oracle_id": "eb5afbd7-4d21-4449-9204-eeb4ebf6a72a",
+      "facts_sha256": "9f3f1c9b17f8e6c08359853be92596103fd477aec271cba85d13dea64c606fa7",
+      "printings": [
+        "33"
+      ]
+    },
+    {
+      "name": "Realm of Koh",
+      "oracle_id": "bb9ce416-eef1-49e8-89a0-2b6837505070",
+      "facts_sha256": "f86a5dcfb9a43b0003bfc640f72153e13126057bb675a11f72651036dfaee038",
+      "printings": [
+        "276",
+        "391"
+      ]
+    },
+    {
+      "name": "Rebellious Captives",
+      "oracle_id": "70401db7-edbc-402f-98ef-be74bd316273",
+      "facts_sha256": "f6bd90fd1c8c3ae0c786cbcc288a8710d2ecfc932200275e75ebae6c4b0f7227",
+      "printings": [
+        "191"
+      ]
+    },
+    {
+      "name": "Redirect Lightning",
+      "oracle_id": "c62b5c22-e058-436f-9575-a01cb2112829",
+      "facts_sha256": "f8f60fd2626652c0bb70b9c8537f35fcdec9fb63ff6f3396180f96dafa3b5dfd",
+      "printings": [
+        "151",
+        "343"
+      ]
+    },
+    {
+      "name": "Rockalanche",
+      "oracle_id": "d1ecfad3-e79a-447b-a932-68ef728eaf1f",
+      "facts_sha256": "b445231404411b6d4c21e2c8a36c724661242e7ec4b6f69550c5b19604049b72",
+      "printings": [
+        "192"
+      ]
+    },
+    {
+      "name": "Rocky Rebuke",
+      "oracle_id": "fd85db70-8616-42df-9dac-bad7923f88d7",
+      "facts_sha256": "aeb550c7abc2d2f3395eb552ad1ccf5db2d96317d0bc259bda61dd41c34a78b6",
+      "printings": [
+        "193"
+      ]
+    },
+    {
+      "name": "Rough Rhino Cavalry",
+      "oracle_id": "3ac94b28-4b0a-4121-99b9-9cd7dff7948c",
+      "facts_sha256": "eb15d206fa8c3858e0dfe3d112972c7c438e683711226c03d421849b8af372e5",
+      "printings": [
+        "152"
+      ]
+    },
+    {
+      "name": "Rowdy Snowballers",
+      "oracle_id": "74224cce-c2ce-4456-8a97-3abbbb199385",
+      "facts_sha256": "e96325971f7b7bc68bd92686bd0ec20e319236204f012d94b61793591cbb52e1",
+      "printings": [
+        "68"
+      ]
+    },
+    {
+      "name": "Ruinous Waterbending",
+      "oracle_id": "7d3a0216-871b-4c1b-adb1-de99b832f577",
+      "facts_sha256": "a24cbf83c4bf1ef58351f4ef38d74af854614b5a22a86481a32c958b7a49494f",
+      "printings": [
+        "118"
+      ]
+    },
+    {
+      "name": "Rumble Arena",
+      "oracle_id": "83f2470e-2114-4cd9-ab1a-21b76e9cdf63",
+      "facts_sha256": "0353cc7cabfec908cc49935463f421dc94febce72c2c3d7902c911604a916030",
+      "printings": [
+        "277"
+      ]
+    },
+    {
+      "name": "Saber-Tooth Moose-Lion",
+      "oracle_id": "7af493e3-15a1-42d6-a66c-82aacabe816f",
+      "facts_sha256": "bdcef0234a96d835e728ab98f304df370b884128033d40f95d309416f906d692",
+      "printings": [
+        "194"
+      ]
+    },
+    {
+      "name": "Sandbender Scavengers",
+      "oracle_id": "0feacc7c-b93e-4322-bc8b-b3c19006128e",
+      "facts_sha256": "a533db3ae785af3efa8395aae276c78055e4bef28a588287b4aec081f7c70209",
+      "printings": [
+        "239",
+        "382"
+      ]
+    },
+    {
+      "name": "Sandbenders' Storm",
+      "oracle_id": "dfc8b8de-be1d-4f7f-bb21-4761a0e7db4e",
+      "facts_sha256": "637cd5d34f16e564d05977d63d600b4d1ff64147a78ccfbe3f375f15d39dbafa",
+      "printings": [
+        "34"
+      ]
+    },
+    {
+      "name": "Secret Tunnel",
+      "oracle_id": "632e2979-d88a-482e-9bb8-57b683c5310f",
+      "facts_sha256": "ec8eeefeb11db61e59e61f20d2cf33e264fc1763de67b18f03ae073a28d74bef",
+      "printings": [
+        "278",
+        "392"
+      ]
+    },
+    {
+      "name": "Secret of Bloodbending",
+      "oracle_id": "743fa824-18cb-4225-ba7b-5b0bbc3c8d41",
+      "facts_sha256": "ad213e34fc035a1e6bddd947918a1db483fc621eb5488030f4867aaf29deec6e",
+      "printings": []
+    },
+    {
+      "name": "Seismic Sense",
+      "oracle_id": "9d586c74-b1dd-4fcb-a24a-c703d250fa63",
+      "facts_sha256": "209f6d140486523872fc9858a0faa8402702dd3e6a6c20fe43dfb7217a02b3f7",
+      "printings": [
+        "195"
+      ]
+    },
+    {
+      "name": "Serpent of the Pass",
+      "oracle_id": "98e36c6e-a868-4679-a5b5-6f02097f560b",
+      "facts_sha256": "3bfd7d776d15194c7cbb22db4e8614c2b0c7705049be02170d7487082e33ee25",
+      "printings": [
+        "70"
+      ]
+    },
+    {
+      "name": "Serpent's Pass",
+      "oracle_id": "f715f701-a735-42ab-b31a-8e1bd04ac5ff",
+      "facts_sha256": "9d2b85c91e448a0fd781144a948a275c628fd215978f32c101a8df58f617cfdc",
+      "printings": [
+        "279"
+      ]
+    },
+    {
+      "name": "Shared Roots",
+      "oracle_id": "9e0fd3bf-f47a-4f06-8ff1-73f6bf5d1e03",
+      "facts_sha256": "4687f309648c3cc63c890cf53dcd5223f48542feecacca3b657419cdd457f871",
+      "printings": [
+        "196"
+      ]
+    },
+    {
+      "name": "Sokka's Haiku",
+      "oracle_id": "87a97c72-143d-48a8-a1c5-3c44aa8e5a86",
+      "facts_sha256": "d474e0d1f919398ad71177419d634af76cc9c022297204ed77b4ccbf675b0d4b",
+      "printings": [
+        "71"
+      ]
+    },
+    {
+      "name": "Sokka, Bold Boomeranger",
+      "oracle_id": "bdbec6d5-0f10-4114-b709-4402a44debdf",
+      "facts_sha256": "992ab2ac71055791caca13400c4867d809f092c2e9964ca40ce781a38e5fdc72",
+      "printings": [
+        "240",
+        "383"
+      ]
+    },
+    {
+      "name": "Sokka, Lateral Strategist",
+      "oracle_id": "427f8ef9-12b3-4fa0-b303-28153566b6dc",
+      "facts_sha256": "222ce99cae6cc7bd04392f9ac7a8805770be37c08e7ed84799da48ed1533b348",
+      "printings": [
+        "241"
+      ]
+    },
+    {
+      "name": "Sokka, Tenacious Tactician",
+      "oracle_id": "6b68acc2-b9d5-495b-8054-c04bae1349f1",
+      "facts_sha256": "c81cb15805cd1c0aff7a1ffa48b658eab0275018be6d1e9cdaaee314e8fafb25",
+      "printings": [
+        "242",
+        "352"
+      ]
+    },
+    {
+      "name": "Sold Out",
+      "oracle_id": "6a69d4b1-72dd-4599-a16d-32299de5b0b9",
+      "facts_sha256": "0676f9ee0b81f04d5661017c94c4bc20f00a61dfa6497edbd4fbf7b6123fa637",
+      "printings": [
+        "119"
+      ]
+    },
+    {
+      "name": "Solstice Revelations",
+      "oracle_id": "310c1280-dee8-426f-8440-6132a634a1e0",
+      "facts_sha256": "66cbdd7da61b6af2920ed2cc61de9cda7dd70e7a92bd5d242d9e183d47adcee8",
+      "printings": [
+        "153"
+      ]
+    },
+    {
+      "name": "South Pole Voyager",
+      "oracle_id": "c5173332-68ad-456e-ad85-dd7475464d94",
+      "facts_sha256": "121fb99673d86675709fd9baeb38466ff3a679928002cd0e5d250706138d0165",
+      "printings": [
+        "35",
+        "367"
+      ]
+    },
+    {
+      "name": "Southern Air Temple",
+      "oracle_id": "987c1144-69f6-4441-b0a4-d23f931df81f",
+      "facts_sha256": "828004020ee26a85e495b2080bb3c27adf023a2351a084c99a03d5b78b5376e8",
+      "printings": [
+        "36"
+      ]
+    },
+    {
+      "name": "Sozin's Comet",
+      "oracle_id": "bc0da02c-2b85-4ddc-9ce0-63934dd14164",
+      "facts_sha256": "70917d851e695e8149486e0b6f12b78780fdb17af4d4f71ecd19eccd3f4f381d",
+      "printings": [
+        "154",
+        "309",
+        "332"
+      ]
+    },
+    {
+      "name": "Sparring Dummy",
+      "oracle_id": "036b7b89-e49a-4560-9de9-1d4d71f3f666",
+      "facts_sha256": "6df195e6a7cf428b2738b8bf151347a8cd159c6af484da99369f5f7d5801d1d2",
+      "printings": [
+        "197"
+      ]
+    },
+    {
+      "name": "Spirit Water Revival",
+      "oracle_id": "68979160-b5ce-4787-8a1e-1f40e614c3b0",
+      "facts_sha256": "ccece5a5f8950bf1012eff42e9d3e7c524d1c574df9a90efb878b79155fb84d8",
+      "printings": [
+        "370",
+        "73"
+      ]
+    },
+    {
+      "name": "Suki, Courageous Rescuer",
+      "oracle_id": "70ea1a9d-ec52-4c11-8c4d-0d957e5491ad",
+      "facts_sha256": "acd479b640f627cb99d930f60f700d5909e868b3554536bed04ae57a494ed798",
+      "printings": [
+        "368",
+        "37"
+      ]
+    },
+    {
+      "name": "Suki, Kyoshi Warrior",
+      "oracle_id": "9223488e-5206-4d43-90ef-387189dcee16",
+      "facts_sha256": "ccdba15119aa0b8465ee1da9507dd23a9b6df1292a2edc42b24aaabdb8130c0f",
+      "printings": [
+        "243"
+      ]
+    },
+    {
+      "name": "Sun Warriors",
+      "oracle_id": "513a2fca-fea4-434e-9b25-b0c0d7f322b2",
+      "facts_sha256": "24d54035ffd70405f9d5fec4fa6945672e896427001e6421079428a106b01b31",
+      "printings": [
+        "244"
+      ]
+    },
+    {
+      "name": "Sun-Blessed Peak",
+      "oracle_id": "d188a397-c7d9-4f16-bc21-d9e1b5ffc951",
+      "facts_sha256": "7e179c2e680af77dc7383d8b16066bd044ec029590d80dfe1ca85cf385379c9f",
+      "printings": [
+        "280"
+      ]
+    },
+    {
+      "name": "Swamp",
+      "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+      "facts_sha256": "0ddffcfeb10574ceab2d19fcaad90b912eb08a51601bfa0d51ceb993dcfc04e5",
+      "printings": [
+        "284",
+        "289",
+        "294"
+      ]
+    },
+    {
+      "name": "Swampsnare Trap",
+      "oracle_id": "fc532d1d-6cf5-4b59-afb3-325d0bc0db77",
+      "facts_sha256": "d98bfc07e64baf3e8580d13443cba7035c7631cd1d1d8cab9ee1015b96bc4ef2",
+      "printings": [
+        "120"
+      ]
+    },
+    {
+      "name": "Team Avatar",
+      "oracle_id": "f95f7b0c-2dd6-46e1-ae02-f51d275e7120",
+      "facts_sha256": "7a7f12b1f8325730b4347dd4fd3e8e657ea20dfd7691bd679266ed9ee9fb0512",
+      "printings": [
+        "38"
+      ]
+    },
+    {
+      "name": "Teo, Spirited Glider",
+      "oracle_id": "ea74940f-01de-4804-92ed-b273fddf6d62",
+      "facts_sha256": "65a1a98db7491916677816b83e2414af609db64c4af25ea496dac91d4679c36f",
+      "printings": [
+        "74"
+      ]
+    },
+    {
+      "name": "The Boulder, Ready to Rumble",
+      "oracle_id": "d33ee141-a880-4368-a274-a6ae2f2c624b",
+      "facts_sha256": "65bb46288504d2dc587a0048241d6f2f626e0ab4a124ba61bcf4a1bd4a58bbe3",
+      "printings": [
+        "168"
+      ]
+    },
+    {
+      "name": "The Cave of Two Lovers",
+      "oracle_id": "c2df54f1-a2db-4de3-bc96-5c07f4594752",
+      "facts_sha256": "671754dafc1d1c2921fc0bc2a391f303143469779e5fccb1fdc5e66823795743",
+      "printings": [
+        "126"
+      ]
+    },
+    {
+      "name": "The Earth King",
+      "oracle_id": "d5770b0f-4493-42e9-a2d7-0e74a28da4ba",
+      "facts_sha256": "e7809d4980ba90d65bd40acbaf5dc53588837fe2c315ad6c5430a0ed24ceedc4",
+      "printings": [
+        "172",
+        "344"
+      ]
+    },
+    {
+      "name": "The Fire Nation Drill",
+      "oracle_id": "3d4b9d71-4275-4c18-a4dc-9aad234eb92c",
+      "facts_sha256": "751c9664b756022da38e197cdce97e91e31bee28ae4c900d3ed7cbd95f964ba7",
+      "printings": [
+        "321",
+        "98"
+      ]
+    },
+    {
+      "name": "The Last Agni Kai",
+      "oracle_id": "fd1998c0-c18e-4310-82de-b6320be5fe10",
+      "facts_sha256": "3b23fa2a96c800acf20221170da093cb0d416bafb0f1ccb03cc0ac6afd92d98d",
+      "printings": [
+        "144",
+        "314"
+      ]
+    },
+    {
+      "name": "The Legend of Kuruk // Avatar Kuruk",
+      "oracle_id": "201b8936-18f4-4881-a1d4-c308cf3832bf",
+      "facts_sha256": "85c6f9d7db7041d298b744d2fe30b694c5cd969fee7743d3cce3923d1b659b11",
+      "printings": [
+        "355",
+        "61"
+      ]
+    },
+    {
+      "name": "The Legend of Kyoshi // Avatar Kyoshi",
+      "oracle_id": "e41e8754-028c-4399-b530-de9e134d04b0",
+      "facts_sha256": "fb1f99cace059e0da18617aff43bbd965ca42b52f6f9574346fa6e06f85cbf04",
+      "printings": [
+        "186",
+        "358"
+      ]
+    },
+    {
+      "name": "The Legend of Roku // Avatar Roku",
+      "oracle_id": "2f26f270-26d9-46d3-957f-19f52d51eb03",
+      "facts_sha256": "f2c36026e7a59126e899a51234931308e1351410fa3064547c7bde8641c30516",
+      "printings": [
+        "145",
+        "357"
+      ]
+    },
+    {
+      "name": "The Legend of Yangchen // Avatar Yangchen",
+      "oracle_id": "521a63cf-5e83-4649-9800-c62b2fc474d6",
+      "facts_sha256": "d33422e21ff33f274a8d03fc636049fdfec3c9069ecf9ac14d53577de1b43590",
+      "printings": [
+        "27",
+        "354"
+      ]
+    },
+    {
+      "name": "The Lion-Turtle",
+      "oracle_id": "fff728a1-56f5-4e97-91e2-19aba5772909",
+      "facts_sha256": "10c74b9f3d7076173032091654d5200b0eee040abc9d2bc8e8638669e202564a",
+      "printings": [
+        "232",
+        "328"
+      ]
+    },
+    {
+      "name": "The Mechanist, Aerial Artisan",
+      "oracle_id": "bad27b43-7716-4ce1-82ba-2a6d437363e7",
+      "facts_sha256": "ddbf5e745ceae935242000283eab781d815d69e3c03e62e8985da73fc54b6406",
+      "printings": [
+        "369",
+        "64"
+      ]
+    },
+    {
+      "name": "The Rise of Sozin // Fire Lord Sozin",
+      "oracle_id": "9b0b217d-cc9d-4187-89cb-f13160ed2983",
+      "facts_sha256": "b9f81aea129eb1475bc28b0c8ed3a0bcebbc74ba9bff8149ea74d56fba38dc6a",
+      "printings": [
+        "117",
+        "356"
+      ]
+    },
+    {
+      "name": "The Spirit Oasis",
+      "oracle_id": "b677a73c-f179-46bf-83ee-c2b05f9fca67",
+      "facts_sha256": "d14848a894d3f459a9da96ee91a2111d82745483a267e533fcc4d03e509cd6af",
+      "printings": [
+        "72"
+      ]
+    },
+    {
+      "name": "The Unagi of Kyoshi Island",
+      "oracle_id": "be922360-ee9f-4cfb-bf10-d481c5de5cb1",
+      "facts_sha256": "583b68a4b5cbfe2e803897a11a20cf4038206fadbe058c102a8ac6d0270083b9",
+      "printings": [
+        "319",
+        "77"
+      ]
+    },
+    {
+      "name": "The Walls of Ba Sing Se",
+      "oracle_id": "af7d7da5-aff5-48e1-901a-f81257a85f71",
+      "facts_sha256": "0dd5cbfe3915e482bb167ec378b6705e6dc48325049b58c47096c9e4b9fde202",
+      "printings": [
+        "261",
+        "329"
+      ]
+    },
+    {
+      "name": "Tiger-Dillo",
+      "oracle_id": "b6e82d4f-4fbf-495c-bebd-982d2a855ad0",
+      "facts_sha256": "0958514070131f5bcd5fbba36c08d36d8459911929b09270b00a0028d78b4abf",
+      "printings": [
+        "155"
+      ]
+    },
+    {
+      "name": "Tiger-Seal",
+      "oracle_id": "68f84643-c0f9-4d31-ba2e-38b65ab45d04",
+      "facts_sha256": "0bba71fd65aa79d49dc9dcab6c9a4de5b1703dc57fd811bfa650af5000f46bd6",
+      "printings": [
+        "318",
+        "75"
+      ]
+    },
+    {
+      "name": "Tolls of War",
+      "oracle_id": "5d1d9914-3ef2-45c5-b1cb-cb85d2f7394c",
+      "facts_sha256": "a03ea9fa17a2a9e75a947d0df942293845b36a627f3ebf0d5baa35d4aa805f4c",
+      "printings": [
+        "245"
+      ]
+    },
+    {
+      "name": "Toph, Hardheaded Teacher",
+      "oracle_id": "8c1c0117-6fc0-43c5-a4c8-6472de6503d9",
+      "facts_sha256": "db9a279d48acdbfc809681a0846b05480ba45e06b744a47129bc6f0a163c50e5",
+      "printings": [
+        "246",
+        "384"
+      ]
+    },
+    {
+      "name": "Toph, the Blind Bandit",
+      "oracle_id": "2ce20f43-9357-448f-bb40-7315feb08433",
+      "facts_sha256": "15938021a439cb34e26f6a9bd52755addf3cd34c826f1d4a61d65f8b5e2c9d78",
+      "printings": [
+        "198"
+      ]
+    },
+    {
+      "name": "Toph, the First Metalbender",
+      "oracle_id": "fbfef028-b10c-4ade-9503-d9af5b0c211b",
+      "facts_sha256": "b9ef292cd5588afcc997c17ed71f1a2e1bc59f5faa25fe091169b97f8dc66a5a",
+      "printings": [
+        "247",
+        "353",
+        "362"
+      ]
+    },
+    {
+      "name": "Treetop Freedom Fighters",
+      "oracle_id": "922176b8-7174-4248-92fb-b196ceb802c7",
+      "facts_sha256": "ae6475a93f3f5f27d6982893e677a0da5ddc501e3ba3427bc2ae2594eef75305",
+      "printings": [
+        "156"
+      ]
+    },
+    {
+      "name": "True Ancestry",
+      "oracle_id": "26c2dd96-07e7-4294-9431-96d5aeff3761",
+      "facts_sha256": "989192ef5ef6c69e0682a0a18fe4217478e4022b953cd23e9c270305aaf56c13",
+      "printings": [
+        "199"
+      ]
+    },
+    {
+      "name": "Trusty Boomerang",
+      "oracle_id": "3c032e74-69c6-48ca-95d4-51aa3d894c14",
+      "facts_sha256": "6a954b60e91321181e75d02526f2bcc338848b3a86bbcf1cd2ab724786acd018",
+      "printings": [
+        "260"
+      ]
+    },
+    {
+      "name": "Tundra Tank",
+      "oracle_id": "2ded4b02-7aa4-46a1-b10f-8480eb942cd4",
+      "facts_sha256": "d3672f0154be66ad7a2a91c1515b761939caf58dc68810bf8eeb6a203e66f7ff",
+      "printings": [
+        "121"
+      ]
+    },
+    {
+      "name": "Turtle-Duck",
+      "oracle_id": "e93782e3-1b93-459a-a7de-06c3b6591e6f",
+      "facts_sha256": "7f28130dd02ef45abd683513d3eb1f7076196a225d0e5dd5a928a46a814c232e",
+      "printings": [
+        "200"
+      ]
+    },
+    {
+      "name": "Twin Blades",
+      "oracle_id": "88b076a4-46ff-4a41-95a5-2821f4d8944d",
+      "facts_sha256": "5779da7327daf49212967a55f20ea8d2349c5ae4279ae7aa557103aa4051611f",
+      "printings": [
+        "157"
+      ]
+    },
+    {
+      "name": "Ty Lee, Artful Acrobat",
+      "oracle_id": "3726b9a0-67cb-4f45-ab50-62db50f93568",
+      "facts_sha256": "a66d39e037b06c28d47d21bea4b8f481d283f771d527109995adc86221e4dd70",
+      "printings": [
+        "158"
+      ]
+    },
+    {
+      "name": "Ty Lee, Chi Blocker",
+      "oracle_id": "081ad4e3-cda3-41cc-890f-412611dc9ea0",
+      "facts_sha256": "4fd258f625f116fab4533b199b67a8a9b22073c8cb6af9c7597e6a0435026ba3",
+      "printings": [
+        "371",
+        "76"
+      ]
+    },
+    {
+      "name": "Uncle Iroh",
+      "oracle_id": "8a98ddac-7341-4118-b188-51d8d03afd1d",
+      "facts_sha256": "59f1ce9e332a9e77b57ad3f9931d9588245d20393fb81f4048cf20ca3b7ef233",
+      "printings": [
+        "248"
+      ]
+    },
+    {
+      "name": "United Front",
+      "oracle_id": "c23f260b-b7d3-4c25-a08a-dabdb99e1791",
+      "facts_sha256": "b383292b5c3b0b428b7cb790889fbecd5cb390e8b8a7e2f84bcc17f98aef965e",
+      "printings": [
+        "331",
+        "39"
+      ]
+    },
+    {
+      "name": "Unlucky Cabbage Merchant",
+      "oracle_id": "d8f7d4c8-bc50-4bcf-b930-797dcb3c2a21",
+      "facts_sha256": "ff22b9b5bb9eb9933b5defd3723f35b8907f6daf6d38adbd74526794a79e96b4",
+      "printings": [
+        "201"
+      ]
+    },
+    {
+      "name": "Vengeful Villagers",
+      "oracle_id": "ad6442c2-7aa2-4c24-8133-f679a3499bde",
+      "facts_sha256": "ad0f15a6567a4c4c45524798bf4c207c7eb5aeb7e804c0bcd1e7619fa895678d",
+      "printings": [
+        "40"
+      ]
+    },
+    {
+      "name": "Vindictive Warden",
+      "oracle_id": "43b339ec-4d7d-41ac-a5ab-96c6a6de00e2",
+      "facts_sha256": "b8430dfe0a3c8710c79b2d714da763e045f30e2a3fbee163f8648b77e50f1015",
+      "printings": [
+        "249"
+      ]
+    },
+    {
+      "name": "Walltop Sentries",
+      "oracle_id": "fb3a0910-a582-41ef-b5b9-3cda1f1cd5ce",
+      "facts_sha256": "0ab2058748cd22f27f2313fb159cc31eaece605bec28501af56d8c6e72e23f63",
+      "printings": [
+        "202"
+      ]
+    },
+    {
+      "name": "Wan Shi Tong, Librarian",
+      "oracle_id": "2bace3ea-7d28-4a1c-857a-d3c3a1c11b59",
+      "facts_sha256": "4db4fb8d21520a00825662e17db002eb3c469c2d75792811b037e98dd2289548",
+      "printings": [
+        "320",
+        "78"
+      ]
+    },
+    {
+      "name": "Wandering Musicians",
+      "oracle_id": "7166bf81-05c2-457d-a0bb-a175175b8e79",
+      "facts_sha256": "33077933171ad099c92b0c0cb7cb43b54b0d68aac6af5be13e110562af9ab262",
+      "printings": [
+        "250"
+      ]
+    },
+    {
+      "name": "War Balloon",
+      "oracle_id": "021b495d-236f-4274-988d-2dfd7103c9ef",
+      "facts_sha256": "e416853640e2b9aec86c7cd89f48b831d7e200865061e00f05df214a74b51549",
+      "printings": [
+        "159"
+      ]
+    },
+    {
+      "name": "Wartime Protestors",
+      "oracle_id": "6557813b-4ee7-4881-a37c-10c8ea097360",
+      "facts_sha256": "e443fe5588aae99ac3485ad56aa1f0659d53300032de0a11a2ce22160e6cc279",
+      "printings": [
+        "160",
+        "375"
+      ]
+    },
+    {
+      "name": "Water Tribe Captain",
+      "oracle_id": "0c6c4921-c6cb-4b4b-ac9d-10ccc89a5d1d",
+      "facts_sha256": "09570764582b7931f438786bf77eac1ba6736a13ec44ad9ff1197bd4a1d6e78e",
+      "printings": [
+        "41"
+      ]
+    },
+    {
+      "name": "Water Tribe Rallier",
+      "oracle_id": "64acb083-a0a3-46ec-9c93-b2ac36878703",
+      "facts_sha256": "d446083ebddfd9acaf483f27672d34f0a5300166faffb3dc02a21af2b8611eeb",
+      "printings": [
+        "42"
+      ]
+    },
+    {
+      "name": "Waterbender Ascension",
+      "oracle_id": "aeddfdc2-149b-4703-ba57-8d844b25ef08",
+      "facts_sha256": "28bdf7af9d47b3b8d719921b0b961ed48b2f6f5b6c714458fcae20d124457bb4",
+      "printings": [
+        "310",
+        "79"
+      ]
+    },
+    {
+      "name": "Waterbending Lesson",
+      "oracle_id": "3d28886c-46bf-4d2e-a257-cb9016cc3573",
+      "facts_sha256": "8d3a15fafd74696a6398bbb1b68dcdc5474f0e42d4673687eb687c3cadc56c3c",
+      "printings": [
+        "80"
+      ]
+    },
+    {
+      "name": "Waterbending Scroll",
+      "oracle_id": "882d032b-db36-401a-8075-a9fabc90c53d",
+      "facts_sha256": "d32a35c7be708b80affa5badea780c3ec812905ad0394abc7535fadeffa74899",
+      "printings": [
+        "81"
+      ]
+    },
+    {
+      "name": "Watery Grasp",
+      "oracle_id": "520b2799-66bd-40bf-9bc0-9cd3aed321f5",
+      "facts_sha256": "1b20dc500725273f41ae44cf61ecfa3d15daf04c78482b1a380581b386ac5f3d",
+      "printings": [
+        "82"
+      ]
+    },
+    {
+      "name": "White Lotus Hideout",
+      "oracle_id": "2cdbfda3-98fc-4108-b551-c7049168924e",
+      "facts_sha256": "c4ba6aca5a036edd92c519d35485219a09c2f046804d44dd8a1b4b80a022d902",
+      "printings": [
+        "281"
+      ]
+    },
+    {
+      "name": "White Lotus Reinforcements",
+      "oracle_id": "c55a4b25-ccc4-49de-9f98-a829c547a64d",
+      "facts_sha256": "212543b9281ef6b8c8a38396942481f591185940f03c0853bc3eeaaa26da6a2a",
+      "printings": [
+        "251"
+      ]
+    },
+    {
+      "name": "White Lotus Tile",
+      "oracle_id": "f8a5e009-45b7-4e62-a494-1579f5fc0ba6",
+      "facts_sha256": "ae0f68230c391616817ec4c8d82114b7677ca8ef41716a00add6c3bc55d2d997",
+      "printings": [
+        "262",
+        "330"
+      ]
+    },
+    {
+      "name": "Wolfbat",
+      "oracle_id": "adc47a25-daab-49c7-93a5-5bbf2bc20cf9",
+      "facts_sha256": "81acbf41c5e4e1b366304f31eab68419f5f1041da68709e7bcebc253b730b33d",
+      "printings": [
+        "122"
+      ]
+    },
+    {
+      "name": "Yip Yip!",
+      "oracle_id": "5453550f-9136-4568-baf8-c3d20e33fbb6",
+      "facts_sha256": "7cd96d058a5cb5fa0107540d798b2ca70a892ab31edaea5ac624ac5386bb2ad2",
+      "printings": [
+        "43"
+      ]
+    },
+    {
+      "name": "Yue, the Moon Spirit",
+      "oracle_id": "961f1883-2f97-4249-90f9-416279d7a9dd",
+      "facts_sha256": "58810ca47b42a29ab0f834896741a24f73ae58fb3cc75e0554dee58824c7470a",
+      "printings": [
+        "338",
+        "83"
+      ]
+    },
+    {
+      "name": "Yuyan Archers",
+      "oracle_id": "63e5180f-16d0-4524-94bf-ecbf3c417814",
+      "facts_sha256": "4280c0589a891f2c7b1c2e627d4e052988b8476fd06f35adb60e75134df7c7c2",
+      "printings": [
+        "161"
+      ]
+    },
+    {
+      "name": "Zhao, Ruthless Admiral",
+      "oracle_id": "d6b0198a-c1f2-4142-b5e2-8205adf14d0a",
+      "facts_sha256": "844f0c7fbebb544762d6467d7be85d14d00055f070745576916b68529c75dbe9",
+      "printings": [
+        "252"
+      ]
+    },
+    {
+      "name": "Zhao, the Moon Slayer",
+      "oracle_id": "94c64d41-d756-42b6-b0e7-0a351d64a68c",
+      "facts_sha256": "df3a46b5a82e42dd8afc56673e9d132a60fb41cd51ff5b2b594d0b2697eb98ad",
+      "printings": [
+        "162",
+        "376"
+      ]
+    },
+    {
+      "name": "Zuko's Conviction",
+      "oracle_id": "f034e8a3-82f7-4c70-93ea-0bf2688f66e1",
+      "facts_sha256": "b3fed4fe6eaf8f1a617316c7179ef2525b92c763d482103cd8374d1dac247840",
+      "printings": [
+        "123"
+      ]
+    },
+    {
+      "name": "Zuko's Exile",
+      "oracle_id": "5cf18398-9552-415e-a61f-2c149e35ec3d",
+      "facts_sha256": "1a1fd5f75807e143d228a1b57701085783e0c44d287e69972aeb0d54fa6b368e",
+      "printings": [
+        "3"
+      ]
+    },
+    {
+      "name": "Zuko, Conflicted",
+      "oracle_id": "b5fd82b9-77de-4358-9ce7-915cc809a889",
+      "facts_sha256": "95c665e706c7fda790cab1a1979b250d2b928ae9aa7071680c7b590626efef2c",
+      "printings": [
+        "253",
+        "302"
+      ]
+    },
+    {
+      "name": "Zuko, Exiled Prince",
+      "oracle_id": "3231ce2e-d4f8-44fc-872d-aeafa59aed4b",
+      "facts_sha256": "8e6c2f6a1ba2e3b58ccef602e73d95898d02f66cf95c32bef7157698c126e9b4",
+      "printings": [
+        "163"
+      ]
+    }
+  ],
+  "unresolved": []
+}

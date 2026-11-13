@@ -3,10 +3,56 @@
   "catalogue_id": 4056,
   "oracle_id": "68979160-b5ce-4787-8a1e-1f40e614c3b0",
   "facts_sha256": "ccece5a5f8950bf1012eff42e9d3e7c524d1c574df9a90efb878b79155fb84d8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "868d3c0d373a6d835d0e3a00b66d9ff966b84db3e7686fb5722207c7fd04c5f4"
   },
-  "physical_metadata_sha256": "8b037fef684e29ce665fbdf81f97ec57524d1e549e48cc66976a288f7bb6c82b"
+  "physical_metadata_sha256": "8b037fef684e29ce665fbdf81f97ec57524d1e549e48cc66976a288f7bb6c82b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpiritWaterRevival.java",
+  "java_sha256": "15d3cb6338e6765438057d3fbe510fd1968608deea237a8a5eace87df504a547",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/WaterbendedCondition.java",
+      "sha256": "bcc36fa5a7855f814a0ff40abff9eed49b6ca1f2ab912755a51ab5d29b0e8b72"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AddContinuousEffectToGame.java",
+      "sha256": "3647d2fb3d84fed968d2b45c43d33d706a712ec4dc4f9ba7aa39d39cc3efa31e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileSpellEffect.java",
+      "sha256": "a7e5f14c36dc0938ad32916c58ae5c50971810fbdb26b8a69f4bfcfdd243b78c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ShuffleYourGraveyardIntoLibraryEffect.java",
+      "sha256": "69aaac1cf765295dd23550453ebdbcb6a180227d66d0dcb04d2bd3dfefead5ad"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/MaximumHandSizeControllerEffect.java",
+      "sha256": "2ff5efca68eea0f1ed6e2f4d8365a2f7356727abd8f3485aaf07a91e6c4ed2c1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WaterbendAbility.java",
+      "sha256": "ec6f6065a3cbaca92ad939b150069e7b0047b6698a8f0b2cf42a51b3eade9b4a"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_blue.rs"
 }

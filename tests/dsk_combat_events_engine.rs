@@ -305,7 +305,9 @@ fn death_callback_catches_simultaneous_tokens_and_cards_then_expires_in_cleanup(
     });
     settle(&mut game);
     assert_eq!(game.observe(P).exile_permissions.len(), 2);
-    game.expire_next_turn_callbacks();
+    let turn = game.state.turn;
+    game.finish_cleanup();
+    assert_eq!(game.state.turn, turn + 1);
     game.move_object(dealer, Zone::Graveyard);
     game.prepare_triggers();
     assert!(game.state.stack.is_empty());

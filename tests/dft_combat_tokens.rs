@@ -195,7 +195,7 @@ fn doubled_token_creation_binds_every_actual_result_and_requirements_expire_befo
         g.state.objects[id as usize].tapped = false;
         g.state.objects[id as usize].summoning_sick = false;
     }
-    g.add_combat();
+    g.add_combat(false);
     g.begin_step(Step::BeginCombat);
     g.give_priority();
     attackers(&mut g);

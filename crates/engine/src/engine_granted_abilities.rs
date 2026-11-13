@@ -1,9 +1,71 @@
 //! Event-qualified ability grants reuse immutable programs and owned packets.
 use super::ability_world::CharacteristicWorld;
 use super::*;
-use crate::cards::StaticAbilityFragment;
+use crate::cards::{StaticAbilityFragment, TriggeredAbility};
+
+// Trigger dispatch accepts both printed and acquired template slots. Owned
+// packets always retain the original index in their immutable definition.
+pub(super) const ACQUIRED_TRIGGER_INDEX: usize = u16::MAX as usize + 1;
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn trigger_templates(
+    printed: Card,
+    acquired: Option<Card>,
+) -> impl Iterator<Item = (usize, &'static TriggeredAbility)> {
+    printed.triggers().iter().enumerate().chain(
+        acquired
+            .into_iter()
+            .flat_map(|card| card.triggers().iter().enumerate())
+            .filter(|(_, ability)| !ability.condition.is_granted())
+            .map(|(index, ability)| (ACQUIRED_TRIGGER_INDEX + index, ability)),
+    )
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ObjectView {
+    pub(super) fn trigger_templates(
+        &self,
+    ) -> impl Iterator<Item = (usize, &'static TriggeredAbility)> + use<> {
+        self.trigger_templates_from(None)
+    }
+
+    pub(super) fn trigger_templates_from(
+        &self,
+        grant: Option<&AttachmentTriggerView>,
+    ) -> impl Iterator<Item = (usize, &'static TriggeredAbility)> + use<> {
+        match grant.filter(|event| event.granted) {
+            Some(grant) => trigger_templates(grant.granting_card, None),
+            None => trigger_templates(
+                self.card,
+                self.acquired_triggers
+                    .as_ref()
+                    .map(|grant| grant.definition),
+            ),
+        }
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    /// Cheap event-source prefilter. The trigger-time view checks ability removal.
+    pub(super) fn has_trigger(
+        &self,
+        id: CardId,
+        matches: impl Fn(&TriggeredAbility) -> bool,
+    ) -> bool {
+        self.state.objects[id as usize]
+            .card
+            .triggers()
+            .iter()
+            .any(&matches)
+            || borrowed_activations::chosen_trigger_donor(self, id).is_some_and(|grant| {
+                grant
+                    .definition
+                    .triggers()
+                    .iter()
+                    .any(|ability| !ability.condition.is_granted() && matches(ability))
+            })
+    }
     pub(super) fn attachment_recipient(&self, grantor: CardId) -> Option<ObjectRef> {
         let giver = self.state.objects.get(grantor as usize)?;
         let recipient = giver.attached_to?;
@@ -26,7 +88,7 @@ impl Game {
         let mut out = Vec::new();
         for &id in ids {
             let giver = self.object_view(id);
-            if giver.card.triggers().iter().any(|a| {
+            if giver.trigger_templates().any(|(_, a)| {
                 !a.condition.is_granted()
                     && matches!(
                         a.condition.event(),
@@ -115,10 +177,10 @@ impl Game {
         out
     }
 
-    /// Controlled-creature grants are indexed by their provider, but each
+    /// Controlled-permanent grants are indexed by their provider, but each
     /// surviving recipient owns a separate trigger. Keep the exact template
     /// slot so a provider's other granted abilities cannot fire from this row.
-    pub(super) fn controlled_creature_cast_trigger_sources(
+    pub(super) fn controlled_cast_trigger_sources(
         &self,
         caster: Player,
     ) -> Vec<(ObjectView, AttachmentTriggerView, usize)> {
@@ -133,15 +195,17 @@ impl Game {
             let granting_card = provider.card;
             for (index, group) in granting_card.static_ability_groups().iter().enumerate() {
                 for fragment in group.fragments {
-                    let StaticAbilityFragment::ControlledCreatureTrigger {
-                        ability,
-                        other,
-                        nontoken,
-                    } = *fragment
-                    else {
+                    let ability = match *fragment {
+                        StaticAbilityFragment::ControlledCreatureTrigger { ability, .. }
+                        | StaticAbilityFragment::ControlledSubtypeCastTrigger { ability, .. } => {
+                            ability
+                        }
+                        _ => continue,
+                    };
+                    let Some(template) = granting_card.triggers().get(usize::from(ability)) else {
                         continue;
                     };
-                    let condition = granting_card.triggers()[usize::from(ability)].condition;
+                    let condition = template.condition;
                     let TriggerCondition::SpellCast { relation, .. } = condition.event() else {
                         continue;
                     };
@@ -162,9 +226,8 @@ impl Game {
                     for (recipient, object) in self.state.objects.iter().enumerate() {
                         let recipient = recipient as CardId;
                         if object.zone != Zone::Battlefield
-                            || !world.controlled_creature_trigger_applies(
-                                grantor, recipient, other, nontoken,
-                            )
+                            || world.controlled_trigger_ability(grantor, recipient, *fragment)
+                                != Some(ability)
                         {
                             continue;
                         }

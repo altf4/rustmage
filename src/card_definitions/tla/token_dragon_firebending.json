@@ -1,0 +1,24 @@
+{
+  "name": "@token/tla-dragon-firebending",
+  "catalogue_id": 5707,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "8c719a57e7f50828a4f65ba44a2431a336828a6d9ffd3b0c0ff504830c9c10b1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/DragonFirebendingToken.java",
+  "java_sha256": "e388beb700e5905dcb1d1a4ffe6efe84e425c6e03910cd7d8b73e4a39a48f441",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FirebendingAbility.java",
+      "sha256": "886553199042c3caee285871191096e9e938f2ef1ffa96cb289bac8518502566"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "rules_tests": "tests/tla_token_cards.rs"
+}

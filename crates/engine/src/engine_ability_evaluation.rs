@@ -9,6 +9,30 @@ use super::ability_world::CharacteristicWorld;
 use super::*;
 use crate::cards::{AbilityLayer, StaticAbilityFragment};
 
+/// One live qualifier for actual, full-layer, and projected funding queries.
+pub(super) fn controlled_subtype_keywords<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    fragment: StaticAbilityFragment,
+    source: ObjectRef,
+    id: CardId,
+) -> Option<Keywords> {
+    let (kind, subtype, keywords) = match fragment {
+        StaticAbilityFragment::ControlledSubtypeKeywords { subtype, keywords } => {
+            (0, subtype, keywords)
+        }
+        StaticAbilityFragment::ControlledKindAndSubtypeKeywords {
+            kind,
+            subtype,
+            keywords,
+        } => (kind, subtype, keywords),
+        _ => return None,
+    };
+    (world.object(id).controller == world.object(source.card).controller
+        && (kind == 0 || world.kinds(id) & kind == kind)
+        && world.subtypes(id).has(world.definition(id), subtype))
+    .then_some(keywords)
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) struct EvaluatedAbilityGroup {
     pub source: ObjectRef,
@@ -144,6 +168,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
         | StaticAbilityFragment::ControlledPermanentTapMana { .. }
         | StaticAbilityFragment::ControlledTokenTapMana { .. }
         | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
+        | StaticAbilityFragment::ControlledKindOrSubtypeTapMana { .. }
         | StaticAbilityFragment::OtherControlledPermanentTapMana(_) => {
             let production = world.static_tap_mana(source, id, *fragment)?;
             return Some(LayerSixGrant {
@@ -159,14 +184,9 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 }],
             });
         }
-        StaticAbilityFragment::ControlledCreatureTrigger {
-            ability,
-            other,
-            nontoken,
-        } => {
-            if !world.controlled_creature_trigger_applies(source, id, other, nontoken) {
-                return None;
-            }
+        StaticAbilityFragment::ControlledCreatureTrigger { .. }
+        | StaticAbilityFragment::ControlledSubtypeCastTrigger { .. } => {
+            let ability = world.controlled_trigger_ability(source, id, *fragment)?;
             return Some(LayerSixGrant {
                 recipient: id,
                 keywords: Keywords::NONE,
@@ -250,6 +270,17 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 recipient: id,
                 keywords: Keywords::NONE,
                 abilities: vec![activated(ability)],
+                mana: Vec::new(),
+            });
+        }
+        StaticAbilityFragment::SourceConditionalAttackTrigger { condition, ability } => {
+            if world.reference(id) != source || world.value(condition, source.card) == 0 {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![triggered(ability)],
                 mana: Vec::new(),
             });
         }
@@ -401,6 +432,12 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             keywords
         }
+        StaticAbilityFragment::ControlledPermanentAllKindsKeywords { kinds, keywords } => {
+            if !own || world.kinds(id) & kinds != kinds {
+                return None;
+            }
+            keywords
+        }
         StaticAbilityFragment::ConditionalEquippedCreatureKeywords {
             condition,
             keywords,
@@ -435,11 +472,9 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             keywords
         }
-        StaticAbilityFragment::ControlledSubtypeKeywords { subtype, keywords } => {
-            if !own || !world.subtypes(id).has(world.definition(id), subtype) {
-                return None;
-            }
-            keywords
+        StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+        | StaticAbilityFragment::ControlledKindAndSubtypeKeywords { .. } => {
+            controlled_subtype_keywords(world, *fragment, source, id)?
         }
         StaticAbilityFragment::GrantRiotToOtherControlledSubtype(subtype) => {
             if !own || id == source.card || !world.subtypes(id).has(world.definition(id), subtype) {
@@ -639,6 +674,7 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
                         fragment,
                         StaticAbilityFragment::SourceEntryModeActivation { .. }
                             | StaticAbilityFragment::SourceMaxSpeedActivation(_)
+                            | StaticAbilityFragment::SourceConditionalAttackTrigger { .. }
                             | StaticAbilityFragment::ControlledPlaneswalkerActivation(_)
                             | StaticAbilityFragment::ControlledArtifactFood(_)
                             | StaticAbilityFragment::OtherCreaturesFood(_)
@@ -889,10 +925,12 @@ fn evaluate<W: CharacteristicWorld + ?Sized>(
                         | StaticAbilityFragment::SourceMaxSpeedActivation(..)
                         | StaticAbilityFragment::SourceEntryModeActivation { .. }
                         | StaticAbilityFragment::HarnessedTrigger(..)
+                        | StaticAbilityFragment::SourceConditionalAttackTrigger { .. }
                         | StaticAbilityFragment::ConditionalWard { .. }
                         | StaticAbilityFragment::CounterBearingPermanentWard { .. }
                         | StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                         | StaticAbilityFragment::ControlledCreatureTrigger { .. }
+                        | StaticAbilityFragment::ControlledSubtypeCastTrigger { .. }
                         | StaticAbilityFragment::GrantLinkedExileCreatureActivationsWithCounter(_)
                         | StaticAbilityFragment::AttachmentTrigger(..)
                         | StaticAbilityFragment::AttachmentLookAtLibraryTop
@@ -903,6 +941,7 @@ fn evaluate<W: CharacteristicWorld + ?Sized>(
                         | StaticAbilityFragment::ControlledPermanentTapMana { .. }
                         | StaticAbilityFragment::ControlledTokenTapMana { .. }
                         | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
+                        | StaticAbilityFragment::ControlledKindOrSubtypeTapMana { .. }
                         | StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                         | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                         | StaticAbilityFragment::CounterKeyword(..)
@@ -912,6 +951,7 @@ fn evaluate<W: CharacteristicWorld + ?Sized>(
                         | StaticAbilityFragment::KeywordGrant(..)
                         | StaticAbilityFragment::ChosenTypeKeywords(..)
                         | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                        | StaticAbilityFragment::ControlledPermanentAllKindsKeywords { .. }
                         | StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
                         | StaticAbilityFragment::ConditionalEquippedCreatureKeywords { .. }
                         | StaticAbilityFragment::ControlledTappedKeywords { .. }
@@ -925,6 +965,7 @@ fn evaluate<W: CharacteristicWorld + ?Sized>(
                         | StaticAbilityFragment::ControlledFaceDownCreatureActivation(_)
                         | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                         | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                        | StaticAbilityFragment::ControlledKindAndSubtypeKeywords { .. }
                         | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
                         | StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }
                         | StaticAbilityFragment::LiveKeywords(..)

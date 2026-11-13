@@ -13,6 +13,8 @@ pub struct ModalHistoryView {
     pub origin: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub borrowed_slot: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acquired_link_cohort: Option<u64>,
     pub modes: Vec<u16>,
     /// Absent for lifetime histories; otherwise the exact actual turn of selection.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -27,6 +29,7 @@ pub(super) struct Key {
     activated: bool,
     origin: Option<u64>,
     borrowed_slot: Option<u64>,
+    acquired_link_cohort: Option<u64>,
     per_turn: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -67,6 +70,12 @@ pub(super) fn key(item: &SpellView) -> Option<Key> {
         activated,
         origin: item.source_ability_origin,
         borrowed_slot: item.borrowed_slot,
+        // Activated instances already have a distinct borrowed slot.
+        acquired_link_cohort: if activated {
+            None
+        } else {
+            item.acquired_link_cohort
+        },
         per_turn,
     })
 }
@@ -80,6 +89,7 @@ impl ModalHistoryView {
             activated: self.activated,
             origin: self.origin,
             borrowed_slot: self.borrowed_slot,
+            acquired_link_cohort: self.acquired_link_cohort,
             per_turn: self.turn.is_some(),
         }
     }
@@ -137,6 +147,7 @@ impl Game {
                 activated: key.activated,
                 origin: key.origin,
                 borrowed_slot: key.borrowed_slot,
+                acquired_link_cohort: key.acquired_link_cohort,
                 modes: vec![mode],
                 turn,
             });
@@ -160,7 +171,17 @@ impl Game {
                 && self.object_ref(row.object.card) == row.object
                 && row
                     .origin
-                    .is_none_or(|origin| self.retains_ability_origin(row.object, origin)))
+                    .is_none_or(|origin| self.retains_ability_origin(row.object, origin))
+                && row.acquired_link_cohort.is_none_or(|cohort| {
+                    self.state.borrowed_links.as_ref().is_some_and(|links| {
+                        links.iter().any(|link| {
+                            link.source == row.object
+                                && link.chosen_cohort == Some(cohort)
+                                && self.object_ref(link.exiled.card) == link.exiled
+                                && self.state.objects[link.exiled.card as usize].zone == Zone::Exile
+                        })
+                    })
+                }))
                 || self
                     .state
                     .stack

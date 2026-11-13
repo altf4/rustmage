@@ -1503,6 +1503,11 @@ impl Game {
                             && self.damage_recipient_controller(event) != object.controller
                             && self.stat_value(condition, source, object.controller) != 0
                     }
+                    ReplacementSpec::ControlledDamageToOpponentPlusSourceCounters(kind) => {
+                        event.source.controller == object.controller
+                            && self.damage_recipient_controller(event) != object.controller
+                            && self.counter_count(id, kind) != 0
+                    }
                     ReplacementSpec::ConditionalNoncombatDamageToOpponentPlus {
                         condition, ..
                     } => {
@@ -1782,6 +1787,12 @@ impl Game {
                 event.amount = event
                     .amount
                     .checked_add(i128::from(amount))
+                    .capacity("damage replacement quantity exhausted");
+            }
+            ReplacementSpec::ControlledDamageToOpponentPlusSourceCounters(kind) => {
+                event.amount = event
+                    .amount
+                    .checked_add(i128::from(self.counter_count(choice.source.card, kind)))
                     .capacity("damage replacement quantity exhausted");
             }
             ReplacementSpec::NoncombatDamagePlusSourcePower => {
@@ -3099,31 +3110,39 @@ impl Game {
         if recipes.is_empty() {
             return;
         }
-        let groups = recipes
-            .iter()
-            .map(|recipe| TokenGroupView {
-                token: recipe.definition,
-                amount: 1,
-                tapped: true,
-            })
-            .collect();
-        self.stage_copy_token_batch(TokenBatch {
-            first_this_turn: None,
-            optional: None,
-            recipes: recipes.into_iter().map(Some).collect(),
-            player: item.controller,
-            groups,
-            effect: true,
-            used: Vec::new(),
-            completion: TokenCompletion::TemporaryTokens(Box::new(
-                temporary_tokens::TokenInstructions {
-                    item: item.clone(),
-                    keywords: Keywords::NONE,
-                    attack: temporary_tokens::TokenAttack::DefendingPlayer,
-                    cleanup: temporary_tokens::TokenCleanup::OwnEndStepSacrifice,
-                },
-            )),
-        });
+        self.stage_copy_recipes_with_completion(
+            item.controller,
+            recipes,
+            1,
+            true,
+            TokenCompletion::TemporaryTokens(Box::new(temporary_tokens::TokenInstructions {
+                item: item.clone(),
+                keywords: Keywords::NONE,
+                attack: temporary_tokens::TokenAttack::DefendingPlayer,
+                cleanup: temporary_tokens::TokenCleanup::OwnEndStepSacrifice,
+            })),
+        );
+    }
+    pub(super) fn stage_copy_recipes_until_own_end_step(
+        &mut self,
+        item: &SpellView,
+        recipes: Vec<CopyRecipe>,
+    ) {
+        if recipes.is_empty() {
+            return;
+        }
+        self.stage_copy_recipes_with_completion(
+            item.controller,
+            recipes,
+            1,
+            false,
+            TokenCompletion::TemporaryTokens(Box::new(temporary_tokens::TokenInstructions {
+                item: item.clone(),
+                keywords: Keywords::NONE,
+                attack: temporary_tokens::TokenAttack::None,
+                cleanup: temporary_tokens::TokenCleanup::OwnEndStepSacrifice,
+            })),
+        );
     }
     pub(super) fn stage_copy_recipes(
         &mut self,
@@ -3131,6 +3150,22 @@ impl Game {
         recipes: Vec<CopyRecipe>,
         amount: u128,
         tapped: bool,
+    ) {
+        self.stage_copy_recipes_with_completion(
+            player,
+            recipes,
+            amount,
+            tapped,
+            TokenCompletion::None,
+        );
+    }
+    fn stage_copy_recipes_with_completion(
+        &mut self,
+        player: Player,
+        recipes: Vec<CopyRecipe>,
+        amount: u128,
+        tapped: bool,
+        completion: TokenCompletion,
     ) {
         if recipes.is_empty() || amount == 0 {
             return;
@@ -3151,7 +3186,7 @@ impl Game {
             groups,
             effect: true,
             used: Vec::new(),
-            completion: TokenCompletion::None,
+            completion,
         });
     }
     fn stage_copy_token_batch(&mut self, mut batch: TokenBatch) {

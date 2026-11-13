@@ -57,7 +57,8 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
             Instruction::Modal(modes)
             | Instruction::ModalOnce(modes)
             | Instruction::ModalOncePerTurn(modes)
-            | Instruction::ModalUpToX { modes, .. } => {
+            | Instruction::ModalUpToX { modes, .. }
+            | Instruction::ModalUpToStat { modes, .. } => {
                 for mode in modes {
                     let nested = selected(mode.program);
                     result.power |= nested.power;
@@ -185,6 +186,7 @@ impl Game {
                     .flat_map(|frames| frames.iter())
                     .map(|frame| &frame.announcement.item),
             )
+            .flat_map(SpellView::with_captured_copies)
     }
     pub(super) fn equipped_creature_count(&self, player: Player) -> u128 {
         self.state
@@ -415,27 +417,29 @@ impl Game {
                     .map(|frame| &mut frame.announcement.item),
             )
         {
-            if let Some(saved) = &mut item.source_quantity_lki
-                && let Some((_, frozen)) = facts
-                    .iter()
-                    .find(|(object, _)| item.source.is_some_and(|source| *object == source.object))
-            {
-                if saved.power.is_some() {
-                    saved.power = frozen.power;
+            item.visit_with_captured_copies_mut(|item| {
+                if let Some(saved) = &mut item.source_quantity_lki
+                    && let Some((_, frozen)) = facts.iter().find(|(object, _)| {
+                        item.source.is_some_and(|source| *object == source.object)
+                    })
+                {
+                    if saved.power.is_some() {
+                        saved.power = frozen.power;
+                    }
+                    if saved.toughness.is_some() {
+                        saved.toughness = frozen.toughness;
+                    }
+                    if saved.equipment_count.is_some() {
+                        saved.equipment_count = frozen.equipment_count;
+                    }
+                    if saved.attached_equipment.is_some() {
+                        saved.attached_equipment = frozen.attached_equipment.clone();
+                    }
+                    if saved.explorer.is_some() {
+                        saved.explorer = frozen.explorer;
+                    }
                 }
-                if saved.toughness.is_some() {
-                    saved.toughness = frozen.toughness;
-                }
-                if saved.equipment_count.is_some() {
-                    saved.equipment_count = frozen.equipment_count;
-                }
-                if saved.attached_equipment.is_some() {
-                    saved.attached_equipment = frozen.attached_equipment.clone();
-                }
-                if saved.explorer.is_some() {
-                    saved.explorer = frozen.explorer;
-                }
-            }
+            });
         }
     }
     pub(super) fn source_toughness(&self, item: &SpellView) -> u128 {
@@ -505,7 +509,8 @@ fn reads_chosen_type(program: &[Instruction]) -> bool {
         Instruction::Modal(modes)
         | Instruction::ModalOnce(modes)
         | Instruction::ModalOncePerTurn(modes)
-        | Instruction::ModalUpToX { modes, .. } => modes.iter().any(|mode| {
+        | Instruction::ModalUpToX { modes, .. }
+        | Instruction::ModalUpToStat { modes, .. } => modes.iter().any(|mode| {
             mode.targets.reads_source_creature_type() || reads_chosen_type(mode.program)
         }),
         _ => false,

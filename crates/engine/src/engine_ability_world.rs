@@ -704,6 +704,13 @@ pub(super) trait CharacteristicWorld {
         self.counter_amounts(id).get(kind)
     }
     fn life(&self, player: Player) -> i128;
+    fn unspent_mana(&self, player: Player) -> u128 {
+        self.game().state.players[player.index()]
+            .mana
+            .into_iter()
+            .map(u128::from)
+            .sum()
+    }
     fn gained_life(&self, player: Player) -> bool;
     fn lost_life(&self, player: Player) -> bool {
         self.game().state.players[player.index()].life_lost_this_turn > 0
@@ -1137,6 +1144,35 @@ pub(super) trait CharacteristicWorld {
             && (!other || self.reference(id) != source)
             && (!nontoken || !self.is_token(id))
     }
+    fn controlled_trigger_ability(
+        &self,
+        source: ObjectRef,
+        id: CardId,
+        fragment: StaticAbilityFragment,
+    ) -> Option<u16> {
+        match fragment {
+            StaticAbilityFragment::ControlledCreatureTrigger {
+                ability,
+                other,
+                nontoken,
+            } => self
+                .controlled_creature_trigger_applies(source, id, other, nontoken)
+                .then_some(ability),
+            StaticAbilityFragment::ControlledSubtypeCastTrigger {
+                ability,
+                other,
+                subtype,
+            } => {
+                let target = self.object(id);
+                (target.zone == Zone::Battlefield
+                    && target.controller == self.object(source.card).controller
+                    && (!other || self.reference(id) != source)
+                    && self.subtypes(id).has(self.definition(id), subtype))
+                .then_some(ability)
+            }
+            _ => None,
+        }
+    }
     fn other_tapped_legendary_creature_applies(
         &self,
         source: ObjectRef,
@@ -1161,38 +1197,40 @@ pub(super) trait CharacteristicWorld {
                 || (self.reference(id) != source && (self.subtypes(id).has(target.card, "Zombie"))))
     }
     fn has_ability_removal(&self) -> bool {
-        self.static_sources().iter().any(|&id| {
-            self.object(id).zone == Zone::Battlefield
-                && self
-                    .object(id)
-                    .card
-                    .static_ability_groups()
-                    .iter()
-                    .any(|group| {
-                        group.fragments.iter().any(|fragment| {
-                            matches!(
-                                fragment,
-                                crate::cards::StaticAbilityFragment::ChosenBasicLandType
-                            )
+        subtypes::nonbasic_land_type_setters(self).next().is_some()
+            || self.static_sources().iter().any(|&id| {
+                self.object(id).zone == Zone::Battlefield
+                    && self
+                        .object(id)
+                        .card
+                        .static_ability_groups()
+                        .iter()
+                        .any(|group| {
+                            group.fragments.iter().any(|fragment| {
+                                matches!(
+                                    fragment,
+                                    crate::cards::StaticAbilityFragment::ChosenBasicLandType
+                                )
+                            })
                         })
+                    && matches!(
+                        self.entry_value(self.reference(id)),
+                        Some(EntryChoiceValue::BasicLandType(_))
+                    )
+            })
+            || self.roles().is_some_and(|state| {
+                state
+                    .resolved_ability_modifications
+                    .iter()
+                    .any(|row| return_ability_modification::active(self, row))
+                    || state.source_linked_effects.iter().any(|row| {
+                        row.kind.removes_abilities() && source_linked_effects::active(self, row)
                     })
-                && matches!(
-                    self.entry_value(self.reference(id)),
-                    Some(EntryChoiceValue::BasicLandType(_))
-                )
-        }) || self.roles().is_some_and(|state| {
-            state
-                .resolved_ability_modifications
-                .iter()
-                .any(|row| return_ability_modification::active(self, row))
-                || state.source_linked_effects.iter().any(|row| {
-                    row.kind.removes_abilities() && source_linked_effects::active(self, row)
-                })
-                || state.ability_removal_sources.iter().any(|&source| {
-                    self.object(source.card).zone == Zone::Battlefield
-                        && self.reference(source.card) == source
-                })
-        })
+                    || state.ability_removal_sources.iter().any(|&source| {
+                        self.object(source.card).zone == Zone::Battlefield
+                            && self.reference(source.card) == source
+                    })
+            })
     }
     fn protected_from_subtype(
         &self,
@@ -1242,6 +1280,13 @@ pub(super) trait CharacteristicWorld {
             })
     }
     fn printed_abilities_available(&self, id: CardId) -> bool {
+        if self.object(id).zone == Zone::Battlefield
+            && !self.object(id).card.is_basic_land()
+            && subtypes::nonbasic_land_type_setters(self).next().is_some()
+            && self.kinds(id) & 2 != 0
+        {
+            return false;
+        }
         if self.object(id).zone == Zone::Battlefield
             && self
                 .object(id)
@@ -1406,7 +1451,10 @@ pub(super) trait CharacteristicWorld {
             | StaticAbilityFragment::OtherControlledPermanentTapMana(production)
             | StaticAbilityFragment::ControlledPermanentTapMana { production, .. }
             | StaticAbilityFragment::ControlledTokenTapMana { production, .. }
-            | StaticAbilityFragment::ControlledSubtypeTapMana { production, .. } => production,
+            | StaticAbilityFragment::ControlledSubtypeTapMana { production, .. }
+            | StaticAbilityFragment::ControlledKindOrSubtypeTapMana { production, .. } => {
+                production
+            }
             _ => return None,
         };
         let provider = self.object(source.card);
@@ -1437,6 +1485,10 @@ pub(super) trait CharacteristicWorld {
             }
             StaticAbilityFragment::ControlledSubtypeTapMana { subtype, .. } => {
                 own && self.subtypes(id).has(target.card, subtype)
+            }
+            StaticAbilityFragment::ControlledKindOrSubtypeTapMana { kinds, subtype, .. } => {
+                own && (self.kinds(id) & kinds != 0
+                    || self.subtypes(id).has(self.definition(id), subtype))
             }
             _ => unreachable!("static mana grant"),
         };
@@ -2003,6 +2055,33 @@ impl ManaProduction {
                     Self::Choice { mask, amount }
                 }
             }
+            Self::TapGreatestControlledCreaturePower { colors } => {
+                let amount = greatest_creature_power_after_tap(world, source, controller)
+                    .unwrap_or(0)
+                    .max(0);
+                let amount = u32::try_from(amount).capacity("mana representation exhausted");
+                if amount == 0 {
+                    Self::Fixed([0; 6])
+                } else {
+                    Self::Choice {
+                        mask: colors,
+                        amount,
+                    }
+                }
+            }
+            Self::TapManaAtCreaturePowerThreshold {
+                color,
+                power,
+                below,
+                at_least,
+            } => {
+                let meets_threshold = greatest_creature_power_after_tap(world, source, controller)
+                    .is_some_and(|greatest| greatest >= i128::from(power));
+                let mut mana = [0; 6];
+                mana[usize::from(color)] =
+                    u32::from(if meets_threshold { at_least } else { below });
+                Self::Fixed(mana)
+            }
             Self::SourcePower { color } => {
                 let mut mana = [0; 6];
                 mana[usize::from(color)] = u32::try_from(world.power(source).max(0))
@@ -2172,6 +2251,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     fn life(&self, p: Player) -> i128 {
         self.parent.life(p)
     }
+    fn unspent_mana(&self, player: Player) -> u128 {
+        self.parent.unspent_mana(player)
+    }
     fn exhaust_activated_this_turn(&self, player: Player) -> bool {
         self.parent.exhaust_activated_this_turn(player)
     }
@@ -2257,6 +2339,40 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
         self.parent.lands_entered_this_turn(player)
     }
 }
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn greatest_creature_power_after_tap<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    source: CardId,
+    controller: Player,
+) -> Option<i128> {
+    fn greatest<W: CharacteristicWorld + ?Sized>(world: &W, controller: Player) -> Option<i128> {
+        let query = characteristic_query::CharacteristicQuery::in_world(world);
+        (0..world.game().state.objects.len())
+            .map(|id| id as CardId)
+            .filter(|&id| {
+                let object = world.object(id);
+                object.zone == Zone::Battlefield
+                    && object.controller == controller
+                    && world.kinds(id) & 1 != 0
+            })
+            .map(|id| query.stats(id).power)
+            .max()
+    }
+    let object = world.object(source);
+    if object.tapped || object.zone != Zone::Battlefield {
+        greatest(world, controller)
+    } else {
+        let mut object = object.clone();
+        object.tapped = true;
+        let tapped = SourceTappedWorld {
+            parent: world,
+            source,
+            object,
+        };
+        greatest(&tapped, controller)
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn power_after_source_tap<W: CharacteristicWorld + ?Sized>(world: &W, source: CardId) -> i128 {
     let mut object = world.object(source).clone();

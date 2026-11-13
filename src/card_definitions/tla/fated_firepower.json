@@ -3,10 +3,56 @@
   "catalogue_id": 1450,
   "oracle_id": "13daa21c-278d-45bd-9a6e-a77d6a558453",
   "facts_sha256": "af550421f03965feeb53012b698f42fd575cf25205d9a6f08d6cffea28ad6218",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3aa64b550e4d5bdc2e30aaa0442758688469b53fe67d2c5c85bd4ee8210848f4"
   },
-  "physical_metadata_sha256": "5675a43dcb1ba4eaad44df2db27df72908b72aba8bce5484a0320a04cd07cb81"
+  "physical_metadata_sha256": "b3c870122810770f591a929614014ea3361d760216678d846f1dc6004d097bb1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FatedFirepower.java",
+  "java_sha256": "a13cbe3526604d5469a77a63b234b69f48f253402e32d59fd81684cb7530e7dd",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAbility.java",
+      "sha256": "8f8fd13f114dcff33a7022d97b46aa6af78c44986d66d9e9757c7838ada4d81f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+      "sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CountersSourceCount.java",
+      "sha256": "00add2937bf1f70a9877114d432b9f87f6e65d18e106d7366319e2fcc80233d4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/ReplacementEffectImpl.java",
+      "sha256": "d575331184e31fd4a909956ff2822c038832dc6a6febff6e4502bcac82b836e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/EntersBattlefieldWithXCountersEffect.java",
+      "sha256": "b4aae4bf8b6f794367dbed4450268a52dd4c494c8fd6aa6e7d62a14eacab30d7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_red/firebending.rs"
 }

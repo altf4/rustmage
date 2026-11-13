@@ -42,17 +42,14 @@ impl Game {
             .enumerate()
             .filter_map(|(id, source)| {
                 (source.zone == Zone::Battlefield
-                    && source.card.triggers().iter().any(|ability| {
+                    && self.has_trigger(id as CardId, |ability| {
                         matches!(ability.condition.event(), TriggerCondition::CaseSolved(_))
                     }))
                 .then_some(id as CardId)
             })
             .collect::<Vec<_>>();
         for (source, grant) in self.indexed_trigger_sources(&sources) {
-            let definition = grant
-                .as_ref()
-                .map_or(source.card, |grant| grant.granting_card);
-            for (index, ability) in definition.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates_from(grant.as_ref()) {
                 let TriggerCondition::CaseSolved(relation) = ability.condition.event() else {
                     continue;
                 };

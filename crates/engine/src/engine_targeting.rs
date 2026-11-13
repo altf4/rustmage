@@ -178,7 +178,10 @@ impl Announcement {
                     .copied()
             }
             CastMethod::Miracle => self.origin_alternative_cost,
+            CastMethod::Foretell => self.item.source?.card.foretell_cost(),
+            CastMethod::GrantedFixedFlashback(cost) => Some(cost),
             CastMethod::WebSlinging => self.origin_alternative_cost,
+            CastMethod::LinkedExileWaterbend => self.origin_alternative_cost,
             CastMethod::Warp => Some(self.warp_spec().mana),
             CastMethod::Airbend => Some(ManaCost {
                 colored: [0; 6],
@@ -297,9 +300,12 @@ impl Announcement {
                     CastMethod::ExileLife
                     | CastMethod::LibraryLife
                     | CastMethod::Airbend
+                    | CastMethod::LinkedExileWaterbend
                     | CastMethod::Free
                     | CastMethod::Plot
+                    | CastMethod::Foretell
                     | CastMethod::GrantedZeroFlashback
+                    | CastMethod::GrantedFixedFlashback(_)
                     | CastMethod::Miracle
                     | CastMethod::WebSlinging => {
                         self.fixed_alternative_cost().is_some_and(|base| {
@@ -438,7 +444,8 @@ impl Announcement {
         cost.generic = cost
             .generic
             .checked_add(self.behold_decline_generic())?
-            .checked_add(self.exile_play_surcharge())?;
+            .checked_add(self.exile_play_surcharge())?
+            .checked_add(self.fixed_waterbend_addition())?;
         Some(cost)
     }
     fn warp_additional_mana_chosen(&self, cost: ManaCost) -> bool {
@@ -497,6 +504,9 @@ impl Announcement {
         let options = match self.item.kind {
             StackKind::Spell if source_mana_alternative.is_some() => {
                 std::iter::once(source_mana_alternative.unwrap()).chain([].iter().copied())
+            }
+            StackKind::Spell if self.waterbend_alternative().is_some() => {
+                std::iter::once(self.waterbend_alternative().unwrap()).chain([].iter().copied())
             }
             StackKind::Spell
                 if self
@@ -569,16 +579,17 @@ impl Announcement {
                     .flashback_cost_options()
             }
             StackKind::Spell
-                if self
-                    .item
-                    .cast
-                    .is_some_and(|c| c.method == CastMethod::Airbend) =>
+                if self.item.cast.is_some_and(|cast| {
+                    matches!(
+                        cast.method,
+                        CastMethod::Airbend
+                            | CastMethod::Foretell
+                            | CastMethod::GrantedFixedFlashback(_)
+                    )
+                }) =>
             {
-                std::iter::once(ManaCost {
-                    colored: [0; 6],
-                    generic: 2,
-                })
-                .chain([].iter().copied())
+                std::iter::once(self.fixed_alternative_cost().expect("exile cast cost"))
+                    .chain([].iter().copied())
             }
             StackKind::Spell
                 if self.item.cast.is_some_and(|c| {
@@ -1107,6 +1118,7 @@ struct TargetSourceCharacteristics<'a> {
     spell: Option<Card>,
     chosen_creature_type: Option<Option<crate::cards::CreatureType>>,
     event_object: Option<&'a EventObjectView>,
+    damaged_player: Option<Player>,
     acquired_link_cohort: Option<u64>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -1119,6 +1131,7 @@ impl<'a> TargetSourceCharacteristics<'a> {
             spell: Some(definition),
             chosen_creature_type: None,
             event_object: None,
+            damaged_player: None,
             acquired_link_cohort: None,
         }
     }
@@ -1137,6 +1150,7 @@ impl<'a> TargetSourceCharacteristics<'a> {
                 .as_ref()
                 .map(|facts| facts.chosen_creature_type),
             event_object: item.event_object.as_deref(),
+            damaged_player: item.damage_event.map(|event| event.player),
             acquired_link_cohort: item.linked_activation_cohort(),
         }
     }
@@ -1149,6 +1163,20 @@ impl Game {
             .program()
             .map(|(plan, _)| plan)
             .unwrap_or(TargetPlan::NONE);
+        if let TargetPlan::Single(mut spec) = plan
+            && let TargetRule::Grouped {
+                base,
+                constraint: TargetGroupConstraint::TotalManaValueAtMostX,
+            } = spec.rule
+        {
+            spec.rule = TargetRule::Grouped {
+                base,
+                constraint: TargetGroupConstraint::TotalManaValueAtMost(u64::from(
+                    item.x.unwrap_or(0),
+                )),
+            };
+            plan = TargetPlan::Single(spec);
+        }
         if let Some((TargetPlan::Single(mut spec), program)) = item.program()
             && program.contains(&Instruction::TargetsExactlyX)
         {
@@ -1384,7 +1412,7 @@ impl Game {
             }
             let mut count = [0usize; 2];
             let mut seen_kinds = 0u16;
-            let mut seen_creature_types = None;
+            let mut seen_creature_types = [subtypes::CreatureTypeSet::default(); 2];
             let mut seen_names = Vec::new();
             self.visit_targets_in_world(world, spec.rule, actor, source, qualification, |target| {
                 if exclude_source && target == Target::Card(source.card) {
@@ -1416,16 +1444,16 @@ impl Game {
                     let Target::Card(id) = target else {
                         return false;
                     };
-                    let types = world.subtypes(id);
-                    let definition = world.object(id).card;
-                    let seen = seen_creature_types
-                        .get_or_insert_with(|| vec![false; crate::cards::CREATURE_TYPES.len()]);
-                    return crate::cards::CREATURE_TYPES
-                        .iter()
-                        .zip(seen)
-                        .any(|(name, seen)| {
-                            types.has(definition, name) && std::mem::replace(seen, true)
-                        });
+                    let object = world.object(id);
+                    let seen = match object.zone {
+                        Zone::Battlefield => &mut seen_creature_types[0],
+                        Zone::Graveyard => &mut seen_creature_types[1],
+                        _ => return false,
+                    };
+                    let types = world.subtypes(id).creature_type_set(object.card);
+                    let available = seen.intersects(types);
+                    seen.union(types);
+                    return available;
                 }
                 if matches!(
                     spec.rule,
@@ -1549,6 +1577,7 @@ impl Game {
         match constraint {
             TargetGroupConstraint::OtherThanGroup(_) | TargetGroupConstraint::TotalManaValueAtMost(_)
                 | TargetGroupConstraint::DistinctCardTypeSlots => unreachable!(),
+            TargetGroupConstraint::TotalManaValueAtMostX => false,
             TargetGroupConstraint::ControllerOfPlayerGroup(first_group) => object.zone == Zone::Battlefield
                 && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| matches!(b.target, Target::Player(player) if object.controller == player)),
             TargetGroupConstraint::GraveyardOwnerOfPlayerGroup(first_group) => object.zone == Zone::Graveyard
@@ -1567,7 +1596,7 @@ impl Game {
             TargetGroupConstraint::SameGraveyard => object.zone == Zone::Graveyard && chosen.iter().filter(|b| b.group == group).all(|b| {
                 matches!(b.target, Target::Card(other) if self.state.objects.get(other as usize).is_some_and(|o| o.owner == object.owner))
             }),
-            TargetGroupConstraint::SharedCreatureType => object.zone == Zone::Graveyard
+            TargetGroupConstraint::SharedCreatureType => matches!(object.zone, Zone::Battlefield | Zone::Graveyard)
                 && chosen.iter().filter(|bound| bound.group == group).all(|bound| {
                     matches!(bound.target, Target::Card(other)
                         if self.same_target_object(*bound)
@@ -1582,64 +1611,46 @@ impl Game {
         }
     }
 
-    fn creature_type_facts(&self, id: CardId) -> (Card, GrantedSubtypes) {
-        (
-            self.state.objects[id as usize].card,
-            self.granted_subtypes(id),
-        )
-    }
-
-    fn types_intersect(
-        (first, first_types): (Card, GrantedSubtypes),
-        (second, second_types): (Card, GrantedSubtypes),
-    ) -> bool {
-        crate::cards::CREATURE_TYPES
-            .iter()
-            .any(|name| first_types.has(first, name) && second_types.has(second, name))
+    fn target_creature_types(&self, id: CardId) -> subtypes::CreatureTypeSet {
+        self.granted_subtypes(id)
+            .creature_type_set(self.state.objects[id as usize].card)
     }
 
     fn share_creature_type(&self, first: CardId, second: CardId) -> bool {
-        Self::types_intersect(
-            self.creature_type_facts(first),
-            self.creature_type_facts(second),
-        )
+        self.state.objects[first as usize].zone == self.state.objects[second as usize].zone
+            && self
+                .target_creature_types(first)
+                .intersects(self.target_creature_types(second))
     }
 
     pub(super) fn capture_target_types_departure(&mut self, before: &ObjectView) {
-        let (constraint, facts) = match before.zone {
-            Zone::Battlefield => (
-                TargetGroupConstraint::SharedCardType,
-                TargetTypeLki::CardTypes(before.kinds),
-            ),
-            Zone::Graveyard => (
-                TargetGroupConstraint::SharedCreatureType,
-                TargetTypeLki::CreatureTypes(before.card, before.granted_subtypes),
-            ),
-            _ => return,
-        };
-        fn remember(
-            item: &mut SpellView,
-            reference: ObjectRef,
-            constraint: TargetGroupConstraint,
-            facts: TargetTypeLki,
-        ) {
+        if !matches!(before.zone, Zone::Battlefield | Zone::Graveyard) {
+            return;
+        }
+        fn remember(item: &mut SpellView, before: &ObjectView, facts: &mut Option<TargetTypeLki>) {
             if item
                 .targets
                 .iter()
-                .any(|bound| bound.object == Some(reference))
-                && item.target_type_lki(reference).is_none()
-                && item.needs_target_relation_lki(constraint)
+                .any(|bound| bound.object == Some(before.reference))
+                && item.target_type_lki(before.reference).is_none()
+                && (item.needs_target_relation_lki(TargetGroupConstraint::SharedCreatureType)
+                    || before.zone == Zone::Battlefield
+                        && item.needs_target_relation_lki(TargetGroupConstraint::SharedCardType))
             {
+                let facts = *facts.get_or_insert_with(|| TargetTypeLki {
+                    kinds: before.kinds,
+                    creature_types: before.granted_subtypes.creature_type_set(before.card),
+                });
                 item.target_types_lki
                     .get_or_insert_with(|| Box::new(Vec::new()))
-                    .push((reference, facts));
+                    .push((before.reference, facts));
             }
             if let Some(event) = &mut item.copy_event {
-                remember(&mut event.spell, reference, constraint, facts);
+                remember(&mut event.spell, before, facts);
             }
         }
-        let mut remember =
-            |item: &mut SpellView| remember(item, before.reference, constraint, facts);
+        let mut facts = None;
+        let mut remember = |item: &mut SpellView| remember(item, before, &mut facts);
         self.state
             .stack
             .iter_mut()
@@ -1768,10 +1779,10 @@ impl Game {
                         if self.same_target_object(*other) && self.on_battlefield(other_id) {
                             Some(self.current_kinds(other_id))
                         } else {
-                            match other.object.and_then(|object| item.target_type_lki(object)) {
-                                Some(TargetTypeLki::CardTypes(kinds)) => Some(kinds),
-                                _ => None,
-                            }
+                            other
+                                .object
+                                .and_then(|object| item.target_type_lki(object))
+                                .map(|facts| facts.kinds)
                         };
                     other_kinds.is_some_and(|other| kinds & other != 0)
                 });
@@ -1788,7 +1799,8 @@ impl Game {
             let Target::Card(id) = bound.target else {
                 return false;
             };
-            let first = self.creature_type_facts(id);
+            let first = self.target_creature_types(id);
+            let zone = self.state.objects[id as usize].zone;
             return item
                 .targets
                 .iter()
@@ -1798,16 +1810,16 @@ impl Game {
                         return false;
                     };
                     let second = if self.same_target_object(*other)
-                        && self.state.objects[other_id as usize].zone == Zone::Graveyard
+                        && self.state.objects[other_id as usize].zone == zone
                     {
-                        self.creature_type_facts(other_id)
+                        Some(self.target_creature_types(other_id))
                     } else {
-                        match other.object.and_then(|object| item.target_type_lki(object)) {
-                            Some(TargetTypeLki::CreatureTypes(card, subtypes)) => (card, subtypes),
-                            _ => return false,
-                        }
+                        other
+                            .object
+                            .and_then(|object| item.target_type_lki(object))
+                            .map(|facts| facts.creature_types)
                     };
-                    Self::types_intersect(first, second)
+                    second.is_some_and(|types| first.intersects(types))
                 });
         }
         if let Some(TargetSpec {
@@ -2013,6 +2025,8 @@ impl Game {
             self.state.pending = Pending::LibraryCastPermission { player };
         } else if a.needs_kicker() {
             self.state.pending = Pending::Kicker { player };
+        } else if a.needs_waterbend_cost() {
+            self.state.pending = Pending::WaterbendCost { player };
         } else if a.needs_gift() {
             self.state.pending = Pending::Gift { player };
         } else if a.needs_mana_cost() {
@@ -2365,6 +2379,28 @@ impl Game {
         let characteristics = || characteristic_query::CharacteristicQuery::in_world(world);
         let has_subtype = |id, subtype| world.subtypes(id).has(world.definition(id), subtype);
         match rule {
+            TargetRule::DamagedPlayerObject { zone, kinds } => {
+                let Some(player) = qualification.and_then(|facts| facts.damaged_player) else {
+                    return false;
+                };
+                return self.target_matches_in_world(
+                    world,
+                    TargetRule::Object {
+                        zone,
+                        kinds,
+                        relation: if player == controller { 0 } else { 1 },
+                        other: false,
+                        nonland: false,
+                        tapped: false,
+                        min_mana: 0,
+                        max_mana: u32::MAX,
+                    },
+                    controller,
+                    source,
+                    target,
+                    qualification,
+                );
+            }
             TargetRule::OtherThanEventObject { base, excluded } => {
                 let target_ref = match target {
                     Target::Card(id) if lookup(id).is_some() => world.reference(id),
@@ -2481,7 +2517,6 @@ impl Game {
                 let zone = match constraint {
                     TargetGroupConstraint::SameGraveyard
                     | TargetGroupConstraint::DistinctNames
-                    | TargetGroupConstraint::SharedCreatureType
                     | TargetGroupConstraint::GraveyardOwnerOfPlayerGroup(_)
                     | TargetGroupConstraint::DistinctCardTypeSlots => Some(Zone::Graveyard),
                     TargetGroupConstraint::DifferentControllers
@@ -2489,7 +2524,9 @@ impl Game {
                     | TargetGroupConstraint::ControllerOfPlayerGroup(_)
                     | TargetGroupConstraint::AttachedToGroup(_) => Some(Zone::Battlefield),
                     TargetGroupConstraint::OtherThanGroup(_)
+                    | TargetGroupConstraint::SharedCreatureType
                     | TargetGroupConstraint::TotalManaValueAtMost(_) => None,
+                    TargetGroupConstraint::TotalManaValueAtMostX => return false,
                 };
                 return zone.is_none_or(|zone| matches!(target, Target::Card(id) if lookup(id).is_some_and(|o| o.zone == zone)))
                     && self.target_matches_in_world(
@@ -2649,6 +2686,7 @@ impl Game {
                     TargetPredicate::Damaged => object.damaged_this_turn,
                     TargetPredicate::DealtDamage => object.dealt_damage_this_turn,
                     TargetPredicate::HasCounter(kind) => world.counter_count(id, kind) > 0,
+                    TargetPredicate::NoCounters => world.counter_amounts(id).total() == 0,
                     TargetPredicate::PowerAtLeast(n) => {
                         characteristics().stats(id).power >= i128::from(n)
                     }
@@ -3074,6 +3112,7 @@ impl Game {
             x: None,
             loyalty_x: None,
             reflexive_target_limit: None,
+            acquired_trigger_definition: None,
             attachment_trigger: None,
             cast: Some(CastInfo {
                 spend_any_mana: self.exile_cast_modifiers(actor, card).0
@@ -3102,6 +3141,7 @@ impl Game {
                 flash_surcharge: false,
                 offspring: None,
                 kicker: None,
+                waterbend: None,
                 teamwork: None,
                 blight: None,
                 bargain: None,
@@ -3148,7 +3188,10 @@ impl Game {
     }
 
     /// Returns true only when a decision suspends the enclosing ordering/cast work.
-    pub(super) fn start_announcement(&mut self, item: SpellView, trigger: bool) -> bool {
+    pub(super) fn start_announcement(&mut self, mut item: SpellView, trigger: bool) -> bool {
+        if trigger && item.observes_trigger() {
+            self.capture_observed_trigger(&mut item);
+        }
         let needs_mode = item.modes().is_some() && item.mode.is_none();
         if needs_mode
             && !item
@@ -3187,7 +3230,6 @@ impl Game {
         if !has_choice {
             // Prepaid declarations settle their deferred costs in the caller.
             // A spell is still only a proposal here, so do not fire cast triggers.
-            let mut item = item;
             self.capture_division(&mut item);
             self.capture_transform_stack_serial(&mut item);
             self.state.stack.push(item);
@@ -3374,6 +3416,12 @@ impl Game {
         let mut announcement =
             self.payment_announcement(item, counters, production, origin_counter_cost);
         configure(&mut announcement);
+        if matches!(
+            announcement.limited_cast_permission.as_deref(),
+            Some(LimitedCastPermission::LinkedExilePaid(grant)) if grant.grants_flash
+        ) {
+            announcement.behold_required = false;
+        }
         // Fixed direct mana keeps its hot path. An announced fixed ability in
         // a guided/optional payment window must own that window through costs.
         if announcement.mana_output.is_none()
@@ -3729,6 +3777,9 @@ impl Game {
                 announcement.item.mana_copy_sources = outcome.copies;
                 announcement.item.mana_provenance = outcome.provenance;
                 announcement.item.cast.as_mut().unwrap().payment = payment;
+                if announcement.cast_costs.is_none() {
+                    self.record_spell_waterbend_costs(&announcement);
+                }
             }
         }
         self.finish_paid_announcement(announcement);

@@ -3,10 +3,31 @@
   "catalogue_id": 4995,
   "oracle_id": "64acb083-a0a3-46ec-9c93-b2ac36878703",
   "facts_sha256": "d446083ebddfd9acaf483f27672d34f0a5300166faffb3dc02a21af2b8611eeb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e665a4d66dd5386cfed6554c21ef9c662a9ec5ecdbc6a00a84a7e008ec441a3e"
   },
-  "physical_metadata_sha256": "ceaeaa80202f28deab60f3008df08abcc729df05cdb51cdb255a272e0dad8dce"
+  "physical_metadata_sha256": "ceaeaa80202f28deab60f3008df08abcc729df05cdb51cdb255a272e0dad8dce",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WaterTribeRallier.java",
+  "java_sha256": "62070beb946a95762710bc3ae26084943c72532b2b16d8f6c96deab33fc69856",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/WaterbendCost.java",
+      "sha256": "216fa6e097077e73b5fcc3a1e71fe59ef6d16d27dd33681202db95643b7c451b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_white_colorless/permanents.rs"
 }

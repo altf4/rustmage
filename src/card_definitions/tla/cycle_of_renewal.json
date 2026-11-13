@@ -3,10 +3,36 @@
   "catalogue_id": 942,
   "oracle_id": "77eda626-5cef-496d-b291-cfa1ee6fc1fb",
   "facts_sha256": "5a4dffa18b022be78d00f71bd418527b600cb888cf4bc6e9ccfed4d998060dd0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "01ddb548f1b3a6f922220c4f166c023669187bc2a6f291b922d45d32d0250ce8"
   },
-  "physical_metadata_sha256": "9f815070081383bce30741f5300380a2a7be345346a804a542093d961ac7ba0c"
+  "physical_metadata_sha256": "9f815070081383bce30741f5300380a2a7be345346a804a542093d961ac7ba0c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CycleOfRenewal.java",
+  "java_sha256": "fe35e95977696c738b2c32636f00b4e51fa9360e6ed13823b2481399f693622d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeControllerEffect.java",
+      "sha256": "b03022e9797a5ce31581f0dcfb692e5b13237e23b39d6079b38249e5deec1788"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+      "sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_green/spells.rs"
 }

@@ -3,10 +3,36 @@
   "catalogue_id": 2631,
   "oracle_id": "953a2bd3-5bca-41fc-8785-66b2d7fa381a",
   "facts_sha256": "a6c3e4742a609b3570ba95cf184d16b1c7ad0ab8cc397c81c927f942da01e1db",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9887374ad0281ffe0cd8539fe413c2968ba9dba571a0ec5435bcf668d5d4bf32"
   },
-  "physical_metadata_sha256": "7e992021f8bfadf532653f76d9da2467983f076f0e74204af239ef912c936dc9"
+  "physical_metadata_sha256": "7e992021f8bfadf532653f76d9da2467983f076f0e74204af239ef912c936dc9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MaiScornfulStriker.java",
+  "java_sha256": "a1c0cac2cb355863de10cce86b1410673059d5692b65a4679830f3c5074a2b90",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastAllTriggeredAbility.java",
+      "sha256": "7837dc850438ff0b6ee06931b9578252338a1abd3306475a94d92d1333df4988"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeTargetEffect.java",
+      "sha256": "cb540577a835c69b5b4bd5182c58715215e03ee165d349a7d19d388c03224e37"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+      "sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_black.rs"
 }

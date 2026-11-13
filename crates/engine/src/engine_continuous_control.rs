@@ -296,7 +296,7 @@ impl Game {
         for source in sources.iter().filter(|source| {
             source.zone == Zone::Battlefield && source.controller == aura.controller
         }) {
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 if ability.condition.event()
                     != TriggerCondition::ControlledAuraAttachesToOpponentNonland
                 {
@@ -475,7 +475,7 @@ impl Game {
                 .iter()
                 .filter(|source| source.controller == previous)
             {
-                for (index, ability) in source.card.triggers().iter().enumerate() {
+                for (index, ability) in source.trigger_templates() {
                     if ability.condition.event() == TriggerCondition::OpponentTakesPermanent
                         && self.queue_trigger(source, index)
                     {

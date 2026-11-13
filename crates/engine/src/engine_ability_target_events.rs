@@ -55,16 +55,14 @@ impl Game {
             .filter(|&id| {
                 let object = &self.state.objects[id as usize];
                 object.controller == item.controller
-                    && object
-                        .card
-                        .triggers()
-                        .iter()
-                        .any(|a| a.condition.event() == TriggerCondition::CommittedCrime)
+                    && self.has_trigger(id, |a| {
+                        a.condition.event() == TriggerCondition::CommittedCrime
+                    })
             })
             .collect();
         for id in sources {
             let source = self.object_view(id);
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 if ability.condition.event() == TriggerCondition::CommittedCrime {
                     self.queue_trigger(&source, index);
                 }
@@ -72,10 +70,10 @@ impl Game {
         }
     }
     pub(super) fn register_ability_target_source(&mut self, id: CardId) {
-        let object = &self.state.objects[id as usize];
-        if object.card.triggers().iter().any(|a| {
+        let zone = self.state.objects[id as usize].zone;
+        if self.has_trigger(id, |a| {
             let event = a.condition.event();
-            match object.zone {
+            match zone {
                 Zone::Battlefield => {
                     a.condition.origin() != Some(TargetZone::Graveyard)
                         && matches!(
@@ -143,7 +141,7 @@ impl Game {
             .map(|&id| self.object_view(id))
             .collect();
         for source in sources {
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 if ability.condition.event()
                     == TriggerCondition::ControlledAbilityTargetsPlayerOrPermanent
                     && self.queue_trigger(&source, index)
@@ -202,7 +200,7 @@ impl Game {
             .map(|&id| self.object_view(id))
             .collect();
         for source in sources {
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 let creature_only = ability.condition.event()
                     == TriggerCondition::OpponentTargetsControlledCreature;
                 let matched = if creature_only {

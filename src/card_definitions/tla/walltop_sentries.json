@@ -3,10 +3,41 @@
   "catalogue_id": 4959,
   "oracle_id": "fb3a0910-a582-41ef-b5b9-3cda1f1cd5ce",
   "facts_sha256": "0ab2058748cd22f27f2313fb159cc31eaece605bec28501af56d8c6e72e23f63",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5c19eaa324988727eb93c3c8505888769f3c36536128bec118a95773285dbe72"
   },
-  "physical_metadata_sha256": "29604c37110bc2cc6728af805254dcf57d973ae105bab84c221f6bf944faaeae"
+  "physical_metadata_sha256": "29604c37110bc2cc6728af805254dcf57d973ae105bab84c221f6bf944faaeae",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WalltopSentries.java",
+  "java_sha256": "0776f145dda926b57970ebfc782a36781ba22853a7a0586268eaef02de2b6d92",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/LessonsInGraveCondition.java",
+      "sha256": "919914e0997c75d2cd2113b586c13bc87ea70f949f1e2788aea4ecb74174c0e2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_green/creatures.rs"
 }

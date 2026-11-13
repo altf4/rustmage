@@ -66,13 +66,13 @@ python scripts/validate.py --release --python smoke
 
 ## Standard set tracker
 
-**19 / 20 sets complete · 95%**
+**20 / 20 sets complete · 100%**
 
-`███████████████████░`
+`████████████████████`
 
-**4,987 / 5,163 unique Standard cards supported in this checkout · 97%**
+**5,163 / 5,163 unique Standard cards supported in this checkout · 100%**
 
-`███████████████████░`
+`████████████████████`
 
 Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 ([inventory](data/standard/xmage-inventory.json)), rather than live format legality.
@@ -88,7 +88,7 @@ Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 | Lorwyn Eclipsed | ECL | 273/273 (100%) | ✅ Complete |
 | Teenage Mutant Ninja Turtles | TMT | 195/195 (100%) | ✅ Complete |
 | Aetherdrift | DFT | 276/276 (100%) | ✅ Complete |
-| Avatar: The Last Airbender | TLA | 108/286 (38%) | ⏳ Partial |
+| Avatar: The Last Airbender | TLA | 286/286 (100%) | ✅ Complete |
 | Bloomburrow | BLB | 279/279 (100%) | ✅ Complete |
 | Duskmourn: House of Horror | DSK | 276/276 (100%) | ✅ Complete |
 | Edge of Eternities | EOE | 266/266 (100%) | ✅ Complete |

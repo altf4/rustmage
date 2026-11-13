@@ -45,11 +45,9 @@ impl Game {
             return true;
         }
         if self.state.attachment_sources.iter().any(|&id| {
-            self.state.objects[id as usize]
-                .card
-                .triggers()
-                .iter()
-                .any(|a| a.condition.event() == TriggerCondition::AttachedBecomesUntapped)
+            self.has_trigger(id, |a| {
+                a.condition.event() == TriggerCondition::AttachedBecomesUntapped
+            })
         }) {
             return true;
         }
@@ -349,13 +347,9 @@ impl Game {
     fn queue_untap_step_triggers(&mut self, active: Player, amount: u64) {
         if amount == 0
             || !self.state.step_sources.iter().any(|&id| {
-                self.state.objects[id as usize]
-                    .card
-                    .triggers()
-                    .iter()
-                    .any(|ability| {
-                        ability.condition.event() == TriggerCondition::OwnUntapStepUntaps
-                    })
+                self.has_trigger(id, |ability| {
+                    ability.condition.event() == TriggerCondition::OwnUntapStepUntaps
+                })
             })
         {
             return;
@@ -365,8 +359,7 @@ impl Game {
             if source.controller != active {
                 continue;
             }
-            let definition = grant.as_ref().map_or(source.card, |row| row.granting_card);
-            for (index, ability) in definition.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates_from(grant.as_ref()) {
                 if ability.condition.event() == TriggerCondition::OwnUntapStepUntaps
                     && self.queue_trigger_from(&source, index, grant.map(Box::new))
                 {

@@ -66,11 +66,31 @@ impl Game {
         };
         recipe.face_structure()
     }
+    pub(super) fn capture_delayed_transform_serial(&self, item: &mut SpellView) {
+        let tracks_transform = item
+            .triggered_ability()
+            .program
+            .contains(&Instruction::TransformSource)
+            || item.modes().is_some_and(|modes| {
+                modes
+                    .iter()
+                    .any(|mode| mode.program.contains(&Instruction::TransformSource))
+            });
+        item.source_transform = item
+            .source
+            .filter(|_| tracks_transform)
+            .map(|source| self.transform_serial(source.object));
+    }
+
     pub(super) fn capture_transform_stack_serial(&self, item: &mut SpellView) {
         let tracks_transform = if item.is_copy {
-            // A copied ability inherits the tracked source, but gets a fresh
-            // timestamp when this packet is put on the stack (CR 701.27f).
+            // A copied ability gets a fresh timestamp when put on the stack.
             item.kind != StackKind::Spell && item.source_transform.is_some()
+        } else if matches!(item.kind, StackKind::TriggeredAbility { .. })
+            && item.source_transform.is_some()
+        {
+            // A delayed transform uses its creation timestamp (CR 701.27g).
+            false
         } else {
             item.program()
                 .is_some_and(|(_, program)| program.contains(&Instruction::TransformSource))
@@ -286,17 +306,16 @@ impl Game {
         Some(entry)
     }
 
+    pub(super) fn transformable_source(&self, item: &SpellView) -> Option<ObjectRef> {
+        let object = item.source?.object;
+        (item.source_transform == Some(self.transform_serial(object))
+            && self.can_transform_permanent(object))
+        .then_some(object)
+    }
     pub(super) fn transform_source(&mut self, item: &SpellView) {
-        let Some(source) = item.source else {
-            return;
-        };
-        if !self.on_battlefield(source.id)
-            || self.object_ref(source.id) != source.object
-            || item.source_transform != Some(self.transform_serial(source.object))
-        {
-            return;
+        if let Some(object) = self.transformable_source(item) {
+            self.transform_permanent(object);
         }
-        self.transform_permanent(source.object);
     }
     pub(super) fn can_transform_permanent(&self, object: ObjectRef) -> bool {
         self.on_battlefield(object.card)
@@ -392,7 +411,7 @@ impl Game {
             .map(|row| self.object_view(row.object.card))
             .collect();
         for source in sources {
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 if ability.condition.event() == TriggerCondition::ChosenPlayerLosesGame
                     && self.queue_trigger(&source, index)
                 {
@@ -405,7 +424,7 @@ impl Game {
     }
     fn queue_self_transform_triggers(&mut self, object: ObjectRef) {
         let source = self.object_view(object.card);
-        for (index, ability) in source.card.triggers().iter().enumerate() {
+        for (index, ability) in source.trigger_templates() {
             if matches!(
                 ability.condition.event(),
                 TriggerCondition::SelfTransforms | TriggerCondition::SelfEntersOrTransforms
@@ -416,6 +435,7 @@ impl Game {
     }
     pub(super) fn remove_face_providers(&mut self, id: CardId) {
         self.forget_expend_source(id);
+        self.forget_bend_source(id);
         self.forget_trigger_multiplier_source(id);
         self.forget_activation_observer(id);
         self.forget_ability_target_source(id);
