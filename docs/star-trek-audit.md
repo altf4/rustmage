@@ -40,6 +40,8 @@ The next native pass exposed an existing Edge of Eternities Seedship scenario wh
 
 The following native pass ran 4,533 cases and then reached Tarkir's fail-closed complete-game input gate. Star Trek's new card crate changed `Cargo.lock`, so the prior Tarkir execution manifest was stale. `scripts/tdm_execution_inputs.py --write` regenerated the manifest over 12,407 current inputs, and `--check` confirmed it. A guarded rerun passed all nine Tarkir target tests, including 52 complete games and the corpus gate, in 85.40 seconds at an 842.9 MiB memory peak. The resulting receipts are under the persistent cache.
 
+With those games admitted, native assurance ran 5,770 cases and found one stale exact layout assertion. `State` measured 5,744 bytes versus the prior 5,552-byte pin after the new sparse source permissions, counter facts, and player history; `Object` remains 160 bytes. Independent review approved the 192-byte (3.46%) increase and found no hot-object enlargement. The exact `State` assertion now pins its expanded inline footprint at 5,744 bytes; populated heap rows are measured separately by `Game::state_bytes()`. The full validator must pass on the updated inputs before release acceptance.
+
 ## XMage source gaps
 
 The following TRK identities have no XMage set-table entry at the pinned revision. Use the user-authorized official-rules fallback when authoring them; do not infer completion from catalogue metadata:
