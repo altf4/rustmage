@@ -286,3 +286,94 @@ fn spacecraft_station_with_paid_creature_power_and_keep_artifact_identity() {
         assert_ne!(game.object_view(ship).kinds & 16, 0);
     }
 }
+
+#[test]
+fn modal_rogue_ai_and_rok_tahk_create_the_chosen_effect_and_murf() {
+    let mut game = scenario(Player::P0);
+    let rogue = put(
+        &mut game,
+        Player::P0,
+        "Rogue Artificial Intelligence",
+        Zone::Hand,
+    );
+    cast(&mut game, rogue, None);
+    until(&mut game, |g| {
+        g.legal_actions().contains(&Action::ChooseMode { mode: 0 })
+    });
+    assert!(
+        game.legal_actions()
+            .contains(&Action::ChooseMode { mode: 1 })
+    );
+    act(&mut game, Action::ChooseMode { mode: 0 });
+    settle(&mut game);
+    assert_eq!(game.state.players[0].life, 23);
+    assert_eq!(stats(&game, rogue), (6, 5));
+    let rok = put(
+        &mut game,
+        Player::P0,
+        "Rok-Tahk, Budding Scientist",
+        Zone::Hand,
+    );
+    cast(&mut game, rok, None);
+    drain(&mut game);
+    let murfs: Vec<_> = game
+        .observe(Player::P0)
+        .objects
+        .into_iter()
+        .filter(|o| o.zone == Zone::Battlefield && o.name == "Murf")
+        .collect();
+    assert_eq!(murfs.len(), 1);
+    assert_eq!((murfs[0].power, murfs[0].toughness), (0, 1));
+    assert!(murfs[0].keywords.contains(Keywords::INDESTRUCTIBLE));
+}
+
+#[test]
+fn saru_protects_another_creature_only_and_syndicate_landfall_stacks_counters() {
+    let mut game = scenario(Player::P0);
+    let bearer = put(&mut game, Player::P0, "Bear Cub", Zone::Battlefield);
+    let saru = put(&mut game, Player::P0, "Saru, Unthreatened", Zone::Hand);
+    cast(&mut game, saru, None);
+    until(&mut game, |g| {
+        g.legal_actions()
+            .iter()
+            .any(|a| matches!(a, Action::ChooseTarget { .. }))
+    });
+    assert!(!game.legal_actions().contains(&Action::ChooseTarget {
+        target: Target::Card(saru)
+    }));
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(bearer),
+        },
+    );
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
+    settle(&mut game);
+    assert!(game.keywords(bearer).contains(Keywords::HEXPROOF));
+    let liquidators = put(
+        &mut game,
+        Player::P0,
+        "Syndicate Liquidators",
+        Zone::Battlefield,
+    );
+    let forest = put(&mut game, Player::P0, "Forest", Zone::Hand);
+    act(&mut game, Action::PlayLand { card: forest });
+    until(&mut game, |g| {
+        g.legal_actions()
+            .iter()
+            .any(|a| matches!(a, Action::ChooseTarget { .. }))
+    });
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(liquidators),
+        },
+    );
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
+    settle(&mut game);
+    assert_eq!(game.counter_count(liquidators, CounterKind::PlusOne), 2);
+}
