@@ -3491,6 +3491,8 @@ struct State {
     turn_event_history: Option<std::sync::Arc<turn_facts::TurnEventHistory>>,
     tap_history: tap_history::Rows,
     counter_placement_history: counter_placement_history::Rows,
+    /// Sparse exact-object, counter-kind facts independent of whether a trigger existed.
+    first_counter_kind_events: Option<SharedVec<(ObjectRef, CounterKind)>>,
     cast_entry_counters: cast_entry_counters::Rows,
     entry_values: entry_choices::Rows,
     entered_this_turn: Option<SharedVec<EntryTurnFact>>,
@@ -4942,6 +4944,7 @@ impl Game {
                 turn_event_history: None,
                 tap_history: None,
                 counter_placement_history: None,
+                first_counter_kind_events: None,
                 cast_entry_counters: None,
                 entry_values: None,
                 entered_this_turn: None,
@@ -12219,6 +12222,7 @@ impl Game {
         self.state.turn_event_history = None;
         self.state.tap_history = None;
         self.state.counter_placement_history = None;
+        self.state.first_counter_kind_events = None;
         self.state.cast_entry_counters = None;
         self.state.attacked_this_turn.clear();
         self.state.declared_attack_history = None;
@@ -14415,6 +14419,10 @@ impl Game {
             + s.linked_choices.as_ref().map_or(0, |c| c.bytes())
             + cast_entry_counters::owned_bytes(&s.cast_entry_counters)
             + counter_placement_history::owned_bytes(&s.counter_placement_history)
+            + s.first_counter_kind_events.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<(ObjectRef, CounterKind)>>()
+                    + rows.len() * std::mem::size_of::<(ObjectRef, CounterKind)>()
+            })
             + live_counters::owned_bytes(&s.named_counters)
             + entry_choices::owned_bytes(&s.entry_values)
             + power_up::owned_bytes(&s.power_up_uses)

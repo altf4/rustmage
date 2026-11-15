@@ -92,6 +92,17 @@ const COFFEE: CardRules = CardRules {
     ]),
     ..CardRules::EMPTY
 };
+const FIRST_CHARGE: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::FirstSelfCountersAddedThisTurn {
+            kind: CounterKind::Charge,
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::Draw(PlayerSet::Controller, 1)],
+    }],
+    ..CardRules::EMPTY
+};
 
 fn drain_choices(game: &mut Game) {
     for _ in 0..80 {
@@ -107,6 +118,43 @@ fn drain_choices(game: &mut Game) {
         act(game, action);
     }
     panic!("resolution did not finish");
+}
+
+#[test]
+fn first_charge_event_counts_even_while_ability_is_suppressed_and_restores() {
+    let _rules = fixture_rules::activate(&[(Card::from_name("Grizzly Bears").unwrap(), &FIRST_CHARGE)]);
+    let mut game = scenario(Player::P0);
+    let ship = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let exact = game.object_ref(ship);
+    game.remove_abilities_exact(&[exact], exact, Player::P1, AnimationDuration::Permanent);
+    game.add_counter(ship, CounterKind::Charge, 1);
+    game.self_counters_added(exact, CounterKind::Charge, 1, Player::P1);
+    drain_choices(&mut game);
+    assert_eq!(game.state.players[0].cards_drawn_this_turn, 0);
+
+    // Model the suppression effect ending without changing the permanent's incarnation.
+    game.state.roles.as_mut().unwrap().resolved_ability_modifications.clear();
+    game.add_counter(ship, CounterKind::Charge, 1);
+    game.self_counters_added(exact, CounterKind::Charge, 1, Player::P0);
+    drain_choices(&mut game);
+    assert_eq!(game.state.players[0].cards_drawn_this_turn, 0);
+
+    let checkpoint = game.snapshot();
+    let mut restored = game.clone();
+    restored.restore(&checkpoint).unwrap();
+    restored.add_counter(ship, CounterKind::Charge, 1);
+    restored.self_counters_added(exact, CounterKind::Charge, 1, Player::P0);
+    drain_choices(&mut restored);
+    assert_eq!(restored.state.players[0].cards_drawn_this_turn, 0);
+
+    game.state.step = Step::Cleanup;
+    game.state.priority = Player::P0;
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    game.add_counter(ship, CounterKind::Charge, 1);
+    game.self_counters_added(exact, CounterKind::Charge, 1, Player::P1);
+    drain_choices(&mut game);
+    assert_eq!(game.state.players[0].cards_drawn_this_turn, 1);
 }
 
 #[test]

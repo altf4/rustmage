@@ -8094,6 +8094,11 @@ pub enum TriggerCondition {
         kind: CounterKind,
         controller_only: bool,
     },
+    /// The first actual placement of this counter kind on the exact incarnation this turn.
+    /// Earlier placements count even while this ability is absent or suppressed.
+    FirstSelfCountersAddedThisTurn {
+        kind: CounterKind,
+    },
     LifeGained {
         first_only: bool,
         own_turn: bool,

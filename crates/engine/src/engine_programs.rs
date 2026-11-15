@@ -630,6 +630,12 @@ impl Game {
         {
             return;
         }
+        let first_kind_this_turn = !self.state.first_counter_kind_events.as_ref().is_some_and(
+            |rows| rows.iter().any(|row| *row == (object, kind)),
+        );
+        if first_kind_this_turn {
+            self.state.first_counter_kind_events.get_or_insert_default().push((object, kind));
+        }
         self.record_counter_placement(
             object,
             placed_by,
@@ -718,16 +724,20 @@ impl Game {
                 }
             }
         }
-        if !self.has_trigger(object.card, |a| matches!(a.condition.event(), TriggerCondition::SelfCountersAdded { kind: expected, .. } if expected == kind)) { return; }
+        if !self.has_trigger(object.card, |a| matches!(a.condition.event(),
+            TriggerCondition::SelfCountersAdded { kind: expected, .. }
+            | TriggerCondition::FirstSelfCountersAddedThisTurn { kind: expected }
+                if expected == kind)) { return; }
         let source = self.object_view(object.card);
         for (index, ability) in source.trigger_templates() {
-            if let TriggerCondition::SelfCountersAdded {
-                kind: expected,
-                controller_only,
-            } = ability.condition.event()
-                && kind == expected
-                && (!controller_only || source.controller == placed_by)
-            {
+            let qualifies = match ability.condition.event() {
+                TriggerCondition::SelfCountersAdded { kind: expected, controller_only } =>
+                    kind == expected && (!controller_only || source.controller == placed_by),
+                TriggerCondition::FirstSelfCountersAddedThisTurn { kind: expected } =>
+                    kind == expected && first_kind_this_turn,
+                _ => false,
+            };
+            if qualifies {
                 self.queue_trigger(&source, index);
             }
         }
@@ -1267,6 +1277,7 @@ impl Game {
                     | TriggerCondition::LifeLost { .. }
                     | TriggerCondition::LifeGainedOrLostOwnTurn
                     | TriggerCondition::SelfCountersAdded { .. }
+                    | TriggerCondition::FirstSelfCountersAddedThisTurn { .. }
                     | TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::CreaturesAttackYou
                     | TriggerCondition::CreaturesAttackYouOrPlaneswalkersAtLeast(_)
