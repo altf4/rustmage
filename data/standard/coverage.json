@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "66094c58114d9c9d332330ef9aea343a48c0b32aec382ab562ccf59d1f929d7d",
+  "catalogue_version": "b35dc97531551695d3a90e80fcbdc502794348c44554f58076992c6fbc1b62a4",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5448,
-  "implemented_total": 5468,
+  "implemented_standard_cards": 5449,
+  "implemented_total": 5469,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 285,
-      "gated": 11
+      "complete": 286,
+      "gated": 10
     },
     "w17": {
       "total": 1,
@@ -42147,8 +42147,8 @@
     {
       "name": "Daniels, Temporal Agent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/daniels_temporal_agent.rs",
       "set": "trk"
     },
