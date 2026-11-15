@@ -3,6 +3,7 @@ use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum HandChoiceKind {
+    LookOnly,
     LookDiscardDraw,
     LookDiscardNonland,
     DiscardRevealedNonlandOrMoveExile,
@@ -54,7 +55,8 @@ impl HandChoiceKind {
     fn optional(self) -> bool {
         matches!(
             self,
-            Self::ExileRevealedOrCreature
+            Self::LookOnly
+                | Self::ExileRevealedOrCreature
                 | Self::ExileRevealedLinkedOptional
                 | Self::DiscardNonlandReflexive { .. }
                 | Self::DiscardAnyReflexive { .. }
@@ -234,6 +236,22 @@ impl Game {
             controller: item.controller,
             victim: Some(victim),
             source: item.source.expect("object-backed hand choice").object,
+            required: 0,
+            selected: Vec::new(),
+            candidates: self.exact_hand(victim),
+        });
+        true
+    }
+    pub(super) fn start_private_hand_look(&mut self, item: &SpellView) -> bool {
+        let Some(victim) = self.program_players(PlayerSet::Targeted, item).next() else {
+            return false;
+        };
+        self.set_hand_interaction(HandInteraction {
+            kind: HandChoiceKind::LookOnly,
+            actor: item.controller,
+            controller: item.controller,
+            victim: Some(victim),
+            source: item.source.expect("object-backed hand look").object,
             required: 0,
             selected: Vec::new(),
             candidates: self.exact_hand(victim),
@@ -591,6 +609,7 @@ impl Game {
         let o = &self.state.objects[reference.card as usize];
         let in_hand = o.zone == Zone::Hand && Some(o.owner) == interaction.victim && o.is_card();
         match interaction.kind {
+            HandChoiceKind::LookOnly => false,
             HandChoiceKind::LookMayExileUntilSourceLeaves => {
                 in_hand
                     && !o.card.is_land()
@@ -752,6 +771,7 @@ impl Game {
         }
         if let Some(object) = object {
             match interaction.kind {
+                HandChoiceKind::LookOnly => unreachable!("look-only has no card action"),
                 HandChoiceKind::ExileRevealedForControlledCast => {
                     let event = self.move_object(object.card, Zone::Exile);
                     if event.moved && event.destination == Zone::Exile {
@@ -973,7 +993,8 @@ impl Game {
                 .collect(),
             inspected_cards: matches!(
                 interaction.kind,
-                HandChoiceKind::LookDiscardDraw
+                HandChoiceKind::LookOnly
+                    | HandChoiceKind::LookDiscardDraw
                     | HandChoiceKind::LookDiscardNonland
                     | HandChoiceKind::LookMayExileUntilSourceLeaves
                     | HandChoiceKind::LookMayExileNonlandWithPlaySurcharge(_)

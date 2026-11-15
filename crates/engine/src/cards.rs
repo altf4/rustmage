@@ -2525,6 +2525,15 @@ pub enum Instruction {
         toughness: i32,
         keywords: Keywords,
     },
+    /// Evaluate one live count, apply its scaled temporary stat change, and use
+    /// that same count for an optional token threshold during this resolution.
+    ModifyPlayerCreaturesScaled {
+        players: PlayerSet,
+        value: StatValue,
+        power_per_count: i32,
+        toughness_per_count: i32,
+        create_if_at_least: Option<(u16, Card, u16)>,
+    },
     UntapSubtype {
         players: PlayerSet,
         subtype: &'static str,
@@ -3331,6 +3340,8 @@ pub enum Instruction {
     PlayerHexproofThisTurn,
     HarnessSource,
     GrantPermanentsThisTurn(Keywords),
+    /// Grant only creatures currently controlled by the resolving controller.
+    GrantControlledCreaturesThisTurn(Keywords),
     DamageTargetAndController {
         damage: i32,
         controller_damage: i32,
@@ -4372,6 +4383,8 @@ pub enum Instruction {
     MayCounterSourceOtherwiseCast,
     /// Private look, optional exact card choice, then discard and a draw for that player.
     LookTargetHandMayDiscardThenDraw,
+    /// Privately inspect the targeted player's hand, then continue the program.
+    LookTargetHand,
     /// Privately inspect the targeted player's hand and optionally discard one nonland.
     LookTargetHandMayDiscardNonland,
     /// Reveal the target's hand. Choose a nonland to discard, or optionally

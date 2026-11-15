@@ -5290,6 +5290,27 @@ impl Game {
                         keywords,
                     );
                 }
+                Instruction::GrantControlledCreaturesThisTurn(keywords) => {
+                    let ids: Vec<_> = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter_map(|(id, object)| {
+                            (object.zone == Zone::Battlefield
+                                && object.controller == item.controller
+                                && self.current_kinds(id as CardId) & 1 != 0)
+                                .then_some(id as CardId)
+                        })
+                        .collect();
+                    self.grant_keyword_effects(
+                        &ids,
+                        item.source
+                            .expect("instruction requires an object source")
+                            .object,
+                        keywords,
+                    );
+                }
                 Instruction::DamageTargetAndController {
                     damage,
                     controller_damage,
@@ -7907,6 +7928,11 @@ impl Game {
                     let nonland_only =
                         matches!(instruction, Instruction::LookTargetHandMayDiscardNonland);
                     if self.start_private_hand_discard(&item, nonland_only) {
+                        return;
+                    }
+                }
+                Instruction::LookTargetHand => {
+                    if self.start_private_hand_look(&item) {
                         return;
                     }
                 }
@@ -13035,6 +13061,33 @@ impl Game {
                     }
                     if let Some(source) = item.source {
                         self.grant_keyword_effects(&recipients, source.object, keywords);
+                    }
+                }
+                Instruction::ModifyPlayerCreaturesScaled {
+                    players,
+                    value,
+                    power_per_count,
+                    toughness_per_count,
+                    create_if_at_least,
+                } => {
+                    let source = item.source.expect("scaled creature change needs a source");
+                    let count = self.stat_value(value, source.object, item.controller).max(0);
+                    let delta = Stats {
+                        power: count
+                            .checked_mul(i128::from(power_per_count))
+                            .capacity("power representation exhausted"),
+                        toughness: count
+                            .checked_mul(i128::from(toughness_per_count))
+                            .capacity("toughness representation exhausted"),
+                    };
+                    let recipients = self.player_creature_recipients(players, &item);
+                    for id in recipients {
+                        self.state.objects[id as usize].growth += delta;
+                    }
+                    if let Some((minimum, token, amount)) = create_if_at_least
+                        && count >= i128::from(minimum)
+                    {
+                        self.create_tokens(item.controller, token, u128::from(amount), false);
                     }
                 }
                 Instruction::RemoveAbilitiesAndSetCreatureBaseUntilNextTurn {
