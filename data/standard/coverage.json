@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "b35dc97531551695d3a90e80fcbdc502794348c44554f58076992c6fbc1b62a4",
+  "catalogue_version": "69012f24ca6253d258cf8a0403b0b7385e7f018ad81ec70aa236841ca7e03b05",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5449,
-  "implemented_total": 5469,
+  "implemented_standard_cards": 5450,
+  "implemented_total": 5470,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 286,
-      "gated": 10
+      "complete": 287,
+      "gated": 9
     },
     "w17": {
       "total": 1,
@@ -42171,8 +42171,8 @@
     {
       "name": "Dathon, His Heart Open",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/dathon_his_heart_open.rs",
       "set": "trk"
     },
