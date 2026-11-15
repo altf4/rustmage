@@ -456,6 +456,12 @@ pub enum TargetRule {
         kinds: u8,
         excluded: u8,
     },
+    /// Match a live spell's current types and controller, including spell copies.
+    SpellKindsControlled {
+        kinds: u8,
+        excluded: u8,
+        relation: i8,
+    },
     SpellCharacteristics {
         colors: u8,
         min_mana: u64,
@@ -3112,6 +3118,9 @@ pub enum Instruction {
     GrantCastPlotOnResolution,
     /// Exile the exact target spell, even if it cannot be countered. Plot the physical arrival.
     ExileTargetSpellPlotted,
+    /// The targeted spell's controller may exile it. A successful exile skips
+    /// the next instruction; declining continues into an optional free cast.
+    MayTargetSpellControllerExile,
     ResolveReboundCast,
     CopyCastSpell {
         prior_spells: bool,

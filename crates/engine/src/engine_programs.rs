@@ -5187,6 +5187,12 @@ impl Game {
                 Instruction::GrantCastRebound => self.grant_cast_rebound(&item),
                 Instruction::GrantCastPlotOnResolution => self.grant_cast_plot_on_resolution(&item),
                 Instruction::ExileTargetSpellPlotted => self.exile_target_spell_plotted(&item),
+                Instruction::MayTargetSpellControllerExile => {
+                    self.offer_target_spell_controller_exile(&item);
+                    if matches!(self.state.pending, Pending::EffectOptional { .. }) {
+                        return;
+                    }
+                }
                 Instruction::ResolveReboundCast => {
                     if self.resolve_rebound_cast(&item) {
                         return;

@@ -10328,6 +10328,9 @@ impl Game {
                 self.choose_optional_search(actor, accept);
             }
             Action::ChooseOptional { accept } => {
+                if self.complete_target_spell_controller_exile(accept) {
+                    return;
+                }
                 if self.complete_optional_spell_copy(accept) {
                     return;
                 }
