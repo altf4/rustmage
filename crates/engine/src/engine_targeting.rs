@@ -1121,6 +1121,7 @@ impl Announcement {
 struct TargetSourceCharacteristics<'a> {
     reference: ObjectRef,
     snapshot: Option<&'a DamageFacts>,
+    target_lki: Option<SourceTargetLki>,
     attachment: Option<ObjectRef>,
     spell: Option<Card>,
     chosen_creature_type: Option<Option<crate::cards::CreatureType>>,
@@ -1134,6 +1135,7 @@ impl<'a> TargetSourceCharacteristics<'a> {
         Self {
             reference,
             snapshot: None,
+            target_lki: None,
             attachment: None,
             spell: Some(definition),
             chosen_creature_type: None,
@@ -1150,6 +1152,7 @@ impl<'a> TargetSourceCharacteristics<'a> {
         Self {
             reference: source.object,
             snapshot: Some(&source.facts),
+            target_lki: source.target_lki,
             attachment: item.source_attachment,
             spell: (item.kind == StackKind::Spell).then_some(source.card),
             chosen_creature_type: item
@@ -2213,9 +2216,11 @@ impl Game {
                 .then_some(current.controller)
         } else {
             qualification.and_then(|source| {
-                source
-                    .snapshot
-                    .and_then(|facts| facts.battlefield.then_some(facts.controller))
+                source.target_lki.map(|facts| facts.controller).or_else(|| {
+                    source
+                        .snapshot
+                        .and_then(|facts| facts.battlefield.then_some(facts.controller))
+                })
             })
         };
         if source_controller.is_none_or(|controller| object.controller == controller) {
@@ -2450,8 +2455,11 @@ impl Game {
             ))
         } else {
             qualification
-                .and_then(|q| q.snapshot)
-                .map(|snapshot| (snapshot.colors(), snapshot.kinds))
+                .and_then(|q| {
+                    q.target_lki
+                        .map(|facts| (facts.colors, facts.kinds))
+                        .or_else(|| q.snapshot.map(|snapshot| (snapshot.colors(), snapshot.kinds)))
+                })
         }
     }
     fn target_matches_in_world<W: CharacteristicWorld + ?Sized>(
@@ -3183,6 +3191,7 @@ impl Game {
                 object,
                 card: self.state.objects[card as usize].card,
                 facts,
+                target_lki: None,
             }),
             source_less_rule: None,
             additional_triggers: 0,

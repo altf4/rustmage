@@ -88,6 +88,7 @@ impl Game {
             object: before.reference,
             card: before.card,
             facts: DamageFacts::from_view(before),
+            target_lki: None,
         });
         item.source_keywords = before.keywords;
         item.source_counter_lki = None;

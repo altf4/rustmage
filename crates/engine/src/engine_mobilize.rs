@@ -374,6 +374,7 @@ impl Game {
                     object: source,
                     card,
                     facts: b.facts,
+                    target_lki: None,
                 }),
                 source_less_rule: None,
                 additional_triggers: 0,

@@ -1794,6 +1794,7 @@ impl Game {
                 object: source.reference,
                 card: source.card,
                 facts: DamageFacts::from_view(source),
+                target_lki: None,
             }),
             source_less_rule: None,
             // Explicit limits and state-trigger latching also cap extra instances.

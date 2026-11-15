@@ -1970,6 +1970,16 @@ pub(crate) struct TargetTypeLki {
     creature_types: subtypes::CreatureTypeSet,
 }
 
+/// Last controlled characteristics of an ability source when it leaves the
+/// battlefield. The packet's event-time DamageFacts remain unchanged.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct SourceTargetLki {
+    controller: Player,
+    kinds: u16,
+    colors: u8,
+}
+
 /// Object-backed stack source, absent for inherent game-rule abilities.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -1978,6 +1988,8 @@ pub struct StackSourceView {
     pub object: ObjectRef,
     pub card: Card,
     pub facts: DamageFacts,
+    #[serde(skip)]
+    pub(crate) target_lki: Option<SourceTargetLki>,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -2169,6 +2181,19 @@ impl SpellView {
             true
         } else {
             false
+        }
+    }
+
+    pub(super) fn remember_source_target_lki_at_departure(&mut self, before: &ObjectView) {
+        if let Some(source) = &mut self.source
+            && source.object == before.reference
+            && self.kind != StackKind::Spell
+        {
+            source.target_lki = Some(SourceTargetLki {
+                controller: before.controller,
+                kinds: before.kinds,
+                colors: before.colors,
+            });
         }
     }
 
@@ -11089,6 +11114,26 @@ impl Game {
     /// Preserve their event facts while retaining the source types used in targeting.
     fn capture_waiting_source_types(&mut self, before: &ObjectView) {
         let state = &mut self.state;
+        for item in state
+            .stack
+            .iter_mut()
+            .chain(&mut state.pending_triggers)
+            .chain(&mut state.ordering_triggers)
+            .chain(state.resolving.iter_mut().map(|r| &mut r.item))
+            .chain(state.announcing.iter_mut().map(|a| &mut a.item))
+            .chain(state.activation_payment.iter_mut().map(|p| &mut p.item))
+            .chain(
+                state
+                    .mana_announcement_stack
+                    .iter_mut()
+                    .flat_map(|frames| frames.iter_mut())
+                    .map(|frame| &mut frame.announcement.item),
+            )
+        {
+            item.visit_with_captured_copies_mut(|packet| {
+                packet.remember_source_target_lki_at_departure(before);
+            });
+        }
         for item in [
             state.delayed_artifact_copies.as_deref_mut(),
             state.delayed_attack_this_turn.as_deref_mut(),
@@ -11105,6 +11150,7 @@ impl Game {
         .flatten()
         {
             item.remember_source_types_at_departure(before);
+            item.remember_source_target_lki_at_departure(before);
         }
         for item in state
             .delayed_target_events
@@ -11137,6 +11183,7 @@ impl Game {
             )
         {
             item.remember_source_types_at_departure(before);
+            item.remember_source_target_lki_at_departure(before);
         }
         if let Some(batches) = &mut state.delayed_sacrifices {
             for batch in batches.iter_mut() {

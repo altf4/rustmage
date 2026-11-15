@@ -272,6 +272,7 @@ impl Game {
                     object: view.source,
                     card: view.source_card,
                     facts: d.facts,
+                    target_lki: None,
                 }),
                 source_less_rule: None,
                 additional_triggers: 0,

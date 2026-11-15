@@ -995,6 +995,7 @@ impl Game {
                 object: self.object_ref(card),
                 card: self.state.objects[card as usize].card,
                 facts: self.damage_facts(card),
+                target_lki: None,
             }),
             source_less_rule: None,
             additional_triggers: 0,

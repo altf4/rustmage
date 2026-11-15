@@ -20,6 +20,7 @@ impl Game {
                 object: reference,
                 card: source.card,
                 facts: DamageFacts::from_view(&source),
+                target_lki: None,
             }),
             source_less_rule: None,
             additional_triggers: source.additional_triggers,

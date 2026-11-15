@@ -170,3 +170,52 @@ fn artifact_ability_uses_source_controller_after_activation() {
     assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 0);
     assert_eq!(game.object_view(protected).zone, Zone::Battlefield);
 }
+
+#[test]
+fn departed_ability_source_uses_last_controller_and_artifact_type() {
+    let artifact = Card::from_name("Candy Trail").unwrap();
+    let nonartifact = Card::from_name("Banishing Light").unwrap();
+    let protected_card = Card::from_name("Gigantosaurus").unwrap();
+    let _rules = fixture_rules::activate(&[
+        (artifact, &ABILITY_SOURCE),
+        (protected_card, &PROTECTED),
+    ]);
+    let player = Player::P0;
+    for copied_nonartifact in [false, true] {
+        let mut game = scenario(player);
+        let protected = spawn(&mut game, player, protected_card, Zone::Battlefield);
+        let source = spawn(&mut game, player, artifact, Zone::Battlefield);
+        act(&mut game, activation(source));
+        act(&mut game, Action::ChooseTarget { target: Target::Card(protected) });
+        pay(&mut game);
+        game.state.objects[source as usize].controller = player.other();
+        if copied_nonartifact {
+            game.apply_temporary_copy(
+                game.object_ref(source),
+                CopyRecipe::new(nonartifact),
+                CopyDeadline::EndOfTurn,
+            );
+            assert_eq!(game.object_view(source).kinds & 16, 0);
+        }
+        game.move_object(source, Zone::Graveyard);
+        let checkpoint = game.snapshot();
+        let actor = game.actor().unwrap();
+        let revision = game.revision();
+        let index = game.legal_actions().iter().position(|a| *a == Action::Pass).unwrap();
+        let mut indexed = game.clone();
+        act(&mut game, Action::Pass);
+        indexed.apply_index(actor, revision, index).unwrap();
+        assert_eq!(game.snapshot(), indexed.snapshot());
+        settle(&mut game);
+        settle(&mut indexed);
+        assert_eq!(game.snapshot(), indexed.snapshot());
+        indexed.restore(&checkpoint).unwrap();
+        settle(&mut indexed);
+        assert_eq!(game.snapshot(), indexed.snapshot());
+        assert_eq!(
+            game.state.players[player.index()].cards_drawn_this_turn,
+            u64::from(copied_nonartifact),
+            "departure LKI must govern artifact ability target legality"
+        );
+    }
+}

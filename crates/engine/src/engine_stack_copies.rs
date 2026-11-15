@@ -401,6 +401,7 @@ impl Game {
                     object: source.object,
                     card: source.definition,
                     facts: source.facts,
+                    target_lki: None,
                 });
                 trigger.source_keywords = source.keywords;
                 trigger.source_tapped = source.tapped;
