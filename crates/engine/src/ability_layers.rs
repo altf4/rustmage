@@ -308,6 +308,12 @@ pub enum StaticAbilityFragment {
     PlayLandFromLibraryTop,
     PlayLandFromGraveyard,
     PlayFromGraveyardDuringOwnTurn,
+    /// One artifact creature spell from this source controller's graveyard each own turn;
+    /// the cast permanent enters with a finality counter.
+    CastArtifactCreatureFromGraveyardOnceEachTurnWithFinality,
+    /// One permanent card owned by this source controller may be played from
+    /// their graveyard or outside-game pool each own turn.
+    PlayPermanentFromGraveyardOrOutsideOnceEachTurn,
     /// Eligible nonland faces in your graveyard have Mayhem for their mana cost.
     GrantManaCostMayhem,
     /// Cast a matching spell from your graveyard with an additional life cost.

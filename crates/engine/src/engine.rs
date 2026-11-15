@@ -240,7 +240,11 @@ pub use linked_source_casts::{LinkedFreeCastApprovalView, LinkedFreeCastUseView}
 #[path = "engine_dream_exile.rs"]
 pub mod dream_exile;
 pub use cast_origins::{GraveyardTypeUse, ResolutionFreeCasts, ResolutionPaidCast};
+#[doc(hidden)]
+#[path = "engine_source_permissions.rs"]
+pub mod source_permissions;
 pub use dream_exile::DreamExileView;
+pub use source_permissions::{ExiledCopyGrant, SourcePlayKind, SourcePlayUse};
 #[doc(hidden)]
 #[path = "engine_cast_permissions.rs"]
 pub mod cast_permissions;
@@ -978,6 +982,13 @@ define_actions! {
     AnnounceCounterGraveyard { card: CardId },
     AnnounceGraveyardAdditionalCosts { card: CardId },
     AnnounceGraveyardFinality { card: CardId, sneak: bool },
+    AnnounceSourceGraveyard { card: CardId, source: ObjectRef, play_kind: SourcePlayKind, face: CastFace, flash_surcharge: bool },
+    PlaySourceGraveyardLand { card: CardId, source: ObjectRef, play_kind: SourcePlayKind },
+    SelectOutsideSourcePlay { source: ObjectRef, selection: outside_choices::Selection },
+    CancelOutsideSourcePlay,
+    AnnounceSelectedOutsidePermanent { face: CastFace, flash_surcharge: bool },
+    PlaySelectedOutsideLand,
+    AnnounceExiledCopyGrant { source: ObjectRef },
     AnnounceGraveyardPaid { object: ObjectRef, permission: u64, face: CastFace, method: CastMethod, flash_surcharge: bool },
     AnnounceGraveyardWithLife {
         object: ObjectRef,
@@ -2973,6 +2984,9 @@ pub struct LifeTriggerView {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    OutsideSourcePlay {
+        player: Player,
+    },
     UntapStepChoice(Box<untap_rules::UntapStepChoice>),
     Proliferate {
         player: Player,
@@ -3537,6 +3551,9 @@ struct State {
     #[allow(clippy::box_collection)]
     uncounterable_spell_ids: Option<Box<Vec<u64>>>,
     graveyard_type_uses: Option<SharedVec<GraveyardTypeUse>>,
+    source_play_uses: Option<SharedVec<SourcePlayUse>>,
+    outside_play: Option<source_permissions::OutsidePlay>,
+    exiled_copy_grants: Option<SharedVec<ExiledCopyGrant>>,
     resolution_free_casts: Option<Box<ResolutionFreeCasts>>,
     suspend: Option<Box<suspend::SuspendState>>,
     miracle: Option<Box<miracle::MiracleState>>,
@@ -4441,6 +4458,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub embalm_abilities: Option<Vec<EmbalmAbilityView>>,
     pub graveyard_type_uses: Vec<GraveyardTypeUse>,
+    pub source_play_uses: Vec<SourcePlayUse>,
+    pub exiled_copy_grants: Vec<ExiledCopyGrant>,
     pub resolution_free_casts: Option<ResolutionFreeCasts>,
     /// Exact public exile cards that have gained suspend, including cards with no time counters.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4955,6 +4974,9 @@ impl Game {
                 turn_cast_grants: None,
                 uncounterable_spell_ids: None,
                 graveyard_type_uses: None,
+                source_play_uses: None,
+                outside_play: None,
+                exiled_copy_grants: None,
                 resolution_free_casts: None,
                 suspend: None,
                 miracle: None,
@@ -5176,6 +5198,7 @@ impl Game {
             | Pending::EffectOptional { player, .. }
             | Pending::EffectDiscard { player, .. }
             | Pending::OutsideGameChoice { player }
+            | Pending::OutsideSourcePlay { player }
             | Pending::LegendarySplitSearch { player }
             | Pending::OutsideEntryReplacement { player } => Some(player),
             Pending::UntapStepChoice(_)
@@ -5612,6 +5635,10 @@ impl Game {
                 if self.visit_outside_choices(&mut emit) {
                     return true;
                 }
+            }
+            Pending::OutsideSourcePlay { .. } => {
+                let cast_alternatives = self.source_cast_alternatives(actor);
+                return self.visit_selected_outside_source_play(&cast_alternatives, &mut emit);
             }
             Pending::EntryBatchCopy { .. } => {
                 return self
@@ -6498,6 +6525,26 @@ impl Game {
                     &cast_alternatives,
                     &mut emit,
                 ) {
+                    return true;
+                }
+                if self.visit_source_graveyard_plays(
+                    actor,
+                    sorcery,
+                    casting_prohibited || self.nonhand_cast_prohibited(actor),
+                    &cast_alternatives,
+                    &mut emit,
+                ) {
+                    return true;
+                }
+                if self.visit_source_outside_plays(
+                    actor,
+                    sorcery,
+                    casting_prohibited || self.nonhand_cast_prohibited(actor),
+                    &mut emit,
+                ) {
+                    return true;
+                }
+                if self.visit_exiled_copy_grants(actor, &mut emit) {
                     return true;
                 }
                 if !casting_prohibited
@@ -8064,6 +8111,15 @@ impl Game {
     }
 
     fn apply_legal(&mut self, actor: Player, action: Action) {
+        if let Action::AnnounceSourceGraveyard {
+            source, play_kind, ..
+        }
+        | Action::PlaySourceGraveyardLand {
+            source, play_kind, ..
+        } = &action
+        {
+            self.use_source_play(*source, *play_kind);
+        }
         if let Action::PlayGraveyardPermanent {
             permission,
             permanent_type,
@@ -8093,6 +8149,23 @@ impl Game {
             self.consume_graveyard_type(*permission, *permanent_type);
         }
         match action {
+            Action::SelectOutsideSourcePlay { source, selection } => {
+                self.select_outside_source_play(actor, source, selection);
+            }
+            Action::CancelOutsideSourcePlay => self.cancel_outside_source_play(),
+            Action::AnnounceExiledCopyGrant { source } => {
+                self.announce_exiled_copy_grant(actor, source);
+            }
+            Action::AnnounceSelectedOutsidePermanent {
+                face,
+                flash_surcharge,
+            } => {
+                let card = self.commit_outside_source_play();
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                self.set_cast_face(&mut item, face);
+                item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
             Action::ChooseLegendarySearchZones { library, outside } => {
                 self.choose_legendary_search_zones(library, outside);
             }
@@ -8434,15 +8507,18 @@ impl Game {
                 self.start_taxed_exile_cast(actor, object, face, method, flash_surcharge, surcharge)
             }
             Action::PlayLand { .. }
+            | Action::PlaySourceGraveyardLand { .. }
+            | Action::PlaySelectedOutsideLand
             | Action::PlayTaxedExileLand { .. }
             | Action::PlayGraveyardPermanent {
                 permanent_type: PermanentType::Land,
                 ..
             } => {
                 let (card, tapped) = match action {
-                    Action::PlayLand { card } | Action::PlayGraveyardPermanent { card, .. } => {
-                        (card, false)
-                    }
+                    Action::PlayLand { card }
+                    | Action::PlaySourceGraveyardLand { card, .. }
+                    | Action::PlayGraveyardPermanent { card, .. } => (card, false),
+                    Action::PlaySelectedOutsideLand => (self.commit_outside_source_play(), false),
                     Action::PlayTaxedExileLand { object } => (object.card, true),
                     _ => unreachable!("land play action"),
                 };
@@ -8940,6 +9016,25 @@ impl Game {
                     CounterKind::Finality,
                     1,
                 );
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceSourceGraveyard {
+                card,
+                play_kind,
+                face,
+                flash_surcharge,
+                ..
+            } => {
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                self.set_cast_face(&mut item, face);
+                item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
+                if play_kind == SourcePlayKind::GraveyardArtifactCreatureFinality {
+                    self.record_cast_entry_counters(
+                        item.source.unwrap().object,
+                        CounterKind::Finality,
+                        1,
+                    );
+                }
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceWebSlinging {
@@ -12384,6 +12479,7 @@ impl Game {
         // Per-turn permissions persist through repeated cleanup priority, then reset
         // only when the turn actually advances (including an effect ending it).
         self.state.graveyard_type_uses = None;
+        self.state.source_play_uses = None;
         self.begin_turn();
     }
 
@@ -13451,6 +13547,7 @@ impl Game {
                 }
                 Pending::EffectDiscard { .. } => "effect_discard",
                 Pending::OutsideGameChoice { .. } => "outside_game_choice",
+                Pending::OutsideSourcePlay { .. } => "outside_source_play",
                 Pending::LegendarySplitSearch { .. } => "legendary_split_search",
                 Pending::OutsideEntryReplacement { .. } => "outside_entry_replacement",
                 Pending::HandDefender { .. } => "hand_defender",
@@ -13658,6 +13755,20 @@ impl Game {
                 .graveyard_type_uses
                 .as_ref()
                 .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
+            source_play_uses: s
+                .source_play_uses
+                .as_ref()
+                .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
+            exiled_copy_grants: s.exiled_copy_grants.as_ref().map_or_else(Vec::new, |rows| {
+                rows.iter()
+                    .copied()
+                    .filter(|row| {
+                        self.object_ref(row.recipient.card) == row.recipient
+                            && self.state.objects[row.recipient.card as usize].zone == Zone::Exile
+                            && self.can_view_hideaway(viewer, row.recipient)
+                    })
+                    .collect()
+            }),
             embalm_abilities: self.embalm_views(),
             paid_graveyard_cast_permissions: s
                 .linked_choices
@@ -14326,6 +14437,17 @@ impl Game {
             + s.graveyard_type_uses.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<GraveyardTypeUse>>()
                     + rows.len() * std::mem::size_of::<GraveyardTypeUse>()
+            })
+            + s.source_play_uses.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<SourcePlayUse>>()
+                    + rows.len() * std::mem::size_of::<SourcePlayUse>()
+            })
+            + s.outside_play.as_ref().map_or(0, |_| {
+                std::mem::size_of::<source_permissions::OutsidePlay>()
+            })
+            + s.exiled_copy_grants.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<ExiledCopyGrant>>()
+                    + rows.len() * std::mem::size_of::<ExiledCopyGrant>()
             })
             + s.announcing
                 .as_ref()

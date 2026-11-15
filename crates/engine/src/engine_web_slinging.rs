@@ -37,6 +37,11 @@ pub enum PaidCastOrigin {
         permanent_type: PermanentType,
     },
     GraveyardFinality,
+    SourcePlay {
+        source: ObjectRef,
+        kind: SourcePlayKind,
+        outside: bool,
+    },
     GraveyardAdditional,
     GraveyardCounters,
     GraveyardLife {
@@ -343,6 +348,33 @@ impl Game {
                 terms.alternative.library_top = Some(permission);
             }
             PaidCastOrigin::GraveyardFinality => terms.entry_counter = Some(CounterKind::Finality),
+            PaidCastOrigin::SourcePlay {
+                source,
+                kind,
+                outside,
+            } => {
+                let object = &self.state.objects[card as usize];
+                if !self.source_play_available(actor, source, kind)
+                    || object.owner != actor
+                    || !object.is_card()
+                    || !kind.accepts(face.definition(object.card)?)
+                    || if outside {
+                        object.zone != Zone::Outside
+                            || self.state.outside_play.as_ref().is_none_or(|offer| {
+                                offer.player != actor
+                                    || offer.source != source
+                                    || offer.object != self.object_ref(card)
+                            })
+                    } else {
+                        object.zone != Zone::Graveyard
+                    }
+                {
+                    return None;
+                }
+                if kind == SourcePlayKind::GraveyardArtifactCreatureFinality {
+                    terms.entry_counter = Some(CounterKind::Finality);
+                }
+            }
             PaidCastOrigin::GraveyardAdditional => terms.additional = Some(physical),
             PaidCastOrigin::GraveyardCounters => terms.counters = physical.graveyard_counter_cost(),
             PaidCastOrigin::GraveyardLife {
@@ -554,6 +586,18 @@ impl Game {
         } = origin
         {
             self.consume_graveyard_type(permission, permanent_type);
+        }
+        if let PaidCastOrigin::SourcePlay {
+            source,
+            kind,
+            outside,
+        } = origin
+        {
+            if outside {
+                assert_eq!(card, self.commit_outside_source_play());
+            } else {
+                self.use_source_play(source, kind);
+            }
         }
         let mut item = self.cast_item(actor, card, [0; 6]);
         self.set_cast_face(&mut item, face);

@@ -330,7 +330,8 @@ impl FundingState<'_> {
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
             | EffectChoiceKind::DiscardMatchingLegendary
-            | EffectChoiceKind::DiscardLegendary => hand > 0,
+            | EffectChoiceKind::DiscardLegendary
+            | EffectChoiceKind::ExileFromHand => hand > 0,
             EffectChoiceKind::DiscardOrLife(life) => hand > 0 || self.life >= i128::from(life),
             EffectChoiceKind::Behold
             | EffectChoiceKind::BeholdMany(_)
@@ -689,6 +690,9 @@ impl FundingState<'_> {
             );
         }
         let o = self.object(r.card);
+        if spec.kind.payment_kind() == EffectChoiceKind::ExileFromHand && o.owner != self.actor {
+            return false;
+        }
         if spec.kind.is_attached_sacrifice() && o.attached_to != Some(source) {
             return false;
         }
@@ -2036,6 +2040,7 @@ impl FundingState<'_> {
             EffectChoiceKind::ExileGraveyard
             | EffectChoiceKind::BeholdAndExile
             | EffectChoiceKind::ExileControlled
+            | EffectChoiceKind::ExileFromHand
             | EffectChoiceKind::ExileControlledOrGraveyard => destination = Zone::Exile,
             EffectChoiceKind::ExileCraftNonlands(n) => {
                 destination = Zone::Exile;

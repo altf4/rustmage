@@ -386,6 +386,8 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 ..
             } => 81,
             Action::AnnounceFreeCounterGraveyard { .. }
+            | Action::AnnounceSourceGraveyard { .. }
+            | Action::AnnounceSelectedOutsidePermanent { .. }
             | Action::AnnounceFreeGraveyardPermanent { .. }
             | Action::AnnounceFreeGraveyardAdditionalCosts { .. }
             | Action::AnnounceFreeFromPermission { .. }
@@ -435,12 +437,14 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceRoom { .. }
             | Action::AnnounceSplit { .. } => 79,
             Action::AnnouncePlot { .. }
+            | Action::SelectOutsideSourcePlay { .. }
             | Action::AnnounceForetell { .. }
             | Action::AnnounceLibraryTopPlot { .. }
             | Action::BeginFaceUp { .. }
             | Action::BeginFaceUpX { .. }
             | Action::BeginRoomUnlock { .. } => 40,
             Action::AnnounceActivate { .. }
+            | Action::AnnounceExiledCopyGrant { .. }
             | Action::AnnounceAttachedAbility { .. }
             | Action::AnnouncePlaneswalkerGrant { .. }
             | Action::AnnounceArtifactFood { .. }
@@ -451,6 +455,8 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceBorrowedAbility { .. }
             | Action::AnnounceInheritedAbility { .. }
             | Action::AnnounceGraveyardBorrowedAbility { .. } => 34,
+            Action::CancelOutsideSourcePlay => -1,
+            Action::PlaySourceGraveyardLand { .. } | Action::PlaySelectedOutsideLand => 79,
             Action::AnnounceMana { .. }
             | Action::AnnounceGrantedMana { .. }
             | Action::AnnounceGrantedManaTemplate { .. }

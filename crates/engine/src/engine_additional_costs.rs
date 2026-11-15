@@ -303,6 +303,7 @@ impl Game {
             | EffectChoiceKind::DiscardNamed(_)
             | EffectChoiceKind::DiscardMatchingLegendary
             | EffectChoiceKind::DiscardLegendary
+            | EffectChoiceKind::ExileFromHand
             | EffectChoiceKind::ExileGraveyard
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGraveyardRange { .. }
@@ -415,7 +416,8 @@ impl Game {
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
             | EffectChoiceKind::DiscardMatchingLegendary
-            | EffectChoiceKind::DiscardLegendary => Zone::Hand,
+            | EffectChoiceKind::DiscardLegendary
+            | EffectChoiceKind::ExileFromHand => Zone::Hand,
             EffectChoiceKind::BlightCost(_)
             | EffectChoiceKind::ExileControlled
             | EffectChoiceKind::ExilePermanentsForTargetManaValue { .. }
@@ -1527,7 +1529,6 @@ impl Game {
             | EffectChoiceKind::HandCreature
             | EffectChoiceKind::HandCreatureAttacking { .. }
             | EffectChoiceKind::HandCreatureHasteSacrifice { .. }
-            | EffectChoiceKind::ExileFromHand
             | EffectChoiceKind::ExileFromHandWithPlaySurcharge(_)
             | EffectChoiceKind::HandCreatureAndLand
             | EffectChoiceKind::HandPermanent { .. }
@@ -1564,7 +1565,9 @@ impl Game {
             | EffectChoiceKind::SacrificeAttachedEquipment
             | EffectChoiceKind::SacrificeAttachedPermanent
             | EffectChoiceKind::ReturnTappedCreature => unreachable!(),
-            EffectChoiceKind::ExileGraveyard | EffectChoiceKind::ExileControlled => {
+            EffectChoiceKind::ExileGraveyard
+            | EffectChoiceKind::ExileControlled
+            | EffectChoiceKind::ExileFromHand => {
                 let event = self.move_object_as_exile_cost(object.card, a.item.controller);
                 if spec.kind == EffectChoiceKind::ExileControlledForLinkedReturn
                     && event.was_card

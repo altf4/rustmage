@@ -31,7 +31,7 @@ pub(super) fn take_provider_trace() -> Vec<(ObjectRef, u16)> {
     TEST_PROVIDER_TRACE.with(|trace| trace.borrow_mut().take().unwrap())
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Selection {
     Pool(u16),
     Basic(Card),
@@ -212,20 +212,20 @@ impl NameIndex {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl OutsideGameState {
-    fn card(&self, owner: Player, selection: Selection) -> Card {
+    pub(super) fn card(&self, owner: Player, selection: Selection) -> Card {
         match selection {
             Selection::Pool(index) => self.pools[owner.index()][usize::from(index)],
             Selection::Basic(card) => card,
         }
     }
-    fn checked_card(&self, owner: Player, selection: Selection) -> Option<Card> {
+    pub(super) fn checked_card(&self, owner: Player, selection: Selection) -> Option<Card> {
         match selection {
             Selection::Pool(index) => self.pools[owner.index()].get(usize::from(index)).copied(),
             Selection::Basic(card) if self.mode == OutsideGameMode::LimitedSideboard => Some(card),
             Selection::Basic(_) => None,
         }
     }
-    fn candidates(&self, owner: Player) -> Vec<Selection> {
+    pub(super) fn candidates(&self, owner: Player) -> Vec<Selection> {
         let mut result: Vec<_> = (0..self.pools[owner.index()].len())
             .map(|i| Selection::Pool(u16::try_from(i).expect("pool bound")))
             .collect();
@@ -244,7 +244,7 @@ impl OutsideGameState {
         }
         result
     }
-    fn take_card(&mut self, owner: Player, selection: Selection, obscure: bool) -> Card {
+    pub(super) fn take_card(&mut self, owner: Player, selection: Selection, obscure: bool) -> Card {
         match selection {
             Selection::Pool(index) => {
                 let player = owner.index();
@@ -1053,6 +1053,10 @@ impl Game {
         self.admit_outside_card(owner, card, OutsideAdmissionDestination::Library, false);
     }
 
+    pub(super) fn allocate_outside_play_object(&mut self, owner: Player, card: Card) -> ObjectRef {
+        self.allocate_outside_card_object(owner, card, Zone::Outside)
+    }
+
     fn admit_outside_card(
         &mut self,
         owner: Player,
@@ -1060,17 +1064,29 @@ impl Game {
         destination: OutsideAdmissionDestination,
         reveal_hand: bool,
     ) {
+        let zone = match destination {
+            OutsideAdmissionDestination::Hand => Zone::Hand,
+            OutsideAdmissionDestination::Exile => Zone::Exile,
+            OutsideAdmissionDestination::Library => Zone::Library,
+        };
+        let object = self.allocate_outside_card_object(owner, card, zone);
+        self.record_outside_admission(OutsideAdmissionOutcome::Entered {
+            owner,
+            card,
+            object,
+            destination,
+            reveal_hand,
+        });
+    }
+
+    fn allocate_outside_card_object(&mut self, owner: Player, card: Card, zone: Zone) -> ObjectRef {
         let id = CardId::try_from(self.state.objects.len()).capacity("object slots exhausted");
         self.state.objects.push(Object {
             card,
             copy_kind: CopyKind::None,
             owner,
             controller: owner,
-            zone: match destination {
-                OutsideAdmissionDestination::Hand => Zone::Hand,
-                OutsideAdmissionDestination::Exile => Zone::Exile,
-                OutsideAdmissionDestination::Library => Zone::Library,
-            },
+            zone,
             generation: 0,
             phased_out_under: None,
             phased_out_indirectly: false,
@@ -1095,12 +1111,6 @@ impl Game {
             attached_to: None,
             attached_to_player: None,
         });
-        self.record_outside_admission(OutsideAdmissionOutcome::Entered {
-            owner,
-            card,
-            object: self.object_ref(id),
-            destination,
-            reveal_hand,
-        });
+        self.object_ref(id)
     }
 }

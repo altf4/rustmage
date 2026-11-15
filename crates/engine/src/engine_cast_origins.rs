@@ -36,6 +36,8 @@ impl Card {
                         | StaticAbilityFragment::PlayLandFromLibraryTop
                         | StaticAbilityFragment::PlayLandFromGraveyard
                         | StaticAbilityFragment::PlayFromGraveyardDuringOwnTurn
+                        | StaticAbilityFragment::CastArtifactCreatureFromGraveyardOnceEachTurnWithFinality
+                        | StaticAbilityFragment::PlayPermanentFromGraveyardOrOutsideOnceEachTurn
                         | StaticAbilityFragment::OwnTurnGraveyardFlashbackExceptSubtype(_)
                         | StaticAbilityFragment::OwnTurnGraveyardSubtypeFlashback { .. }
                         | StaticAbilityFragment::LinkedExilePaidCastOnOwnTurnWithFlash
@@ -846,7 +848,7 @@ impl Game {
         true
     }
 
-    fn exile_until_first_nonland(&mut self, player: Player) -> Option<ObjectRef> {
+    pub(super) fn exile_until_first_nonland(&mut self, player: Player) -> Option<ObjectRef> {
         let cards = exile::top_library_cards(self, player, u128::MAX);
         for id in cards {
             if self.state.objects[id as usize].zone != Zone::Library {

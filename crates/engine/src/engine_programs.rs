@@ -10408,6 +10408,14 @@ impl Game {
                 Instruction::ExileUntilNonlandCastThisTurn => {
                     self.exile_until_nonland_cast_this_turn(item.controller);
                 }
+                Instruction::ExileUntilNonlandGrantCopyCast { ability } => {
+                    self.exile_until_nonland_grant_copy_cast(&item, ability);
+                }
+                Instruction::CopyExiledSourceOfferPaidCast => {
+                    if self.copy_exiled_source_offer_paid_cast(&item) {
+                        return;
+                    }
+                }
                 Instruction::ExileTopPlay { amount, next_turn } => {
                     self.exile_top_play(item.controller, u128::from(amount), next_turn);
                 }

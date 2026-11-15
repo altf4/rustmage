@@ -314,6 +314,7 @@ impl Game {
             | Action::AnnounceCounterGraveyard { card }
             | Action::AnnounceGraveyardAdditionalCosts { card }
             | Action::AnnounceGraveyardFinality { card, .. }
+            | Action::AnnounceSourceGraveyard { card, .. }
             | Action::Cast { card, .. }
             | Action::BeginCast { card, .. } => card,
             Action::AnnounceForetold { object, .. }
@@ -330,7 +331,11 @@ impl Game {
             | Action::AnnounceLibraryTop { object, .. }
             | Action::AnnounceSelfGraveyardWithCounter { object, .. }
             | Action::AnnounceGraveyardWithLife { object, .. } => object.card,
+            Action::AnnounceSelectedOutsidePermanent { .. } => {
+                self.state.outside_play.as_ref().unwrap().object.card
+            }
             Action::PlayGraveyardPermanent { card, .. }
+            | Action::PlaySourceGraveyardLand { card, .. }
                 if !self.state.objects[card as usize].card.is_land() =>
             {
                 card

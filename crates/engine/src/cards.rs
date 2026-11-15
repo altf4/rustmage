@@ -3785,6 +3785,14 @@ pub enum Instruction {
     /// Exile from the top until a nonland is actually exiled, then grant only
     /// a cast of that exact card through this turn.
     ExileUntilNonlandCastThisTurn,
+    /// Exile to the first nonland and grant that exact card a source-owned
+    /// activated copy-and-paid-cast template. The caller shuffles first.
+    ExileUntilNonlandGrantCopyCast {
+        ability: u16,
+    },
+    /// The exiled activation source creates one copiable card copy and offers
+    /// its controller an ordinary paid cast during this ability's resolution.
+    CopyExiledSourceOfferPaidCast,
     ExileTopPlay {
         amount: u16,
         next_turn: bool,
