@@ -138,6 +138,13 @@ impl CopyRecipe {
         };
         copied.union(self.exceptions.add_keywords)
     }
+    /// Changeling copied as an exception is also a layer-one characteristic.
+    pub(super) fn has_copied_changeling(self) -> bool {
+        self.intrinsic_keywords().contains(Keywords::CHANGELING)
+            || self
+                .overrides
+                .is_some_and(|overrides| overrides.keywords.contains(Keywords::CHANGELING))
+    }
     pub(super) fn kinds(self) -> u16 {
         let mut kinds = self.definition.kind_mask() | self.exceptions.add_card_types;
         if self.exceptions.artifact {

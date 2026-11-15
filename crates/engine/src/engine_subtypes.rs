@@ -848,9 +848,7 @@ pub(super) fn initial_subtypes<W: super::ability_world::CharacteristicWorld + ?S
     let mut mask = GrantedSubtypes::default();
     let recipe = world.recipe(id);
     mask.apply_copy_subtypes(Some(recipe));
-    if recipe.intrinsic_keywords().contains(Keywords::CHANGELING)
-        && world.kinds(id) & CREATURE_OR_KINDRED != 0
-    {
+    if recipe.has_copied_changeling() && world.kinds(id) & CREATURE_OR_KINDRED != 0 {
         // A noncreature, nonkindred copy cannot have creature subtypes (CR205.3d).
         mask.set_flag(ALL_CREATURE_TYPES, true);
     }
@@ -1781,7 +1779,7 @@ impl Game {
         result.apply_copy_subtypes(m.before.copy_recipe);
         if m.before
             .copy_recipe
-            .is_some_and(|recipe| recipe.intrinsic_keywords().contains(Keywords::CHANGELING))
+            .is_some_and(CopyRecipe::has_copied_changeling)
             && m.entry_kinds() & CREATURE_OR_KINDRED != 0
         {
             result.set_flag(ALL_CREATURE_TYPES, true);

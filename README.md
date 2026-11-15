@@ -66,9 +66,9 @@ python scripts/validate.py --release --python smoke
 
 ## Standard
 
-**100% complete · 20 sets · 5,163 unique cards**
+**100% complete · 21 sets · 5,459 unique cards**
 
-Frozen tabletop/MTGO snapshot as of **2026-10-15**.
+Frozen tabletop/MTGO snapshot as of **2026-11-14**.
 [Standard inventory](data/standard/xmage-inventory.json).
 
 ## Pioneer tracker

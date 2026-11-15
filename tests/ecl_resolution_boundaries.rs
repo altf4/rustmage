@@ -184,6 +184,25 @@ fn copy_exception_changeling_needs_a_creature_or_kindred_card_type() {
         g.expire_animations();
         assert!(!g.has_subtype(land, "Elf"));
         assert!(g.has_subtype(land, "Forest"));
+
+        let kindred_land = put(&mut g, p, "Forest", Zone::Battlefield);
+        let kindred_object = g.object_ref(kindred_land);
+        let mut kindred_recipe = CopyRecipe::new(Card::Forest);
+        kindred_recipe.overrides = Some(CopyOverrides {
+            kinds: Some(2 | 128),
+            keywords: Keywords::CHANGELING,
+            ..CopyOverrides::NONE
+        });
+        g.apply_temporary_copy(
+            kindred_object,
+            kindred_recipe,
+            CopyDeadline::WhileSource {
+                source: kindred_object,
+            },
+        );
+        assert_eq!(g.current_kinds(kindred_land), 2 | 128);
+        assert!(g.has_subtype(kindred_land, "Forest"));
+        assert!(g.has_subtype(kindred_land, "Elf"));
     }
 }
 

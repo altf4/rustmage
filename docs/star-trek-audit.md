@@ -1,6 +1,6 @@
 # Star Trek (TRK) set implementation audit
 
-Status: complete card-authoring checkpoint. The integrated branch admits 311/311 identities: 296 new typed definitions and fifteen existing reprints. Full set-game and release acceptance are in progress.
+Status: complete card-authoring and set-game checkpoint. The integrated branch admits 311/311 identities: 296 new typed definitions and fifteen existing reprints. Repository-wide release validation and final PR reviews are in progress.
 Tracking issue: [#682](https://github.com/altf4/rustmage/issues/682).
 
 ## Frozen inputs and scope
@@ -8,7 +8,7 @@ Tracking issue: [#682](https://github.com/altf4/rustmage/issues/682).
 - Base: rustmage `0ddbc78533db881eee69004ee319aa409a84c2df` (fetched `origin/main`, November 14, 2026).
 - Oracle: Scryfall TRK card search, captured November 14, 2026; 311 physical Oracle identities, all Standard legal at capture. The full printed rules and individual fact hashes are in [`data/audits/trk.json`](../data/audits/trk.json). The official [TRK release notes](https://magic.wizards.com/en/news/feature/star-trek-release-notes) establish Standard legality, new mechanics, and card-specific rulings.
 - XMage: `magefree/mage` `688ee53a9a2dc4646bf0588cd900f2ab91ca45e8`; `StarTrek.java` SHA-256 `f0a24d1e88b7f6ed10164f692a67a70931b19c031155de1768dee72befbabc12`. It has 440 printings of 244 Oracle identities. The inventory pins each available class path and hash. The remaining 67 cards have no XMage set-table entry at this revision. The user explicitly authorized Oracle text and official Wizards rulings as the source evidence for those 67 on November 14; their provenance must record that fallback and the absent XMage class.
-- Fifteen identities already have catalogue ownership (five basics and ten shocklands). Their existing definitions still need TRK set-game acceptance evidence. Cosmetic printings are counted once. TRC Commander-only new cards and SDS alternate printings are outside TRK's Standard membership.
+- Fifteen identities already have catalogue ownership (five basics and ten shocklands). The complete-game workload includes those reprints in TRK-only decks. Cosmetic printings are counted once. TRC Commander-only new cards and SDS alternate printings are outside TRK's Standard membership.
 
 All 311 Oracle bodies and all 244 available XMage classes were inspected in three disjoint audit ranges. The full source inventory records absent classes explicitly; its facts are audit input, not a rules implementation or admission claim. The Standard snapshot is pinned to November 14, 2026 with all 296 new TRK identities. `data/sets/trk.json` authenticates all 311 identities against the pinned XMage table and has no unresolved names. The refreshed XMage inventory is pinned to `688ee53a9a2dc4646bf0588cd900f2ab91ca45e8`. At the initial audit, the linker admitted the fifteen existing reprints and gated the 296 new cards; the current admission count is above.
 
@@ -32,7 +32,9 @@ Brad Boimler's resolved all-kind permanent counter replacement, Surly Surgeon's 
 
 Existing typed foundations cover Station thresholds (17 TRK cards), Spacecraft and Planet subtypes, `StatValue::DistinctNames` for 13 Strange New Worlds cards, modal history, many Saga/ward/surveil/landfall effects, and the fifteen existing reprint identities. Their TRK wiring still requires individual rules scenarios. The core audit must also verify Station versus charge counters, Federation versus Assimilate and Changeling, modal choices versus dilemma observers, Beam Me Up versus stack-exit effects, linked exiles, and private choices.
 
-The shared changes, reviews, linker regeneration, and guarded focused card checks are complete. Full-set acceptance still requires complete games with TRK-only legal decks, all colors and mechanics, deterministic replay, owned raw/index branches, and the repository's release validator. The final batch needs two independent nonauthor reviews and one completed-set PR.
+The shared changes, reviews, linker regeneration, and guarded focused card checks are complete. The integrated complete-game workload passed 20/20 fixed TRK-only games across colors and mechanics, with 10,734 decisions, 551 private-choice checks, deterministic replay, and owned raw/index branch/restore. Its full acceptance throughput was 735 decisions/s and 1.37 games/s over 14.65 seconds; these figures include test harness work. The separate 311-identity support gate also passed. Repository-wide release validation remains open. The final batch needs two independent nonauthor reviews and one completed-set PR.
+
+Native assurance on the assembled set exposed a copied-changeling subtype regression in a Kindred land/animated land boundary. A reviewed engine fix now includes copy keyword overrides in the layer-one changeling check for live and entering copies. Its focused guarded regression passed 1/1 at a 2.9 GiB memory peak. The full release validator must rerun after this change.
 
 ## XMage source gaps
 
