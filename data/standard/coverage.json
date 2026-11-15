@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "f843758fd9d5d0323b22a205ae84342f51567499884f52af469f973543042a12",
+  "catalogue_version": "9cbf80f2298f218d655d74c5ea7f26cc4f45824d196fd6719ab6d62be654ef79",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5385,
-  "implemented_total": 5405,
+  "implemented_standard_cards": 5391,
+  "implemented_total": 5411,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 222,
-      "gated": 74
+      "complete": 228,
+      "gated": 68
     },
     "w17": {
       "total": 1,
@@ -41715,8 +41715,8 @@
     {
       "name": "Antagonist Incorporator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/antagonist_incorporator.rs",
       "set": "trk"
     },
@@ -41843,8 +41843,8 @@
     {
       "name": "Branching Timeline",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/branching_timeline.rs",
       "set": "trk"
     },
@@ -43675,8 +43675,8 @@
     {
       "name": "The Destruction of Praxis",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/the_destruction_of_praxis.rs",
       "set": "trk"
     },
@@ -43731,8 +43731,8 @@
     {
       "name": "The Needs of the Many",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/the_needs_of_the_many.rs",
       "set": "trk"
     },
@@ -43755,8 +43755,8 @@
     {
       "name": "The Wrath of Khan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/the_wrath_of_khan.rs",
       "set": "trk"
     },
@@ -43883,8 +43883,8 @@
     {
       "name": "V'Ger, the Intruder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/v_ger_the_intruder.rs",
       "set": "trk"
     },
