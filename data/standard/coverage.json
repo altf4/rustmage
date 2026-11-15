@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "93e001286661719f1b350591ea653443725f769cfd16b65567f0267c3cd063c6",
+  "catalogue_version": "d460c1dc6218746c8296dafee6913197e6597d31153faaa3f7c44a6e41573266",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5348,
-  "implemented_total": 5368,
+  "implemented_standard_cards": 5353,
+  "implemented_total": 5373,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 185,
-      "gated": 111
+      "complete": 190,
+      "gated": 106
     },
     "w17": {
       "total": 1,
@@ -42083,8 +42083,8 @@
     {
       "name": "Culber and Stamets, Star-Crossed",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/culber_and_stamets_star_crossed.rs",
       "set": "trk"
     },
@@ -42099,8 +42099,8 @@
     {
       "name": "D'Ghor Bloodletter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/d_ghor_bloodletter.rs",
       "set": "trk"
     },
@@ -42139,8 +42139,8 @@
     {
       "name": "Dal R'El, Augment Orphan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/dal_r_el_augment_orphan.rs",
       "set": "trk"
     },
@@ -42163,8 +42163,8 @@
     {
       "name": "Dathon and Picard at El-Adrel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/dathon_and_picard_at_el_adrel.rs",
       "set": "trk"
     },
@@ -42251,8 +42251,8 @@
     {
       "name": "Dominion Supervisor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/dominion_supervisor.rs",
       "set": "trk"
     },

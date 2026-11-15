@@ -1,6 +1,6 @@
 # Star Trek (TRK) set implementation audit
 
-Status: card-authoring phase. The integrated branch admits 200/311 identities: 185 new typed definitions and fifteen existing reprints. The other 111 remain gated. The reprints still need set-game acceptance.
+Status: card-authoring phase. The integrated branch admits 205/311 identities: 190 new typed definitions and fifteen existing reprints. The other 106 remain gated. The reprints still need set-game acceptance.
 Tracking issue: [#682](https://github.com/altf4/rustmage/issues/682).
 
 ## Frozen inputs and scope
