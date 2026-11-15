@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "675c0c5e387d0bfc924a988c7c4bb998374109a6699345f645c319b6b86e1687",
+  "catalogue_version": "54f43f1a2ee41fa50dee7f1bf5c8a9d16cbc3ed574cd57685465817573f5cfea",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5453,
-  "implemented_total": 5473,
+  "implemented_standard_cards": 5456,
+  "implemented_total": 5476,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 290,
-      "gated": 6
+      "complete": 293,
+      "gated": 3
     },
     "w17": {
       "total": 1,
@@ -41683,8 +41683,8 @@
     {
       "name": "All Good Things...",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/all_good_things.rs",
       "set": "trk"
     },
@@ -41827,8 +41827,8 @@
     {
       "name": "Borg Cube",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/borg_cube.rs",
       "set": "trk"
     },
@@ -41851,8 +41851,8 @@
     {
       "name": "Brazen Bluff",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/brazen_bluff.rs",
       "set": "trk"
     },

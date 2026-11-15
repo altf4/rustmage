@@ -1,6 +1,6 @@
 # Star Trek (TRK) set implementation audit
 
-Status: card-authoring phase. The integrated branch admits 305/311 identities: 290 new typed definitions and fifteen existing reprints. The other six remain gated. The reprints still need set-game acceptance.
+Status: card-authoring phase. The integrated branch admits 308/311 identities: 293 new typed definitions and fifteen existing reprints. The other three remain gated. The reprints still need set-game acceptance.
 Tracking issue: [#682](https://github.com/altf4/rustmage/issues/682).
 
 ## Frozen inputs and scope
@@ -24,7 +24,9 @@ Dominion Infiltration's shared copy checkpoint freezes each surviving target's c
 
 Blastoneuron's shared effect copies the printed creature card only after an exact, successful graveyard exile; it grants lasting haste and sacrifices the created token at the next end step. Its isolated and integrated engine scenarios passed 2/2 each after independent review. The authored card scenario passed 1/1 in isolation and integration, including a simultaneous two-card graveyard departure that triggers once.
 
-The reviewed engine checkpoints for All Good Things..., Borg Cube, Brazen Bluff, and Dominion Saboteur are integrated. Their focused staging rewarms passed 3/3, 2/2, 4/4, and 2/2 respectively. Dominion Saboteur's optional nonlegendary copy and exact donor counter snapshot passed 2/2 isolated engine scenarios, the existing entry-copy regression 5/5, and 1/1 actual-card scenario in isolation and integration after independent review. The three other card definitions remain in isolated authorship and test worktrees.
+The reviewed engine checkpoints for All Good Things..., Borg Cube, Brazen Bluff, and Dominion Saboteur are integrated. Their focused staging rewarms passed 3/3, 2/2, 4/4, and 2/2 respectively. Dominion Saboteur's optional nonlegendary copy and exact donor counter snapshot passed 2/2 isolated engine scenarios, the existing entry-copy regression 5/5, and 1/1 actual-card scenario in isolation and integration after independent review. All Good Things..., Brazen Bluff, and Borg Cube passed their actual-card guarded integration scenarios 1/1, 2/2, and 2/2 after independent review.
+
+Brad Boimler's resolved all-kind permanent counter replacement, Surly Surgeon's destruction replacement, and Bones McCoy's exact death watch and next-end-step return passed isolated guarded scenarios 2/2, 4/4, and 4/4. Their combined staging scenarios passed 2/2, 4/4, and 4/4 after independent review. The copied-Saga temporary-copy regression passed 1/1; entering as a Saga copy remains an unverified acceptance edge. The three dependent card files remain gated until their own scenarios pass.
 
 ## Reuse and interaction checks
 
