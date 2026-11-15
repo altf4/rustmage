@@ -37,6 +37,8 @@ fn finish_target(game: &mut Game, target: Option<Target>) {
             actions.into_iter().find(|action| matches!(action,
                 Action::Pass | Action::PutTrigger { .. }
                 | Action::ArrangeLibrary { .. }
+                | Action::SelectLibrary { .. } | Action::FinishLibrarySelection
+                | Action::FinishResolutionCasts
                 | Action::ChooseOptional { accept: true }
             )).unwrap_or_else(|| panic!("unhandled {:?}", game.state.pending))
         };
@@ -266,4 +268,79 @@ fn excelsior_destroys_only_tapped_opposing_creature_and_stations_at_eight() {
     assert_eq!(game.counter_count(ship, CounterKind::Charge), 8);
     assert_eq!(stats(&game, ship), (4, 4));
     assert!(game.object_view(ship).keywords.contains(Keywords::FLYING));
+}
+
+#[test]
+fn discovery_discovers_on_entry_and_attack_after_station() {
+    let mut game = scenario(Player::P0);
+    let hit = put(&mut game, Player::P0, "Shock", Zone::Library);
+    let ship = put(&mut game, Player::P0, "U.S.S. Discovery, at Black Alert", Zone::Hand);
+    cast(&mut game, ship, None);
+    finish(&mut game);
+    assert_eq!(game.object_view(hit).zone, Zone::Hand);
+    let first = put(&mut game, Player::P0, "Hill Giant", Zone::Battlefield);
+    let second = put(&mut game, Player::P0, "Hill Giant", Zone::Battlefield);
+    station(&mut game, ship, first);
+    station(&mut game, ship, second);
+    assert_eq!(stats(&game, ship), (5, 5));
+    assert!(game.object_view(ship).keywords.contains(Keywords::FLYING));
+    let second_hit = put(&mut game, Player::P0, "Shock", Zone::Library);
+    game.state.objects[ship as usize].summoning_sick = false;
+    game.state.step = Step::Attackers;
+    game.state.pending = Pending::Attackers;
+    act(&mut game, Action::Attack { card: ship });
+    act(&mut game, Action::FinishAttackers);
+    finish(&mut game);
+    assert_eq!(game.object_view(second_hit).zone, Zone::Hand);
+}
+
+#[test]
+fn voyager_reveals_two_lands_into_battlefield_tapped() {
+    let mut game = scenario(Player::P0);
+    let first = put(&mut game, Player::P0, "Forest", Zone::Library);
+    let gap = put(&mut game, Player::P0, "Shock", Zone::Library);
+    let second = put(&mut game, Player::P0, "Island", Zone::Library);
+    let ship = put(&mut game, Player::P0, "U.S.S. Voyager, Lone Wanderer", Zone::Hand);
+    cast(&mut game, ship, None);
+    finish(&mut game);
+    for land in [first, second] {
+        assert_eq!(game.object_view(land).zone, Zone::Battlefield);
+        assert!(game.object_view(land).tapped);
+    }
+    assert_eq!(game.object_view(gap).zone, Zone::Library);
+    game.add_counter(ship, CounterKind::Charge, 8);
+    assert_eq!(stats(&game, ship), (3, 3));
+    assert!(game.object_view(ship).keywords.contains(Keywords::FLYING));
+    assert!(game.object_view(ship).keywords.contains(Keywords::VIGILANCE));
+}
+
+#[test]
+fn reliant_returns_small_own_grave_creatures_with_finality_on_both_events() {
+    let mut game = scenario(Player::P0);
+    let first = put(&mut game, Player::P0, "Grizzly Bears", Zone::Graveyard);
+    let enemy = put(&mut game, Player::P1, "Grizzly Bears", Zone::Graveyard);
+    let ship = put(&mut game, Player::P0, "U.S.S. Reliant, From Hell's Heart", Zone::Hand);
+    cast(&mut game, ship, None);
+    finish_target(&mut game, Some(Target::Card(first)));
+    assert_eq!(game.object_view(first).zone, Zone::Battlefield);
+    assert_eq!(game.counter_count(first, CounterKind::Finality), 1);
+    assert_eq!(game.object_view(enemy).zone, Zone::Graveyard);
+    game.add_counter(ship, CounterKind::Charge, 10);
+    assert_eq!(stats(&game, ship), (4, 3));
+    let second = put(&mut game, Player::P0, "Grizzly Bears", Zone::Graveyard);
+    game.state.objects[ship as usize].summoning_sick = false;
+    game.state.step = Step::Attackers;
+    game.state.pending = Pending::Attackers;
+    act(&mut game, Action::Attack { card: ship });
+    act(&mut game, Action::FinishAttackers);
+    for _ in 0..32 {
+        if game.state.pending == (Pending::Targets { player: Player::P0 }) { break; }
+        choose(&mut game, |action| matches!(action,
+            Action::Pass | Action::PutTrigger { .. } | Action::FinishBlockers
+        ));
+    }
+    assert_eq!(game.state.pending, Pending::Targets { player: Player::P0 });
+    finish_target(&mut game, Some(Target::Card(second)));
+    assert_eq!(game.object_view(second).zone, Zone::Battlefield);
+    assert_eq!(game.counter_count(second, CounterKind::Finality), 1);
 }
