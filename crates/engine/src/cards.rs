@@ -6675,6 +6675,9 @@ pub enum ReplacementSpec {
         kind: CounterKind,
         factor: u32,
     },
+    /// Double each positive counter kind this provider's controller would put
+    /// on a creature they control, including an entering creature.
+    ControlledCreatureCountersPlacedByController { factor: u32 },
     /// Double each positive kind the provider's controller would put on a permanent or player.
     DoubleCountersPlacedByController {
         condition: StatValue,
@@ -6782,6 +6785,7 @@ impl ReplacementSpec {
             Self::Counters { .. }
                 | Self::CountersPlacedByController
                 | Self::ControlledArtifactCountersPlaced { .. }
+                | Self::ControlledCreatureCountersPlacedByController { .. }
                 | Self::DoubleCountersPlacedByController { .. }
         )
     }

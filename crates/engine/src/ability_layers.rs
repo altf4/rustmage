@@ -426,6 +426,8 @@ pub enum StaticAbilityFragment {
         kinds: u16,
         keywords: Keywords,
     },
+    /// Other controlled creatures with any counter have these keywords.
+    ControlledOtherCounteredCreatureKeywords(Keywords),
     /// Live grant to equipped creatures, independent of the Equipment controller.
     ControlledEquippedCreatureKeywords(Keywords),
     ConditionalEquippedCreatureKeywords {

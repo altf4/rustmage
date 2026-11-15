@@ -747,7 +747,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         }
         let reference = self.object_ref(id);
         let attacking = self.state.attackers.iter().any(|a| a.card == id);
-        for &source in self.static_sources() {
+        for source in CharacteristicWorld::static_source_candidates(self) {
             let object = self.object(source);
             if object.zone != Zone::Battlefield {
                 continue;
@@ -759,7 +759,10 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                     }
                 }
             }
-            for group in object.card.static_ability_groups() {
+            for group in CharacteristicWorld::recipe(self, source)
+                .definition
+                .static_ability_groups()
+            {
                 if !entry_modes::group_enabled(self, self.object_ref(source), group) {
                     continue;
                 }
@@ -792,6 +795,14 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                             keywords: grant,
                         } if target.controller == object.controller
                             && CharacteristicWorld::kinds(self, id) & kinds == kinds =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
+                        StaticAbilityFragment::ControlledOtherCounteredCreatureKeywords(grant)
+                            if target.controller == object.controller
+                                && id != source
+                                && CharacteristicWorld::kinds(self, id) & 1 != 0
+                                && self.counter_amounts(id).has_any() =>
                         {
                             keywords = keywords.union(grant)
                         }
@@ -1182,15 +1193,18 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         }
         let evaluation = self.evaluation.as_ref();
         // Ordinary static groups retain the no-removal fast path.
-        if evaluation.is_none() && !self.object(source).card.has_conditional_static_groups() {
+        if evaluation.is_none()
+            && !CharacteristicWorld::recipe(self, source)
+                .definition
+                .has_conditional_static_groups()
+        {
             return true;
         }
         let reference = self.object_ref(source);
         let mut bound = false;
         let mut available = false;
-        for (index, group) in self
-            .object(source)
-            .card
+        for (index, group) in CharacteristicWorld::recipe(self, source)
+            .definition
             .static_ability_groups()
             .iter()
             .enumerate()

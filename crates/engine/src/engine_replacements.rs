@@ -941,6 +941,11 @@ fn counter_applies(spec: ReplacementSpec, p: &CounterPlacement) -> bool {
         {
             (ReplacementFilter::Permanent, Some(kind), false)
         }
+        ReplacementSpec::ControlledCreatureCountersPlacedByController { .. }
+            if p.placed_by == p.controller =>
+        {
+            (ReplacementFilter::Creature, None, false)
+        }
         _ => return false,
     };
     matches_filter(filter, p)
@@ -956,6 +961,9 @@ fn modify_counter(spec: ReplacementSpec, p: &mut CounterPlacement) {
         ReplacementSpec::CountersPlacedByController => (None, 1, 1),
         ReplacementSpec::ControlledArtifactCountersPlaced { kind, factor } => {
             (Some(kind), factor, 0)
+        }
+        ReplacementSpec::ControlledCreatureCountersPlacedByController { factor } => {
+            (None, factor, 0)
         }
         ReplacementSpec::DoubleCountersPlacedByController { .. } => (None, 2, 0),
         _ => unreachable!(),

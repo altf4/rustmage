@@ -124,6 +124,7 @@ impl CardRules {
                                 | StaticAbilityFragment::StaticModifier(..)
                                 | StaticAbilityFragment::KeywordGrant(..)
                                 | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                                | StaticAbilityFragment::ControlledOtherCounteredCreatureKeywords(..)
                                 | StaticAbilityFragment::PlayLandFromGraveyard
                                 | StaticAbilityFragment::AdditionalTriggers { .. }
                         ),

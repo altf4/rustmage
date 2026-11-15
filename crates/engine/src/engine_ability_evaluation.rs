@@ -445,6 +445,16 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             keywords
         }
+        StaticAbilityFragment::ControlledOtherCounteredCreatureKeywords(keywords) => {
+            if !own
+                || id == source.card
+                || world.kinds(id) & 1 == 0
+                || !world.counter_amounts(id).has_any()
+            {
+                return None;
+            }
+            keywords
+        }
         StaticAbilityFragment::ConditionalEquippedCreatureKeywords {
             condition,
             keywords,
@@ -895,7 +905,13 @@ fn evaluate<W: CharacteristicWorld + ?Sized>(
                 });
             }
         }
-        for (group, origin) in object.card.static_ability_groups().iter().enumerate() {
+        for (group, origin) in world
+            .recipe(id)
+            .definition
+            .static_ability_groups()
+            .iter()
+            .enumerate()
+        {
             let enabled = entry_modes::group_enabled(world, source, origin);
             let removes = origin
                 .fragments
@@ -962,6 +978,7 @@ fn evaluate<W: CharacteristicWorld + ?Sized>(
                         | StaticAbilityFragment::ChosenTypeKeywords(..)
                         | StaticAbilityFragment::ControlledPermanentKeywords { .. }
                         | StaticAbilityFragment::ControlledPermanentAllKindsKeywords { .. }
+                        | StaticAbilityFragment::ControlledOtherCounteredCreatureKeywords(..)
                         | StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
                         | StaticAbilityFragment::ConditionalEquippedCreatureKeywords { .. }
                         | StaticAbilityFragment::ControlledTappedKeywords { .. }
