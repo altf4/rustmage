@@ -67,7 +67,7 @@ def main(argv=None):
                         help='run binding assurance against this run\'s release library')
     parser.add_argument('--games', type=int, default=10,
                         help='native benchmark games, only with --release (default: 10)')
-    parser.add_argument('--timeout', type=float, default=4500 if windows else 3600,
+    parser.add_argument('--timeout', type=float, default=6000 if windows else 3600,
                         help='total wall-clock budget after acquiring the build slot (default: %(default)s seconds)')
     targets = parser.add_mutually_exclusive_group()
     targets.add_argument('--target-dir', type=Path,
@@ -123,7 +123,7 @@ def main(argv=None):
         # Cold native toolchains on hosted Windows/macOS need time to populate
         # the per-set cache; compilation budgets are separate from game limits.
         ('clippy', ['cargo', 'clippy', '--workspace', '--all-targets', '--', '-D', 'warnings'],
-         750 if windows else 600),
+         1200 if windows else 600),
         ('native assurance', [sys.executable, 'scripts/run_native_tests.py',
                               '--target-dir', str(target), '--report', str(report_dir/'native.json'),
                               '--test-timeout', '90', '--suite-timeout', str(native_suite_timeout),
