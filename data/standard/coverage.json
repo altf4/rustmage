@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e3d1d357dcdc658f6abcd1fcd719d4cc3aed792331c44ef8da8f2054232f8b52",
+  "catalogue_version": "dcfd89239b607e64c28e4a6cd2b24850ff289039cc11468a0f1531e773a02e16",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5279,
-  "implemented_total": 5299,
+  "implemented_standard_cards": 5282,
+  "implemented_total": 5302,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 116,
-      "gated": 180
+      "complete": 119,
+      "gated": 177
     },
     "w17": {
       "total": 1,
@@ -41731,8 +41731,8 @@
     {
       "name": "Armus, Skin of Evil",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/armus_skin_of_evil.rs",
       "set": "trk"
     },
@@ -42091,8 +42091,8 @@
     {
       "name": "Cybernetic Specialist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/cybernetic_specialist.rs",
       "set": "trk"
     },
@@ -42227,8 +42227,8 @@
     {
       "name": "Dominion Assault Force",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/dominion_assault_force.rs",
       "set": "trk"
     },
