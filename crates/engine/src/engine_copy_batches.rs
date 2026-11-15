@@ -79,33 +79,44 @@ impl Game {
         &mut self,
         item: &SpellView,
     ) {
+        self.copy_target_players_creatures_with_exceptions(
+            item,
+            CopyExceptions {
+                conditional_sacrifice_abilities: 1,
+                ..CopyExceptions::NONE
+            },
+        );
+    }
+    pub(super) fn copy_target_players_creatures_with_exceptions(
+        &mut self,
+        item: &SpellView,
+        exceptions: CopyExceptions,
+    ) {
         let Some(player) = item.targets.iter().find_map(|bound| match bound.target {
             Target::Player(player) => Some(player),
             _ => None,
         }) else {
             return;
         };
-        let recipes =
-            self.state
-                .objects
-                .iter()
-                .enumerate()
-                .filter_map(|(id, object)| {
-                    let id = id as CardId;
-                    if object.zone != Zone::Battlefield
-                        || object.controller != player
-                        || !self.is_creature(id)
-                    {
-                        return None;
-                    }
-                    Some(self.copiable_recipe(self.object_ref(id)).with_exceptions(
-                        CopyExceptions {
-                            conditional_sacrifice_abilities: 1,
-                            ..CopyExceptions::NONE
-                        },
-                    ))
-                })
-                .collect();
+        let recipes = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                let id = id as CardId;
+                if object.zone != Zone::Battlefield
+                    || object.controller != player
+                    || !self.is_creature(id)
+                {
+                    return None;
+                }
+                Some(
+                    self.copiable_recipe(self.object_ref(id))
+                        .with_exceptions(exceptions),
+                )
+            })
+            .collect();
         self.stage_copy_recipes(item.controller, recipes, 1, false);
     }
     pub(super) fn copy_controlled_nontoken_creatures_nonlegendary(&mut self, player: Player) {

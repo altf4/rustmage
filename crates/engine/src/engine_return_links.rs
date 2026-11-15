@@ -289,13 +289,18 @@ impl Game {
                 .iter()
                 .flat_map(|group| group.fragments)
             {
-                let StaticAbilityFragment::ControlledCreatureTrigger {
-                    ability,
-                    other,
-                    nontoken,
-                } = *fragment
-                else {
-                    continue;
+                let (ability, other, nontoken) = match *fragment {
+                    StaticAbilityFragment::ControlledCreatureTrigger {
+                        ability,
+                        other,
+                        nontoken,
+                    } => (ability, other, nontoken),
+                    StaticAbilityFragment::ControlledArtifactCreatureTrigger { ability }
+                        if recipient.kinds & 16 != 0 =>
+                    {
+                        (ability, false, false)
+                    }
+                    _ => continue,
                 };
                 if (other && provider.reference == recipient.reference)
                     || (nontoken && recipient.is_token())

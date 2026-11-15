@@ -104,6 +104,7 @@ impl Game {
                             | TriggerCondition::SpellCast { .. }
                             | TriggerCondition::SpellCastUsingSourceMana(_)
                             | TriggerCondition::SpellCastOrLandPlayed
+                            | TriggerCondition::OpponentCastsOrActivatesChosenName
                             | TriggerCondition::ModalSpellCastByYou
                             | TriggerCondition::FaceDilemma(_)
                             | TriggerCondition::FirstSpellKindOrOtherCreatureType { .. }
@@ -201,6 +202,7 @@ impl Game {
                 for fragment in group.fragments {
                     let ability = match *fragment {
                         StaticAbilityFragment::ControlledCreatureTrigger { ability, .. }
+                        | StaticAbilityFragment::ControlledArtifactCreatureTrigger { ability }
                         | StaticAbilityFragment::ControlledSubtypeCastTrigger { ability, .. } => {
                             ability
                         }
@@ -248,6 +250,75 @@ impl Game {
                             origin: self.copied_grant_origin(grantor),
                         };
                         sources.push((source, grant, usize::from(ability)));
+                    }
+                }
+            }
+        }
+        sources
+    }
+
+    /// A static provider is indexed once, while each live artifact creature
+    /// recipient owns a separate combat-damage trigger. Evaluate the grant
+    /// against the current characteristic world after the damage event.
+    pub(super) fn controlled_player_damage_trigger_sources(
+        &self,
+    ) -> Vec<(ObjectView, AttachmentTriggerView, usize)> {
+        let mut sources = Vec::new();
+        let query = std::cell::OnceCell::new();
+        for &id in &self.state.damage_sources {
+            let provider = &self.state.objects[id as usize];
+            if provider.zone != Zone::Battlefield {
+                continue;
+            }
+            let grantor = self.object_ref(id);
+            let granting_card = provider.card;
+            for (index, group) in granting_card.static_ability_groups().iter().enumerate() {
+                for fragment in group.fragments {
+                    let ability = match *fragment {
+                        StaticAbilityFragment::ControlledArtifactCreatureTrigger { ability } => {
+                            ability
+                        }
+                        _ => continue,
+                    };
+                    let Some(template) = granting_card.triggers().get(usize::from(ability)) else {
+                        continue;
+                    };
+                    if !template.condition.is_granted()
+                        || !matches!(
+                            template.condition.event(),
+                            TriggerCondition::PlayerDamaged { .. }
+                        )
+                    {
+                        continue;
+                    }
+                    let world = query.get_or_init(|| self.characteristic_query());
+                    if !world.continuous_group_available(grantor, index, group) {
+                        continue;
+                    }
+                    for (recipient, object) in self.state.objects.iter().enumerate() {
+                        let recipient = recipient as CardId;
+                        if object.zone != Zone::Battlefield
+                            || world.controlled_trigger_ability(grantor, recipient, *fragment)
+                                != Some(ability)
+                        {
+                            continue;
+                        }
+                        let source = world.object_view(recipient);
+                        if !source.grant_available(grantor, granting_card, ability, None) {
+                            continue;
+                        }
+                        sources.push((
+                            source.clone(),
+                            AttachmentTriggerView {
+                                grantor,
+                                granting_card,
+                                recipient: source.reference,
+                                defender: None,
+                                granted: true,
+                                origin: self.copied_grant_origin(grantor),
+                            },
+                            usize::from(ability),
+                        ));
                     }
                 }
             }

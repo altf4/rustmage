@@ -1166,6 +1166,11 @@ pub(super) trait CharacteristicWorld {
             } => self
                 .controlled_creature_trigger_applies(source, id, other, nontoken)
                 .then_some(ability),
+            StaticAbilityFragment::ControlledArtifactCreatureTrigger { ability } => self
+                .controlled_creature_trigger_applies(source, id, false, false)
+                .then_some(())
+                .filter(|_| self.kinds(id) & 16 != 0)
+                .map(|_| ability),
             StaticAbilityFragment::ControlledSubtypeCastTrigger {
                 ability,
                 other,

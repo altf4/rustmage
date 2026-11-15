@@ -25,6 +25,7 @@ impl Game {
                     ability.condition.event(),
                     TriggerCondition::SpellCast { .. }
                         | TriggerCondition::SpellCastOrLandPlayed
+                        | TriggerCondition::OpponentCastsOrActivatesChosenName
                         | TriggerCondition::ModalSpellCastByYou
                         | TriggerCondition::FaceDilemma(_)
                         | TriggerCondition::FirstSpellKindOrOtherCreatureType { .. }
@@ -365,6 +366,7 @@ impl Game {
                     TriggerCondition::SpellCast { .. }
                         | TriggerCondition::SpellCastUsingSourceMana(_)
                         | TriggerCondition::SpellCastOrLandPlayed
+                        | TriggerCondition::OpponentCastsOrActivatesChosenName
                         | TriggerCondition::ModalSpellCastByYou
                         | TriggerCondition::FaceDilemma(_)
                         | TriggerCondition::FirstSpellKindOrOtherCreatureType { .. }
@@ -478,6 +480,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CounterBearingPermanentWard { .. }
                             | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                             | crate::cards::StaticAbilityFragment::ControlledCreatureTrigger { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledArtifactCreatureTrigger { .. }
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeCastTrigger { .. }
                             | crate::cards::StaticAbilityFragment::HarnessedTrigger(..)
                             | crate::cards::StaticAbilityFragment::SourceConditionalAttackTrigger { .. }

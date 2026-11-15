@@ -2107,6 +2107,8 @@ pub enum MilledDestination {
     PlayPermission {
         next_turn: bool,
     },
+    /// Ordinary play of the selected exact exile card for as long as it stays exiled.
+    PlayPermissionWhileExiled,
     Hand,
     /// Record how many selected cards actually entered their owner's hand.
     HandAndCount,
@@ -2620,6 +2622,9 @@ pub enum Instruction {
     /// Simultaneously copy each other controlled nonland permanent.
     CopyOtherControlledNonlands,
     CopyTargetPlayersCreaturesWithConditionalSacrifice,
+    /// Freeze all creatures controlled by the one targeted player, then create
+    /// a simultaneous token copy of each with the same copiable exceptions.
+    CopyTargetPlayersCreaturesWithExceptions(CopyExceptions),
     /// Preserve all copiable values except the legendary supertype.
     CreateLegendaryCopyTokens {
         subject: Subject,
@@ -3790,6 +3795,9 @@ pub enum Instruction {
     /// Exile from the top until a nonland is actually exiled, then grant only
     /// a cast of that exact card through this turn.
     ExileUntilNonlandCastThisTurn,
+    /// Exile through the first nonland, then grant ordinary play of that exact
+    /// card this turn, including a land face if one is available.
+    ExileUntilNonlandPlayThisTurn,
     /// Exile to the first nonland and grant that exact card a source-owned
     /// activated copy-and-paid-cast template. The caller shuffles first.
     ExileUntilNonlandGrantCopyCast {
@@ -4982,6 +4990,9 @@ pub enum Instruction {
         amount: AmountValue,
         next_turn: bool,
     },
+    /// Exile the opponent's top X cards; this ability's controller chooses one
+    /// opponent-owned land among those exact results to play while exiled.
+    ExileOpponentTopChooseLandPlayWhileExiled(AmountValue),
     ExileDeathCounterTotalUntilNextEnd,
     SearchFor {
         player: PlayerSet,
@@ -7814,6 +7825,9 @@ pub enum TriggerCondition {
     AbilityActivatedTargetingCreatureOrPlayer,
     /// The controller activated a nonmana ability.
     NonmanaAbilityActivated,
+    /// An opposing cast or activation whose effective source name matches the
+    /// nonland card name chosen as this exact permanent entered.
+    OpponentCastsOrActivatesChosenName,
     /// A committed exhaust activation, including mana abilities.
     ExhaustAbilityActivated,
     /// Source-independent next nonmana exhaust activation until cleanup.

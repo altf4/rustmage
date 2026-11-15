@@ -1160,6 +1160,7 @@ impl Game {
                     | TriggerCondition::CreatureAbilityActivated
                     | TriggerCondition::AbilityActivatedTargetingCreatureOrPlayer
                     | TriggerCondition::NonmanaAbilityActivated
+                    | TriggerCondition::OpponentCastsOrActivatesChosenName
                     | TriggerCondition::ExhaustAbilityActivated
                     | TriggerCondition::DelayedExhaustAbilityActivated
                     | TriggerCondition::DelayedTargetEvent
@@ -1334,6 +1335,7 @@ impl Game {
                     | TriggerCondition::SelfCast
                     | TriggerCondition::SpellCast { .. }
                     | TriggerCondition::SpellCastOrLandPlayed
+                    | TriggerCondition::OpponentCastsOrActivatesChosenName
                     | TriggerCondition::ModalSpellCastByYou
                     | TriggerCondition::FaceDilemma(_)
                     | TriggerCondition::ManaSpentForSpell
@@ -2500,6 +2502,21 @@ impl Game {
                     continue;
                 }
                 let condition = ability.condition.event();
+                if condition == TriggerCondition::OpponentCastsOrActivatesChosenName {
+                    let spell_name = stack
+                        .and_then(|position| self.state.stack[position].source)
+                        .map_or(card.name(), |spell| self.object_name(spell.id));
+                    if source.controller != caster
+                        && matches!(source.entry_choice,
+                            Some(EntryChoiceValue::CardName(name)) if name.matches(spell_name))
+                    {
+                        if self.queue_trigger_from(&source, index, grant.map(Box::new)) {
+                            self.state.pending_triggers.last_mut().unwrap().event_player =
+                                Some(caster);
+                        }
+                    }
+                    continue;
+                }
                 let mode_count = if condition == TriggerCondition::ModalSpellCastByYou {
                     let Some(count) = stack
                         .and_then(|i| self.state.stack[i].mode)
@@ -8597,6 +8614,9 @@ impl Game {
                 Instruction::CopyTargetPlayersCreaturesWithConditionalSacrifice => {
                     self.copy_target_players_creatures_with_conditional_sacrifice(&item);
                 }
+                Instruction::CopyTargetPlayersCreaturesWithExceptions(exceptions) => {
+                    self.copy_target_players_creatures_with_exceptions(&item, exceptions);
+                }
                 Instruction::CopyControlledNontokenCreaturesNonlegendary => {
                     self.copy_controlled_nontoken_creatures_nonlegendary(item.controller);
                 }
@@ -10354,6 +10374,13 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::ExileOpponentTopChooseLandPlayWhileExiled(amount) => {
+                    let count = self.item_amount(amount, &item);
+                    if self.exile_opponent_top_choose_land_play_while_exiled(item.controller, count)
+                    {
+                        return;
+                    }
+                }
                 Instruction::ExileDeathCounterTotalUntilNextEnd => {
                     let amount = self.item_amount(AmountValue::DeathEventCounterTotal, &item);
                     self.exile_top_play_until_next_end_step(item.controller, amount);
@@ -10430,8 +10457,12 @@ impl Game {
                 Instruction::ExileTopPlayWhileControlSubtype(subtype) => {
                     self.exile_top_play_while_control_subtype(item.controller, subtype);
                 }
-                Instruction::ExileUntilNonlandCastThisTurn => {
-                    self.exile_until_nonland_cast_this_turn(item.controller);
+                Instruction::ExileUntilNonlandCastThisTurn
+                | Instruction::ExileUntilNonlandPlayThisTurn => {
+                    self.exile_until_nonland_this_turn(
+                        item.controller,
+                        matches!(instruction, Instruction::ExileUntilNonlandCastThisTurn),
+                    );
                 }
                 Instruction::ExileUntilNonlandGrantCopyCast { ability } => {
                     self.exile_until_nonland_grant_copy_cast(&item, ability);

@@ -191,6 +191,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             });
         }
         StaticAbilityFragment::ControlledCreatureTrigger { .. }
+        | StaticAbilityFragment::ControlledArtifactCreatureTrigger { .. }
         | StaticAbilityFragment::ControlledSubtypeCastTrigger { .. } => {
             let ability = world.controlled_trigger_ability(source, id, *fragment)?;
             return Some(LayerSixGrant {
@@ -937,6 +938,7 @@ fn evaluate<W: CharacteristicWorld + ?Sized>(
                         | StaticAbilityFragment::CounterBearingPermanentWard { .. }
                         | StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                         | StaticAbilityFragment::ControlledCreatureTrigger { .. }
+                        | StaticAbilityFragment::ControlledArtifactCreatureTrigger { .. }
                         | StaticAbilityFragment::ControlledSubtypeCastTrigger { .. }
                         | StaticAbilityFragment::GrantLinkedExileCreatureActivationsWithCounter(_)
                         | StaticAbilityFragment::AttachmentTrigger(..)

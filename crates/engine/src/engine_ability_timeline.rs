@@ -145,6 +145,7 @@ impl Card {
                             | StaticAbilityFragment::CounterBearingPermanentWard { .. }
                             | StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                             | StaticAbilityFragment::ControlledCreatureTrigger { .. }
+                            | StaticAbilityFragment::ControlledArtifactCreatureTrigger { .. }
                             | StaticAbilityFragment::ControlledSubtypeCastTrigger { .. }
                             | StaticAbilityFragment::AttachmentTrigger(..)
                             | StaticAbilityFragment::AttachmentLookAtLibraryTop

@@ -1253,6 +1253,13 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         {
                             Some(ability)
                         }
+                        StaticAbilityFragment::ControlledArtifactCreatureTrigger { ability }
+                            if self.world.controlled_creature_trigger_applies(
+                                source, recipient, false, false,
+                            ) && self.world.kinds(recipient) & 16 != 0 =>
+                        {
+                            Some(ability)
+                        }
                         _ => None,
                     };
                     if let Some(ability) = ability

@@ -30,6 +30,7 @@ impl Game {
             (Stats::default(), Stats::default())
         };
         DamageFacts {
+            name: self.object_name(id),
             token: object.is_token(),
             controller: object.controller,
             kinds: self.current_kinds(id),
@@ -374,9 +375,20 @@ impl Game {
                 .checked_add(u128::try_from(event.amount).expect("positive damage"))
                 .capacity("damage amount exhausted");
         }
-        let sources = self.indexed_trigger_sources(&self.state.damage_sources);
-        for (source, grant) in sources {
+        let sources = self
+            .indexed_trigger_sources(&self.state.damage_sources)
+            .into_iter()
+            .map(|(source, grant)| (source, grant, None))
+            .chain(
+                self.controlled_player_damage_trigger_sources()
+                    .into_iter()
+                    .map(|(source, grant, ability)| (source, Some(grant), Some(ability))),
+            );
+        for (source, grant, exact_ability) in sources {
             for (index, ability) in source.trigger_templates_from(grant.as_ref()) {
+                if exact_ability.is_some_and(|exact| exact != index) {
+                    continue;
+                }
                 let condition = ability.condition.event();
                 if condition == TriggerCondition::CombatDamageToController {
                     let player = source.controller;

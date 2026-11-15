@@ -124,6 +124,8 @@ pub mod library_entry_counter;
 #[path = "engine_meld.rs"]
 pub mod meld;
 pub use meld::{MeldDepartureOrder, MeldOrderingChoice, MeldedPermanentView};
+#[path = "engine_assimilate.rs"]
+pub mod assimilate;
 #[doc(hidden)]
 #[path = "engine_life_gain.rs"]
 pub mod life_gain;
@@ -138,8 +140,6 @@ pub mod linked_choices;
 #[doc(hidden)]
 #[path = "engine_linked_exile_effects.rs"]
 pub mod linked_exile_effects;
-#[path = "engine_assimilate.rs"]
-pub mod assimilate;
 pub use life_gain::{LifeGainReplacement, LifeGainReplacementChoice, LifeGainReplacementEffect};
 #[doc(hidden)]
 #[path = "engine_zone_replacements.rs"]
@@ -621,14 +621,14 @@ pub mod characteristic_query;
 #[doc(hidden)]
 #[path = "engine_growth_cost.rs"]
 pub mod growth_cost;
+#[path = "engine_phasing.rs"]
+pub mod phasing;
 #[doc(hidden)]
 #[path = "engine_source_counter_cost.rs"]
 pub mod source_counter_cost;
 #[doc(hidden)]
 #[path = "engine_untap_rules.rs"]
 pub mod untap_rules;
-#[path = "engine_phasing.rs"]
-pub mod phasing;
 pub use ability_evaluation::{AbilityAvailabilityView, GrantedAbilityView, GrantedStaticRule};
 #[doc(hidden)]
 #[path = "engine_ability_order.rs"]
@@ -2921,6 +2921,9 @@ struct DamageChoice {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 pub struct DamageFacts {
+    /// Effective rules name at the event, retained when its source pays a
+    /// sacrifice cost before committed activation observers run.
+    pub name: &'static str,
     pub token: bool,
     pub controller: Player,
     pub kinds: u16,
@@ -2951,6 +2954,7 @@ impl DamageFacts {
     }
     fn from_view(view: &ObjectView) -> Self {
         Self {
+            name: view.name,
             controller: view.controller,
             kinds: view.kinds,
             colors: view.colors,

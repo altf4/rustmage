@@ -651,6 +651,11 @@ pub enum StaticAbilityFragment {
         other: bool,
         nontoken: bool,
     },
+    /// Each controlled permanent with both the artifact and creature types
+    /// owns this indexed trigger in layer six, including artifact tokens.
+    ControlledArtifactCreatureTrigger {
+        ability: u16,
+    },
     /// Each controlled permanent of this subtype owns the indexed cast trigger.
     ControlledSubtypeCastTrigger {
         ability: u16,
