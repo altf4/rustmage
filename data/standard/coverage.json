@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "338aa4c2cbe5ad7d6af763c7a341b3c6c8028eb21d44c9f8e436721911d3d272",
+  "catalogue_version": "8fa8053b053fe71eb83f01966b1febd6bc14c5441cc20b1b29c9a8d834390b54",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5212,
-  "implemented_total": 5232,
+  "implemented_standard_cards": 5229,
+  "implemented_total": 5249,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "gated": 247,
-      "complete": 49
+      "gated": 230,
+      "complete": 66
     },
     "w17": {
       "total": 1,
@@ -43027,16 +43027,16 @@
     {
       "name": "Pah-Wraith",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/pah_wraith.rs",
       "set": "trk"
     },
     {
       "name": "Pattern Buffer Preservation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/pattern_buffer_preservation.rs",
       "set": "trk"
     },
@@ -43051,8 +43051,8 @@
     {
       "name": "Perils of the Past",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/perils_of_the_past.rs",
       "set": "trk"
     },
@@ -43067,16 +43067,16 @@
     {
       "name": "Phlox, Unorthodox Doctor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/phlox_unorthodox_doctor.rs",
       "set": "trk"
     },
     {
       "name": "Photosynthetic Physician",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/photosynthetic_physician.rs",
       "set": "trk"
     },
@@ -43123,8 +43123,8 @@
     {
       "name": "Pure Energy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/pure_energy.rs",
       "set": "trk"
     },
@@ -43163,8 +43163,8 @@
     {
       "name": "Quark, Humble Proprietor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/quark_humble_proprietor.rs",
       "set": "trk"
     },
@@ -43227,16 +43227,16 @@
     {
       "name": "Rogue Artificial Intelligence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/rogue_artificial_intelligence.rs",
       "set": "trk"
     },
     {
       "name": "Rok-Tahk, Budding Scientist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/rok_tahk_budding_scientist.rs",
       "set": "trk"
     },
@@ -43307,8 +43307,8 @@
     {
       "name": "Saru, Unthreatened",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/saru_unthreatened.rs",
       "set": "trk"
     },
@@ -43323,8 +43323,8 @@
     {
       "name": "Savvy Profiteer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/savvy_profiteer.rs",
       "set": "trk"
     },
@@ -43395,8 +43395,8 @@
     {
       "name": "Silicate Surveyor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/silicate_surveyor.rs",
       "set": "trk"
     },
@@ -43419,16 +43419,16 @@
     {
       "name": "Spock, Always Your Friend",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/spock_always_your_friend.rs",
       "set": "trk"
     },
     {
       "name": "Stable Wormhole",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/stable_wormhole.rs",
       "set": "trk"
     },
@@ -43443,8 +43443,8 @@
     {
       "name": "Starfleet Security",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/starfleet_security.rs",
       "set": "trk"
     },
@@ -43459,8 +43459,8 @@
     {
       "name": "Storied Veteran",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/storied_veteran.rs",
       "set": "trk"
     },
@@ -43531,8 +43531,8 @@
     {
       "name": "Syndicate Liquidators",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/syndicate_liquidators.rs",
       "set": "trk"
     },
