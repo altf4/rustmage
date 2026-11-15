@@ -2775,6 +2775,7 @@ impl Game {
         }
         for &(_, id) in changed {
             self.tapped_triggers(id);
+            self.temporary_self_tap_triggers(self.object_ref(id));
         }
         self.tapped_batch_triggers(changed);
     }

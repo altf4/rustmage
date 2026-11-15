@@ -14662,7 +14662,7 @@ impl Game {
         self.maximum_hand_size(player).is_none()
     }
     fn continuous_land_plays(&self, player: Player) -> u64 {
-        self.state
+        let printed: u64 = self.state
             .static_sources
             .iter()
             .filter(|&&id| self.state.objects[id as usize].controller == player)
@@ -14701,7 +14701,38 @@ impl Game {
                     })
                     .sum::<u64>()
             })
-            .sum()
+            .sum();
+        let Some(rows) = self.state.self_granted_abilities.as_deref() else {
+            return printed;
+        };
+        if !rows.iter().any(|row| {
+            matches!(
+                row.kind,
+                self_granted::SelfGrantedAbilityKind::AdditionalLandPlays(_)
+            )
+        }) {
+            return printed;
+        }
+        let query = self.characteristic_query();
+        let granted: u64 = rows
+            .iter()
+            .filter_map(|row| {
+                let self_granted::SelfGrantedAbilityKind::AdditionalLandPlays(amount) = row.kind
+                else {
+                    return None;
+                };
+                let object = &self.state.objects[row.recipient.card as usize];
+                (object.zone == Zone::Battlefield
+                    && self.object_ref(row.recipient.card) == row.recipient
+                    && object.controller == player
+                    && row.expires_turn.is_none_or(|turn| turn == self.state.turn)
+                    && query.self_grant_available(row.recipient, row.timestamp))
+                .then_some(u64::from(amount))
+            })
+            .sum();
+        printed
+            .checked_add(granted)
+            .capacity("land play allowance exhausted")
     }
 }
 

@@ -103,6 +103,26 @@ pub(super) fn land_origin_available<W: ability_world::CharacteristicWorld + ?Siz
     if origin == Zone::Library && (state.library_top_life_play || state.library_top_play) {
         return true;
     }
+    if origin == Zone::Graveyard
+        && let Some(rows) = world.game().state.self_granted_abilities.as_deref()
+        && rows
+            .iter()
+            .any(|row| row.kind == SelfGrantedAbilityKind::PlayLandFromGraveyard)
+    {
+        let query = characteristic_query::CharacteristicQuery::in_world(world);
+        if rows.iter().any(|row| {
+            row.kind == SelfGrantedAbilityKind::PlayLandFromGraveyard
+                && world.object(row.recipient.card).zone == Zone::Battlefield
+                && world.reference(row.recipient.card) == row.recipient
+                && world.object(row.recipient.card).controller == player
+                && row
+                    .expires_turn
+                    .is_none_or(|turn| turn == world.game().state.turn)
+                && query.self_grant_available(row.recipient, row.timestamp)
+        }) {
+            return true;
+        }
+    }
     has_fragment_from(world, Some(player), |id, fragment| {
         match (origin, fragment) {
             (Zone::Library, StaticAbilityFragment::PlayFromLibraryTopAfterAttacking) => {

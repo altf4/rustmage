@@ -78,6 +78,43 @@ impl Game {
                 }
             }));
     }
+    /// A resolved self-tap trigger is a real acquired ability. It observes the
+    /// same completed tap event as printed triggers and keeps its own timestamp.
+    pub(super) fn temporary_self_tap_triggers(&mut self, recipient: ObjectRef) {
+        let Some(rows) = &self.state.temporary_abilities else {
+            return;
+        };
+        let matching: Vec<_> = rows
+            .iter()
+            .copied()
+            .filter(|grant| {
+                grant.recipient == recipient
+                    && (grant.permanent || grant.expires_turn == self.state.turn)
+                    && grant.granting_card.triggers()[usize::from(grant.ability)]
+                        .condition
+                        .event()
+                        == TriggerCondition::SelfBecomesTapped
+            })
+            .collect();
+        if matching.is_empty() {
+            return;
+        }
+        let source = self.object_view(recipient.card);
+        for grant in matching {
+            if source.grant_available(
+                grant.grantor,
+                grant.granting_card,
+                grant.ability,
+                Some(grant.timestamp),
+            ) {
+                self.queue_trigger_from(
+                    &source,
+                    usize::from(grant.ability),
+                    Some(Box::new(grant.context())),
+                );
+            }
+        }
+    }
     /// Each stored grant identifies one ability. Scanning its definition's whole
     /// trigger array would duplicate independent grants from the same card.
     pub(super) fn temporary_cast_triggers(
