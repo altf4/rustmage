@@ -234,3 +234,81 @@ fn make_it_so_untaps_and_draws_for_target_or_creates_officer_and_draws() {
             && object.card == Card::from_catalogue_id(6008)
     }));
 }
+
+const NONARTIFACT_ACTIVATION: rustmage_core::cards::authored::CardRules =
+    rustmage_core::cards::authored::CardRules {
+        effect: Effect::Creature(2, 2),
+        activated: &[ActivatedAbility {
+            exhaust: false,
+            guard: ActivationGuard::Always,
+            origin: ActivationOrigin::Battlefield,
+            cycling: false,
+            cost: ActivationCost { generic: 1, mana_component: true, ..ActivationCost::ZERO },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::GainLife(PlayerSet::Controller, 1)],
+            sorcery: false,
+            once_per_turn: false,
+        }],
+        ..rustmage_core::cards::authored::CardRules::EMPTY
+    };
+
+#[test]
+fn isolinear_mana_funds_only_artifact_spells_and_artifact_source_abilities() {
+    let _fixture = fixture_rules::activate(&[(Card::GrizzlyBears, &NONARTIFACT_ACTIVATION)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let processor = owned(&mut game, player, "Isolinear Processor", Zone::Battlefield);
+    let bear = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let bow = put(&mut game, player, "Short Bow", Zone::Battlefield);
+    let artifact_spell = put(&mut game, player, "Lavaspur Boots", Zone::Hand);
+    game.state.players[player.index()].mana = [0; 6];
+    act(&mut game, Action::ActivateMana {
+        card: processor,
+        ability: 0,
+        payment: [0; 6],
+        counter_payment: Counters::default(),
+        production: [0, 0, 0, 0, 0, 1],
+    });
+    assert_eq!(game.observe(player).mana_lots[0].restriction,
+        ManaRestrictionView::ArtifactSpellOrArtifactActivation);
+    reject(&mut game, Action::AnnounceActivate {
+        card: bear, ability: 0, counter_payment: Counters::default(),
+    });
+    let checkpoint = game.snapshot();
+    let mut casting = game.clone();
+    cast(&mut casting, artifact_spell, None);
+    drain(&mut casting);
+    assert_eq!(casting.object_view(artifact_spell).zone, Zone::Battlefield);
+    casting.restore(&checkpoint).unwrap();
+    assert_eq!(casting.snapshot(), checkpoint);
+    act(&mut game, Action::AnnounceActivate {
+        card: bow, ability: 0, counter_payment: Counters::default(),
+    });
+    act(&mut game, Action::ChooseTarget { target: Target::Card(bear) });
+    if game.legal_actions().contains(&Action::FinishTargets) { act(&mut game, Action::FinishTargets); }
+    pay(&mut game);
+    drain(&mut game);
+    assert_eq!(game.object_view(bow).attached_to, Some(game.object_ref(bear)));
+}
+
+#[test]
+fn isolinear_paid_loot_draws_then_discards_exact_private_card() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let processor = owned(&mut game, player, "Isolinear Processor", Zone::Battlefield);
+    let top = put(&mut game, player, "Island", Zone::Library);
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
+    act(&mut game, Action::AnnounceActivate {
+        card: processor, ability: 1, counter_payment: Counters::default(),
+    });
+    pay(&mut game);
+    for _ in 0..12 {
+        if game.legal_actions().contains(&Action::Discard { card: top }) { break; }
+        choose(&mut game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+    }
+    assert_eq!(game.object_view(top).zone, Zone::Hand);
+    act(&mut game, Action::Discard { card: top });
+    drain(&mut game);
+    assert_eq!(game.object_view(top).zone, Zone::Graveyard);
+    assert!(game.state.objects[processor as usize].tapped);
+}
