@@ -232,15 +232,13 @@ fn check_privacy(game: &Game, actor: Player) {
             "public effect choice named a hidden hand card"
         );
     }
-    if let Some(choice) = &opponent.library_selection {
-        if !choice.public {
-            assert!(
-                choice.remaining.is_empty()
-                    && choice.candidates.is_empty()
-                    && choice.bottom.is_empty(),
-                "nonactor saw private library selection contents"
-            );
-        }
+    if let Some(choice) = &opponent.library_selection
+        && !choice.public
+    {
+        assert!(
+            choice.remaining.is_empty() && choice.candidates.is_empty() && choice.bottom.is_empty(),
+            "nonactor saw private library selection contents"
+        );
     }
     if let Some(choice) = &opponent.entry_exile {
         assert!(
@@ -388,7 +386,7 @@ fn run_pair(pair_index: usize) {
         4,
         "two fixed seeds and both starting seats"
     );
-    for chunk in pair.runs.chunks_exact(2) {
+    for chunk in pair.runs.as_chunks::<2>().0 {
         assert_eq!(chunk[0].seed, chunk[1].seed);
         assert_eq!((chunk[0].starting_player, chunk[1].starting_player), (0, 1));
     }

@@ -1056,11 +1056,10 @@ fn hologram_janeway_counts_nonattackers_toward_formidable_attack_trigger() {
                         target: Target::Card(attacker),
                     },
                 );
-            } else if game.counter_count(attacker, CounterKind::PlusOne) > 0 {
-                break;
-            } else if game.state.pending == Pending::Priority
-                && game.state.stack.is_empty()
-                && game.state.pending_triggers.is_empty()
+            } else if game.counter_count(attacker, CounterKind::PlusOne) > 0
+                || (game.state.pending == Pending::Priority
+                    && game.state.stack.is_empty()
+                    && game.state.pending_triggers.is_empty())
             {
                 break;
             } else {

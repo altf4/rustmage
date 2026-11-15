@@ -49,7 +49,7 @@ fn astute_terraformer_reduces_only_generic_cost_and_activates_once() {
     for name in ["Forest", "Island", "Mountain"] {
         put(&mut game, Player::P0, name, Zone::Battlefield);
     }
-    let mana_before: u32 = game.state.players[0].mana.iter().map(|&n| n as u32).sum();
+    let mana_before: u32 = game.state.players[0].mana.iter().copied().sum();
     let activate = Action::AnnounceActivate {
         card: source,
         ability: 0,
@@ -58,7 +58,7 @@ fn astute_terraformer_reduces_only_generic_cost_and_activates_once() {
     act(&mut game, activate.clone());
     pay(&mut game);
     finish(&mut game);
-    let mana_after: u32 = game.state.players[0].mana.iter().map(|&n| n as u32).sum();
+    let mana_after: u32 = game.state.players[0].mana.iter().copied().sum();
     assert_eq!(mana_before - mana_after, 3);
     assert_eq!(stats(&game, source), (4, 4));
     reject(&mut game, activate);

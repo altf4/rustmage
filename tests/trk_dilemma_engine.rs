@@ -135,7 +135,7 @@ fn spell_modes_count_once_and_dilemma_trigger_resolves_above_spell() {
         assert_eq!(g.state.players[p.index()].dilemmas_faced_this_turn, count);
         pay(&mut g);
         if count > 0 {
-            assert!(g.state.pending_triggers.len() > 0 || g.state.stack.len() > 1);
+            assert!(!g.state.pending_triggers.is_empty() || g.state.stack.len() > 1);
             // The observer's gain resolves while the originating spell remains.
             for _ in 0..12 {
                 if g.state.players[p.index()].life > 20 {

@@ -2,7 +2,7 @@
 mod support;
 
 use rustmage as _;
-use rustmage_core::{cards::*, engine::*};
+use rustmage_core::engine::*;
 use support::*;
 
 fn setup() -> (Game, CardId, CardId, CardId, CardId) {

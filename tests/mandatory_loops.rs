@@ -121,6 +121,7 @@ fn inert_departed_entry_history_does_not_create_an_escape_from_the_closed_cycle(
             },
             controller,
             zombie: false,
+            equipment_or_spacecraft: false,
         });
     for _ in 0..48 {
         if g.outcome().is_some() {

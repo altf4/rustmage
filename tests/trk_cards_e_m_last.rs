@@ -479,7 +479,7 @@ fn bounty_tutors_whale_stations_and_extra_turn_requires_no_begun_extra_turn() {
         combat: true,
         preventable: true,
     };
-    game.apply_damage_batch(&[hit.clone()]);
+    game.apply_damage_batch(&[hit]);
     settle(&mut game);
     assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
     assert_eq!(game.observe(player).turn_schedule.unwrap().pending.len(), 1);
