@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "94353482f767e4501c72e17ff73c43e1b42d85b1ba5043924ab23748b07ca692",
+  "catalogue_version": "e3d1d357dcdc658f6abcd1fcd719d4cc3aed792331c44ef8da8f2054232f8b52",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5255,
-  "implemented_total": 5275,
+  "implemented_standard_cards": 5279,
+  "implemented_total": 5299,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 92,
-      "gated": 204
+      "complete": 116,
+      "gated": 180
     },
     "w17": {
       "total": 1,
@@ -42963,16 +42963,16 @@
     {
       "name": "Nog, Ambitious Cadet",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/nog_ambitious_cadet.rs",
       "set": "trk"
     },
     {
       "name": "Nyota Uhura, Communications",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/nyota_uhura_communications.rs",
       "set": "trk"
     },
@@ -42987,8 +42987,8 @@
     {
       "name": "Obsidian Order Operative",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/obsidian_order_operative.rs",
       "set": "trk"
     },
@@ -43019,8 +43019,8 @@
     {
       "name": "Overflow Submatrix",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/overflow_submatrix.rs",
       "set": "trk"
     },
@@ -43043,8 +43043,8 @@
     {
       "name": "Peace in Our Time",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/peace_in_our_time.rs",
       "set": "trk"
     },
@@ -43083,8 +43083,8 @@
     {
       "name": "Picard, Leading by Example",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/picard_leading_by_example.rs",
       "set": "trk"
     },
@@ -43139,8 +43139,8 @@
     {
       "name": "Q, Stacking the Deck",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/q_stacking_the_deck.rs",
       "set": "trk"
     },
@@ -43211,8 +43211,8 @@
     {
       "name": "Resistance Is Futile",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/resistance_is_futile.rs",
       "set": "trk"
     },
@@ -43259,24 +43259,24 @@
     {
       "name": "Rules of Acquisition",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/rules_of_acquisition.rs",
       "set": "trk"
     },
     {
       "name": "Rutherford, Upgraded Ensign",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/rutherford_upgraded_ensign.rs",
       "set": "trk"
     },
     {
       "name": "Saavik, Stoic Student",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/saavik_stoic_student.rs",
       "set": "trk"
     },
@@ -43291,8 +43291,8 @@
     {
       "name": "Sarcophagus, Ship of the Dead",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/sarcophagus_ship_of_the_dead.rs",
       "set": "trk"
     },
@@ -43331,32 +43331,32 @@
     {
       "name": "Scotty, Miracle Worker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/scotty_miracle_worker.rs",
       "set": "trk"
     },
     {
       "name": "Sela, Tal Shiar Paradox",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/sela_tal_shiar_paradox.rs",
       "set": "trk"
     },
     {
       "name": "Set Phasers to . . .",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/set_phasers_to.rs",
       "set": "trk"
     },
     {
       "name": "Seven of Nine",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/seven_of_nine.rs",
       "set": "trk"
     },
@@ -43371,8 +43371,8 @@
     {
       "name": "Shields Up!",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/shields_up.rs",
       "set": "trk"
     },
@@ -43387,8 +43387,8 @@
     {
       "name": "Sickbay",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/sickbay.rs",
       "set": "trk"
     },
@@ -43411,8 +43411,8 @@
     {
       "name": "Species 8472",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/species_8472.rs",
       "set": "trk"
     },
@@ -43467,16 +43467,16 @@
     {
       "name": "Stray from History",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/stray_from_history.rs",
       "set": "trk"
     },
     {
       "name": "Subcommander T'Pol",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/subcommander_t_pol.rs",
       "set": "trk"
     },
@@ -43499,8 +43499,8 @@
     {
       "name": "Support Mission",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/support_mission.rs",
       "set": "trk"
     },
@@ -43515,16 +43515,16 @@
     {
       "name": "Suus Mahna Practitioner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/suus_mahna_practitioner.rs",
       "set": "trk"
     },
     {
       "name": "Sylvia Tilly, Joy of Discovery",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/sylvia_tilly_joy_of_discovery.rs",
       "set": "trk"
     },
