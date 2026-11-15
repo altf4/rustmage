@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "c787f27aa4d18c860f60ff61a5f70194d69b69b8c31dfe362b3bf5accade598e",
+  "catalogue_version": "f9cd18b14e67b0aff96f4a5e9c995c9a0936c8090e203f1492dd09cfe3b8297d",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5292,
-  "implemented_total": 5312,
+  "implemented_standard_cards": 5306,
+  "implemented_total": 5326,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 129,
-      "gated": 167
+      "complete": 143,
+      "gated": 153
     },
     "w17": {
       "total": 1,
@@ -43059,8 +43059,8 @@
     {
       "name": "Pet Sehlat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/pet_sehlat.rs",
       "set": "trk"
     },
@@ -43203,8 +43203,8 @@
     {
       "name": "Replicator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/replicator.rs",
       "set": "trk"
     },
@@ -43243,8 +43243,8 @@
     {
       "name": "Romulan Bird-of-Prey",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/romulan_bird_of_prey.rs",
       "set": "trk"
     },
@@ -43283,8 +43283,8 @@
     {
       "name": "Salt Vampire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/salt_vampire.rs",
       "set": "trk"
     },
@@ -43299,8 +43299,8 @@
     {
       "name": "Sarek, Federation Ambassador",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/sarek_federation_ambassador.rs",
       "set": "trk"
     },
@@ -43363,8 +43363,8 @@
     {
       "name": "Seven of Nine, Unassimilated",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/seven_of_nine_unassimilated.rs",
       "set": "trk"
     },
@@ -43491,8 +43491,8 @@
     {
       "name": "Sulu, Space Swashbuckler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/sulu_space_swashbuckler.rs",
       "set": "trk"
     },
@@ -43747,8 +43747,8 @@
     {
       "name": "The Unicomplex",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/the_unicomplex.rs",
       "set": "trk"
     },
@@ -43811,8 +43811,8 @@
     {
       "name": "U.S.S. Cerritos, Following Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/u_s_s_cerritos_following_up.rs",
       "set": "trk"
     },
@@ -43827,8 +43827,8 @@
     {
       "name": "U.S.S. Enterprise-A, Free Spirit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/u_s_s_enterprise_a_free_spirit.rs",
       "set": "trk"
     },
@@ -43843,8 +43843,8 @@
     {
       "name": "U.S.S. Excelsior, Cutting Edge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/u_s_s_excelsior_cutting_edge.rs",
       "set": "trk"
     },
@@ -43867,8 +43867,8 @@
     {
       "name": "Una Chin-Riley, Number One",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/una_chin_riley_number_one.rs",
       "set": "trk"
     },
@@ -43899,8 +43899,8 @@
     {
       "name": "Vengeance Mission",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/vengeance_mission.rs",
       "set": "trk"
     },
@@ -43939,8 +43939,8 @@
     {
       "name": "Warp Speed",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/warp_speed.rs",
       "set": "trk"
     },
