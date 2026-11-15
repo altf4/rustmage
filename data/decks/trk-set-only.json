@@ -1,0 +1,421 @@
+{
+  "decks": [
+    {
+      "id": "federation",
+      "name": "Federation Officers and counters",
+      "cards": [
+        {
+          "name": "Plains",
+          "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+          "count": 24
+        },
+        {
+          "name": "Command Subadjunct",
+          "oracle_id": "85b67121-340f-4cff-a26d-2160aa923ec3",
+          "count": 4
+        },
+        {
+          "name": "Emergency Medical Hologram",
+          "oracle_id": "8170dcbb-9879-414c-819d-ea2658ff770c",
+          "count": 4
+        },
+        {
+          "name": "Assembly Specialist",
+          "oracle_id": "deb26a1b-2b83-4da2-a2e5-31c17a57eb1e",
+          "count": 4
+        },
+        {
+          "name": "Deanna Troi, Psychic Counsel",
+          "oracle_id": "cf612cbe-7af8-48fd-875e-a669e05cfb49",
+          "count": 4
+        },
+        {
+          "name": "Tactical Officer",
+          "oracle_id": "1397e7d5-4aa4-4c8d-8957-845579b775f7",
+          "count": 4
+        },
+        {
+          "name": "Vexing Drone",
+          "oracle_id": "8e90e417-65ca-48bc-a32d-b93976519fe9",
+          "count": 4
+        },
+        {
+          "name": "Pure Energy",
+          "oracle_id": "f4831eee-fef6-4fef-a174-400a25d0837d",
+          "count": 4
+        },
+        {
+          "name": "Set Phasers to . . .",
+          "oracle_id": "4da9b548-898d-431b-8aa5-9cb7bf579219",
+          "count": 4
+        },
+        {
+          "name": "Oberth-Class Starship",
+          "oracle_id": "fb5e53cf-e12e-469b-b9ea-9debc967e77e",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "science",
+      "name": "Science, Spacecraft, and dilemmas",
+      "cards": [
+        {
+          "name": "Island",
+          "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+          "count": 24
+        },
+        {
+          "name": "Federation Probe",
+          "oracle_id": "6fc7401f-66fe-4d17-be2f-afcf892be740",
+          "count": 4
+        },
+        {
+          "name": "Cloistered Telepath",
+          "oracle_id": "8656291d-8de7-4341-b1ee-0fcd65d629a4",
+          "count": 4
+        },
+        {
+          "name": "Data, New Life",
+          "oracle_id": "010630c6-5d7b-43e0-90a9-3e3cef9a4e6b",
+          "count": 4
+        },
+        {
+          "name": "Melkotian Adjudicator",
+          "oracle_id": "1fdcdb1c-a140-40ee-b711-5ea539eb1084",
+          "count": 4
+        },
+        {
+          "name": "Suurok-Class Science Vessel",
+          "oracle_id": "5d2016ed-3ea0-4938-b95e-ee582307e475",
+          "count": 4
+        },
+        {
+          "name": "Open Communications",
+          "oracle_id": "b08c5b86-4f84-46a3-877f-bbf71ec17adb",
+          "count": 4
+        },
+        {
+          "name": "Test of Priorities",
+          "oracle_id": "cd24de4f-ce88-4fbb-9e8d-93ea7c260b4c",
+          "count": 4
+        },
+        {
+          "name": "Energize",
+          "oracle_id": "275257ea-3c72-4ca9-b2fc-e50efa071bdb",
+          "count": 4
+        },
+        {
+          "name": "Romulan Bird-of-Prey",
+          "oracle_id": "e614f97b-da8e-4569-9bdd-f76371c66836",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "collective",
+      "name": "Borg Collective and assimilation",
+      "cards": [
+        {
+          "name": "Swamp",
+          "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+          "count": 24
+        },
+        {
+          "name": "Collation Trimatrix",
+          "oracle_id": "4042ab14-c579-4d82-a642-576b88508ec7",
+          "count": 4
+        },
+        {
+          "name": "Collective Drone",
+          "oracle_id": "d9806ba7-8af4-4e8e-9238-7bc40c6bee0b",
+          "count": 4
+        },
+        {
+          "name": "Tenacious Drone",
+          "oracle_id": "af6351a9-ac01-4fed-9ea9-a352d21a8312",
+          "count": 4
+        },
+        {
+          "name": "Assault Drone",
+          "oracle_id": "18832d7a-9a1f-45f1-a0f9-8e768a36af07",
+          "count": 4
+        },
+        {
+          "name": "Organic Avulsion Unit",
+          "oracle_id": "f1e28022-b06b-4efb-9f85-c36d8302ef99",
+          "count": 4
+        },
+        {
+          "name": "Salt Vampire",
+          "oracle_id": "31c7453e-33b8-4eb6-abac-28cdb35fb993",
+          "count": 4
+        },
+        {
+          "name": "Relentless Drednok",
+          "oracle_id": "98cbac1d-7896-4c63-a265-03bc5d670fa6",
+          "count": 4
+        },
+        {
+          "name": "Resistance Is Futile",
+          "oracle_id": "49975689-85f8-4221-bb11-3d3f68a1a7ac",
+          "count": 4
+        },
+        {
+          "name": "Test of Loyalty",
+          "oracle_id": "6cb1c3fb-033a-4de5-ad07-69d9ad0ca5ae",
+          "count": 2
+        },
+        {
+          "name": "Death Is Irrelevant",
+          "oracle_id": "aeec05f1-43ea-4012-82d8-cded5494535d",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "id": "klingon",
+      "name": "Klingon Battle and beam me up",
+      "cards": [
+        {
+          "name": "Mountain",
+          "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+          "count": 24
+        },
+        {
+          "name": "Starfleet Security",
+          "oracle_id": "896077f9-b26e-4964-9279-03ee284a3e89",
+          "count": 4
+        },
+        {
+          "name": "Munitions Enthusiast",
+          "oracle_id": "0013f005-2b49-48a4-8a74-9bbdadc88c9f",
+          "count": 4
+        },
+        {
+          "name": "Planetary Patrol",
+          "oracle_id": "fba54c2d-a664-4e4c-b9d4-e24cf2523ab9",
+          "count": 4
+        },
+        {
+          "name": "Targ Wrangler",
+          "oracle_id": "a066eeb1-61fc-448b-bbab-650d672652ad",
+          "count": 4
+        },
+        {
+          "name": "Boarding Action",
+          "oracle_id": "f9f70fb6-953e-40e8-a15d-ea3ee62d09e3",
+          "count": 4
+        },
+        {
+          "name": "Planetary Bombardment",
+          "oracle_id": "2c2fdeff-a0c6-44cb-9603-4a9865f62985",
+          "count": 4
+        },
+        {
+          "name": "Transporter Malfunction",
+          "oracle_id": "6eb9865e-513c-43c6-81e1-6ad000e9c48e",
+          "count": 4
+        },
+        {
+          "name": "D-7 Battle Cruiser",
+          "oracle_id": "5e696f9a-425c-470a-870e-10d2ba3bb27d",
+          "count": 4
+        },
+        {
+          "name": "Academy Instructor",
+          "oracle_id": "8802b7f0-1ed1-4872-9939-182afb8441ca",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "exploration",
+      "name": "Exploration, planets, and strange new worlds",
+      "cards": [
+        {
+          "name": "Forest",
+          "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+          "count": 8
+        },
+        {
+          "name": "Temple Garden",
+          "oracle_id": "f413a83d-a40d-434c-b20a-4c707c0527fa",
+          "count": 4
+        },
+        {
+          "name": "Stomping Ground",
+          "oracle_id": "16052b52-ade1-406f-a06b-ce7ea607fb63",
+          "count": 4
+        },
+        {
+          "name": "Overgrown Tomb",
+          "oracle_id": "975ec9a3-6f20-4177-8211-82526e092538",
+          "count": 4
+        },
+        {
+          "name": "Breeding Pool",
+          "oracle_id": "20283c4a-f1f0-42f0-bc08-6da87474426b",
+          "count": 4
+        },
+        {
+          "name": "Moopsy",
+          "oracle_id": "89b9efc8-d1cd-4b2a-acf3-4f0dd1629167",
+          "count": 4
+        },
+        {
+          "name": "Astute Terraformer",
+          "oracle_id": "c5a7a82e-3c13-4fa1-8bf5-bb85b2890f75",
+          "count": 4
+        },
+        {
+          "name": "Xenobotanist",
+          "oracle_id": "a9df60bf-f327-4d50-ab4d-99324fc2dcfe",
+          "count": 4
+        },
+        {
+          "name": "Xindi Surveyors",
+          "oracle_id": "5fdff691-686d-4ce0-bd12-eea676a648b4",
+          "count": 4
+        },
+        {
+          "name": "Dominion Supervisor",
+          "oracle_id": "d151c8ed-58bf-4b82-a993-1d81f789aa0e",
+          "count": 4
+        },
+        {
+          "name": "Stable Wormhole",
+          "oracle_id": "dba55309-cb21-42db-8968-8da07227a1be",
+          "count": 4
+        },
+        {
+          "name": "Captain Jonathan Archer",
+          "oracle_id": "85df3564-5134-4dc2-9021-40ec84ee6d08",
+          "count": 4
+        },
+        {
+          "name": "Adversary by Algorithm",
+          "oracle_id": "37f3eda9-3242-4d62-846f-935543d8f4fd",
+          "count": 4
+        },
+        {
+          "name": "Support Mission",
+          "oracle_id": "59a4c4cf-07b4-4009-bbea-7da7b31f09a1",
+          "count": 4
+        }
+      ]
+    }
+  ],
+  "pairings": [
+    {
+      "p0": "federation",
+      "p1": "science",
+      "runs": [
+        {
+          "seed": 7,
+          "starting_player": 0
+        },
+        {
+          "seed": 7,
+          "starting_player": 1
+        },
+        {
+          "seed": 41,
+          "starting_player": 0
+        },
+        {
+          "seed": 41,
+          "starting_player": 1
+        }
+      ]
+    },
+    {
+      "p0": "science",
+      "p1": "collective",
+      "runs": [
+        {
+          "seed": 7,
+          "starting_player": 0
+        },
+        {
+          "seed": 7,
+          "starting_player": 1
+        },
+        {
+          "seed": 41,
+          "starting_player": 0
+        },
+        {
+          "seed": 41,
+          "starting_player": 1
+        }
+      ]
+    },
+    {
+      "p0": "collective",
+      "p1": "klingon",
+      "runs": [
+        {
+          "seed": 7,
+          "starting_player": 0
+        },
+        {
+          "seed": 7,
+          "starting_player": 1
+        },
+        {
+          "seed": 41,
+          "starting_player": 0
+        },
+        {
+          "seed": 41,
+          "starting_player": 1
+        }
+      ]
+    },
+    {
+      "p0": "klingon",
+      "p1": "exploration",
+      "runs": [
+        {
+          "seed": 7,
+          "starting_player": 0
+        },
+        {
+          "seed": 7,
+          "starting_player": 1
+        },
+        {
+          "seed": 41,
+          "starting_player": 0
+        },
+        {
+          "seed": 41,
+          "starting_player": 1
+        }
+      ]
+    },
+    {
+      "p0": "exploration",
+      "p1": "federation",
+      "runs": [
+        {
+          "seed": 7,
+          "starting_player": 0
+        },
+        {
+          "seed": 7,
+          "starting_player": 1
+        },
+        {
+          "seed": 41,
+          "starting_player": 0
+        },
+        {
+          "seed": 41,
+          "starting_player": 1
+        }
+      ]
+    }
+  ]
+}
