@@ -411,6 +411,7 @@ impl Game {
                 attachment_trigger: None,
                 cast: None,
                 entering_object: None,
+                entering_explorer: None,
                 evidence_collected: false,
                 id,
                 kind: StackKind::DelayedSacrifice,

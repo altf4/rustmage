@@ -2099,6 +2099,9 @@ pub struct SpellView {
     pub cast: Option<CastInfo>,
     /// The exact event object; this is a non-targeted reference, never rebound.
     pub entering_object: Option<ObjectRef>,
+    /// Private latest battlefield facts for an exact entrant instructed to explore.
+    #[serde(skip)]
+    pub(crate) entering_explorer: Option<Box<ExplorerView>>,
     /// Historical qualification of an entry trigger; never inherited by reincarnations.
     pub evidence_collected: bool,
     pub id: u64,

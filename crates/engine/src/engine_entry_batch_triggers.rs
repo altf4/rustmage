@@ -7,6 +7,18 @@ pub struct EntryBatchCopyView {
     pub recipe: CopyRecipe,
 }
 impl SpellView {
+    fn capture_entering_explorer_departure(&mut self, before: &[&ObjectView]) {
+        if let Some(saved) = &mut self.entering_explorer
+            && let Some(view) = before
+                .iter()
+                .find(|view| view.zone == Zone::Battlefield && view.reference == saved.object)
+        {
+            **saved = ExplorerView::from_view(view);
+        }
+        if let Some(event) = &mut self.copy_event {
+            event.spell.capture_entering_explorer_departure(before);
+        }
+    }
     fn capture_entry_group_departure(&mut self, before: &[&ObjectView]) {
         if let Some(event) = &mut self.event_object
             && let EventObjectFacts::CopiableGroup(rows) = &mut event.facts
@@ -74,10 +86,18 @@ impl Game {
         self.run_program();
     }
     pub(super) fn capture_owned_event_object_departures(&mut self, before: &[&ObjectView]) {
-        let mut capture = |item: &mut SpellView| {
+        self.visit_owned_entry_packets(|item| {
+            item.capture_entering_explorer_departure(before);
             item.capture_entry_group_departure(before);
             item.capture_chosen_cost_creature_departure(before);
-        };
+        });
+    }
+    /// Phasing makes the entrant absent without a zone-change event. Retain its
+    /// latest controller and types for a queued explore, without recording a departure.
+    pub(super) fn capture_phased_entering_explorers(&mut self, before: &[&ObjectView]) {
+        self.visit_owned_entry_packets(|item| item.capture_entering_explorer_departure(before));
+    }
+    fn visit_owned_entry_packets(&mut self, mut capture: impl FnMut(&mut SpellView)) {
         self.state.stack.iter_mut().for_each(&mut capture);
         self.state
             .pending_triggers

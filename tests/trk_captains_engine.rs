@@ -106,6 +106,15 @@ const COMMUNICATOR: CardRules = CardRules {
     },
     ..CardRules::EMPTY
 };
+const ENTERING_EXPLORES: CardRules = CardRules {
+    effect: Effect::Creature(2, 3),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::CreatureEntersYou,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::Explore(Subject::Entering)],
+    }],
+    ..CardRules::EMPTY
+};
 
 fn advance(game: &mut Game, wanted: impl Fn(&Game) -> bool) {
     for _ in 0..48 {
@@ -297,4 +306,105 @@ fn communicator_attack_guard_uses_another_creature_and_freezes_at_declaration() 
             qualified
         );
     }
+}
+
+#[test]
+fn entering_explorer_follows_exact_entrant_and_uses_departure_controller() {
+    let janeway = Card::from_name("Captain Kathryn Janeway").unwrap();
+    let _rules = fixture_rules::activate(&[(janeway, &ENTERING_EXPLORES)]);
+    let player = Player::P0;
+    let other = player.other();
+    let mut game = scenario(player);
+    let source = spawn(&mut game, player, janeway, Zone::Battlefield);
+    let entrant = put(&mut game, player, "Grizzly Bears", Zone::Hand);
+    let own_top = put(&mut game, player, "Forest", Zone::Library);
+    let other_top = put(&mut game, other, "Opt", Zone::Library);
+    cast(&mut game, entrant, None);
+    advance(&mut game, |g| {
+        g.object_view(entrant).zone == Zone::Battlefield && !g.state.stack.is_empty()
+    });
+    let origin = game.object_ref(entrant);
+    game.state.objects[entrant as usize].controller = other;
+    game.move_object(entrant, Zone::Graveyard);
+    game.move_object(source, Zone::Graveyard);
+    game.move_object(entrant, Zone::Battlefield);
+    assert_ne!(game.object_ref(entrant), origin);
+    let saved = game.snapshot();
+    let mut alternate = game.clone();
+    advance(&mut game, |g| g.observe(other).explore_choice.is_some());
+    assert_eq!(game.actor(), Some(other));
+    let choice = game.observe(other).explore_choice.unwrap();
+    assert_eq!(choice.explorer.object, origin);
+    assert_eq!(choice.explorer.controller, other);
+    assert!(!choice.counter_added);
+    assert_eq!(choice.revealed.object, game.object_ref(other_top));
+    assert!(game.observe(player).explore_choice.is_some());
+    let wrong_reveal = game.object_ref(own_top);
+    reject(
+        &mut game,
+        Action::ChooseExplore {
+            object: wrong_reveal,
+            graveyard: true,
+        },
+    );
+    let action = Action::ChooseExplore {
+        object: choice.revealed.object,
+        graveyard: true,
+    };
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|a| *a == action)
+        .unwrap();
+    let mut indexed = game.clone();
+    act(&mut game, action.clone());
+    indexed
+        .apply_index(other, indexed.revision(), index)
+        .unwrap();
+    assert_eq!(game.snapshot(), indexed.snapshot());
+    assert_eq!(game.object_view(other_top).zone, Zone::Graveyard);
+    assert_eq!(game.counter_count(entrant, CounterKind::PlusOne), 0);
+    alternate.restore(&saved).unwrap();
+    advance(&mut alternate, |g| {
+        g.observe(other).explore_choice.is_some()
+    });
+    act(&mut alternate, action);
+    assert_eq!(game.snapshot(), alternate.snapshot());
+    assert_eq!(game.object_view(source).zone, Zone::Graveyard);
+}
+
+#[test]
+fn phased_entrant_explores_using_its_latest_controller_without_a_zone_change() {
+    let janeway = Card::from_name("Captain Kathryn Janeway").unwrap();
+    let _rules = fixture_rules::activate(&[(janeway, &ENTERING_EXPLORES)]);
+    let player = Player::P0;
+    let other = player.other();
+    let mut game = scenario(player);
+    spawn(&mut game, player, janeway, Zone::Battlefield);
+    let entrant = put(&mut game, player, "Grizzly Bears", Zone::Hand);
+    let other_top = put(&mut game, other, "Opt", Zone::Library);
+    cast(&mut game, entrant, None);
+    advance(&mut game, |g| {
+        g.object_view(entrant).zone == Zone::Battlefield && !g.state.stack.is_empty()
+    });
+    let origin = game.object_ref(entrant);
+    game.state.objects[entrant as usize].controller = other;
+    game.phase_out_batch(&[entrant]);
+    assert_eq!(game.object_view(entrant).zone, Zone::PhasedOut);
+    assert_eq!(game.object_ref(entrant), origin);
+    advance(&mut game, |g| g.observe(other).explore_choice.is_some());
+    let choice = game.observe(other).explore_choice.unwrap();
+    assert_eq!(choice.explorer.object, origin);
+    assert_eq!(choice.explorer.controller, other);
+    assert_eq!(choice.revealed.object, game.object_ref(other_top));
+    assert!(!choice.counter_added);
+    act(
+        &mut game,
+        Action::ChooseExplore {
+            object: choice.revealed.object,
+            graveyard: true,
+        },
+    );
+    assert_eq!(game.counter_count(entrant, CounterKind::PlusOne), 0);
+    assert_eq!(game.object_view(entrant).zone, Zone::PhasedOut);
 }

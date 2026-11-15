@@ -3270,6 +3270,7 @@ impl Game {
             mana_tap_bonus: None,
             related_stack: None,
             entering_object: None,
+            entering_explorer: None,
             evidence_collected: false,
             damage_event: None,
             damage_received: None,

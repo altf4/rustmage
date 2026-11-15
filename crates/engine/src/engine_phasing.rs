@@ -44,6 +44,12 @@ impl Game {
         if !affected.iter().any(|&value| value) {
             return;
         }
+        let before: Vec<_> = affected
+            .iter()
+            .enumerate()
+            .filter_map(|(id, &phased)| phased.then(|| self.object_view(id as CardId)))
+            .collect();
+        self.capture_phased_entering_explorers(&before.iter().collect::<Vec<_>>());
         let control_watch = self.freeze_control_watch();
         let phased_defenders: Vec<_> = affected
             .iter()

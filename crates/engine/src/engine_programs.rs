@@ -1475,6 +1475,19 @@ impl Game {
                     }
                     let packet = self.state.pending_triggers.last_mut().unwrap();
                     packet.entering_object = Some(event.after);
+                    if ability.program.iter().any(|instruction| {
+                        matches!(
+                            instruction,
+                            Instruction::Explore(Subject::Entering)
+                                | Instruction::ExploreRepeated {
+                                    subject: Subject::Entering,
+                                    ..
+                                }
+                        )
+                    }) {
+                        packet.entering_explorer =
+                            Some(Box::new(ExplorerView::from_view(&entered)));
+                    }
                     packet.evidence_collected = event.evidence_collected;
                     if matches!(
                         ability.condition.event(),
@@ -1866,6 +1879,7 @@ impl Game {
             mana_tap_bonus: None,
             related_stack: None,
             entering_object: None,
+            entering_explorer: None,
             evidence_collected: false,
             damage_event: None,
             damage_received: None,
