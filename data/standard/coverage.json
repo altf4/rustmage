@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "d460c1dc6218746c8296dafee6913197e6597d31153faaa3f7c44a6e41573266",
+  "catalogue_version": "7380db04e654240bb74be44a21058911436cedc79d268e1897e399f349cd3703",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5353,
-  "implemented_total": 5373,
+  "implemented_standard_cards": 5358,
+  "implemented_total": 5378,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 190,
-      "gated": 106
+      "complete": 195,
+      "gated": 101
     },
     "w17": {
       "total": 1,
@@ -42795,16 +42795,16 @@
     {
       "name": "L'Rell, Fierce Visionary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/l_rell_fierce_visionary.rs",
       "set": "trk"
     },
     {
       "name": "La'An Noonien-Singh, Security",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/la_an_noonien_singh_security.rs",
       "set": "trk"
     },
@@ -42827,8 +42827,8 @@
     {
       "name": "Locutus, the One Who Speaks",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/locutus_the_one_who_speaks.rs",
       "set": "trk"
     },
@@ -42867,8 +42867,8 @@
     {
       "name": "Make It So",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/make_it_so.rs",
       "set": "trk"
     },
@@ -43587,8 +43587,8 @@
     {
       "name": "Tell Me What You See",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/tell_me_what_you_see.rs",
       "set": "trk"
     },
