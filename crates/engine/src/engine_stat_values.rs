@@ -795,6 +795,20 @@ impl Game {
                 }
                 counts.into_iter().max().unwrap_or(0) as i128
             }
+            StatValue::DistinctControlledCreatureTypesExcept(excluded) => {
+                let mut seen = [false; crate::cards::CREATURE_TYPES.len()];
+                for (id, object) in objects().filter(|&(id, object)| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == owner
+                        && kinds(id, object) & 1 != 0
+                        && !subtypes(id).has(object.card, excluded)
+                }) {
+                    for index in subtypes(id).creature_type_set(object.card).indices() {
+                        seen[index] = true;
+                    }
+                }
+                seen.into_iter().filter(|present| *present).count() as i128
+            }
             StatValue::CreaturesOfChosenType => {
                 let Some(EntryChoiceValue::CreatureType(typ)) = world.entry_value(source) else {
                     return 0;

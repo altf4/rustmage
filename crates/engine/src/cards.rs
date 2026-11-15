@@ -6158,6 +6158,8 @@ pub enum StatValue {
     ControlledModifiedCreatures,
     /// Largest number of controlled creatures with any one effective creature type.
     LargestControlledCreatureTypeGroup,
+    /// Distinct effective creature types among controlled creatures without this subtype.
+    DistinctControlledCreatureTypesExcept(&'static str),
     SourceEquipmentCount,
     SourceAuraOrEquipmentCount,
     LegendaryCreaturesYouControl,
