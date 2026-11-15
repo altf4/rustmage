@@ -258,6 +258,58 @@ class ValidatorTests(unittest.TestCase):
         self.assertEqual(stale.read_bytes(), b'stale library from an earlier build')
         self.assertTrue((target/'debug/incremental/fixture.o').is_file())
 
+    def test_ci_retires_only_completed_test_executables_before_release(self):
+        target = self.directory/'ci-target'
+        executable = target/'debug/deps'/('trk_fixture-123' +
+                                           ('.exe' if os.name == 'nt' else ''))
+        dependency = target/'debug/deps/librustmage_core.rlib'
+        preserved = target/'debug/incremental/fixture.o'
+
+        def native_report_and_release_check(command):
+            if 'scripts/run_native_tests.py' in command:
+                executable.parent.mkdir(parents=True, exist_ok=True)
+                executable.write_bytes(b'completed native test executable')
+                dependency.write_bytes(b'reusable dependency')
+                report = Path(command[command.index('--report') + 1])
+                report.write_text(json.dumps({
+                    'success': True, 'terminal': True, 'active_processes': [],
+                    'binaries': [{'binary': str(executable)}],
+                }))
+            if command[:2] == ['cargo', 'build']:
+                self.assertFalse(executable.exists())
+                self.assertEqual(dependency.read_bytes(), b'reusable dependency')
+                self.assertEqual(preserved.read_bytes(), b'reusable compiled object')
+
+        self.on_command = native_report_and_release_check
+        status, path, report, _ = self.invoke(
+            '--target-dir', str(target), '--release', '--python', 'smoke',
+            '--retire-native-binaries')
+        self.assertEqual(status, 0)
+        self.assertTrue(report['success'])
+        self.assertEqual(report['retired_native_test_binaries'], 1)
+        self.assertGreater(report['retired_native_test_bytes'], 0)
+        self.assertFalse(executable.exists())
+        self.assertEqual(dependency.read_bytes(), b'reusable dependency')
+        self.assert_snapshot(path, report, self.library_bytes)
+
+    def test_ci_retirement_rejects_an_unsafe_report_before_removing_any_binary(self):
+        target = self.directory/'ci-target'
+        executable = target/'debug/deps'/('trk_fixture-123' +
+                                           ('.exe' if os.name == 'nt' else ''))
+        executable.parent.mkdir(parents=True)
+        executable.write_bytes(b'completed native test executable')
+        outside = self.directory/('outside' + ('.exe' if os.name == 'nt' else ''))
+        outside.write_bytes(b'not a Cargo test output')
+        native_report = self.directory/'native.json'
+        native_report.write_text(json.dumps({
+            'success': True, 'terminal': True, 'active_processes': [],
+            'binaries': [{'binary': str(executable)}, {'binary': str(outside)}],
+        }))
+        with self.assertRaisesRegex(RuntimeError, 'outside the Cargo test outputs'):
+            validate.retire_native_test_binaries(native_report, target)
+        self.assertTrue(executable.exists())
+        self.assertTrue(outside.exists())
+
     def test_source_changes_during_a_run_invalidate_the_result(self):
         def change_source(command):
             if command[:2] == ['cargo', 'clippy']:

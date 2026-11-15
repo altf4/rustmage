@@ -160,7 +160,12 @@ jobs:
       - name: Validate cards, interactions and Python API
         if: steps.scope.outputs.code == 'true'
         timeout-minutes: 130
-        run: python scripts/validate.py --release --python smoke 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
+        run: |
+          retire=()
+          if [[ "$RUNNER_OS" == "macOS" ]]; then
+            retire=(--retire-native-binaries)
+          fi
+          python scripts/validate.py --release --python smoke "${retire[@]}" 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
 
       - name: Run Standard gameplay through the native guard
         if: steps.scope.outputs.code == 'true'

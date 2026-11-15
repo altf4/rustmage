@@ -58,6 +58,37 @@ def snapshot_library(target, report_dir):
     return library, digest
 
 
+def retire_native_test_binaries(native_report, target):
+    """Reclaim completed test executables before a separate release build."""
+    native = json.loads(native_report.read_text())
+    if not native.get('success') or not native.get('terminal') or native.get('active_processes'):
+        raise RuntimeError('native assurance is not terminal and successful; preserve outputs')
+    entries = native.get('binaries')
+    if not isinstance(entries, list) or not entries:
+        raise RuntimeError('native assurance has no recorded test binaries; preserve outputs')
+    parent = target/'debug'/'deps'
+    if parent.resolve() != target.resolve()/'debug'/'deps':
+        raise RuntimeError('native test directory escapes the Cargo target; preserve outputs')
+    binaries = []
+    for entry in entries:
+        if not isinstance(entry, dict) or not isinstance(entry.get('binary'), str):
+            raise RuntimeError('invalid native test binary record; preserve outputs')
+        path = Path(entry['binary'])
+        if (not path.is_absolute() or path.is_symlink() or not path.is_file()
+                or path.resolve().parent != parent
+                or path.suffix != ('.exe' if sys.platform == 'win32' else '')):
+            raise RuntimeError('native test binary is outside the Cargo test outputs; preserve outputs')
+        binaries.append(path)
+    if len(set(binaries)) != len(binaries):
+        raise RuntimeError('duplicate native test binary record; preserve outputs')
+    if active_peers():
+        raise RuntimeError('native test processes remain active; preserve outputs')
+    reclaimed = sum(allocated_bytes(path) for path in binaries)
+    for path in binaries:
+        path.unlink()
+    return len(binaries), reclaimed
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     windows = sys.platform == 'win32'
@@ -67,6 +98,8 @@ def main(argv=None):
                         help='run binding assurance against this run\'s release library')
     parser.add_argument('--games', type=int, default=10,
                         help='native benchmark games, only with --release (default: 10)')
+    parser.add_argument('--retire-native-binaries', action='store_true',
+                        help='remove completed native test executables before the release build')
     parser.add_argument('--timeout', type=float,
                         default=7500 if windows else 6600 if sys.platform == 'darwin' else 5100,
                         help='total wall-clock budget after acquiring the build slot (default: %(default)s seconds)')
@@ -79,6 +112,8 @@ def main(argv=None):
     args = parser.parse_args(arguments)
     if args.games < 1 or (not math.isfinite(args.timeout) or args.timeout <= 0):
         parser.error('--games and --timeout must be positive')
+    if args.retire_native_binaries and not (args.release or args.python != 'none'):
+        parser.error('--retire-native-binaries requires a subsequent release build')
     os.chdir(ROOT)
     if managed_context() is None:
         exec_process([sys.executable, str(ROOT/'scripts/resource_guard.py'), '--',
@@ -142,7 +177,8 @@ def main(argv=None):
     report = dict(head=head, terminal=False, target=str(target), phases=[], timeout_seconds=args.timeout,
                   fresh_target=args.fresh, target_preexisting=target_preexisting, shared_libraries={},
                   game_evidence_directory=env['RUSTMAGE_TDM_EVIDENCE_DIR'],
-                  input_sha256=hashlib.sha256(json.dumps(files, sort_keys=True).encode()).hexdigest())
+                  input_sha256=hashlib.sha256(json.dumps(files, sort_keys=True).encode()).hexdigest(),
+                  retired_native_test_binaries=0, retired_native_test_bytes=0)
     started = time.monotonic()
     ok = False
     print(f'Validation report: {report_dir/"result.json"}', flush=True)
@@ -160,6 +196,12 @@ def main(argv=None):
             if phase['exit']:
                 print(Path(phase['log']).read_text()[-12000:], flush=True)
                 break
+            if name == 'native assurance' and args.retire_native_binaries:
+                count, reclaimed = retire_native_test_binaries(report_dir/'native.json', target)
+                report['retired_native_test_binaries'] = count
+                report['retired_native_test_bytes'] = reclaimed
+                print(f'Retired {count} completed native test executables ({reclaimed} allocated bytes)',
+                      flush=True)
             if name == 'release build':
                 if active_peers():
                     raise RuntimeError('release build left active processes; preserve outputs')
