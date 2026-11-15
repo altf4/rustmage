@@ -4382,6 +4382,9 @@ pub enum Instruction {
         counter: CounterKind,
     },
     ReturnExiledResultToHands,
+    /// Put every still-exiled permanent card from the preceding exact library
+    /// exile batch onto the battlefield, leaving nonpermanents in exile.
+    PutRememberedExiledPermanentsOntoBattlefield,
     ExileDamagedLibraryUntilNonland,
     MayCounterSourceOtherwiseCast,
     /// Private look, optional exact card choice, then discard and a draw for that player.

@@ -7934,6 +7934,9 @@ impl Game {
                     return;
                 }
                 Instruction::ReturnExiledResultToHands => self.return_exiled_result_to_hands(),
+                Instruction::PutRememberedExiledPermanentsOntoBattlefield => {
+                    self.put_remembered_exiled_permanents_onto_battlefield()
+                }
                 Instruction::ExileDamagedLibraryUntilNonland => {
                     self.exile_damaged_library_until_nonland(&item)
                 }
