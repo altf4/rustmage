@@ -2181,12 +2181,12 @@ impl Game {
         &self,
         world: &W,
         id: CardId,
-        controller: Player,
+        _controller: Player,
         source: ObjectRef,
         qualification: Option<TargetSourceCharacteristics<'_>>,
     ) -> bool {
         let object = world.object(id);
-        if object.zone != Zone::Battlefield || object.controller == controller {
+        if object.zone != Zone::Battlefield {
             return false;
         }
         if !object.card.static_ability_groups().iter().any(|group| {
@@ -2205,6 +2205,22 @@ impl Game {
             return false;
         }
         let qualification = self.target_source_context(source, qualification);
+        let source_controller = if self.state.objects.get(source.card as usize).is_some()
+            && world.reference(source.card) == source
+        {
+            let current = world.object(source.card);
+            matches!(current.zone, Zone::Battlefield | Zone::Stack)
+                .then_some(current.controller)
+        } else {
+            qualification.and_then(|source| {
+                source
+                    .snapshot
+                    .and_then(|facts| facts.battlefield.then_some(facts.controller))
+            })
+        };
+        if source_controller.is_none_or(|controller| object.controller == controller) {
+            return false;
+        }
         qualification.is_some_and(|source| source.snapshot.is_some() && source.spell.is_none())
             && self
                 .target_source_qualities(source, qualification)

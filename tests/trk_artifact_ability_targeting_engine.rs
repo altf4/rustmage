@@ -143,3 +143,30 @@ fn artifact_creature_cannot_block_but_ordinary_creature_can() {
     assert!(game.legal_actions().contains(&ordinary_block));
     act(&mut game, ordinary_block);
 }
+
+#[test]
+fn artifact_ability_uses_source_controller_after_activation() {
+    let artifact = Card::from_name("Candy Trail").unwrap();
+    let protected_card = Card::from_name("Gigantosaurus").unwrap();
+    let _rules = fixture_rules::activate(&[
+        (artifact, &ABILITY_SOURCE),
+        (protected_card, &PROTECTED),
+    ]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let protected = spawn(&mut game, player, protected_card, Zone::Battlefield);
+    let source = spawn(&mut game, player, artifact, Zone::Battlefield);
+
+    act(&mut game, activation(source));
+    let target = Action::ChooseTarget { target: Target::Card(protected) };
+    assert!(game.legal_actions().contains(&target));
+    act(&mut game, target);
+    pay(&mut game);
+
+    // The stack ability remains controlled by the activating player, while
+    // its artifact source becomes opposing to the protected creature.
+    game.state.objects[source as usize].controller = player.other();
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 0);
+    assert_eq!(game.object_view(protected).zone, Zone::Battlefield);
+}
