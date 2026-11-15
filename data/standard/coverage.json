@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "6edb74e92cc2cc8eceb78a5782d1100e9b9026eb10d2f236d8ceaa675f24dc82",
+  "catalogue_version": "f843758fd9d5d0323b22a205ae84342f51567499884f52af469f973543042a12",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5379,
-  "implemented_total": 5399,
+  "implemented_standard_cards": 5385,
+  "implemented_total": 5405,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 216,
-      "gated": 80
+      "complete": 222,
+      "gated": 74
     },
     "w17": {
       "total": 1,
@@ -42395,8 +42395,8 @@
     {
       "name": "Federation Field Medic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/federation_field_medic.rs",
       "set": "trk"
     },
@@ -42587,8 +42587,8 @@
     {
       "name": "Hemmer, Fixing What Is Broken",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/hemmer_fixing_what_is_broken.rs",
       "set": "trk"
     },
@@ -42707,8 +42707,8 @@
     {
       "name": "Isolinear Processor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/isolinear_processor.rs",
       "set": "trk"
     },
@@ -42811,8 +42811,8 @@
     {
       "name": "Lieutenant Commander Data",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/lieutenant_commander_data.rs",
       "set": "trk"
     },
@@ -42835,8 +42835,8 @@
     {
       "name": "Lore, Positronic Provocateur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/lore_positronic_provocateur.rs",
       "set": "trk"
     },
@@ -42875,8 +42875,8 @@
     {
       "name": "Malfunctioning Holodeck",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/malfunctioning_holodeck.rs",
       "set": "trk"
     },
