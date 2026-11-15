@@ -798,6 +798,17 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         {
                             keywords = keywords.union(grant)
                         }
+                        StaticAbilityFragment::ControlledPermanentAllKindsKeywordsAtSourceCounters {
+                            kinds,
+                            kind,
+                            minimum,
+                            keywords: grant,
+                        } if target.controller == object.controller
+                            && CharacteristicWorld::kinds(self, id) & kinds == kinds
+                            && CharacteristicWorld::counter_count(self, source, kind) >= minimum =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
                         StaticAbilityFragment::ControlledOtherCounteredCreatureKeywords(grant)
                             if target.controller == object.controller
                                 && id != source

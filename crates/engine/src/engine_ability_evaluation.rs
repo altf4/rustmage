@@ -445,6 +445,20 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             keywords
         }
+        StaticAbilityFragment::ControlledPermanentAllKindsKeywordsAtSourceCounters {
+            kinds,
+            kind,
+            minimum,
+            keywords,
+        } => {
+            if !own
+                || world.kinds(id) & kinds != kinds
+                || world.counter_count(source.card, kind) < minimum
+            {
+                return None;
+            }
+            keywords
+        }
         StaticAbilityFragment::ControlledOtherCounteredCreatureKeywords(keywords) => {
             if !own
                 || id == source.card
@@ -978,6 +992,7 @@ fn evaluate<W: CharacteristicWorld + ?Sized>(
                         | StaticAbilityFragment::ChosenTypeKeywords(..)
                         | StaticAbilityFragment::ControlledPermanentKeywords { .. }
                         | StaticAbilityFragment::ControlledPermanentAllKindsKeywords { .. }
+                        | StaticAbilityFragment::ControlledPermanentAllKindsKeywordsAtSourceCounters { .. }
                         | StaticAbilityFragment::ControlledOtherCounteredCreatureKeywords(..)
                         | StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
                         | StaticAbilityFragment::ConditionalEquippedCreatureKeywords { .. }

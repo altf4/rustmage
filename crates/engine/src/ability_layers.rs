@@ -426,6 +426,14 @@ pub enum StaticAbilityFragment {
         kinds: u16,
         keywords: Keywords,
     },
+    /// Grant keywords to controlled permanents with all listed types only while
+    /// this exact battlefield source has enough of the specified counter.
+    ControlledPermanentAllKindsKeywordsAtSourceCounters {
+        kinds: u16,
+        kind: CounterKind,
+        minimum: u64,
+        keywords: Keywords,
+    },
     /// Other controlled creatures with any counter have these keywords.
     ControlledOtherCounteredCreatureKeywords(Keywords),
     /// Live grant to equipped creatures, independent of the Equipment controller.

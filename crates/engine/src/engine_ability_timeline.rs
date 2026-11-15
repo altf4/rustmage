@@ -112,6 +112,7 @@ impl Card {
                             | StaticAbilityFragment::KeywordGrant(..)
                             | StaticAbilityFragment::ControlledPermanentKeywords { .. }
                             | StaticAbilityFragment::ControlledPermanentAllKindsKeywords { .. }
+                            | StaticAbilityFragment::ControlledPermanentAllKindsKeywordsAtSourceCounters { .. }
                             | StaticAbilityFragment::ControlledOtherCounteredCreatureKeywords(..)
                             | StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
                             | StaticAbilityFragment::ConditionalEquippedCreatureKeywords { .. }
