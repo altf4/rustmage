@@ -935,6 +935,7 @@ define_actions! {
     ChooseToken { token: Card },
     ChooseKeyword { index: u16 },
     ChooseSourceCounterKind { counter: CounterKind },
+    ChooseTargetExistingCounterKindToPut { counter: CounterKind },
     ChooseResolutionColor { color: crate::cards::ChoiceColor },
     ChoosePermanentType { permanent_type: PermanentType },
     ChoosePowerThreshold { value: u16 },
@@ -3390,6 +3391,10 @@ enum Pending {
         source: ObjectRef,
         choices: &'static [CounterKind],
     },
+    TargetExistingCounterKindToPut {
+        player: Player,
+        target: ObjectRef,
+    },
     EffectChoice {
         player: Player,
     },
@@ -5203,6 +5208,7 @@ impl Game {
             | Pending::TokenChoice { player, .. }
             | Pending::KeywordChoice { player, .. }
             | Pending::SourceCounterKind { player, .. }
+            | Pending::TargetExistingCounterKindToPut { player, .. }
             | Pending::ResolutionColor { player }
             | Pending::ResolutionPermanentType { player }
             | Pending::PowerThreshold { player, .. }
@@ -6101,6 +6107,19 @@ impl Game {
                 for &counter in choices {
                     if emit(Action::ChooseSourceCounterKind { counter }) {
                         return true;
+                    }
+                }
+            }
+            Pending::TargetExistingCounterKindToPut { target, .. } => {
+                if self.object_ref(target.card) == target
+                    && self.object_view(target.card).zone == Zone::Battlefield
+                {
+                    for counter in CounterKind::ALL {
+                        if self.counter_count(target.card, counter) > 0
+                            && emit(Action::ChooseTargetExistingCounterKindToPut { counter })
+                        {
+                            return true;
+                        }
                     }
                 }
             }
@@ -9999,6 +10018,21 @@ impl Game {
                 );
                 self.run_program();
             }
+            Action::ChooseTargetExistingCounterKindToPut { counter } => {
+                let Pending::TargetExistingCounterKindToPut { target, .. } = self.state.pending else {
+                    unreachable!()
+                };
+                if self.object_ref(target.card) == target
+                    && self.on_battlefield(target.card)
+                    && self.counter_count(target.card, counter) > 0
+                {
+                    self.effect_counters(
+                        vec![(target, Counters::of(counter, 1))],
+                        replacements::ResumeMode::Program,
+                    );
+                }
+                self.run_program();
+            }
             Action::ChooseToken { token } => {
                 self.create_tokens(actor, token, 1, false);
                 self.run_program();
@@ -13632,6 +13666,7 @@ impl Game {
                 Pending::TokenChoice { .. } => "token_choice",
                 Pending::KeywordChoice { .. } => "keyword_choice",
                 Pending::SourceCounterKind { .. } => "source_counter_kind",
+                Pending::TargetExistingCounterKindToPut { .. } => "target_existing_counter_kind_to_put",
                 Pending::ResolutionColor { .. } => "resolution_color",
                 Pending::ResolutionPermanentType { .. } => "resolution_permanent_type",
                 Pending::PowerThreshold { .. } => "power_threshold",

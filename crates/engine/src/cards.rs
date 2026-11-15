@@ -2776,6 +2776,8 @@ pub enum Instruction {
         choices: &'static [Keywords],
     },
     ChooseSourceCounterKind(&'static [CounterKind]),
+    /// Choose one kind already on an exact surviving permanent target, then add one.
+    ChooseTargetExistingCounterKindToPut,
     /// Set the source's color and grant it hexproof from the chosen color this turn.
     ChooseSourceColorAndHexproof,
     PlayHideawayIfCoven,

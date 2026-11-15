@@ -8512,6 +8512,23 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::ChooseTargetExistingCounterKindToPut => {
+                    if let Some(target) = item.targets.iter().find_map(|&bound| {
+                        let object = bound.object?;
+                        (self.same_target_object(bound)
+                            && self.on_battlefield(object.card)
+                            && CounterKind::ALL
+                                .iter()
+                                .any(|&kind| self.counter_count(object.card, kind) > 0))
+                        .then_some(object)
+                    }) {
+                        self.state.pending = Pending::TargetExistingCounterKindToPut {
+                            player: item.controller,
+                            target,
+                        };
+                        return;
+                    }
+                }
                 Instruction::CreateTokenChoice(tokens) => {
                     self.state.pending = Pending::TokenChoice {
                         player: item.controller,
