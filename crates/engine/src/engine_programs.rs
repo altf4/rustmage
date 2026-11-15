@@ -4763,6 +4763,7 @@ impl Game {
                     | Instruction::BecomeCopy(..)
                     | Instruction::ShuffleGraveyardTargetsIntoPlayerLibrary { .. }
                     | Instruction::ShuffleGraveyardTargetsIntoControllerLibrary { .. }
+                    | Instruction::ShuffleGraveyardTargetsIntoOwnersLibraries { .. }
                     | Instruction::GainControl {
                         controller: PlayerSet::Targeted,
                         ..
@@ -5609,6 +5610,9 @@ impl Game {
                         item.controller,
                         cards_group,
                     );
+                }
+                Instruction::ShuffleGraveyardTargetsIntoOwnersLibraries { cards_group } => {
+                    self.shuffle_graveyard_targets_into_owners_libraries(&item, cards_group);
                 }
                 Instruction::ShuffleGraveyardIntoLibraryCount { excluded_kinds } => {
                     self.shuffle_graveyard_into_library_count(item.controller, excluded_kinds);
@@ -8801,6 +8805,11 @@ impl Game {
                 }
                 Instruction::CreateCopyWithDelayedSacrifice => {
                     if let Some(recipe) = self.recipe_for_subject(&item, Subject::Targets) {
+                        self.stage_temporary_copy_creation(&item, recipe);
+                    }
+                }
+                Instruction::CreateSourceCopyWithDelayedSacrifice => {
+                    if let Some(recipe) = self.recipe_for_subject(&item, Subject::Source) {
                         self.stage_temporary_copy_creation(&item, recipe);
                     }
                 }

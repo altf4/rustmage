@@ -3213,6 +3213,9 @@ pub enum Instruction {
     CreateTemporaryArtifactCopy,
     /// A normal token copy with source-independent next-end-step sacrifice.
     CreateCopyWithDelayedSacrifice,
+    /// Copy the frozen source card after it has left the graveyard as an
+    /// activation cost; sacrifice the resulting token at the next end step.
+    CreateSourceCopyWithDelayedSacrifice,
     /// One token with copiable exceptions and a separate next-end-step sacrifice.
     CreateCopyWithExceptionsAndDelayedSacrifice(CopyExceptions),
     CreateHastyCopyWithDelayedSacrifice,
@@ -5460,6 +5463,11 @@ pub enum Instruction {
     },
     /// Shuffle the controller's library even when the selected group is empty.
     ShuffleGraveyardTargetsIntoControllerLibrary {
+        cards_group: u16,
+    },
+    /// Move up to the chosen exact graveyard cards together, then each
+    /// represented owner shuffles their library once, even if a move is replaced.
+    ShuffleGraveyardTargetsIntoOwnersLibraries {
         cards_group: u16,
     },
     DoubleTargetPower,

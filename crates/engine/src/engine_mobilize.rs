@@ -257,6 +257,7 @@ impl Game {
         // obtain haste only from its ordinary continuous battlefield ability.
         if item.program().is_none_or(|(_, program)| {
             !program.contains(&Instruction::CreateCopyWithDelayedSacrifice)
+                && !program.contains(&Instruction::CreateSourceCopyWithDelayedSacrifice)
         }) {
             self.grant_keyword_effects(&ids, source.object, Keywords::HASTE);
         }
