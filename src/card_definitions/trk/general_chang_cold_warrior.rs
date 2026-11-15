@@ -28,7 +28,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         targets: TargetPlan::NONE,
         program: &[Instruction::ChangeControlledPermanentGroupCounters {
             filters: &[ControlledPermanentFilter {
-                all_kinds: 1,
+                all_kinds: 0,
                 legendary: false,
                 subtype: Some("Klingon"),
             }],

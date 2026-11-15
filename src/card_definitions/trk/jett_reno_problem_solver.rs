@@ -7,8 +7,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             condition: TriggerCondition::SelfBecomesTapped,
             targets: TargetPlan::NONE,
             program: &[
-                Instruction::If {
-                    guard: StepGuard::SourcePowerAtLeast(4),
+                Instruction::IfAmountAtLeast {
+                    value: AmountValue::SourcePower,
+                    minimum: 4,
                     skip: 2,
                 },
                 Instruction::Draw(PlayerSet::Controller, 1),

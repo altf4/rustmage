@@ -740,6 +740,31 @@ fn jett_reno_grows_per_dilemma_and_tap_checks_live_power_for_draw() {
     drain(&mut high);
     assert_eq!(high.object_view(draw).zone, Zone::Hand);
     assert_eq!(high.state.players[player.index()].cards_drawn_this_turn, 1);
+
+    // The tap trigger uses departure LKI when Jett leaves before it resolves.
+    let mut departed = scenario(player);
+    let jett = owned(
+        &mut departed,
+        player,
+        "Jett Reno, Problem Solver",
+        Zone::Battlefield,
+    );
+    for _ in 0..3 {
+        let spell = spawn(&mut departed, player, opt, Zone::Hand);
+        act(&mut departed, Action::AnnounceCast { card: spell });
+        act(&mut departed, Action::ChooseMode { mode: 1 });
+        pay(&mut departed);
+        drain(&mut departed);
+    }
+    let draw = put(&mut departed, player, "Island", Zone::Library);
+    departed.tap_objects(&[jett]);
+    departed.move_object(jett, Zone::Graveyard);
+    drain(&mut departed);
+    assert_eq!(departed.object_view(draw).zone, Zone::Hand);
+    assert_eq!(
+        departed.state.players[player.index()].cards_drawn_this_turn,
+        1
+    );
 }
 
 #[test]
@@ -1165,6 +1190,9 @@ fn general_chang_sacrifices_first_then_counters_only_surviving_own_klingons() {
         Zone::Battlefield,
     );
     let creature_land = put(&mut game, player, "Forest", Zone::Battlefield);
+    let changeling_kindred = put(&mut game, player, "Firdoch Core", Zone::Battlefield);
+    assert_eq!(game.object_view(changeling_kindred).kinds & 1, 0);
+    assert!(game.object_view(changeling_kindred).has_subtype("Klingon"));
     game.change_object_form(
         game.object_ref(creature_land),
         AnimationSpec {
@@ -1196,6 +1224,10 @@ fn general_chang_sacrifices_first_then_counters_only_surviving_own_klingons() {
     drain(&mut game);
     assert_eq!(game.object_view(creature_land).zone, Zone::Graveyard);
     assert_eq!(game.counter_count(chang, CounterKind::PlusOne), 1);
+    assert_eq!(
+        game.counter_count(changeling_kindred, CounterKind::PlusOne),
+        1
+    );
 }
 
 #[test]
