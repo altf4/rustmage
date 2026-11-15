@@ -3218,6 +3218,11 @@ pub enum Instruction {
     CreateSourceCopyWithDelayedSacrifice,
     /// One token with copiable exceptions and a separate next-end-step sacrifice.
     CreateCopyWithExceptionsAndDelayedSacrifice(CopyExceptions),
+    /// Copiable exceptions plus a temporary, noncopiable keyword grant and delayed sacrifice.
+    CreateCopyWithExceptionsAndTemporaryKeywordsAndDelayedSacrifice {
+        exceptions: CopyExceptions,
+        keywords: Keywords,
+    },
     CreateHastyCopyWithDelayedSacrifice,
     CreateHastyCopiesWithDelayedSacrifice(AmountValue),
     /// Copy the target, grant haste, offer each resulting Saga extra lore,
@@ -9526,6 +9531,9 @@ impl Card {
     }
     pub(crate) fn beam_me_up_cost(self) -> Option<ManaCost> {
         authored::rules(self).and_then(|rules| rules.extras.beam_me_up_cost)
+    }
+    pub(crate) fn self_exile_cast(self) -> bool {
+        authored::rules(self).is_some_and(|rules| rules.extras.self_exile_cast)
     }
     pub(crate) fn disguise_spec(self) -> Option<DisguiseSpec> {
         let extras = authored::rules(self)?.extras;

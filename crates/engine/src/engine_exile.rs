@@ -109,10 +109,20 @@ impl Game {
             || self.linked_exile_play(player, card).is_some()
     }
     pub(super) fn can_cast_exiled_independently(&self, player: Player, card: CardId) -> bool {
-        self.can_cast_threshold_linked_exile(player, card)
+        self.can_cast_self_from_exile(player, card)
+            || self.can_cast_threshold_linked_exile(player, card)
             || self.can_play_foreign_stash(player, card)
             || self.can_cast_warped(player, card)
             || self.has_printed_cost_exile_permission(player, card)
+    }
+    fn can_cast_self_from_exile(&self, player: Player, card: CardId) -> bool {
+        self.state.objects.get(card as usize).is_some_and(|object| {
+            object.zone == Zone::Exile
+                && object.is_card()
+                && object.owner == player
+                && !self.exiled_face_down(self.object_ref(card))
+                && object.card.self_exile_cast()
+        })
     }
     pub(super) fn has_printed_cost_exile_permission(&self, player: Player, card: CardId) -> bool {
         let object = self.object_ref(card);

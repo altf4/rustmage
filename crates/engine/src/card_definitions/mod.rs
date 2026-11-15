@@ -524,6 +524,8 @@ pub struct CardExtras {
     pub web_slinging_cost: Option<ManaCost>,
     /// Graveyard alternative paid by returning a creature you control.
     pub beam_me_up_cost: Option<ManaCost>,
+    /// This physical card's owner may cast it from exile for its normal cost.
+    pub self_exile_cast: bool,
     /// Graveyard alternative with an optional power-based creature tap.
     pub harmonize_cost: Option<ManaCost>,
     /// Variable symbols in the printed harmonize alternative (independent of the mana cost).
@@ -682,6 +684,7 @@ impl CardExtras {
         sneak_costs: &[],
         web_slinging_cost: None,
         beam_me_up_cost: None,
+        self_exile_cast: false,
         harmonize_cost: None,
         harmonize_x_symbols: 0,
         mayhem_cost: None,

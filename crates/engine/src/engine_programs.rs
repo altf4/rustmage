@@ -8848,6 +8848,26 @@ impl Game {
                         );
                     }
                 }
+                Instruction::CreateCopyWithExceptionsAndTemporaryKeywordsAndDelayedSacrifice {
+                    exceptions,
+                    keywords,
+                } => {
+                    if let Some(recipe) = self.recipe_for_subject(&item, Subject::Targets) {
+                        self.stage_copy_creation_inner(
+                            item.controller,
+                            recipe.with_exceptions(exceptions),
+                            1,
+                            replacements::TokenCompletion::TemporaryTokens(Box::new(
+                                temporary_tokens::TokenInstructions {
+                                    item: item.clone(),
+                                    keywords,
+                                    attack: temporary_tokens::TokenAttack::None,
+                                    cleanup: temporary_tokens::TokenCleanup::NextEndStepSacrifice,
+                                },
+                            )),
+                        );
+                    }
+                }
                 Instruction::CreateHastyCopyWithDelayedSacrifice => {
                     if let Some(recipe) = self.recipe_for_subject(&item, Subject::Targets) {
                         self.stage_temporary_copy_creation(&item, recipe);
