@@ -6,6 +6,10 @@ use rustmage_core::{cards::*, engine::*};
 use support::*;
 
 fn drain(game: &mut Game, target: Option<CardId>) {
+    drain_target(game, target.map(Target::Card));
+}
+
+fn drain_target(game: &mut Game, target: Option<Target>) {
     for _ in 0..64 {
         let actions = game.legal_actions();
         if game.state.pending == Pending::Priority
@@ -16,11 +20,9 @@ fn drain(game: &mut Game, target: Option<CardId>) {
             return;
         }
         if let Some(target) = target
-            && actions.contains(&Action::ChooseTarget {
-                target: Target::Card(target),
-            })
+            && actions.contains(&Action::ChooseTarget { target })
         {
-            act(game, Action::ChooseTarget { target: Target::Card(target) });
+            act(game, Action::ChooseTarget { target });
         } else if actions.contains(&Action::FinishStackTargets) {
             act(game, Action::FinishStackTargets);
         } else if actions.contains(&Action::ChooseOptional { accept: true }) {
@@ -358,4 +360,84 @@ fn phaser_entry_stuns_opponent_and_equips_for_plus_three_power() {
     pay(&mut game);
     drain(&mut game, None);
     assert_eq!(stats(&game, bearer), (5, 2));
+}
+
+#[test]
+fn unicomplex_entry_checks_other_lands_then_uses_its_chosen_mode() {
+    let mut early = scenario(Player::P0);
+    let early_land = put(&mut early, Player::P0, "The Unicomplex", Zone::Hand);
+    act(&mut early, Action::PlayLand { card: early_land });
+    drain(&mut early, None);
+    assert!(early.object_view(early_land).tapped);
+
+    let mut game = scenario(Player::P0);
+    put(&mut game, Player::P0, "Forest", Zone::Battlefield);
+    put(&mut game, Player::P0, "Island", Zone::Battlefield);
+    let creature = put(&mut game, Player::P0, "Grizzly Bears", Zone::Graveyard);
+    let land = put(&mut game, Player::P0, "The Unicomplex", Zone::Hand);
+    act(&mut game, Action::PlayLand { card: land });
+    choose_mode_after_passes(&mut game, 0);
+    drain(&mut game, Some(creature));
+    assert!(!game.object_view(land).tapped);
+    assert_eq!(game.state.players[0].library.last(), Some(&creature));
+    let mana = game.legal_actions().into_iter().find(|a| matches!(a, Action::ActivateMana { card, .. } if *card == land)).unwrap();
+    let before = game.state.players[0].mana[2];
+    act(&mut game, mana);
+    assert_eq!(game.state.players[0].mana[2], before + 1);
+}
+
+#[test]
+fn vengeance_mission_uses_the_new_seventh_quest_counter() {
+    let mut game = scenario(Player::P0);
+    let mission = put(&mut game, Player::P0, "Vengeance Mission", Zone::Battlefield);
+    for index in 1..=7 {
+        let victim = put(&mut game, Player::P1, "Grizzly Bears", Zone::Battlefield);
+        let shock = put(&mut game, Player::P0, "Shock", Zone::Hand);
+        cast(&mut game, shock, Some(Target::Card(victim)));
+        drain_target(&mut game, Some(Target::Player(Player::P1)));
+        assert_eq!(game.counter_count(mission, CounterKind::Quest), index);
+    }
+    assert_eq!(game.state.players[1].life, 12);
+}
+
+#[test]
+fn warp_speed_fetches_planets_and_overrides_tapped_land_entry() {
+    let mut game = scenario(Player::P0);
+    let planet = put(&mut game, Player::P0, "Vulcan", Zone::Library);
+    let speed = put(&mut game, Player::P0, "Warp Speed", Zone::Hand);
+    cast(&mut game, speed, None);
+    while !matches!(game.state.pending, Pending::EffectSearch { .. }) {
+        choose(&mut game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+    }
+    act(&mut game, Action::ChooseSearch { card: planet });
+    act(&mut game, Action::FinishSearch);
+    drain(&mut game, None);
+    assert_eq!(game.object_view(planet).zone, Zone::Hand);
+    act(&mut game, Action::PlayLand { card: planet });
+    assert_eq!(game.state.pending, Pending::EntryReplacement { player: Player::P0 });
+    let entering = game.object_ref(planet);
+    act(&mut game, Action::ChooseEntryReplacement {
+        source: entering,
+        intrinsic: true,
+    });
+    drain(&mut game, None);
+    assert!(!game.object_view(planet).tapped);
+    assert_eq!(game.state.players[0].life, 21);
+}
+
+#[test]
+fn una_formidable_buffs_only_a_selected_attacker() {
+    let mut game = scenario(Player::P0);
+    let una = put(&mut game, Player::P0, "Una Chin-Riley, Number One", Zone::Battlefield);
+    let other = put(&mut game, Player::P0, "Hill Giant", Zone::Battlefield);
+    put(&mut game, Player::P0, "Hill Giant", Zone::Battlefield);
+    game.state.objects[una as usize].summoning_sick = false;
+    game.state.step = Step::Attackers;
+    game.state.pending = Pending::Attackers;
+    act(&mut game, Action::Attack { card: una });
+    act(&mut game, Action::FinishAttackers);
+    drain(&mut game, Some(una));
+    assert_eq!(stats(&game, una), (6, 5));
+    assert_eq!(stats(&game, other), (3, 3));
+    assert!(game.object_view(una).keywords.contains(Keywords::FIRST_STRIKE));
 }
