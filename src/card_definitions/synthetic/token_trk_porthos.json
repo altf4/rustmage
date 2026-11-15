@@ -1,0 +1,12 @@
+{
+  "name": "@token/trk-porthos",
+  "catalogue_id": 6013,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "6b9ffa5526e1a72d9781ccfc9ca6be82c98c33a56ed0d0392ebec4a170df7f06",
+  "oracle_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/PorthosToken.java",
+  "java_sha256": "54d0ccb3711ecdb9bd3ac3eca1d4ada5206bccad0e55af9adca9ef7689b7461f"
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@token/trk-neuroflux-heirloom",
+  "catalogue_id": 6015,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "1a5db5bc1e8ced5a4dc2717c7d3087a5a62c6b717606c1b4d80007ffad79121d",
+  "oracle_source": "data/audits/trk.json",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

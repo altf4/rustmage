@@ -1,0 +1,12 @@
+{
+  "name": "@token/trk-officer",
+  "catalogue_id": 6008,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "b75cfdac5f0d1ad25f7a3e7a3f9c6bdd713ed57101a2139756bff4ef7390c97b",
+  "oracle_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/OfficerToken.java",
+  "java_sha256": "e3b50026637259b170e0c8f54cc2f77de88137b73ae2555707fd55deebbb86b5"
+}

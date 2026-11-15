@@ -1,0 +1,12 @@
+{
+  "name": "@token/trk-worm-cant-block",
+  "catalogue_id": 6014,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "c3e611d508b255fde5ed15cd1b9299d83abca4a0a984de445bc545ae063d7fce",
+  "oracle_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/WormCantBlockToken.java",
+  "java_sha256": "0ae1222947cd023258a2c4853031c1a3dc3d718000a8bb5396eb149c1861fee6"
+}

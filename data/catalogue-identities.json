@@ -6012,7 +6012,18 @@
     16,
     10,
     2,
-    5
+    5,
+    0,
+    8,
+    0,
+    8,
+    0,
+    4,
+    16,
+    24,
+    0,
+    16,
+    1
   ],
   "aliases": [
     [
@@ -7354,6 +7365,50 @@
     [
       "@token/treefolk_3_4_green_reach",
       5420
+    ],
+    [
+      "@token/trk-borg",
+      6007
+    ],
+    [
+      "@token/trk-human-no-phase-in",
+      6017
+    ],
+    [
+      "@token/trk-illusion-artifact",
+      6011
+    ],
+    [
+      "@token/trk-klingon-warrior",
+      6010
+    ],
+    [
+      "@token/trk-murf",
+      6016
+    ],
+    [
+      "@token/trk-neuroflux-heirloom",
+      6015
+    ],
+    [
+      "@token/trk-new-planet",
+      6009
+    ],
+    [
+      "@token/trk-officer",
+      6008
+    ],
+    [
+      "@token/trk-porthos",
+      6013
+    ],
+    [
+      "@token/trk-romulan",
+      6012
+    ],
+    [
+      "@token/trk-worm-cant-block",
+      6014
     ],
     [
       "@token/woe-ashiok-nightmare",
@@ -32562,6 +32617,72 @@
       "name": "Ballistic Boulder",
       "subtypes": "Construct",
       "colors": 0
+    },
+    {
+      "factory_identity": "@token/trk-borg",
+      "name": "Borg Token",
+      "subtypes": "Borg",
+      "colors": 0
+    },
+    {
+      "factory_identity": "@token/trk-officer",
+      "name": "Officer Token",
+      "subtypes": "Officer",
+      "colors": 8
+    },
+    {
+      "factory_identity": "@token/trk-new-planet",
+      "name": "New Planet",
+      "subtypes": "Planet",
+      "colors": 0
+    },
+    {
+      "factory_identity": "@token/trk-klingon-warrior",
+      "name": "Klingon Warrior Token",
+      "subtypes": "Klingon Warrior",
+      "colors": 8
+    },
+    {
+      "factory_identity": "@token/trk-illusion-artifact",
+      "name": "Illusion Token",
+      "subtypes": "Illusion",
+      "colors": 0
+    },
+    {
+      "factory_identity": "@token/trk-romulan",
+      "name": "Romulan Token",
+      "subtypes": "Romulan",
+      "colors": 4
+    },
+    {
+      "factory_identity": "@token/trk-porthos",
+      "name": "Porthos",
+      "subtypes": "Dog",
+      "colors": 16
+    },
+    {
+      "factory_identity": "@token/trk-worm-cant-block",
+      "name": "Worm Token",
+      "subtypes": "Worm",
+      "colors": 24
+    },
+    {
+      "factory_identity": "@token/trk-neuroflux-heirloom",
+      "name": "Neuroflux Heirloom",
+      "subtypes": "Equipment",
+      "colors": 0
+    },
+    {
+      "factory_identity": "@token/trk-murf",
+      "name": "Murf",
+      "subtypes": "Ooze Slug",
+      "colors": 16
+    },
+    {
+      "factory_identity": "@token/trk-human-no-phase-in",
+      "name": "Human Token",
+      "subtypes": "Human",
+      "colors": 1
     }
   ],
   "emblems": [
@@ -206087,6 +206208,307 @@
         0
       ],
       "generic": 1
+    },
+    {
+      "index": 6007,
+      "module": "card_6007",
+      "path": "synthetic/token_trk_borg.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/trk-borg",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact Creature — Borg",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 17,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 6008,
+      "module": "card_6008",
+      "path": "synthetic/token_trk_officer.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/trk-officer",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Officer",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 6009,
+      "module": "card_6009",
+      "path": "synthetic/token_trk_new_planet.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/trk-new-planet",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Land — Planet",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 2,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 6010,
+      "module": "card_6010",
+      "path": "synthetic/token_trk_klingon_warrior.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/trk-klingon-warrior",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Klingon Warrior",
+      "oracle_keywords": [
+        "Haste"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 6011,
+      "module": "card_6011",
+      "path": "synthetic/token_trk_illusion_artifact.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/trk-illusion-artifact",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact Creature — Illusion",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 17,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 6012,
+      "module": "card_6012",
+      "path": "synthetic/token_trk_romulan.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/trk-romulan",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Romulan",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 6013,
+      "module": "card_6013",
+      "path": "synthetic/token_trk_porthos.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/trk-porthos",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Dog",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 6014,
+      "module": "card_6014",
+      "path": "synthetic/token_trk_worm_cant_block.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/trk-worm-cant-block",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Worm",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 6015,
+      "module": "card_6015",
+      "path": "synthetic/token_trk_neuroflux_heirloom.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/trk-neuroflux-heirloom",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact — Equipment",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 16,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 6016,
+      "module": "card_6016",
+      "path": "synthetic/token_trk_murf.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/trk-murf",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Ooze Slug",
+      "oracle_keywords": [
+        "Indestructible"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 6017,
+      "module": "card_6017",
+      "path": "synthetic/token_trk_human_no_phase_in.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/trk-human-no-phase-in",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Human",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
     }
   ]
 }
