@@ -377,3 +377,99 @@ fn saru_protects_another_creature_only_and_syndicate_landfall_stacks_counters() 
     settle(&mut game);
     assert_eq!(game.counter_count(liquidators, CounterKind::PlusOne), 2);
 }
+
+#[test]
+fn nog_actual_card_evolves_twice_and_grants_a_second_graveyard_land_play() {
+    let mut game = scenario(Player::P0);
+    let nog = put(
+        &mut game,
+        Player::P0,
+        "Nog, Ambitious Cadet",
+        Zone::Battlefield,
+    );
+    assert!(game.has_subtype(nog, "Rogue"));
+    assert!(game.keywords(nog).contains(Keywords::MENACE));
+    activate(&mut game, nog, 0, None);
+    settle(&mut game);
+    assert!(game.has_subtype(nog, "Scout"));
+    assert!(!game.has_subtype(nog, "Rogue"));
+    assert_eq!(stats(&game, nog), (3, 4));
+    activate(&mut game, nog, 1, None);
+    settle(&mut game);
+    assert!(game.has_subtype(nog, "Officer"));
+    assert!(!game.has_subtype(nog, "Scout"));
+    let hand_land = put(&mut game, Player::P0, "Forest", Zone::Hand);
+    let grave_land = put(&mut game, Player::P0, "Plains", Zone::Graveyard);
+    act(&mut game, Action::PlayLand { card: hand_land });
+    assert!(
+        game.legal_actions()
+            .contains(&Action::PlayLand { card: grave_land })
+    );
+    act(&mut game, Action::PlayLand { card: grave_land });
+    assert_eq!(game.object_view(grave_land).zone, Zone::Battlefield);
+}
+
+#[test]
+fn one_modal_cast_fires_each_face_a_dilemma_observer_once() {
+    let mut game = scenario(Player::P0);
+    put(
+        &mut game,
+        Player::P0,
+        "Obsidian Order Operative",
+        Zone::Battlefield,
+    );
+    put(&mut game, Player::P0, "Seven of Nine", Zone::Battlefield);
+    let bearer = put(&mut game, Player::P0, "Bear Cub", Zone::Battlefield);
+    let spell = put(&mut game, Player::P0, "Perils of the Past", Zone::Hand);
+    let drawn = game.state.players[0].cards_drawn_this_turn;
+    act(&mut game, Action::AnnounceCast { card: spell });
+    act(&mut game, Action::ChooseMode { mode: 0 });
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(bearer),
+        },
+    );
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
+    pay(&mut game);
+    drain(&mut game);
+    assert_eq!(game.state.players[0].life, 21);
+    assert_eq!(game.state.players[1].life, 19);
+    assert_eq!(game.state.players[0].cards_drawn_this_turn, drawn + 1);
+    assert_eq!(stats(&game, bearer), (5, 4));
+}
+
+#[test]
+fn support_mission_quest_threshold_applies_to_the_fifth_actual_entrant() {
+    let mut game = scenario(Player::P0);
+    let mission = put(&mut game, Player::P0, "Support Mission", Zone::Battlefield);
+    for index in 1..=5 {
+        let entrant = put(&mut game, Player::P0, "Bear Cub", Zone::Hand);
+        cast(&mut game, entrant, None);
+        drain(&mut game);
+        assert_eq!(game.counter_count(mission, CounterKind::Quest), index);
+        assert_eq!(
+            game.counter_count(entrant, CounterKind::PlusOne),
+            if index == 5 { 2 } else { 1 }
+        );
+    }
+}
+
+#[test]
+fn support_mission_uses_last_quest_count_when_source_leaves_before_resolution() {
+    for (prior, expected) in [(4, 1), (5, 2)] {
+        let mut game = scenario(Player::P0);
+        let mission = put(&mut game, Player::P0, "Support Mission", Zone::Battlefield);
+        game.add_counter(mission, CounterKind::Quest, prior);
+        let entrant = put(&mut game, Player::P0, "Bear Cub", Zone::Hand);
+        cast(&mut game, entrant, None);
+        act(&mut game, Action::Pass);
+        act(&mut game, Action::Pass);
+        assert_eq!(game.object_view(entrant).zone, Zone::Battlefield);
+        game.move_object(mission, Zone::Graveyard);
+        drain(&mut game);
+        assert_eq!(game.counter_count(entrant, CounterKind::PlusOne), expected);
+    }
+}
