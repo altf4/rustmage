@@ -27,6 +27,8 @@ pub enum HandChoiceKind {
     },
     /// Mandatory permanent unlinked exile of a card with no land type.
     ExileRevealedNonland,
+    LookMayExileNonlandWithPlaySurcharge(std::num::NonZeroU32),
+    LookMayExileNonlandThenVictimDraw,
     ExileRevealedNonlandCast,
     ExileRevealedNonlandReward {
         maximum: u64,
@@ -62,6 +64,8 @@ impl HandChoiceKind {
                 | Self::LookDiscardNonland
                 | Self::DiscardRevealedNonlandOrMoveExile
                 | Self::LookMayExileUntilSourceLeaves
+                | Self::LookMayExileNonlandWithPlaySurcharge(_)
+                | Self::LookMayExileNonlandThenVictimDraw
                 | Self::RevealOptional { .. }
         )
     }
@@ -507,6 +511,43 @@ impl Game {
         });
         true
     }
+    pub(super) fn start_private_hand_exile_nonland_with_play_surcharge(
+        &mut self,
+        item: &SpellView,
+        surcharge: std::num::NonZeroU32,
+    ) -> bool {
+        self.start_private_hand_exile_nonland(
+            item,
+            HandChoiceKind::LookMayExileNonlandWithPlaySurcharge(surcharge),
+        )
+    }
+    pub(super) fn start_private_hand_exile_nonland(
+        &mut self,
+        item: &SpellView,
+        kind: HandChoiceKind,
+    ) -> bool {
+        let Some(victim) = self.program_players(PlayerSet::Targeted, item).next() else {
+            return false;
+        };
+        let hand = self.exact_hand(victim);
+        if hand.is_empty() {
+            return false;
+        }
+        self.set_hand_interaction(HandInteraction {
+            kind,
+            actor: item.controller,
+            controller: item.controller,
+            victim: Some(victim),
+            source: item
+                .source
+                .expect("object-backed private hand choice")
+                .object,
+            required: 0,
+            selected: Vec::new(),
+            candidates: hand,
+        });
+        true
+    }
     pub(super) fn start_revealed_hand_exile_nonland(
         &mut self,
         item: &SpellView,
@@ -560,7 +601,9 @@ impl Game {
                 in_hand && self.has_subtype(reference.card, subtype)
             }
             HandChoiceKind::DeployCreatures | HandChoiceKind::DeployPermanents => unreachable!(),
-            HandChoiceKind::LookDiscardNonland => {
+            HandChoiceKind::LookDiscardNonland
+            | HandChoiceKind::LookMayExileNonlandWithPlaySurcharge(_)
+            | HandChoiceKind::LookMayExileNonlandThenVictimDraw => {
                 in_hand && self.current_kinds(reference.card) & 2 == 0
             }
             HandChoiceKind::LookDiscardDraw
@@ -753,6 +796,18 @@ impl Game {
                 | HandChoiceKind::ExileRevealedNonland => {
                     self.move_object(object.card, Zone::Exile);
                 }
+                HandChoiceKind::LookMayExileNonlandWithPlaySurcharge(surcharge) => {
+                    let event = self.move_object(object.card, Zone::Exile);
+                    if event.moved && event.destination == Zone::Exile {
+                        self.grant_taxed_exile_play(event.before.owner, event.after, surcharge);
+                    }
+                }
+                HandChoiceKind::LookMayExileNonlandThenVictimDraw => {
+                    let event = self.move_object(object.card, Zone::Exile);
+                    if event.moved && event.destination == Zone::Exile {
+                        self.draw_many(event.before.owner, 1);
+                    }
+                }
                 HandChoiceKind::ExileRevealedNonlandReward { maximum, token } => {
                     let mana_value = self.object_mana_value(object.card);
                     self.move_object(object.card, Zone::Exile);
@@ -921,6 +976,8 @@ impl Game {
                 HandChoiceKind::LookDiscardDraw
                     | HandChoiceKind::LookDiscardNonland
                     | HandChoiceKind::LookMayExileUntilSourceLeaves
+                    | HandChoiceKind::LookMayExileNonlandWithPlaySurcharge(_)
+                    | HandChoiceKind::LookMayExileNonlandThenVictimDraw
             )
             .then(|| {
                 interaction

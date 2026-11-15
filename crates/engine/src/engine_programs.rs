@@ -7941,6 +7941,19 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::LookTargetHandMayExileNonlandWithPlaySurcharge(surcharge) => {
+                    if self.start_private_hand_exile_nonland_with_play_surcharge(&item, surcharge) {
+                        return;
+                    }
+                }
+                Instruction::LookTargetHandMayExileNonlandThenVictimDraw => {
+                    if self.start_private_hand_exile_nonland(
+                        &item,
+                        hand_choices::HandChoiceKind::LookMayExileNonlandThenVictimDraw,
+                    ) {
+                        return;
+                    }
+                }
                 Instruction::RevealTargetHandExileNonland
                 | Instruction::RevealTargetHandExileNonlandCastIfGift
                 | Instruction::RevealTargetHandExileNonlandReward { .. } => {
@@ -8875,6 +8888,7 @@ impl Game {
                     });
                 }
                 Instruction::CreateCopyToken { subject, amount }
+                | Instruction::CreateTappedCopyToken { subject, amount }
                 | Instruction::CreateCopyTokenWithExceptions {
                     subject, amount, ..
                 } => {
@@ -8884,7 +8898,15 @@ impl Game {
                         {
                             recipe = recipe.with_exceptions(exceptions);
                         }
-                        self.stage_copy_creation(item.controller, recipe, u128::from(amount));
+                        if matches!(instruction, Instruction::CreateTappedCopyToken { .. }) {
+                            self.stage_tapped_copy_creation(
+                                item.controller,
+                                recipe,
+                                u128::from(amount),
+                            );
+                        } else {
+                            self.stage_copy_creation(item.controller, recipe, u128::from(amount));
+                        }
                     }
                 }
                 Instruction::CreateCopyTokenUntilNextEndStep {
@@ -11490,6 +11512,12 @@ impl Game {
                         resolution.pc += skip;
                     }
                 }
+                Instruction::IfRememberedDrawsBelow { minimum, skip } => {
+                    let resolution = self.state.resolving.as_mut().unwrap();
+                    if resolution.remembered_draws.take().unwrap_or(0) < u64::from(minimum) {
+                        resolution.pc += skip;
+                    }
+                }
                 Instruction::DrawGreatestCreaturePowerRemember => {
                     let player = item.controller;
                     self.state.resolving.as_mut().unwrap().remembered_draws = Some(0);
@@ -11962,6 +11990,15 @@ impl Game {
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
+                Instruction::PutCounterBearingControlledCreatureCounters { kind, amount } => {
+                    let changes = self
+                        .player_creature_recipients(PlayerSet::Controller, &item)
+                        .into_iter()
+                        .filter(|&id| self.counter_amounts(id).has_any())
+                        .map(|id| (self.object_ref(id), Counters::of(kind, u64::from(amount))))
+                        .collect();
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
+                }
                 Instruction::GrantLandManaUntilSourceCast => {
                     self.grant_land_mana_until_paid_source_cast(&item)
                 }
@@ -12350,6 +12387,11 @@ impl Game {
                     power,
                     toughness,
                 } => self.set_base_stats(&item, subject, power, toughness),
+                Instruction::SetBaseStatsPermanent {
+                    subject,
+                    power,
+                    toughness,
+                } => self.set_permanent_base_stats(&item, subject, power, toughness),
                 Instruction::SetBaseStatsFromSource { subject } => {
                     self.set_base_stats_from_source(&item, subject);
                 }

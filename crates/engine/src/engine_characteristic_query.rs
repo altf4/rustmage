@@ -796,6 +796,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                             keywords = keywords.union(grant)
                         }
                         StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                        | StaticAbilityFragment::ControlledSubtypeKeywordsOnYourTurn { .. }
                         | StaticAbilityFragment::ControlledKindAndSubtypeKeywords { .. } => {
                             if let Some(grant) = ability_evaluation::controlled_subtype_keywords(
                                 self,

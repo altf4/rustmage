@@ -268,7 +268,7 @@ impl Game {
         if p.is_some_and(|value| value.is_none()) || t.is_some_and(|value| value.is_none()) {
             return;
         }
-        self.set_base_stats_recipients(item, recipients, p.flatten(), t.flatten(), None);
+        self.set_base_stats_recipients(item, recipients, p.flatten(), t.flatten(), None, false);
     }
     pub(super) fn set_resolved_base_stats(
         &mut self,
@@ -312,6 +312,25 @@ impl Game {
         power: Option<i128>,
         toughness: Option<i128>,
     ) {
+        self.set_base_stats_with_duration(item, subject, power, toughness, false);
+    }
+    pub(super) fn set_permanent_base_stats(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+        power: Option<i128>,
+        toughness: Option<i128>,
+    ) {
+        self.set_base_stats_with_duration(item, subject, power, toughness, true);
+    }
+    fn set_base_stats_with_duration(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+        power: Option<i128>,
+        toughness: Option<i128>,
+        permanent: bool,
+    ) {
         let Some(source) = item.source else {
             return;
         };
@@ -345,7 +364,7 @@ impl Game {
                 })
                 .collect(),
         };
-        self.set_base_stats_recipients(item, recipients, power, toughness, None);
+        self.set_base_stats_recipients(item, recipients, power, toughness, None, permanent);
     }
 
     pub(super) fn suppress_targets_and_set_creature_base_until_next_turn(
@@ -370,6 +389,7 @@ impl Game {
             Some(power),
             Some(toughness),
             Some(item.controller),
+            false,
         );
     }
 
@@ -380,6 +400,7 @@ impl Game {
         power: Option<i128>,
         toughness: Option<i128>,
         expires_at_next_turn_of: Option<Player>,
+        permanent: bool,
     ) {
         if recipients.is_empty() {
             return;
@@ -397,7 +418,7 @@ impl Game {
                 toughness,
                 timestamp,
                 static_source: false,
-                permanent: false,
+                permanent,
                 expires_at_next_turn_of,
             });
         }

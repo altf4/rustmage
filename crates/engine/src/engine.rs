@@ -745,6 +745,7 @@ pub(super) struct EntryTurnFact {
     pub object: ObjectRef,
     pub controller: Player,
     pub zombie: bool,
+    pub equipment_or_spacecraft: bool,
 }
 
 #[doc(hidden)]
@@ -2247,6 +2248,9 @@ impl SpellView {
                         subject: Subject::Source,
                         ..
                     } | Instruction::CreateCopyToken {
+                        subject: Subject::Source,
+                        ..
+                    } | Instruction::CreateTappedCopyToken {
                         subject: Subject::Source,
                         ..
                     } | Instruction::CreateCopyTokensScaled {

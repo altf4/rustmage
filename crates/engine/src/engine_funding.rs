@@ -1768,6 +1768,7 @@ impl<'g> FundingState<'g> {
                                 keywords = keywords.union(grant)
                             }
                             StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                            | StaticAbilityFragment::ControlledSubtypeKeywordsOnYourTurn { .. }
                             | StaticAbilityFragment::ControlledKindAndSubtypeKeywords { .. } => {
                                 if let Some(grant) = ability_evaluation::controlled_subtype_keywords(
                                     self, *fragment, self.reference(source.id), target.id,

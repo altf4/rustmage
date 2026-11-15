@@ -3062,6 +3062,22 @@ impl Game {
     pub(super) fn stage_copy_creation(&mut self, player: Player, recipe: CopyRecipe, amount: u128) {
         self.stage_copy_creation_inner(player, recipe, amount, TokenCompletion::None);
     }
+    pub(super) fn stage_tapped_copy_creation(
+        &mut self,
+        player: Player,
+        recipe: CopyRecipe,
+        amount: u128,
+    ) {
+        if amount != 0 {
+            self.stage_copy_token_batch(TokenBatch::copy(
+                player,
+                recipe,
+                amount,
+                true,
+                TokenCompletion::None,
+            ));
+        }
+    }
     pub(super) fn stage_temporary_copy_creation(&mut self, item: &SpellView, recipe: CopyRecipe) {
         self.stage_copy_creation_inner(
             item.controller,

@@ -300,6 +300,7 @@ fn guard_uses_facts(guard: StepGuard) -> bool {
         guard,
         StepGuard::PermanentLeftBattlefieldThisTurn
             | StepGuard::ArtifactEnteredThisTurn
+            | StepGuard::EquipmentOrSpacecraftEnteredThisTurn
             | StepGuard::HeroEnteredOrAttackedThisTurn
             | StepGuard::PlayedFromOutsideOwnHandThisTurn
             | StepGuard::NoSpellCastFromOwnHandThisTurn
@@ -383,6 +384,8 @@ impl Game {
             {
                 entry.controller = controller;
                 entry.zombie = zombie;
+                entry.equipment_or_spacecraft = subtypes.has(object.card, "Equipment")
+                    || subtypes.has(object.card, "Spacecraft");
             }
             let kinds = self.current_kinds(id);
             let face_down = self.is_face_down(event.after);

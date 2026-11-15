@@ -486,6 +486,9 @@ impl Game {
             StepGuard::SourceDeclaredAttackThisCombat => {
                 return self.declared_attack_this_combat(source);
             }
+            StepGuard::SourceAttackedThisTurn => {
+                return self.state.attacked_this_turn.contains(&source);
+            }
             StepGuard::DeclaredAttackSubtypesAll(subtypes) => {
                 return self.declared_attack_subtypes_all(player, subtypes);
             }
@@ -501,6 +504,12 @@ impl Game {
             }
             StepGuard::VoidActive => return world.void_active_this_turn(),
             StepGuard::ArtifactEnteredThisTurn => return p.turn_facts.artifact_entered,
+            StepGuard::EquipmentOrSpacecraftEnteredThisTurn => {
+                return self.state.entered_this_turn.as_ref().is_some_and(|rows| {
+                    rows.iter()
+                        .any(|entry| entry.controller == player && entry.equipment_or_spacecraft)
+                });
+            }
             StepGuard::HeroEnteredOrAttackedThisTurn => {
                 return p.turn_facts.hero_entered || p.turn_facts.hero_attacked;
             }

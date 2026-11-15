@@ -448,6 +448,11 @@ pub enum StaticAbilityFragment {
         subtype: &'static str,
         keywords: Keywords,
     },
+    /// Grant to the controller's subtype permanents only during that player's turn.
+    ControlledSubtypeKeywordsOnYourTurn {
+        subtype: &'static str,
+        keywords: Keywords,
+    },
     /// Grant keywords to controlled permanents with both this card kind and subtype.
     ControlledKindAndSubtypeKeywords {
         kind: u16,
@@ -795,6 +800,8 @@ pub enum StaticAbilityFragment {
     CombatRestriction(u16, CombatRestriction),
     /// The source cannot be the sole declared attacker or blocker.
     CantAttackOrBlockAlone,
+    /// The source cannot be the sole declared attacker; blocking is unrestricted.
+    CantAttackAlone,
     /// Source attacks every combat when independently able to attack.
     AttacksEachCombat,
     /// Flying creatures cannot attack this controller or block their creatures.

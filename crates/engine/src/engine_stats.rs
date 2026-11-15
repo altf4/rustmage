@@ -113,6 +113,7 @@ impl Game {
                 object,
                 controller: self.state.objects[id as usize].controller,
                 zombie: false,
+                equipment_or_spacecraft: false,
             });
         }
         self.register_battlefield_providers(id);
@@ -461,6 +462,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::OtherControlledCreatureEntryCountersByStat { .. }
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::CantAttackOrBlockAlone
+                            | crate::cards::StaticAbilityFragment::CantAttackAlone
                             | crate::cards::StaticAbilityFragment::FlyingCombatRestriction
                             | crate::cards::StaticAbilityFragment::AuraEnchantedCantAttackController
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)
@@ -541,6 +543,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledOtherTappedLegendaryCreatureKeywords { .. }
                             | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywordsOnYourTurn { .. }
                             | crate::cards::StaticAbilityFragment::ControlledKindAndSubtypeKeywords { .. }
                             | crate::cards::StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
                             | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }

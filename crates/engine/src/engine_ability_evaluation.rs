@@ -20,6 +20,12 @@ pub(super) fn controlled_subtype_keywords<W: CharacteristicWorld + ?Sized>(
         StaticAbilityFragment::ControlledSubtypeKeywords { subtype, keywords } => {
             (0, subtype, keywords)
         }
+        StaticAbilityFragment::ControlledSubtypeKeywordsOnYourTurn { subtype, keywords } => {
+            if world.game().state.active != world.object(source.card).controller {
+                return None;
+            }
+            (0, subtype, keywords)
+        }
         StaticAbilityFragment::ControlledKindAndSubtypeKeywords {
             kind,
             subtype,
@@ -473,6 +479,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             keywords
         }
         StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+        | StaticAbilityFragment::ControlledSubtypeKeywordsOnYourTurn { .. }
         | StaticAbilityFragment::ControlledKindAndSubtypeKeywords { .. } => {
             controlled_subtype_keywords(world, *fragment, source, id)?
         }
@@ -1428,8 +1435,7 @@ impl Game {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ObjectView {
     pub(super) fn printed_abilities_available(&self) -> bool {
-        self.zone != Zone::PhasedOut
-            && self.abilities.as_ref().is_none_or(|value| value.printed)
+        self.zone != Zone::PhasedOut && self.abilities.as_ref().is_none_or(|value| value.printed)
     }
     pub(super) fn static_grant_available(
         &self,

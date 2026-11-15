@@ -179,14 +179,16 @@ impl Game {
                         && colors(*id).count_ones() >= 2
                 })
                 .count() as i128,
-            StatValue::CounterBearingCreatures => objects()
+            StatValue::CounterBearingCreatures | StatValue::CounterBearingPermanents => objects()
                 .filter(|(id, object)| {
                     object.zone == Zone::Battlefield
                         && object.controller == owner
-                        && kinds(*id, object) & 1 != 0
+                        && (value == StatValue::CounterBearingPermanents
+                            || kinds(*id, object) & 1 != 0)
                         && has_counters(*id)
                 })
-                .count() as i128,
+                .count()
+                as i128,
             StatValue::ControlledCreaturesWithCounter(kind)
             | StatValue::ControlledLandsWithCounter(kind) => {
                 let required = if matches!(value, StatValue::ControlledLandsWithCounter(_)) {
@@ -542,6 +544,12 @@ impl Game {
                             && o.zone == Zone::Battlefield
                     }),
             ),
+            StatValue::SourceNoncreature => i128::from(objects().any(|(id, object)| {
+                id == source.card
+                    && object.generation == source.generation
+                    && object.zone == Zone::Battlefield
+                    && kinds(id, object) & 1 == 0
+            })),
             StatValue::SourceUntapped => i128::from(objects().any(|(id, object)| {
                 id == source.card
                     && object.generation == source.generation

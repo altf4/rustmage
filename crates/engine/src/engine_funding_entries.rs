@@ -517,6 +517,9 @@ impl FundingState<'_> {
             StepGuard::SourceDeclaredAttackThisCombat => {
                 self.game.declared_attack_this_combat(source)
             }
+            StepGuard::SourceAttackedThisTurn => {
+                self.game.state.attacked_this_turn.contains(&source)
+            }
             StepGuard::DeclaredAttackSubtypesAll(subtypes) => {
                 self.game.declared_attack_subtypes_all(player, subtypes)
             }
@@ -530,6 +533,15 @@ impl FundingState<'_> {
             }
             StepGuard::VoidActive => self.void_active_this_turn,
             StepGuard::ArtifactEnteredThisTurn => state.turn_facts.artifact_entered,
+            StepGuard::EquipmentOrSpacecraftEnteredThisTurn => self
+                .game
+                .state
+                .entered_this_turn
+                .as_ref()
+                .is_some_and(|rows| {
+                    rows.iter()
+                        .any(|entry| entry.controller == player && entry.equipment_or_spacecraft)
+                }),
             StepGuard::HeroEnteredOrAttackedThisTurn => {
                 state.turn_facts.hero_entered || state.turn_facts.hero_attacked
             }
@@ -1875,6 +1887,7 @@ impl FundingState<'_> {
                         object: source,
                         controller: o.controller,
                         zombie: false,
+                        equipment_or_spacecraft: false,
                     });
                 if let Some(protector) = m.battle_protector {
                     next.entry_projection

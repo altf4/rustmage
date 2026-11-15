@@ -3265,6 +3265,11 @@ pub enum Instruction {
         subject: Subject,
         amount: u16,
     },
+    /// Create a tapped copy through the ordinary replacement-aware token batch.
+    CreateTappedCopyToken {
+        subject: Subject,
+        amount: u16,
+    },
     /// Create the resolved number of tokens with this subject's current copiable values.
     CreateCopyTokensScaled {
         subject: Subject,
@@ -4408,6 +4413,10 @@ pub enum Instruction {
     /// Reveal the targeted player's entire hand, then exile one nonland if able.
     /// The packet controller chooses; any land type excludes a card from selection.
     RevealTargetHandExileNonland,
+    /// Private look; choose up to one nonland, then its owner may play it with a tax.
+    LookTargetHandMayExileNonlandWithPlaySurcharge(std::num::NonZeroU32),
+    /// Private optional choice; only a successful exile lets that hand's owner draw.
+    LookTargetHandMayExileNonlandThenVictimDraw,
     RevealTargetHandExileNonlandCastIfGift,
     /// Exile the chosen nonland and create a token if its mana value is within the limit.
     RevealTargetHandExileNonlandReward {
@@ -5060,7 +5069,18 @@ pub enum Instruction {
         kind: CounterKind,
         amount: u32,
     },
+    /// One simultaneous placement on each controlled creature with any counter.
+    PutCounterBearingControlledCreatureCounters {
+        kind: CounterKind,
+        amount: u32,
+    },
     SetBaseStats {
+        subject: Subject,
+        power: Option<i128>,
+        toughness: Option<i128>,
+    },
+    /// A lasting layer-7b base P/T change on exact object incarnations.
+    SetBaseStatsPermanent {
         subject: Subject,
         power: Option<i128>,
         toughness: Option<i128>,
@@ -5686,6 +5706,11 @@ pub enum Instruction {
     IfNoRememberedDraws {
         skip: usize,
     },
+    /// Skip the next instructions if fewer draws actually completed in this effect.
+    IfRememberedDrawsBelow {
+        minimum: u16,
+        skip: usize,
+    },
     /// Lose life for the successful draws in the preceding remembered draw.
     LoseLifeRememberedDraws,
     AddCastEntryCounters {
@@ -6118,6 +6143,8 @@ pub enum StatValue {
     ControlledSuspectedSubtype(&'static str),
     /// Controlled creatures with at least one counter of any supported kind.
     CounterBearingCreatures,
+    /// Controlled battlefield permanents with any counter kind.
+    CounterBearingPermanents,
     ControlledCreaturesWithCounter(CounterKind),
     ControlledLandsWithCounter(CounterKind),
     /// Total counters of this kind on the controller's lands.
@@ -6177,6 +6204,8 @@ pub enum StatValue {
     LandsEnteredThisTurn,
     MountOrVehicleEntriesThisTurn,
     SourceAttacking,
+    /// The exact battlefield source currently lacks the creature card type.
+    SourceNoncreature,
     /// Exact battlefield source is untapped in the actual or projected world.
     SourceUntapped,
     /// Creatures attacking this player, excluding attacks on their permanents.
@@ -7514,6 +7543,8 @@ pub enum StepGuard {
     /// Either player warped a spell or a nonland permanent left this turn.
     VoidActive,
     ArtifactEnteredThisTurn,
+    /// An Equipment or Spacecraft permanent entered under this player this turn.
+    EquipmentOrSpacecraftEnteredThisTurn,
     HeroEnteredOrAttackedThisTurn,
     PlayedFromOutsideOwnHandThisTurn,
     NoSpellCastFromOwnHandThisTurn,
@@ -7544,6 +7575,8 @@ pub enum StepGuard {
     DeclaredAttackSubtypesAll(&'static [&'static str]),
     /// The exact source was declared an attacker during the current combat.
     SourceDeclaredAttackThisCombat,
+    /// The exact source incarnation was declared an attacker this turn.
+    SourceAttackedThisTurn,
     CreatureDied,
     OpponentControlledCreatureDied,
     OpponentLostLife,

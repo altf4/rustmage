@@ -545,13 +545,22 @@ impl Game {
             )
         })
     }
+    fn attack_requires_company(&self, id: CardId) -> bool {
+        self.active_rule_fragment(id, |fragment| {
+            matches!(
+                fragment,
+                crate::cards::StaticAbilityFragment::CantAttackOrBlockAlone
+                    | crate::cards::StaticAbilityFragment::CantAttackAlone
+            )
+        })
+    }
     pub(super) fn has_combat_company_rule(&self, player: Player) -> bool {
         self.state.static_sources.iter().copied().any(|id| {
-            self.state.objects[id as usize].controller == player && self.combat_requires_company(id)
+            self.state.objects[id as usize].controller == player && self.attack_requires_company(id)
         })
     }
     fn attack_declaration_has_company(&self, attacks: &[Attacker]) -> bool {
-        !matches!(attacks, [sole] if self.combat_requires_company(sole.card))
+        !matches!(attacks, [sole] if self.attack_requires_company(sole.card))
     }
     fn attack_requirement_score(&self, actor: Player, attacks: &[Attacker]) -> usize {
         let player_preference = self.global_attack_requirements()[actor.index()];
