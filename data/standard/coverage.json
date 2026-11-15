@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e0011eec2c174f85eb641311807f524a5dea929ae86326522e5b7b9cc42413f9",
+  "catalogue_version": "94353482f767e4501c72e17ff73c43e1b42d85b1ba5043924ab23748b07ca692",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5247,
-  "implemented_total": 5267,
+  "implemented_standard_cards": 5255,
+  "implemented_total": 5275,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 84,
-      "gated": 212
+      "complete": 92,
+      "gated": 204
     },
     "w17": {
       "total": 1,
@@ -41787,8 +41787,8 @@
     {
       "name": "Bat'leth",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/bat_leth.rs",
       "set": "trk"
     },
@@ -41819,8 +41819,8 @@
     {
       "name": "Boarding Action",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/boarding_action.rs",
       "set": "trk"
     },
@@ -41923,8 +41923,8 @@
     {
       "name": "Captain's Tutelage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/captain_s_tutelage.rs",
       "set": "trk"
     },
@@ -41939,16 +41939,16 @@
     {
       "name": "Cetacean Ops",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/cetacean_ops.rs",
       "set": "trk"
     },
     {
       "name": "Cha'DIch Investigator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/cha_dich_investigator.rs",
       "set": "trk"
     },
@@ -41979,8 +41979,8 @@
     {
       "name": "Cloistered Telepath",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/cloistered_telepath.rs",
       "set": "trk"
     },
@@ -42003,8 +42003,8 @@
     {
       "name": "Collective Drone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/collective_drone.rs",
       "set": "trk"
     },
@@ -42179,8 +42179,8 @@
     {
       "name": "David and Carol Marcus, Creators",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/david_and_carol_marcus_creators.rs",
       "set": "trk"
     },
