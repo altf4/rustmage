@@ -55,6 +55,44 @@ impl Game {
         self.stage_copy_recipes(item.controller, recipes, amount, false);
     }
 
+    pub(super) fn copy_each_target_temporary(
+        &mut self,
+        item: &SpellView,
+        exceptions: CopyExceptions,
+        keywords: Keywords,
+        exile_ability: u16,
+    ) {
+        let recipes = item
+            .targets
+            .iter()
+            .filter_map(|bound| {
+                let Target::Card(id) = bound.target else {
+                    return None;
+                };
+                let object = bound.object?;
+                (self.on_battlefield(id) && self.object_ref(id) == object).then(|| {
+                    self.copiable_recipe(object).with_exceptions(exceptions)
+                })
+            })
+            .collect();
+        self.stage_copy_recipes_with_completion(
+            item.controller,
+            recipes,
+            1,
+            false,
+            replacements::TokenCompletion::TemporaryTokens(Box::new(
+                temporary_tokens::TokenInstructions {
+                    item: item.clone(),
+                    keywords,
+                    attack: temporary_tokens::TokenAttack::None,
+                    cleanup: temporary_tokens::TokenCleanup::NextEndStepExile {
+                        ability: exile_ability,
+                    },
+                },
+            )),
+        );
+    }
+
     pub(super) fn copy_other_controlled_nonlands(&mut self, item: &SpellView) {
         let source = item.source.map(|source| source.object);
         let recipes = self

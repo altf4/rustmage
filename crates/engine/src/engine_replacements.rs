@@ -3211,7 +3211,7 @@ impl Game {
             TokenCompletion::None,
         );
     }
-    fn stage_copy_recipes_with_completion(
+    pub(super) fn stage_copy_recipes_with_completion(
         &mut self,
         player: Player,
         recipes: Vec<CopyRecipe>,

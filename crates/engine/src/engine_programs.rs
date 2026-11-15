@@ -9100,6 +9100,18 @@ impl Game {
                     let amount = self.item_amount(value, &item);
                     self.copy_each_target(&item, amount);
                 }
+                Instruction::CreateTemporaryCopiesOfEachTarget {
+                    exceptions,
+                    keywords,
+                    exile_ability,
+                } => {
+                    self.copy_each_target_temporary(
+                        &item,
+                        exceptions,
+                        keywords,
+                        exile_ability,
+                    );
+                }
                 Instruction::CreateCounteredCopyToken {
                     subject,
                     exceptions,

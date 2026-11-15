@@ -3319,6 +3319,13 @@ pub enum Instruction {
     },
     /// Create this many copies of each still-legal permanent target in one batch.
     CreateCopiesOfEachTarget(AmountValue),
+    /// Freeze each surviving target's copy recipe, then create one simultaneous
+    /// group with copiable exceptions, temporary keywords and end-step exile.
+    CreateTemporaryCopiesOfEachTarget {
+        exceptions: CopyExceptions,
+        keywords: Keywords,
+        exile_ability: u16,
+    },
     /// Skip instructions unless this is the specified successful resolution this turn.
     IfThisAbilityResolutionNumber {
         number: u64,
