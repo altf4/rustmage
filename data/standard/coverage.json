@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "75e05446ccd8d540be838aae38fe97573cf656db2077c6dcc7fac607b89f0c5d",
+  "catalogue_version": "0a5ec0185c8e5afe9695838f2d2fe573469122515501deba9f62e87d4eaa0999",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5452,
-  "implemented_total": 5472,
+  "implemented_standard_cards": 5453,
+  "implemented_total": 5473,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 289,
-      "gated": 7
+      "complete": 290,
+      "gated": 6
     },
     "w17": {
       "total": 1,
@@ -42243,8 +42243,8 @@
     {
       "name": "Dominion Saboteur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/dominion_saboteur.rs",
       "set": "trk"
     },
