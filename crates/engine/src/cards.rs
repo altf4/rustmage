@@ -1456,6 +1456,8 @@ pub struct SearchSpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum CostMatch {
     Kinds(u16),
+    /// Require every listed live card-type bit on one cost object.
+    AllKinds(u16),
     Token,
     Subtype(&'static str),
     Legendary,
@@ -2007,6 +2009,7 @@ impl EffectChoiceKind {
             }
             Self::FilteredCost { any, .. } => any.iter().any(|predicate| match predicate {
                 CostMatch::Kinds(mask) => kinds & mask != 0,
+                CostMatch::AllKinds(mask) => kinds & mask == *mask,
                 CostMatch::Token => token,
                 CostMatch::Subtype(name) => subtypes.has(card, name),
                 CostMatch::Legendary => legendary(),
@@ -4097,6 +4100,8 @@ pub enum Instruction {
     },
     /// Destroy all creatures, remembering the controller's creature cards actually put into their graveyard.
     DestroyAllCreaturesRememberOwned,
+    /// Destroy one simultaneous creature group excluding any of these live type bits.
+    DestroyCreaturesWithoutKinds(u16),
     /// Change the status of every current permanent of any listed kind in one event.
     PhaseOutAll(u16),
     /// Simultaneously return the controller's nonland permanent cards.
@@ -5996,6 +6001,9 @@ pub enum AmountValue {
         maximum: i32,
         other: bool,
     },
+    /// Signed sum of current powers for the resolving controller's creatures,
+    /// floored at zero for nonnegative scalar comparisons.
+    ControlledTotalCreaturePower,
     /// Exact cards retained by a delayed step packet and still in exile.
     DelayedExiledCardCount,
     Sum(&'static [AmountValue]),

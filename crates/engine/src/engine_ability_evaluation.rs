@@ -681,6 +681,7 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
                     group.fragments.iter().any(|fragment| matches!(
                         fragment,
                         StaticAbilityFragment::SourceEntryModeActivation { .. }
+                            | StaticAbilityFragment::ControlledCreatureCounterRule { .. }
                             | StaticAbilityFragment::SourceMaxSpeedActivation(_)
                             | StaticAbilityFragment::SourceConditionalAttackTrigger { .. }
                             | StaticAbilityFragment::ControlledPlaneswalkerActivation(_)

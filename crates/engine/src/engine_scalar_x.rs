@@ -534,6 +534,21 @@ impl Game {
                     })
                     .count() as u128
             }
+            AmountValue::ControlledTotalCreaturePower => {
+                let query = self.characteristic_query();
+                self.state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(id, object)| {
+                        object.zone == Zone::Battlefield
+                            && object.controller == item.controller
+                            && ability_world::CharacteristicWorld::kinds(&query, *id as CardId) & 1 != 0
+                    })
+                    .map(|(id, _)| query.stats(id as CardId).power)
+                    .fold(0i128, i128::saturating_add)
+                    .max(0) as u128
+            }
             AmountValue::UntapStepCount => item.event_object.as_ref().map_or(0, |event| {
                 if let EventObjectFacts::UntapStepCount(amount) = event.facts {
                     u128::from(amount)

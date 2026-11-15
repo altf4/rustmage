@@ -170,6 +170,25 @@ impl Game {
         self.destroy_objects_outcome(objects);
     }
 
+    pub(super) fn destroy_creatures_without_kinds(&mut self, excluded: u16) {
+        // Sample all live types before attempting one simultaneous destruction.
+        let query = self.characteristic_query();
+        let objects = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                let id = id as CardId;
+                (object.zone == Zone::Battlefield
+                    && ability_world::CharacteristicWorld::kinds(&query, id) & 1 != 0
+                    && ability_world::CharacteristicWorld::kinds(&query, id) & excluded == 0)
+                    .then(|| self.object_ref(id))
+            })
+            .collect::<Vec<_>>();
+        self.destroy_objects_outcome(objects);
+    }
+
     pub(super) fn destroy_creatures_recording_graveyard(
         &mut self,
         maximum_toughness: Option<i128>,
