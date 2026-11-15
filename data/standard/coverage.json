@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "7747ee079855f41d91fc0c8a2fecbfb837dccb50bf18eabe7529d7eb4776af43",
+  "catalogue_version": "cec178730267ed0150731bd0a5c731fbded925eb84c01bedf38e2201edffa7db",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5308,
-  "implemented_total": 5328,
+  "implemented_standard_cards": 5334,
+  "implemented_total": 5354,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 145,
-      "gated": 151
+      "complete": 171,
+      "gated": 125
     },
     "w17": {
       "total": 1,
@@ -41723,8 +41723,8 @@
     {
       "name": "Anthropological Mission",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/anthropological_mission.rs",
       "set": "trk"
     },
@@ -41763,8 +41763,8 @@
     {
       "name": "Astute Terraformer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/astute_terraformer.rs",
       "set": "trk"
     },
@@ -41803,8 +41803,8 @@
     {
       "name": "Beckett Mariner, Impetuous Ensign",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/beckett_mariner_impetuous_ensign.rs",
       "set": "trk"
     },
@@ -42307,16 +42307,16 @@
     {
       "name": "Elim Garak, Simple Tailor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/elim_garak_simple_tailor.rs",
       "set": "trk"
     },
     {
       "name": "Emergency Holographic Crew",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/emergency_holographic_crew.rs",
       "set": "trk"
     },
@@ -42331,8 +42331,8 @@
     {
       "name": "Encounter the Unknown",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/encounter_the_unknown.rs",
       "set": "trk"
     },
@@ -42403,24 +42403,24 @@
     {
       "name": "Federation Outpost",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/federation_outpost.rs",
       "set": "trk"
     },
     {
       "name": "Federation Probe",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/federation_probe.rs",
       "set": "trk"
     },
     {
       "name": "Federation Resupply",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/federation_resupply.rs",
       "set": "trk"
     },
@@ -42435,32 +42435,32 @@
     {
       "name": "Final Frontier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/final_frontier.rs",
       "set": "trk"
     },
     {
       "name": "First Contact",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/first_contact.rs",
       "set": "trk"
     },
     {
       "name": "Free Borg Revolutionaries",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/free_borg_revolutionaries.rs",
       "set": "trk"
     },
     {
       "name": "Fugitive Listener",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/fugitive_listener.rs",
       "set": "trk"
     },
@@ -42475,16 +42475,16 @@
     {
       "name": "Gaseous Anomaly",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/gaseous_anomaly.rs",
       "set": "trk"
     },
     {
       "name": "General Chang, Cold Warrior",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/general_chang_cold_warrior.rs",
       "set": "trk"
     },
@@ -42507,8 +42507,8 @@
     {
       "name": "Georgiou, Terran Emperor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/georgiou_terran_emperor.rs",
       "set": "trk"
     },
@@ -42531,8 +42531,8 @@
     {
       "name": "Grand Nagus Zek",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/grand_nagus_zek.rs",
       "set": "trk"
     },
@@ -42595,8 +42595,8 @@
     {
       "name": "Highly Illogical",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/highly_illogical.rs",
       "set": "trk"
     },
@@ -42627,8 +42627,8 @@
     {
       "name": "Hologram Janeway",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/hologram_janeway.rs",
       "set": "trk"
     },
@@ -42651,8 +42651,8 @@
     {
       "name": "Hoshi Sato, Exolinguist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/hoshi_sato_exolinguist.rs",
       "set": "trk"
     },
@@ -42699,8 +42699,8 @@
     {
       "name": "Interstellar Effigy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/interstellar_effigy.rs",
       "set": "trk"
     },
@@ -42731,8 +42731,8 @@
     {
       "name": "Jett Reno, Problem Solver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/jett_reno_problem_solver.rs",
       "set": "trk"
     },
@@ -42779,8 +42779,8 @@
     {
       "name": "Kirk, Commanding Officer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/kirk_commanding_officer.rs",
       "set": "trk"
     },
@@ -43819,8 +43819,8 @@
     {
       "name": "U.S.S. Discovery, at Black Alert",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/u_s_s_discovery_at_black_alert.rs",
       "set": "trk"
     },
@@ -43851,16 +43851,16 @@
     {
       "name": "U.S.S. Reliant, From Hell's Heart",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/u_s_s_reliant_from_hell_s_heart.rs",
       "set": "trk"
     },
     {
       "name": "U.S.S. Voyager, Lone Wanderer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/u_s_s_voyager_lone_wanderer.rs",
       "set": "trk"
     },
