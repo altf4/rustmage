@@ -12,9 +12,57 @@ fn finish(game: &mut Game) {
             && game.state.resolving.is_none() && game.state.pending_triggers.is_empty() {
             return;
         }
-        choose(game, |action| matches!(action, Action::Pass | Action::PutTrigger { .. }));
+        choose(game, |action| matches!(action,
+            Action::Pass | Action::PutTrigger { .. }
+            | Action::ArrangeLibrary { destination: LibraryDestination::Top, .. }
+        ));
     }
     panic!("resolution did not finish");
+}
+
+#[test]
+fn tell_me_what_you_see_opponent_choice_and_dilemma_bounce_are_independent() {
+    for opponent_accepts in [false, true] {
+        let mut game = scenario(Player::P0);
+        let enchantment = put(&mut game, Player::P0, "Tell Me What You See", Zone::Hand);
+        cast(&mut game, enchantment, None);
+        for _ in 0..24 {
+            let actions = game.legal_actions();
+            if actions.contains(&Action::ChooseTarget { target: Target::Player(Player::P1) }) {
+                act(&mut game, Action::ChooseTarget { target: Target::Player(Player::P1) });
+            } else if actions.contains(&Action::FinishStackTargets) {
+                act(&mut game, Action::FinishStackTargets);
+            } else if matches!(game.state.pending, Pending::EffectOptional { .. }) {
+                break;
+            } else {
+                choose(&mut game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+            }
+        }
+        assert_eq!(game.actor(), Some(Player::P1));
+        act(&mut game, Action::ChooseOptional { accept: opponent_accepts });
+        finish(&mut game);
+        assert_eq!(game.state.players[0].cards_drawn_this_turn, u64::from(opponent_accepts));
+        assert_eq!(game.state.players[1].life, if opponent_accepts { 20 } else { 16 });
+        assert_eq!(game.state.players[0].scried_or_surveilled_this_turn, !opponent_accepts);
+    }
+
+    let mut game = scenario(Player::P0);
+    let enchantment = put(&mut game, Player::P0, "Tell Me What You See", Zone::Battlefield);
+    let grave = put(&mut game, Player::P1, "Shock", Zone::Graveyard);
+    let dilemma = put(&mut game, Player::P0, "Test of Courage", Zone::Hand);
+    act(&mut game, Action::AnnounceCast { card: dilemma });
+    act(&mut game, Action::ChooseMode { mode: 0 });
+    act(&mut game, Action::ChooseTarget { target: Target::Card(grave) });
+    if game.legal_actions().contains(&Action::FinishTargets) { act(&mut game, Action::FinishTargets); }
+    pay(&mut game);
+    for _ in 0..24 {
+        if matches!(game.state.pending, Pending::EffectOptional { .. }) { break; }
+        choose(&mut game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+    }
+    assert_eq!(game.actor(), Some(Player::P0));
+    act(&mut game, Action::ChooseOptional { accept: true });
+    finish(&mut game);
+    assert_eq!(game.object_view(enchantment).zone, Zone::Hand);
 }
 const ADD_LORE: CardRules = CardRules {
     effect: Effect::Spell(
