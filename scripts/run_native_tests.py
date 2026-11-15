@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Link integration tests against cached engine/set libraries and run serially."""
 import argparse
+import errno
 import json
 import math
 import re
 import os
 from pathlib import Path
 import signal
+import stat
 import subprocess
 import sys
 import tempfile
@@ -187,6 +189,24 @@ def run_command(command, *, env, log, timeout):
                 orphaned_processes=orphaned, seconds=time.monotonic()-started, log=str(log))
 
 
+def list_compiled_tests(binary, *, target, filter_name, env, log):
+    command = [str(binary), filter_name, '--list', '--format=terse']
+    try:
+        return run_command(command, env=env, log=log, timeout=5)
+    except PermissionError as error:
+        resolved_binary = binary.resolve()
+        if (sys.platform == 'win32' or error.errno != errno.EACCES
+                or not error.filename or Path(error.filename).resolve() != resolved_binary
+                or target.resolve() not in resolved_binary.parents
+                or not stat.S_ISREG(binary.stat().st_mode)):
+            raise
+        # A newly built macOS Cargo artifact can arrive without its owner execute bit.
+        # Repair only that compiled test file, then make one ordinary bounded retry.
+        binary.chmod(binary.stat().st_mode | stat.S_IXUSR)
+        print(f'Retrying compiled test executable after EACCES: {binary}', flush=True)
+        return run_command(command, env=env, log=log, timeout=5)
+
+
 def interrupted(signum, frame):
     raise KeyboardInterrupt
 
@@ -307,8 +327,8 @@ def main():
         complete = True
         for index, binary in enumerate(binaries):
             listing = args.report.with_name(f'native-list-{index}.log')
-            listed = run_command([str(binary), args.filter, '--list', '--format=terse'],
-                                 env=env, log=listing, timeout=5)
+            listed = list_compiled_tests(binary, target=target, filter_name=args.filter,
+                                         env=env, log=listing)
             if listed['exit']:
                 return 1
             names = [line.removesuffix(': test') for line in listing.read_text().splitlines()

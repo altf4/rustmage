@@ -4,6 +4,7 @@ import io
 import json
 import os
 from pathlib import Path
+import stat
 import subprocess
 import sys
 import tempfile
@@ -24,6 +25,22 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class AssuranceRunnerTests(unittest.TestCase):
+    @unittest.skipIf(os.name == 'nt', 'POSIX executable mode required')
+    def test_native_listing_repairs_missing_owner_execute_bit(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            target = Path(temporary)/'target'
+            binary = target/'debug/deps/fixture'
+            binary.parent.mkdir(parents=True)
+            binary.write_text('#!/bin/sh\nprintf "fixture_case: test\\n"\n')
+            binary.chmod(0o600)
+            log = Path(temporary)/'listing.log'
+            with patch.object(native, 'group_members', return_value=set()):
+                result = native.list_compiled_tests(
+                    binary, target=target, filter_name='', env=os.environ.copy(), log=log)
+            self.assertEqual(result['exit'], 0)
+            self.assertTrue(binary.stat().st_mode & stat.S_IXUSR)
+            self.assertIn('fixture_case: test', log.read_text())
+
     def test_guard_starts_without_unowned_peers(self):
         peers = active_peers()
         self.assertFalse(peers, native.process_details(peers))
