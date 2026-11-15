@@ -173,16 +173,32 @@ impl Game {
             return false;
         }
         let object = &self.state.objects[source.card as usize];
-        object.zone == Zone::Battlefield
-            && object.controller == actor
-            && object.card.static_ability_groups().iter().any(|group| {
-                group.fragments.iter().any(|fragment| {
-                    kind.matches(fragment)
-                        && self.continuous_fragment_available(source.card, |found| {
-                            std::ptr::eq(found, fragment)
-                        })
-                })
+        if object.zone != Zone::Battlefield
+            || object.controller != actor
+            || self.is_face_down(source)
+        {
+            return false;
+        }
+        let definition = self.copiable_recipe(source).definition;
+        if definition != object.card {
+            // A Clone-like copy keeps its physical card identity. The copied
+            // definition may have this static permission even when the
+            // printed static-source index does not contain this object.
+            return self.printed_abilities_available(source.card)
+                && definition
+                    .static_ability_groups()
+                    .iter()
+                    .flat_map(|group| group.fragments)
+                    .any(|fragment| kind.matches(fragment));
+        }
+        definition.static_ability_groups().iter().any(|group| {
+            group.fragments.iter().any(|fragment| {
+                kind.matches(fragment)
+                    && self.continuous_fragment_available(source.card, |found| {
+                        std::ptr::eq(found, fragment)
+                    })
             })
+        })
     }
 
     pub(super) fn source_play_sources(
@@ -190,15 +206,23 @@ impl Game {
         actor: Player,
         kind: SourcePlayKind,
     ) -> Vec<ObjectRef> {
-        self.state
-            .static_sources
-            .iter()
-            .filter_map(|&id| {
-                let source = self.object_ref(id);
-                self.source_play_available(actor, source, kind)
-                    .then_some(source)
-            })
-            .collect()
+        let copied = self
+            .state
+            .copy_recipes
+            .as_ref()
+            .into_iter()
+            .flat_map(|rows| rows.iter().map(|row| row.object.card));
+        let mut sources = Vec::new();
+        for id in self.state.static_sources.iter().copied().chain(copied) {
+            if sources.iter().any(|source: &ObjectRef| source.card == id) {
+                continue;
+            }
+            let source = self.object_ref(id);
+            if self.source_play_available(actor, source, kind) {
+                sources.push(source);
+            }
+        }
+        sources
     }
 
     pub(super) fn use_source_play(&mut self, source: ObjectRef, kind: SourcePlayKind) {

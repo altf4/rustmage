@@ -374,6 +374,46 @@ fn holodeck_outside_spell_can_use_paid_alternative_and_commit_the_pool_card() {
     );
 }
 
+#[test]
+fn copied_static_provider_switches_between_overflow_and_holodeck_permissions() {
+    let _rules = fixture_rules::activate(&[
+        (Card::GrizzlyBears, &OVERFLOW),
+        (Card::HillGiant, &HOLODECK),
+    ]);
+    let mut game = with_outside(Player::P0);
+    let source = put(&mut game, Player::P0, "Bear Cub", Zone::Battlefield);
+    let card = put(&mut game, Player::P0, "Burnished Hart", Zone::Graveyard);
+    let source_ref = game.object_ref(source);
+    let overflow = graveyard_action(
+        &game,
+        card,
+        source,
+        SourcePlayKind::GraveyardArtifactCreatureFinality,
+    );
+    let outside = Action::SelectOutsideSourcePlay {
+        source: source_ref,
+        selection: outside_choices::Selection::Pool(0),
+    };
+    reject(&mut game, overflow.clone());
+    reject(&mut game, outside.clone());
+    game.set_copy_recipe(source_ref, CopyRecipe::new(Card::GrizzlyBears));
+    assert!(game.legal_actions().contains(&overflow));
+    assert!(!game.legal_actions().contains(&outside));
+    let checkpoint = game.snapshot();
+    game.set_copy_recipe(source_ref, CopyRecipe::new(Card::HillGiant));
+    assert!(!game.legal_actions().contains(&overflow));
+    assert!(game.legal_actions().contains(&outside));
+    game.clear_copy_recipe(source_ref);
+    reject(&mut game, overflow.clone());
+    reject(&mut game, outside);
+    game.restore(&checkpoint).unwrap();
+    act(&mut game, overflow);
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(card).zone, Zone::Battlefield);
+    assert_eq!(game.counter_count(card, CounterKind::Finality), 1);
+}
+
 const ANY_CARD: SacrificeFilter = SacrificeFilter {
     keywords: Keywords::NONE,
     source_only: false,
