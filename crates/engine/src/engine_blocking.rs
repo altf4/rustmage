@@ -24,6 +24,9 @@ impl Game {
                         active()
                             && ability_world::CharacteristicWorld::name(self, blocker).is_empty()
                     }
+                    StaticAbilityFragment::CannotBeBlockedByArtifactCreatures => {
+                        active() && self.current_kinds(blocker) & 16 != 0
+                    }
                     _ => false,
                 }
             })

@@ -481,6 +481,10 @@ pub enum StaticAbilityFragment {
     /// The controller does not lose the state-based action for life at or below zero.
     CantLoseFromNonpositiveLife,
     QualifiedHexproof(SourceCharacteristicFilter),
+    /// This permanent cannot be the target of an ability from an artifact source
+    /// controlled by an opponent; this is not hexproof and cannot be disabled as such.
+    CannotBeTargetedByOpposingArtifactAbilities,
+    CannotBeBlockedByArtifactCreatures,
     /// Opponents' creatures can be targeted through hexproof and their ward doesn't trigger.
     OpposingCreatureHexproofAndWardDisabled,
     ControlledSpellsUncounterable(u16),

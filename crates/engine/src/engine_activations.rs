@@ -787,24 +787,14 @@ impl Game {
                             })
                     };
                     let modes = ability.modes();
+                    let packet = self.activation_packet(actor, card, index as u16);
                     let targets_available = ability.declares_target_value_x()
                         || modes.map_or_else(
-                            || {
-                                self.targets_available(
-                                    ability.targets,
-                                    actor,
-                                    self.object_ref(card),
-                                )
-                            },
+                            || self.item_targets_available(&packet, ability.targets),
                             |modes| {
-                                let packet = self.activation_packet(actor, card, index as u16);
                                 modes.iter().enumerate().any(|(mode_index, mode)| {
                                     self.modal_choice_unused(&packet, mode_index)
-                                        && self.targets_available(
-                                            mode.targets,
-                                            actor,
-                                            self.object_ref(card),
-                                        )
+                                        && self.item_targets_available(&packet, mode.targets)
                                 })
                             },
                         );
@@ -922,8 +912,9 @@ impl Game {
                                     return;
                                 }
                                 let plan = ability.targets;
+                                let packet = self.activation_packet(actor, card, index as u16);
                                 let Some(spec) = plan.single() else {
-                                    if self.targets_available(plan, actor, self.object_ref(card)) {
+                                    if self.item_targets_available(&packet, plan) {
                                         done = emit(Action::BeginActivate {
                                             card,
                                             ability: index as u16,
@@ -935,15 +926,10 @@ impl Game {
                                 };
                                 if spec.max > 1 || (spec.max > 0 && ability.cost.remove.is_some()) {
                                     let mut count = 0;
-                                    self.visit_targets(
-                                        spec.rule,
-                                        actor,
-                                        self.object_ref(card),
-                                        |_| {
+                                    self.visit_item_targets(&packet, spec.rule, |_| {
                                             count += 1;
                                             false
-                                        },
-                                    );
+                                        });
                                     if count >= usize::from(spec.min) {
                                         done = emit(Action::BeginActivate {
                                             card,
@@ -963,11 +949,7 @@ impl Game {
                                         });
                                     }
                                     if !done && spec.max > 0 {
-                                        done = self.visit_targets(
-                                            spec.rule,
-                                            actor,
-                                            self.object_ref(card),
-                                            |target| {
+                                        done = self.visit_item_targets(&packet, spec.rule, |target| {
                                                 emit(Action::Activate {
                                                     card,
                                                     ability: index as u16,
@@ -975,8 +957,7 @@ impl Game {
                                                     payment,
                                                     counter_payment: counter_payment.clone(),
                                                 })
-                                            },
-                                        );
+                                            });
                                     }
                                 }
                             },

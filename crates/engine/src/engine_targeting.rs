@@ -2177,6 +2177,40 @@ impl Game {
         }
     }
 
+    fn opposing_artifact_ability_blocks<W: CharacteristicWorld + ?Sized>(
+        &self,
+        world: &W,
+        id: CardId,
+        controller: Player,
+        source: ObjectRef,
+        qualification: Option<TargetSourceCharacteristics<'_>>,
+    ) -> bool {
+        let object = world.object(id);
+        if object.zone != Zone::Battlefield || object.controller == controller {
+            return false;
+        }
+        if !object.card.static_ability_groups().iter().any(|group| {
+            group.fragments.iter().any(|fragment| {
+                matches!(fragment,
+                    crate::cards::StaticAbilityFragment::CannotBeTargetedByOpposingArtifactAbilities)
+            })
+        }) {
+            return false;
+        }
+        let query = characteristic_query::CharacteristicQuery::in_world(world);
+        if !query.continuous_fragment_available(id, |fragment| {
+            matches!(fragment,
+                crate::cards::StaticAbilityFragment::CannotBeTargetedByOpposingArtifactAbilities)
+        }) {
+            return false;
+        }
+        let qualification = self.target_source_context(source, qualification);
+        qualification.is_some_and(|source| source.snapshot.is_some() && source.spell.is_none())
+            && self
+                .target_source_qualities(source, qualification)
+                .is_some_and(|(_, kinds)| kinds & 16 != 0)
+    }
+
     /// Only qualified recipients inspect source facts; ordinary targets keep their fast path.
     fn qualified_hexproof_blocks<W: CharacteristicWorld + ?Sized>(
         &self,
@@ -2800,6 +2834,15 @@ impl Game {
                 let Some(obj) = lookup(id) else {
                     return false;
                 };
+                if self.opposing_artifact_ability_blocks(
+                    world,
+                    id,
+                    controller,
+                    source,
+                    qualification,
+                ) {
+                    return false;
+                }
                 let battlefield_keywords =
                     (obj.zone == Zone::Battlefield).then(|| characteristics().keywords(id));
                 if battlefield_keywords.is_some_and(|keywords| {
