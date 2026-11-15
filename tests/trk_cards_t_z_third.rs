@@ -20,6 +20,16 @@ fn finish(game: &mut Game) {
     panic!("resolution did not finish");
 }
 
+fn advance_turn(game: &mut Game, current: Player) {
+    game.state.step = Step::End;
+    game.state.priority = current;
+    for _ in 0..16 {
+        if game.state.active != current { return; }
+        choose(game, |action| matches!(action, Action::Pass));
+    }
+    panic!("turn did not advance");
+}
+
 #[test]
 fn tell_me_what_you_see_opponent_choice_and_dilemma_bounce_are_independent() {
     for opponent_accepts in [false, true] {
@@ -126,6 +136,24 @@ fn naked_time_searches_basic_mountain_and_grants_entry_counters_only_this_turn()
     act(&mut game, Action::Sacrifice { object: mountain_ref });
     finish(&mut game);
     assert_eq!(game.object_view(mountain).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(saga).zone, Zone::Graveyard);
+
+    let after_saga = put(&mut game, Player::P0, "Bear Cub", Zone::Hand);
+    cast(&mut game, after_saga, None);
+    finish(&mut game);
+    assert_eq!(game.counter_count(after_saga, CounterKind::PlusOne), 1);
+    assert!(game.object_view(after_saga).keywords.contains(Keywords::HASTE));
+
+    advance_turn(&mut game, Player::P0);
+    advance_turn(&mut game, Player::P1);
+    game.state.step = Step::Main1;
+    game.state.priority = Player::P0;
+    game.state.players[Player::P0.index()].mana = [8; 6];
+    let next_turn = put(&mut game, Player::P0, "Bear Cub", Zone::Hand);
+    cast(&mut game, next_turn, None);
+    finish(&mut game);
+    assert_eq!(game.counter_count(next_turn, CounterKind::PlusOne), 0);
+    assert!(!game.object_view(next_turn).keywords.contains(Keywords::HASTE));
 }
 
 #[test]
