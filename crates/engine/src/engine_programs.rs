@@ -10018,6 +10018,7 @@ impl Game {
                 | Instruction::SearchDamageReceived(spec)
                 | Instruction::SearchTargetController(spec)
                 | Instruction::SearchTargetControllerWithEntryCounters { spec, .. }
+                | Instruction::SearchWithEntryCounters { spec, .. }
                 | Instruction::SearchTargetPlayer(spec)
                 | Instruction::SearchTargetPlayerMovedCount(spec)
                 | Instruction::SearchRequired(spec)
@@ -10121,7 +10122,8 @@ impl Game {
                                 Instruction::SearchTargetControllerWithEntryCounters {
                                     amounts,
                                     ..
-                                } => amounts,
+                                }
+                                | Instruction::SearchWithEntryCounters { amounts, .. } => amounts,
                                 _ => &[],
                             },
                             minimum,
@@ -10697,6 +10699,19 @@ impl Game {
                         && self.state.objects[object.card as usize].zone == Zone::Exile
                     {
                         self.offer_exact_free_cast(item.controller, object, Zone::Exile, None);
+                        return;
+                    }
+                }
+                Instruction::CastRememberedExileFreeUpTo(_) => {
+                    let exiled = std::mem::take(&mut self.state.resolving.as_mut().unwrap().milled)
+                        .into_iter()
+                        .filter(|object| {
+                            self.object_ref(object.card) == *object
+                                && self.state.objects[object.card as usize].zone == Zone::Exile
+                        })
+                        .collect::<Vec<_>>();
+                    if !exiled.is_empty() {
+                        self.offer_repeated_exact_free_casts(item.controller, exiled, Zone::Exile);
                         return;
                     }
                 }

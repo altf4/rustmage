@@ -558,6 +558,11 @@ impl FundingState<'_> {
             StepGuard::AttachedControllerTurn => {
                 steps::attached_controller_turn(self, source, self.active)
             }
+            StepGuard::OtherControlledCreatureWithAttachedSubtype(subtype) => {
+                steps::other_controlled_creature_with_attached_subtype(
+                    self, source, player, subtype,
+                )
+            }
             StepGuard::YourTurn => self.active == player,
             StepGuard::YourMainPhase => {
                 self.active == player && matches!(self.game.state.step, Step::Main1 | Step::Main2)

@@ -4904,6 +4904,11 @@ pub enum Instruction {
         spec: SearchSpec,
         amounts: &'static [(CounterKind, u64)],
     },
+    /// Search your own library and put the result onto the battlefield with counters.
+    SearchWithEntryCounters {
+        spec: SearchSpec,
+        amounts: &'static [(CounterKind, u64)],
+    },
     /// The legal player target in the currently selected target group searches.
     SearchTargetPlayer(SearchSpec),
     /// Search up to the saved actual result of the preceding move instruction.
@@ -4948,6 +4953,8 @@ pub enum Instruction {
     SelectLibraryToExileRemember(LibrarySelectionEffect),
     /// Offer a free cast of the exact card saved by the preceding selection.
     CastRememberedExileFree,
+    /// Offer each exact card exiled by this resolving effect, with a live mana-value ceiling.
+    CastRememberedExileFreeUpTo(StatValue),
     /// Optionally cast one of the exact exiles free after at least this many actual exiles.
     /// Put the exact remaining exiled cards into hand after the offer.
     CastOneRememberedExileFreeThenRestToHand {
@@ -7597,6 +7604,8 @@ pub enum StepGuard {
     AnyPlayerCombatDamageAtLeast(u128),
     /// Trigger-time attachment relation; wrap the step event in When.
     AttachedControllerTurn,
+    /// At trigger time, another controlled creature has a permanent of this subtype attached.
+    OtherControlledCreatureWithAttachedSubtype(&'static str),
     PermanentLeftBattlefieldThisTurn,
     /// A permanent actually moved from the battlefield to this player's hand.
     PermanentReturnedToYourHandThisTurn,

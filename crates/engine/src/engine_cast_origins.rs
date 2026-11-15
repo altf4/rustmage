@@ -1297,6 +1297,20 @@ impl Game {
             return false;
         }
         let instruction = self.resolution_cast_instruction();
+        // The offer may outlive several completed casts. Re-evaluate a live
+        // characteristic ceiling before each choice, after their additional costs.
+        let live_mana_value_limit = match instruction {
+            Some(Instruction::CastRememberedExileFreeUpTo(value)) => self
+                .state
+                .resolving
+                .as_ref()
+                .and_then(|resolution| resolution.item.source)
+                .map(|source| {
+                    u64::try_from(self.stat_value(value, source.object, player).max(0))
+                        .unwrap_or(u64::MAX)
+                }),
+            _ => None,
+        };
         let exact_paid_resolution_offer =
             matches!(instruction, Some(Instruction::CastOneOwnedLinkedPaid(_)));
         let filter = match instruction {
@@ -1399,6 +1413,8 @@ impl Game {
                         && free
                             .maximum_mana_value
                             .is_none_or(|maximum| card.fixed_mana_value() < maximum)
+                        && live_mana_value_limit
+                            .is_none_or(|maximum| card.fixed_mana_value() <= maximum)
                         && free
                             .remaining_mana_value
                             .is_none_or(|left| card.fixed_mana_value() <= left)
