@@ -16,7 +16,12 @@ fn star_trek_creature_types_are_legal_choices_and_changeling_types() {
     assert!(!is_creature_type("Spacecraft"));
 
     let mut game = scenario(Player::P0);
-    let changeling = put(&mut game, Player::P0, "Three Tree Mascot", Zone::Battlefield);
+    let changeling = put(
+        &mut game,
+        Player::P0,
+        "Three Tree Mascot",
+        Zone::Battlefield,
+    );
     assert!(game.has_subtype(changeling, "Borg"));
     assert!(game.has_subtype(changeling, "Klingon"));
     assert!(!game.has_subtype(changeling, "Planet"));

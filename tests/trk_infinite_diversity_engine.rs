@@ -66,13 +66,20 @@ fn every_federation_type_makes_a_separate_free_cast_and_source_exiles() {
     };
     let checkpoint = game.snapshot();
     let revision = game.revision();
-    let index = game.legal_actions().iter().position(|action| *action == first).unwrap();
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|action| *action == first)
+        .unwrap();
     let mut indexed = game.clone();
     act(&mut game, first);
     indexed.apply_index(player, revision, index).unwrap();
     assert_eq!(game.snapshot(), indexed.snapshot());
     indexed.restore(&checkpoint).unwrap();
-    assert_eq!(indexed.apply_index(player, revision, index), Err(Error::StaleRevision));
+    assert_eq!(
+        indexed.apply_index(player, revision, index),
+        Err(Error::StaleRevision)
+    );
     if matches!(game.state.pending, Pending::PayCosts { .. }) {
         pay(&mut game);
     }

@@ -9,20 +9,36 @@ use support::*;
 const ADD_LORE: CardRules = CardRules {
     effect: Effect::Spell(
         TargetPlan::Single(TargetSpec::one(TargetRule::Object {
-            zone: TargetZone::Battlefield, kinds: 0, relation: 0,
-            other: false, nonland: false, tapped: false,
-            min_mana: 0, max_mana: u32::MAX,
+            zone: TargetZone::Battlefield,
+            kinds: 0,
+            relation: 0,
+            other: false,
+            nonland: false,
+            tapped: false,
+            min_mana: 0,
+            max_mana: u32::MAX,
         })),
-        &[Instruction::PutCounters { subject: Subject::Targets, kind: CounterKind::Lore, amount: 1 }],
+        &[Instruction::PutCounters {
+            subject: Subject::Targets,
+            kind: CounterKind::Lore,
+            amount: 1,
+        }],
     ),
     ..CardRules::EMPTY
 };
 
 fn drive(game: &mut Game) {
     for _ in 0..48 {
-        if game.state.pending == Pending::Priority && game.state.stack.is_empty()
-            && game.state.resolving.is_none() && game.state.pending_triggers.is_empty() { return; }
-        choose(game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+        if game.state.pending == Pending::Priority
+            && game.state.stack.is_empty()
+            && game.state.resolving.is_none()
+            && game.state.pending_triggers.is_empty()
+        {
+            return;
+        }
+        choose(game, |a| {
+            matches!(a, Action::Pass | Action::PutTrigger { .. })
+        });
     }
     panic!("resolution exceeded 48 actions: {:?}", game.state.pending);
 }
@@ -31,7 +47,9 @@ fn advance_turn(game: &mut Game, current: Player) {
     game.state.step = Step::End;
     game.state.priority = current;
     for _ in 0..16 {
-        if game.state.active != current { return; }
+        if game.state.active != current {
+            return;
+        }
         choose(game, |action| matches!(action, Action::Pass));
     }
     panic!("turn did not advance");
@@ -51,13 +69,20 @@ fn praxis_uses_one_six_name_count_and_only_preexisting_creatures_shrink() {
     }
     let ours = put(&mut game, Player::P0, "Hill Giant", Zone::Battlefield);
     let theirs = put(&mut game, Player::P1, "Hill Giant", Zone::Battlefield);
-    let spell = put(&mut game, Player::P0, "The Destruction of Praxis", Zone::Hand);
+    let spell = put(
+        &mut game,
+        Player::P0,
+        "The Destruction of Praxis",
+        Zone::Hand,
+    );
     cast(&mut game, spell, None);
     drive(&mut game);
     assert_eq!(game.object_view(ours).zone, Zone::Graveyard);
     assert_eq!(game.object_view(theirs).zone, Zone::Graveyard);
-    let tokens: Vec<_> = game.controlled_token_ids(Player::P0)
-        .filter(|&id| game.object_view(id).card == Card(6010)).collect();
+    let tokens: Vec<_> = game
+        .controlled_token_ids(Player::P0)
+        .filter(|&id| game.object_view(id).card == Card(6010))
+        .collect();
     assert_eq!(tokens.len(), 2);
     for token in tokens {
         assert_eq!(stats(&game, token), (2, 1));
@@ -95,28 +120,55 @@ fn needs_sacrifices_as_cast_cost_then_protects_creatures_and_player() {
 fn wrath_second_chapter_draws_only_for_actual_hand_exile_and_third_rejects_tokens() {
     let _rules = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &ADD_LORE)]);
     let mut game = scenario(Player::P0);
-    let victim = put(&mut game, Player::P1, "V'Ger, the Intruder", Zone::Battlefield);
+    let victim = put(
+        &mut game,
+        Player::P1,
+        "V'Ger, the Intruder",
+        Zone::Battlefield,
+    );
     let saga = put(&mut game, Player::P0, "The Wrath of Khan", Zone::Hand);
     cast(&mut game, saga, None);
     for _ in 0..24 {
-        if game.legal_actions().contains(&Action::ChooseTarget { target: Target::Card(victim) }) {
-            act(&mut game, Action::ChooseTarget { target: Target::Card(victim) });
+        if game.legal_actions().contains(&Action::ChooseTarget {
+            target: Target::Card(victim),
+        }) {
+            act(
+                &mut game,
+                Action::ChooseTarget {
+                    target: Target::Card(victim),
+                },
+            );
         } else if game.legal_actions().contains(&Action::FinishStackTargets) {
             act(&mut game, Action::FinishStackTargets);
-        } else if game.state.pending == Pending::Priority && game.state.stack.is_empty()
-            && game.state.pending_triggers.is_empty() && game.state.resolving.is_none() { break; }
-        else { choose(&mut game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. })); }
+        } else if game.state.pending == Pending::Priority
+            && game.state.stack.is_empty()
+            && game.state.pending_triggers.is_empty()
+            && game.state.resolving.is_none()
+        {
+            break;
+        } else {
+            choose(&mut game, |a| {
+                matches!(a, Action::Pass | Action::PutTrigger { .. })
+            });
+        }
     }
     assert_eq!(game.object_view(victim).zone, Zone::Battlefield);
     let card = put(&mut game, Player::P0, "Shock", Zone::Hand);
     put(&mut game, Player::P0, "Forest", Zone::Library);
     lore(&mut game, saga);
     for _ in 0..24 {
-        if matches!(game.state.pending, Pending::EffectChoice { .. }) { break; }
-        choose(&mut game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+        if matches!(game.state.pending, Pending::EffectChoice { .. }) {
+            break;
+        }
+        choose(&mut game, |a| {
+            matches!(a, Action::Pass | Action::PutTrigger { .. })
+        });
     }
     let card_ref = game.object_ref(card);
-    act(&mut game, Action::SelectResolutionExile { object: card_ref });
+    act(
+        &mut game,
+        Action::SelectResolutionExile { object: card_ref },
+    );
     drive(&mut game);
     assert_eq!(game.object_view(card).zone, Zone::Exile);
     assert_eq!(game.state.players[0].cards_drawn_this_turn, 1);
@@ -125,13 +177,24 @@ fn wrath_second_chapter_draws_only_for_actual_hand_exile_and_third_rejects_token
     let permanent = put(&mut game, Player::P1, "Forest", Zone::Battlefield);
     lore(&mut game, saga);
     for _ in 0..24 {
-        if game.legal_actions().contains(&Action::Sacrifice { object: game.object_ref(permanent) }) { break; }
-        choose(&mut game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+        if game.legal_actions().contains(&Action::Sacrifice {
+            object: game.object_ref(permanent),
+        }) {
+            break;
+        }
+        choose(&mut game, |a| {
+            matches!(a, Action::Pass | Action::PutTrigger { .. })
+        });
     }
     let token_ref = game.object_ref(token);
     let permanent_ref = game.object_ref(permanent);
     reject(&mut game, Action::Sacrifice { object: token_ref });
-    act(&mut game, Action::Sacrifice { object: permanent_ref });
+    act(
+        &mut game,
+        Action::Sacrifice {
+            object: permanent_ref,
+        },
+    );
     drive(&mut game);
     assert_eq!(game.object_view(permanent).zone, Zone::Graveyard);
     assert_eq!(game.object_view(token).zone, Zone::Battlefield);
@@ -140,18 +203,38 @@ fn wrath_second_chapter_draws_only_for_actual_hand_exile_and_third_rejects_token
 #[test]
 fn wrath_first_chapter_takes_only_its_damaged_creature_at_next_combat_this_turn() {
     let mut game = scenario(Player::P0);
-    let victim = put(&mut game, Player::P1, "V'Ger, the Intruder", Zone::Battlefield);
+    let victim = put(
+        &mut game,
+        Player::P1,
+        "V'Ger, the Intruder",
+        Zone::Battlefield,
+    );
     game.state.objects[victim as usize].tapped = true;
     let saga = put(&mut game, Player::P0, "The Wrath of Khan", Zone::Hand);
     cast(&mut game, saga, None);
     for _ in 0..24 {
-        if game.legal_actions().contains(&Action::ChooseTarget { target: Target::Card(victim) }) {
-            act(&mut game, Action::ChooseTarget { target: Target::Card(victim) });
+        if game.legal_actions().contains(&Action::ChooseTarget {
+            target: Target::Card(victim),
+        }) {
+            act(
+                &mut game,
+                Action::ChooseTarget {
+                    target: Target::Card(victim),
+                },
+            );
         } else if game.legal_actions().contains(&Action::FinishStackTargets) {
             act(&mut game, Action::FinishStackTargets);
-        } else if game.state.pending == Pending::Priority && game.state.stack.is_empty()
-            && game.state.pending_triggers.is_empty() && game.state.resolving.is_none() { break; }
-        else { choose(&mut game, |action| matches!(action, Action::Pass | Action::PutTrigger { .. })); }
+        } else if game.state.pending == Pending::Priority
+            && game.state.stack.is_empty()
+            && game.state.pending_triggers.is_empty()
+            && game.state.resolving.is_none()
+        {
+            break;
+        } else {
+            choose(&mut game, |action| {
+                matches!(action, Action::Pass | Action::PutTrigger { .. })
+            });
+        }
     }
     assert_eq!(game.object_view(victim).controller, Player::P1);
     assert!(game.object_view(victim).tapped);
@@ -180,20 +263,41 @@ fn vger_modes_offer_private_hand_look_or_opponent_power_loss() {
         let vger = put(&mut game, Player::P0, "V'Ger, the Intruder", Zone::Hand);
         cast(&mut game, vger, None);
         for _ in 0..24 {
-            if game.legal_actions().contains(&Action::ChooseMode { mode }) { break; }
-            choose(&mut game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+            if game.legal_actions().contains(&Action::ChooseMode { mode }) {
+                break;
+            }
+            choose(&mut game, |a| {
+                matches!(a, Action::Pass | Action::PutTrigger { .. })
+            });
         }
         act(&mut game, Action::ChooseMode { mode });
         if mode == 0 {
-            act(&mut game, Action::ChooseTarget { target: Target::Player(Player::P1) });
-            if game.legal_actions().contains(&Action::FinishStackTargets) { act(&mut game, Action::FinishStackTargets); }
+            act(
+                &mut game,
+                Action::ChooseTarget {
+                    target: Target::Player(Player::P1),
+                },
+            );
+            if game.legal_actions().contains(&Action::FinishStackTargets) {
+                act(&mut game, Action::FinishStackTargets);
+            }
             for _ in 0..24 {
-                if matches!(game.state.pending, Pending::HandCardChoice { .. }) { break; }
-                choose(&mut game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+                if matches!(game.state.pending, Pending::HandCardChoice { .. }) {
+                    break;
+                }
+                choose(&mut game, |a| {
+                    matches!(a, Action::Pass | Action::PutTrigger { .. })
+                });
             }
             let actor = game.observe(Player::P0).hand_choice.unwrap();
             assert_eq!(actor.kind, HandChoiceKind::LookOnly);
-            assert!(actor.inspected_cards.unwrap().iter().any(|o| o.id == secret));
+            assert!(
+                actor
+                    .inspected_cards
+                    .unwrap()
+                    .iter()
+                    .any(|o| o.id == secret)
+            );
             assert!(game.observe(Player::P1).hand_choice.is_none());
             act(&mut game, Action::ChooseHandCard { object: None });
             drive(&mut game);

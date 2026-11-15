@@ -2202,8 +2202,10 @@ impl Game {
         }
         let query = characteristic_query::CharacteristicQuery::in_world(world);
         if !query.continuous_fragment_available(id, |fragment| {
-            matches!(fragment,
-                crate::cards::StaticAbilityFragment::CannotBeTargetedByOpposingArtifactAbilities)
+            matches!(
+                fragment,
+                crate::cards::StaticAbilityFragment::CannotBeTargetedByOpposingArtifactAbilities
+            )
         }) {
             return false;
         }
@@ -2212,8 +2214,7 @@ impl Game {
             && world.reference(source.card) == source
         {
             let current = world.object(source.card);
-            matches!(current.zone, Zone::Battlefield | Zone::Stack)
-                .then_some(current.controller)
+            matches!(current.zone, Zone::Battlefield | Zone::Stack).then_some(current.controller)
         } else {
             qualification.and_then(|source| {
                 source.target_lki.map(|facts| facts.controller).or_else(|| {
@@ -2454,12 +2455,14 @@ impl Game {
                 self.object_kinds(source.card, current),
             ))
         } else {
-            qualification
-                .and_then(|q| {
-                    q.target_lki
-                        .map(|facts| (facts.colors, facts.kinds))
-                        .or_else(|| q.snapshot.map(|snapshot| (snapshot.colors(), snapshot.kinds)))
-                })
+            qualification.and_then(|q| {
+                q.target_lki
+                    .map(|facts| (facts.colors, facts.kinds))
+                    .or_else(|| {
+                        q.snapshot
+                            .map(|snapshot| (snapshot.colors(), snapshot.kinds))
+                    })
+            })
         }
     }
     fn target_matches_in_world<W: CharacteristicWorld + ?Sized>(

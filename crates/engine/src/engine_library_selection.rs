@@ -1347,9 +1347,8 @@ impl Game {
                     frame.completion,
                     LibrarySelectionCompletion::MayTransform
                         | LibrarySelectionCompletion::SacrificeEnteredAtNextOwnEndStep
-                )
-                    || (self.current_kinds(object.card) & 16 != 0
-                        && self.has_subtype(object.card, "Equipment"))
+                ) || (self.current_kinds(object.card) & 16 != 0
+                    && self.has_subtype(object.card, "Equipment"))
             })
             .collect();
         self.state

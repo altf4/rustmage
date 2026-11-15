@@ -78,7 +78,11 @@ impl Game {
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         if self.state.static_sources.is_empty()
-            && self.state.copy_recipes.as_ref().is_none_or(|rows| rows.is_empty())
+            && self
+                .state
+                .copy_recipes
+                .as_ref()
+                .is_none_or(|rows| rows.is_empty())
         {
             return false;
         }
@@ -92,9 +96,8 @@ impl Game {
             CastFace::choices(physical)
                 .filter_map(|face| {
                     let definition = face.definition(physical)?;
-                    (!definition.is_land()
-                        && !matches!(definition.effect(), Effect::Unsupported))
-                    .then_some((face, definition, false))
+                    (!definition.is_land() && !matches!(definition.effect(), Effect::Unsupported))
+                        .then_some((face, definition, false))
                 })
                 .chain(disguise.map(|definition| (CastFace::Normal, definition, true)))
         };
@@ -102,21 +105,31 @@ impl Game {
             return false;
         }
         let mut evaluation = None;
-        let copied = self.state.copy_recipes.as_ref().into_iter()
+        let copied = self
+            .state
+            .copy_recipes
+            .as_ref()
+            .into_iter()
             .flat_map(|rows| rows.iter().map(|row| row.object.card));
         let mut visited = Vec::new();
         for id in self.state.static_sources.iter().copied().chain(copied) {
-            if visited.contains(&id) { continue; }
+            if visited.contains(&id) {
+                continue;
+            }
             visited.push(id);
             let provider = &self.state.objects[id as usize];
-            if provider.zone != Zone::Battlefield || provider.controller != actor
-                || self.is_face_down(self.object_ref(id)) {
+            if provider.zone != Zone::Battlefield
+                || provider.controller != actor
+                || self.is_face_down(self.object_ref(id))
+            {
                 continue;
             }
             let source = self.object_ref(id);
             let source_definition = self.copiable_recipe(source).definition;
             let copied_definition = source_definition != provider.card;
-            if copied_definition && !self.printed_abilities_available(id) { continue; }
+            if copied_definition && !self.printed_abilities_available(id) {
+                continue;
+            }
             for (ability, group) in source_definition.static_ability_groups().iter().enumerate() {
                 if !group.fragments.iter().any(|fragment| {
                     matches!(
@@ -140,10 +153,11 @@ impl Game {
                         player: actor,
                         permission,
                     })
-                }) || (!copied_definition && evaluation
-                    .get_or_insert_with(|| self.evaluated_abilities())
-                    .as_ref()
-                    .is_some_and(|evaluation| !evaluation.group_available(source, ability)))
+                }) || (!copied_definition
+                    && evaluation
+                        .get_or_insert_with(|| self.evaluated_abilities())
+                        .as_ref()
+                        .is_some_and(|evaluation| !evaluation.group_available(source, ability)))
                 {
                     continue;
                 }
@@ -309,11 +323,15 @@ impl Game {
             })
             && !self.state.copy_recipes.as_ref().is_some_and(|rows| {
                 rows.iter().any(|row| {
-                    row.recipe.definition.static_ability_groups().iter().any(|group| {
-                        group.fragments.iter().any(|fragment| {
-                            matches!(fragment, StaticAbilityFragment::LookAtLibraryTop)
+                    row.recipe
+                        .definition
+                        .static_ability_groups()
+                        .iter()
+                        .any(|group| {
+                            group.fragments.iter().any(|fragment| {
+                                matches!(fragment, StaticAbilityFragment::LookAtLibraryTop)
+                            })
                         })
-                    })
                 })
             })
         {

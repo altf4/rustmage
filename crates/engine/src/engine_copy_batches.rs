@@ -113,9 +113,8 @@ impl Game {
                     return None;
                 };
                 let object = bound.object?;
-                (self.on_battlefield(id) && self.object_ref(id) == object).then(|| {
-                    self.copiable_recipe(object).with_exceptions(exceptions)
-                })
+                (self.on_battlefield(id) && self.object_ref(id) == object)
+                    .then(|| self.copiable_recipe(object).with_exceptions(exceptions))
             })
             .collect();
         self.stage_copy_recipes_with_completion(

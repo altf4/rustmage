@@ -10,38 +10,60 @@ fn owned(game: &mut Game, player: Player, name: &str, zone: Zone) -> CardId {
 }
 fn quiet(game: &mut Game) {
     for _ in 0..48 {
-        if game.outcome().is_some() { return; }
+        if game.outcome().is_some() {
+            return;
+        }
         if game.state.pending == Pending::Priority
             && game.state.stack.is_empty()
             && game.state.pending_triggers.is_empty()
             && game.state.resolving.is_none()
-        { return; }
-        choose(game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+        {
+            return;
+        }
+        choose(game, |a| {
+            matches!(a, Action::Pass | Action::PutTrigger { .. })
+        });
     }
     panic!("resolution budget");
 }
 fn reach_action(game: &mut Game, action: &Action) {
     for _ in 0..24 {
-        if game.legal_actions().contains(action) { return; }
-        choose(game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+        if game.legal_actions().contains(action) {
+            return;
+        }
+        choose(game, |a| {
+            matches!(a, Action::Pass | Action::PutTrigger { .. })
+        });
     }
     panic!("expected action {action:?}");
 }
 fn count_token(game: &Game, player: Player, card: Card) -> usize {
-    game.state.objects.iter().filter(|o| o.zone == Zone::Battlefield && o.controller == player && o.card == card).count()
+    game.state
+        .objects
+        .iter()
+        .filter(|o| o.zone == Zone::Battlefield && o.controller == player && o.card == card)
+        .count()
 }
 
 #[test]
 fn jake_investigates_only_on_second_resolution_of_exact_landfall() {
     let player = Player::P0;
     let mut game = scenario(player);
-    let jake = owned(&mut game, player, "Jake Sisko, War Correspondent", Zone::Battlefield);
+    let jake = owned(
+        &mut game,
+        player,
+        "Jake Sisko, War Correspondent",
+        Zone::Battlefield,
+    );
     for index in 1..=3 {
         let land = put(&mut game, player, "Forest", Zone::Hand);
         game.move_object(land, Zone::Battlefield);
         quiet(&mut game);
         assert_eq!(game.state.players[player.index()].life, 20 + index);
-        assert_eq!(count_token(&game, player, Card(5296)), usize::from(index >= 2));
+        assert_eq!(
+            count_token(&game, player, Card(5296)),
+            usize::from(index >= 2)
+        );
     }
     let checkpoint = game.snapshot();
     let mut branch = game.clone();
@@ -59,7 +81,12 @@ fn jake_investigates_only_on_second_resolution_of_exact_landfall() {
 fn kobayashi_modes_have_distinct_targets_and_persistent_once_memory() {
     let player = Player::P0;
     let mut base = scenario(player);
-    let source = owned(&mut base, player, "Kobayashi Maru Scenario", Zone::Battlefield);
+    let source = owned(
+        &mut base,
+        player,
+        "Kobayashi Maru Scenario",
+        Zone::Battlefield,
+    );
     let victim = put(&mut base, player.other(), "Bear Cub", Zone::Battlefield);
     let too_large = put(&mut base, player.other(), "Hill Giant", Zone::Battlefield);
     base.begin_step(Step::Upkeep);
@@ -69,11 +96,20 @@ fn kobayashi_modes_have_distinct_targets_and_persistent_once_memory() {
         reach_action(&mut game, &Action::ChooseMode { mode });
         act(&mut game, Action::ChooseMode { mode });
         if mode == 0 {
-            let target = Action::ChooseTarget { target: Target::Card(victim) };
+            let target = Action::ChooseTarget {
+                target: Target::Card(victim),
+            };
             reach_action(&mut game, &target);
-            reject(&mut game, Action::ChooseTarget { target: Target::Card(too_large) });
+            reject(
+                &mut game,
+                Action::ChooseTarget {
+                    target: Target::Card(too_large),
+                },
+            );
             act(&mut game, target);
-            if game.legal_actions().contains(&Action::FinishTargets) { act(&mut game, Action::FinishTargets); }
+            if game.legal_actions().contains(&Action::FinishTargets) {
+                act(&mut game, Action::FinishTargets);
+            }
         }
         quiet(&mut game);
         match mode {
@@ -87,11 +123,23 @@ fn kobayashi_modes_have_distinct_targets_and_persistent_once_memory() {
             game.begin_step(Step::Upkeep);
             game.prepare_triggers();
             for _ in 0..10 {
-                if game.legal_actions().iter().any(|a| matches!(a, Action::ChooseMode { .. })) { break; }
-                choose(&mut game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+                if game
+                    .legal_actions()
+                    .iter()
+                    .any(|a| matches!(a, Action::ChooseMode { .. }))
+                {
+                    break;
+                }
+                choose(&mut game, |a| {
+                    matches!(a, Action::Pass | Action::PutTrigger { .. })
+                });
             }
             reject(&mut game, Action::ChooseMode { mode });
-            assert!(game.legal_actions().iter().any(|a| matches!(a, Action::ChooseMode { mode: other } if *other != mode)));
+            assert!(
+                game.legal_actions()
+                    .iter()
+                    .any(|a| matches!(a, Action::ChooseMode { mode: other } if *other != mode))
+            );
         }
         assert_eq!(game.object_view(source).zone, Zone::Battlefield);
     }
@@ -104,7 +152,9 @@ fn pale_moonlight_saga_requires_nontoken_opponent_sacrifice_and_optional_final_c
     let victim = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
     let saga = owned(&mut game, player, "In the Pale Moonlight", Zone::Hand);
     cast(&mut game, saga, None);
-    let choose_victim = Action::Sacrifice { object: game.object_ref(victim) };
+    let choose_victim = Action::Sacrifice {
+        object: game.object_ref(victim),
+    };
     reach_action(&mut game, &choose_victim);
     act(&mut game, choose_victim);
     quiet(&mut game);
@@ -114,7 +164,14 @@ fn pale_moonlight_saga_requires_nontoken_opponent_sacrifice_and_optional_final_c
     game.prepare_triggers();
     quiet(&mut game);
     assert_eq!(count_token(&game, player, Card(5296)), 1);
-    let clue = game.state.objects.iter().enumerate().find(|(_, o)| o.zone == Zone::Battlefield && o.card == Card(5296)).unwrap().0 as CardId;
+    let clue = game
+        .state
+        .objects
+        .iter()
+        .enumerate()
+        .find(|(_, o)| o.zone == Zone::Battlefield && o.card == Card(5296))
+        .unwrap()
+        .0 as CardId;
     game.begin_step(Step::Main1);
     game.prepare_triggers();
     let decline_payment = Action::DeclineEffectPayment;
@@ -124,7 +181,12 @@ fn pale_moonlight_saga_requires_nontoken_opponent_sacrifice_and_optional_final_c
     quiet(&mut decline);
     assert_eq!(count_token(&decline, player, Card(6012)), 0);
     let clue_object = game.object_ref(clue);
-    act(&mut game, Action::Sacrifice { object: clue_object });
+    act(
+        &mut game,
+        Action::Sacrifice {
+            object: clue_object,
+        },
+    );
     quiet(&mut game);
     assert_eq!(game.object_view(clue).zone, Zone::Outside);
     assert_eq!(count_token(&game, player, Card(6012)), 2);

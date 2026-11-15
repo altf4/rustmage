@@ -10022,7 +10022,8 @@ impl Game {
                 self.run_program();
             }
             Action::ChooseTargetExistingCounterKindToPut { counter } => {
-                let Pending::TargetExistingCounterKindToPut { target, .. } = self.state.pending else {
+                let Pending::TargetExistingCounterKindToPut { target, .. } = self.state.pending
+                else {
                     unreachable!()
                 };
                 if self.object_ref(target.card) == target
@@ -13673,7 +13674,9 @@ impl Game {
                 Pending::TokenChoice { .. } => "token_choice",
                 Pending::KeywordChoice { .. } => "keyword_choice",
                 Pending::SourceCounterKind { .. } => "source_counter_kind",
-                Pending::TargetExistingCounterKindToPut { .. } => "target_existing_counter_kind_to_put",
+                Pending::TargetExistingCounterKindToPut { .. } => {
+                    "target_existing_counter_kind_to_put"
+                }
                 Pending::ResolutionColor { .. } => "resolution_color",
                 Pending::ResolutionPermanentType { .. } => "resolution_permanent_type",
                 Pending::PowerThreshold { .. } => "power_threshold",

@@ -46,7 +46,9 @@ fn to_choice(game: &mut Game) {
         if matches!(game.state.pending, Pending::EffectOptional { .. }) {
             return;
         }
-        choose(game, |action| matches!(action, Action::Pass | Action::PutTrigger { .. }));
+        choose(game, |action| {
+            matches!(action, Action::Pass | Action::PutTrigger { .. })
+        });
     }
     panic!("combat draw choice was not reached");
 }
@@ -65,33 +67,54 @@ fn active_player_draws_and_loses_all_attack_choices_with_owned_restore() {
         let checkpoint = game.snapshot();
         let revision = game.revision();
         let accept = Action::ChooseOptional { accept: true };
-        let index = game.legal_actions().iter().position(|action| *action == accept).unwrap();
+        let index = game
+            .legal_actions()
+            .iter()
+            .position(|action| *action == accept)
+            .unwrap();
         let mut accepted = game.clone();
         let mut indexed = game.clone();
         act(&mut accepted, accept);
         indexed.apply_index(active, revision, index).unwrap();
         assert_eq!(accepted.snapshot(), indexed.snapshot());
         indexed.restore(&checkpoint).unwrap();
-        assert_eq!(indexed.apply_index(active, revision, index), Err(Error::StaleRevision));
+        assert_eq!(
+            indexed.apply_index(active, revision, index),
+            Err(Error::StaleRevision)
+        );
         settle(&mut accepted);
         assert_eq!(accepted.counter_count(source, CounterKind::Peace), 1);
-        assert_eq!(accepted.state.players[active.index()].cards_drawn_this_turn, 1);
+        assert_eq!(
+            accepted.state.players[active.index()].cards_drawn_this_turn,
+            1
+        );
         for viewer in [active, active.other()] {
             assert!(accepted.observe(viewer).players[active.index()].cannot_attack_this_turn);
         }
         accepted.state.step = Step::Attackers;
         accepted.state.pending = Pending::Attackers;
-        assert!(!accepted.legal_actions().contains(&Action::Attack { card: attacker }));
+        assert!(
+            !accepted
+                .legal_actions()
+                .contains(&Action::Attack { card: attacker })
+        );
         reject(&mut accepted, Action::Attack { card: attacker });
 
         let mut declined = game;
         act(&mut declined, Action::ChooseOptional { accept: false });
         settle(&mut declined);
         assert_eq!(declined.counter_count(source, CounterKind::Peace), 0);
-        assert_eq!(declined.state.players[active.index()].cards_drawn_this_turn, 0);
+        assert_eq!(
+            declined.state.players[active.index()].cards_drawn_this_turn,
+            0
+        );
         declined.state.step = Step::Attackers;
         declined.state.pending = Pending::Attackers;
-        assert!(declined.legal_actions().contains(&Action::Attack { card: attacker }));
+        assert!(
+            declined
+                .legal_actions()
+                .contains(&Action::Attack { card: attacker })
+        );
     }
 }
 
@@ -112,11 +135,16 @@ fn draw_prohibition_prevents_the_peace_choice_and_attack_lock() {
         {
             break;
         }
-        choose(&mut game, |action| matches!(action, Action::Pass | Action::PutTrigger { .. }));
+        choose(&mut game, |action| {
+            matches!(action, Action::Pass | Action::PutTrigger { .. })
+        });
     }
     assert_eq!(game.counter_count(source, CounterKind::Peace), 0);
     assert!(!game.observe(Player::P0).players[0].cannot_attack_this_turn);
     game.state.step = Step::Attackers;
     game.state.pending = Pending::Attackers;
-    assert!(game.legal_actions().contains(&Action::Attack { card: attacker }));
+    assert!(
+        game.legal_actions()
+            .contains(&Action::Attack { card: attacker })
+    );
 }

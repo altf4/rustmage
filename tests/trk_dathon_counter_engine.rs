@@ -45,36 +45,83 @@ fn target_choice_offers_only_live_kinds_and_owned_branch_restores() {
     let opposing = put(&mut game, Player::P1, "Rest in Peace", Zone::Battlefield);
     game.state.objects[target as usize].counters.lore = 1;
     game.state.objects[target as usize].counters.stun = 2;
-    act(&mut game, Action::AnnounceActivate {
-        card: source,
-        ability: 0,
-        counter_payment: Counters::default(),
-    });
-    reject(&mut game, Action::ChooseTarget { target: Target::Card(artifact) });
-    reject(&mut game, Action::ChooseTarget { target: Target::Card(opposing) });
-    act(&mut game, Action::ChooseTarget { target: Target::Card(target) });
+    act(
+        &mut game,
+        Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(artifact),
+        },
+    );
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(opposing),
+        },
+    );
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
     if game.legal_actions().contains(&Action::FinishTargets) {
         act(&mut game, Action::FinishTargets);
     }
     pay(&mut game);
     for _ in 0..8 {
-        if matches!(game.state.pending, Pending::TargetExistingCounterKindToPut { .. }) {
+        if matches!(
+            game.state.pending,
+            Pending::TargetExistingCounterKindToPut { .. }
+        ) {
             break;
         }
         choose(&mut game, |action| matches!(action, Action::Pass));
     }
-    assert!(matches!(game.state.pending, Pending::TargetExistingCounterKindToPut { .. }));
+    assert!(matches!(
+        game.state.pending,
+        Pending::TargetExistingCounterKindToPut { .. }
+    ));
     let choices = game.legal_actions();
-    assert_eq!(choices.iter().filter(|action| matches!(action,
-        Action::ChooseTargetExistingCounterKindToPut { .. })).count(), 2);
-    assert!(choices.contains(&Action::ChooseTargetExistingCounterKindToPut { counter: CounterKind::Lore }));
-    assert!(choices.contains(&Action::ChooseTargetExistingCounterKindToPut { counter: CounterKind::Stun }));
-    reject(&mut game, Action::ChooseTargetExistingCounterKindToPut { counter: CounterKind::Charge });
+    assert_eq!(
+        choices
+            .iter()
+            .filter(|action| matches!(action, Action::ChooseTargetExistingCounterKindToPut { .. }))
+            .count(),
+        2
+    );
+    assert!(
+        choices.contains(&Action::ChooseTargetExistingCounterKindToPut {
+            counter: CounterKind::Lore
+        })
+    );
+    assert!(
+        choices.contains(&Action::ChooseTargetExistingCounterKindToPut {
+            counter: CounterKind::Stun
+        })
+    );
+    reject(
+        &mut game,
+        Action::ChooseTargetExistingCounterKindToPut {
+            counter: CounterKind::Charge,
+        },
+    );
 
     let saved = game.snapshot();
     let revision = game.revision();
-    let selected = Action::ChooseTargetExistingCounterKindToPut { counter: CounterKind::Stun };
-    let index = choices.iter().position(|action| *action == selected).unwrap();
+    let selected = Action::ChooseTargetExistingCounterKindToPut {
+        counter: CounterKind::Stun,
+    };
+    let index = choices
+        .iter()
+        .position(|action| *action == selected)
+        .unwrap();
     let mut indexed = game.clone();
     act(&mut game, selected);
     indexed.apply_index(Player::P0, revision, index).unwrap();
@@ -83,7 +130,10 @@ fn target_choice_offers_only_live_kinds_and_owned_branch_restores() {
     assert_eq!(game.counter_count(target, CounterKind::Stun), 3);
     game.restore(&saved).unwrap();
     assert_eq!(game.counter_count(target, CounterKind::Stun), 2);
-    assert!(matches!(game.state.pending, Pending::TargetExistingCounterKindToPut { .. }));
+    assert!(matches!(
+        game.state.pending,
+        Pending::TargetExistingCounterKindToPut { .. }
+    ));
 }
 
 #[test]
@@ -93,12 +143,20 @@ fn no_counter_or_departed_target_never_opens_a_choice() {
         let mut game = scenario(Player::P0);
         let source = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
         let target = put(&mut game, Player::P0, "Rest in Peace", Zone::Battlefield);
-        act(&mut game, Action::AnnounceActivate {
-            card: source,
-            ability: 0,
-            counter_payment: Counters::default(),
-        });
-        act(&mut game, Action::ChooseTarget { target: Target::Card(target) });
+        act(
+            &mut game,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
         if game.legal_actions().contains(&Action::FinishTargets) {
             act(&mut game, Action::FinishTargets);
         }

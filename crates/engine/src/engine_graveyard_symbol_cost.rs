@@ -150,7 +150,8 @@ impl Game {
         let recipe = self.copiable_recipe(original);
         let remaining = (0..count)
             .map(|_| {
-                let copy = self.allocate_card_copy_in_zone(recipe.definition, item.controller, origin);
+                let copy =
+                    self.allocate_card_copy_in_zone(recipe.definition, item.controller, origin);
                 self.set_copy_recipe(copy, recipe);
                 copy
             })

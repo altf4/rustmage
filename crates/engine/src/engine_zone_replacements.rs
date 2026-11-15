@@ -563,7 +563,10 @@ impl Game {
                 unreachable!("exact destruction replay prefix");
             };
             assert_eq!((pick.object, pick.requested), (object, Zone::Graveyard));
-            assert!(matches!(pick.effect, ZoneReplacementKind::DestructionShield | ZoneReplacementKind::DestructionHeal));
+            assert!(matches!(
+                pick.effect,
+                ZoneReplacementKind::DestructionShield | ZoneReplacementKind::DestructionHeal
+            ));
             return pick.effect == ZoneReplacementKind::DestructionHeal;
         }
         let before = &self.state.objects[id as usize];
@@ -576,7 +579,10 @@ impl Game {
                 card: Some(before.card),
                 owner: before.owner,
                 from: Zone::Battlefield,
-                choices: vec![ZoneReplacementKind::DestructionShield, ZoneReplacementKind::DestructionHeal],
+                choices: vec![
+                    ZoneReplacementKind::DestructionShield,
+                    ZoneReplacementKind::DestructionHeal,
+                ],
                 prior_public_choices: Vec::new(),
             },
         });

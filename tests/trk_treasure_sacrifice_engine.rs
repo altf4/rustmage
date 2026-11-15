@@ -38,7 +38,10 @@ fn quark_rule_blocks_only_controlled_treasure_token_sacrifices() {
         let other_artifact = put(&mut game, player, "Candy Trail", Zone::Battlefield);
         assert!(CharacteristicWorld::sacrifice_prohibited(&game, ours));
         assert!(!CharacteristicWorld::sacrifice_prohibited(&game, theirs));
-        assert!(!CharacteristicWorld::sacrifice_prohibited(&game, other_artifact));
+        assert!(!CharacteristicWorld::sacrifice_prohibited(
+            &game,
+            other_artifact
+        ));
         assert!(!game.legal_actions().iter().any(|action| {
             matches!(action, Action::ActivateMana { card, .. } if *card == ours)
         }));

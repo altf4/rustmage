@@ -18,7 +18,9 @@ fn drain(game: &mut Game) {
         {
             return;
         }
-        choose(game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+        choose(game, |a| {
+            matches!(a, Action::Pass | Action::PutTrigger { .. })
+        });
     }
     panic!("resolution budget");
 }
@@ -30,16 +32,30 @@ fn lore_entry_modes_target_boost_evasion_or_surveil_and_expire() {
         let mut game = scenario(player);
         let target = put(&mut game, player, "Bear Cub", Zone::Battlefield);
         let top = put(&mut game, player, "Forest", Zone::Library);
-        let lore = owned(&mut game, player, "Lore, Positronic Provocateur", Zone::Hand);
+        let lore = owned(
+            &mut game,
+            player,
+            "Lore, Positronic Provocateur",
+            Zone::Hand,
+        );
         cast(&mut game, lore, None);
         for _ in 0..12 {
-            if game.legal_actions().contains(&Action::ChooseMode { mode }) { break; }
-            choose(&mut game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+            if game.legal_actions().contains(&Action::ChooseMode { mode }) {
+                break;
+            }
+            choose(&mut game, |a| {
+                matches!(a, Action::Pass | Action::PutTrigger { .. })
+            });
         }
         reject(&mut game, Action::ChooseMode { mode: 9 });
         act(&mut game, Action::ChooseMode { mode });
         if mode == 0 {
-            act(&mut game, Action::ChooseTarget { target: Target::Card(target) });
+            act(
+                &mut game,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
             drain(&mut game);
             assert_eq!(stats(&game, target), (3, 2));
             assert!(game.keywords(target).contains(Keywords::CANT_BE_BLOCKED));
@@ -49,14 +65,44 @@ fn lore_entry_modes_target_boost_evasion_or_surveil_and_expire() {
             assert!(!game.keywords(target).contains(Keywords::CANT_BE_BLOCKED));
         } else {
             for _ in 0..8 {
-                if game.observe(player).library_choice.is_some() { break; }
-                choose(&mut game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+                if game.observe(player).library_choice.is_some() {
+                    break;
+                }
+                choose(&mut game, |a| {
+                    matches!(a, Action::Pass | Action::PutTrigger { .. })
+                });
             }
             assert!(game.observe(player).library_choice.unwrap().surveil);
-            assert_eq!(game.observe(player).library_choice.as_ref().unwrap().remaining.len(), 2);
-            act(&mut game, Action::ArrangeLibrary { card: top, destination: LibraryDestination::Graveyard });
-            let remaining = game.observe(player).library_choice.as_ref().unwrap().remaining[0].id;
-            act(&mut game, Action::ArrangeLibrary { card: remaining, destination: LibraryDestination::Top });
+            assert_eq!(
+                game.observe(player)
+                    .library_choice
+                    .as_ref()
+                    .unwrap()
+                    .remaining
+                    .len(),
+                2
+            );
+            act(
+                &mut game,
+                Action::ArrangeLibrary {
+                    card: top,
+                    destination: LibraryDestination::Graveyard,
+                },
+            );
+            let remaining = game
+                .observe(player)
+                .library_choice
+                .as_ref()
+                .unwrap()
+                .remaining[0]
+                .id;
+            act(
+                &mut game,
+                Action::ArrangeLibrary {
+                    card: remaining,
+                    destination: LibraryDestination::Top,
+                },
+            );
             drain(&mut game);
             assert_eq!(game.object_view(top).zone, Zone::Graveyard);
             assert_eq!(stats(&game, target), (2, 2));
@@ -73,11 +119,27 @@ fn holodeck_links_exile_to_exact_incarnation_and_ward_counters_unpaid_spell() {
     let holodeck = owned(&mut game, player, "Malfunctioning Holodeck", Zone::Hand);
     cast(&mut game, holodeck, None);
     for _ in 0..12 {
-        if game.legal_actions().contains(&Action::ChooseTarget { target: Target::Card(victim) }) { break; }
-        choose(&mut game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+        if game.legal_actions().contains(&Action::ChooseTarget {
+            target: Target::Card(victim),
+        }) {
+            break;
+        }
+        choose(&mut game, |a| {
+            matches!(a, Action::Pass | Action::PutTrigger { .. })
+        });
     }
-    reject(&mut game, Action::ChooseTarget { target: Target::Card(land) });
-    act(&mut game, Action::ChooseTarget { target: Target::Card(victim) });
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(land),
+        },
+    );
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(victim),
+        },
+    );
     drain(&mut game);
     assert_eq!(game.object_view(victim).zone, Zone::Exile);
     let active = game.snapshot();

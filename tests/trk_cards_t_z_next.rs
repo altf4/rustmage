@@ -7,13 +7,23 @@ use rustmage_core::{cards::*, engine::*};
 use support::*;
 
 const ADD_LORE: CardRules = CardRules {
-    effect: Effect::Spell(TargetPlan::Single(TargetSpec::one(TargetRule::Object {
-        zone: TargetZone::Battlefield, kinds: 0, relation: 0,
-        other: false, nonland: false, tapped: false,
-        min_mana: 0, max_mana: u32::MAX,
-    })), &[Instruction::PutCounters {
-        subject: Subject::Targets, kind: CounterKind::Lore, amount: 1,
-    }]),
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::Object {
+            zone: TargetZone::Battlefield,
+            kinds: 0,
+            relation: 0,
+            other: false,
+            nonland: false,
+            tapped: false,
+            min_mana: 0,
+            max_mana: u32::MAX,
+        })),
+        &[Instruction::PutCounters {
+            subject: Subject::Targets,
+            kind: CounterKind::Lore,
+            amount: 1,
+        }],
+    ),
     ..CardRules::EMPTY
 };
 
@@ -24,15 +34,26 @@ fn city_phases_artifacts_and_creatures_then_human_locks_them_until_sacrificed() 
     let creature = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
     let artifact = put(&mut game, Player::P1, "Tricorder", Zone::Battlefield);
     let land = put(&mut game, Player::P0, "Forest", Zone::Battlefield);
-    let saga = put(&mut game, Player::P0, "The City on the Edge of Forever", Zone::Hand);
+    let saga = put(
+        &mut game,
+        Player::P0,
+        "The City on the Edge of Forever",
+        Zone::Hand,
+    );
     cast(&mut game, saga, None);
     finish(&mut game);
     assert_eq!(game.object_view(creature).zone, Zone::PhasedOut);
     assert_eq!(game.object_view(artifact).zone, Zone::PhasedOut);
     assert_eq!(game.object_view(land).zone, Zone::Battlefield);
-    let human = game.state.objects.iter().enumerate().find_map(|(id, o)|
-        (o.zone == Zone::Battlefield && o.card == Card(6017)).then_some(id as CardId)
-    ).unwrap();
+    let human = game
+        .state
+        .objects
+        .iter()
+        .enumerate()
+        .find_map(|(id, o)| {
+            (o.zone == Zone::Battlefield && o.card == Card(6017)).then_some(id as CardId)
+        })
+        .unwrap();
     assert_eq!(stats(&game, human), (0, 1));
     game.begin_turn();
     assert_eq!(game.object_view(creature).zone, Zone::PhasedOut);
@@ -47,8 +68,12 @@ fn city_phases_artifacts_and_creatures_then_human_locks_them_until_sacrificed() 
     let lore = put(&mut game, Player::P0, "Opt", Zone::Hand);
     cast(&mut game, lore, Some(Target::Card(saga)));
     for _ in 0..24 {
-        if matches!(game.state.pending, Pending::EffectChoice { .. }) { break; }
-        choose(&mut game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+        if matches!(game.state.pending, Pending::EffectChoice { .. }) {
+            break;
+        }
+        choose(&mut game, |a| {
+            matches!(a, Action::Pass | Action::PutTrigger { .. })
+        });
     }
     let mut declined = game.clone();
     act(&mut declined, Action::DeclineEffectPayment);
@@ -83,24 +108,36 @@ fn finish(game: &mut Game) {
 
 fn finish_target(game: &mut Game, target: Option<Target>) {
     for _ in 0..40 {
-        if game.state.pending == Pending::Priority && game.state.stack.is_empty()
-            && game.state.resolving.is_none() && game.state.pending_triggers.is_empty() {
+        if game.state.pending == Pending::Priority
+            && game.state.stack.is_empty()
+            && game.state.resolving.is_none()
+            && game.state.pending_triggers.is_empty()
+        {
             return;
         }
         let actions = game.legal_actions();
         let action = if let Some(target) = target
-            && actions.contains(&Action::ChooseTarget { target }) {
+            && actions.contains(&Action::ChooseTarget { target })
+        {
             Action::ChooseTarget { target }
         } else if actions.contains(&Action::FinishStackTargets) {
             Action::FinishStackTargets
         } else {
-            actions.into_iter().find(|action| matches!(action,
-                Action::Pass | Action::PutTrigger { .. }
-                | Action::ArrangeLibrary { .. }
-                | Action::SelectLibrary { .. } | Action::FinishLibrarySelection
-                | Action::FinishResolutionCasts
-                | Action::ChooseOptional { accept: true }
-            )).unwrap_or_else(|| panic!("unhandled {:?}", game.state.pending))
+            actions
+                .into_iter()
+                .find(|action| {
+                    matches!(
+                        action,
+                        Action::Pass
+                            | Action::PutTrigger { .. }
+                            | Action::ArrangeLibrary { .. }
+                            | Action::SelectLibrary { .. }
+                            | Action::FinishLibrarySelection
+                            | Action::FinishResolutionCasts
+                            | Action::ChooseOptional { accept: true }
+                    )
+                })
+                .unwrap_or_else(|| panic!("unhandled {:?}", game.state.pending))
         };
         act(game, action);
     }
@@ -108,9 +145,14 @@ fn finish_target(game: &mut Game, target: Option<Target>) {
 }
 
 fn station(game: &mut Game, ship: CardId, donor: CardId) {
-    act(game, Action::AnnounceActivate {
-        card: ship, ability: 0, counter_payment: Counters::default(),
-    });
+    act(
+        game,
+        Action::AnnounceActivate {
+            card: ship,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
     let object = game.object_ref(donor);
     act(game, Action::ChooseAdditionalCost { object });
     pay(game);
@@ -126,9 +168,15 @@ fn tenacious_drone_dies_into_the_printed_borg_token() {
     cast(&mut game, shock, Some(Target::Card(drone)));
     finish(&mut game);
     assert_eq!(game.object_view(drone).zone, Zone::Graveyard);
-    let borg = game.state.objects.iter().enumerate().find_map(|(id, object)|
-        (object.zone == Zone::Battlefield && object.card == Card(6007)).then_some(id as CardId)
-    ).expect("Borg token");
+    let borg = game
+        .state
+        .objects
+        .iter()
+        .enumerate()
+        .find_map(|(id, object)| {
+            (object.zone == Zone::Battlefield && object.card == Card(6007)).then_some(id as CardId)
+        })
+        .expect("Borg token");
     assert_eq!(stats(&game, borg), (1, 1));
     assert!(game.object_view(borg).kinds & 16 != 0);
 }
@@ -136,13 +184,25 @@ fn tenacious_drone_dies_into_the_printed_borg_token() {
 #[test]
 fn test_of_conviction_both_modes_are_distinct() {
     let mut counters = scenario(Player::P0);
-    let first = put(&mut counters, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let first = put(
+        &mut counters,
+        Player::P0,
+        "Grizzly Bears",
+        Zone::Battlefield,
+    );
     let second = put(&mut counters, Player::P0, "Hill Giant", Zone::Battlefield);
-    let enemy = put(&mut counters, Player::P1, "Grizzly Bears", Zone::Battlefield);
+    let enemy = put(
+        &mut counters,
+        Player::P1,
+        "Grizzly Bears",
+        Zone::Battlefield,
+    );
     let spell = put(&mut counters, Player::P0, "Test of Conviction", Zone::Hand);
     modal(&mut counters, spell, 0, None);
     finish(&mut counters);
-    for creature in [first, second] { assert_eq!(counters.counter_count(creature, CounterKind::PlusOne), 1); }
+    for creature in [first, second] {
+        assert_eq!(counters.counter_count(creature, CounterKind::PlusOne), 1);
+    }
     assert_eq!(counters.counter_count(enemy, CounterKind::PlusOne), 0);
 
     let mut draw = scenario(Player::P0);
@@ -165,13 +225,30 @@ fn test_of_courage_checks_graveyard_and_small_artifact_mode() {
 
     let mut permanent = scenario(Player::P0);
     let artifact = put(&mut permanent, Player::P1, "Tricorder", Zone::Battlefield);
-    let creature = put(&mut permanent, Player::P1, "Grizzly Bears", Zone::Battlefield);
+    let creature = put(
+        &mut permanent,
+        Player::P1,
+        "Grizzly Bears",
+        Zone::Battlefield,
+    );
     let spell = put(&mut permanent, Player::P0, "Test of Courage", Zone::Hand);
     act(&mut permanent, Action::AnnounceCast { card: spell });
     act(&mut permanent, Action::ChooseMode { mode: 1 });
-    reject(&mut permanent, Action::ChooseTarget { target: Target::Card(creature) });
-    act(&mut permanent, Action::ChooseTarget { target: Target::Card(artifact) });
-    if permanent.legal_actions().contains(&Action::FinishTargets) { act(&mut permanent, Action::FinishTargets); }
+    reject(
+        &mut permanent,
+        Action::ChooseTarget {
+            target: Target::Card(creature),
+        },
+    );
+    act(
+        &mut permanent,
+        Action::ChooseTarget {
+            target: Target::Card(artifact),
+        },
+    );
+    if permanent.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut permanent, Action::FinishTargets);
+    }
     pay(&mut permanent);
     finish(&mut permanent);
     assert_eq!(permanent.object_view(artifact).zone, Zone::Graveyard);
@@ -188,14 +265,36 @@ fn test_of_loyalty_respects_graveyard_owner_in_second_mode() {
     assert_eq!(exile.state.players[0].cards_drawn_this_turn, 1);
 
     let mut return_card = scenario(Player::P0);
-    let own = put(&mut return_card, Player::P0, "Grizzly Bears", Zone::Graveyard);
-    let enemy = put(&mut return_card, Player::P1, "Grizzly Bears", Zone::Graveyard);
+    let own = put(
+        &mut return_card,
+        Player::P0,
+        "Grizzly Bears",
+        Zone::Graveyard,
+    );
+    let enemy = put(
+        &mut return_card,
+        Player::P1,
+        "Grizzly Bears",
+        Zone::Graveyard,
+    );
     let spell = put(&mut return_card, Player::P0, "Test of Loyalty", Zone::Hand);
     act(&mut return_card, Action::AnnounceCast { card: spell });
     act(&mut return_card, Action::ChooseMode { mode: 1 });
-    reject(&mut return_card, Action::ChooseTarget { target: Target::Card(enemy) });
-    act(&mut return_card, Action::ChooseTarget { target: Target::Card(own) });
-    if return_card.legal_actions().contains(&Action::FinishTargets) { act(&mut return_card, Action::FinishTargets); }
+    reject(
+        &mut return_card,
+        Action::ChooseTarget {
+            target: Target::Card(enemy),
+        },
+    );
+    act(
+        &mut return_card,
+        Action::ChooseTarget {
+            target: Target::Card(own),
+        },
+    );
+    if return_card.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut return_card, Action::FinishTargets);
+    }
     pay(&mut return_card);
     finish(&mut return_card);
     assert_eq!(return_card.object_view(own).zone, Zone::Hand);
@@ -210,9 +309,21 @@ fn test_of_priorities_blinks_only_own_creature_until_end_step() {
     let spell = put(&mut game, Player::P0, "Test of Priorities", Zone::Hand);
     act(&mut game, Action::AnnounceCast { card: spell });
     act(&mut game, Action::ChooseMode { mode: 1 });
-    reject(&mut game, Action::ChooseTarget { target: Target::Card(opponent) });
-    act(&mut game, Action::ChooseTarget { target: Target::Card(own) });
-    if game.legal_actions().contains(&Action::FinishTargets) { act(&mut game, Action::FinishTargets); }
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(opponent),
+        },
+    );
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(own),
+        },
+    );
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
     pay(&mut game);
     finish(&mut game);
     assert_eq!(game.object_view(own).zone, Zone::Exile);
@@ -227,30 +338,84 @@ fn test_of_priorities_blinks_only_own_creature_until_end_step() {
 #[test]
 fn transporter_malfunction_has_three_damage_and_printed_beam_cost() {
     let mut ordinary = scenario(Player::P0);
-    let spell = put(&mut ordinary, Player::P0, "Transporter Malfunction", Zone::Hand);
+    let spell = put(
+        &mut ordinary,
+        Player::P0,
+        "Transporter Malfunction",
+        Zone::Hand,
+    );
     cast(&mut ordinary, spell, Some(Target::Player(Player::P1)));
     finish(&mut ordinary);
     assert_eq!(ordinary.state.players[1].life, 17);
     assert_eq!(ordinary.object_view(spell).zone, Zone::Graveyard);
 
     let mut beam = scenario(Player::P0);
-    let spell = put(&mut beam, Player::P0, "Transporter Malfunction", Zone::Graveyard);
+    let spell = put(
+        &mut beam,
+        Player::P0,
+        "Transporter Malfunction",
+        Zone::Graveyard,
+    );
     let creature = put(&mut beam, Player::P0, "Grizzly Bears", Zone::Battlefield);
-    let cost = ManaCost { generic: 3, colored: [0, 0, 0, 3, 0, 0] };
-    act(&mut beam, Action::AnnounceBeamMeUp {
-        card: spell, face: CastFace::Normal, cost, flash_surcharge: false, provider: None,
-    });
-    act(&mut beam, Action::ChooseTarget { target: Target::Player(Player::P1) });
-    if beam.legal_actions().contains(&Action::FinishTargets) { act(&mut beam, Action::FinishTargets); }
+    let cost = ManaCost {
+        generic: 3,
+        colored: [0, 0, 0, 3, 0, 0],
+    };
+    act(
+        &mut beam,
+        Action::AnnounceBeamMeUp {
+            card: spell,
+            face: CastFace::Normal,
+            cost,
+            flash_surcharge: false,
+            provider: None,
+        },
+    );
+    act(
+        &mut beam,
+        Action::ChooseTarget {
+            target: Target::Player(Player::P1),
+        },
+    );
+    if beam.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut beam, Action::FinishTargets);
+    }
     act(&mut beam, Action::BeginOrderedCosts);
-    let clauses: Vec<_> = beam.state.announcing.as_ref().unwrap().cast_costs.as_ref().unwrap()
-        .clauses.iter().map(|row| row.clause).collect();
-    for kind in [CastCostClause::Mana, clauses.into_iter().find(|kind| matches!(kind, CastCostClause::BeamMeUpReturn(_, _))).unwrap()] {
-        let clause = beam.state.announcing.as_ref().unwrap().cast_costs.as_ref().unwrap()
-            .clauses.iter().position(|row| row.clause == kind && !row.paid).unwrap() as u16;
+    let clauses: Vec<_> = beam
+        .state
+        .announcing
+        .as_ref()
+        .unwrap()
+        .cast_costs
+        .as_ref()
+        .unwrap()
+        .clauses
+        .iter()
+        .map(|row| row.clause)
+        .collect();
+    for kind in [
+        CastCostClause::Mana,
+        clauses
+            .into_iter()
+            .find(|kind| matches!(kind, CastCostClause::BeamMeUpReturn(_, _)))
+            .unwrap(),
+    ] {
+        let clause = beam
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .cast_costs
+            .as_ref()
+            .unwrap()
+            .clauses
+            .iter()
+            .position(|row| row.clause == kind && !row.paid)
+            .unwrap() as u16;
         act(&mut beam, Action::ChooseCastCost { clause });
-        if matches!(kind, CastCostClause::Mana) { pay(&mut beam); }
-        else {
+        if matches!(kind, CastCostClause::Mana) {
+            pay(&mut beam);
+        } else {
             let object = beam.object_ref(creature);
             act(&mut beam, Action::PayBeamMeUpReturn { object });
         }
@@ -264,20 +429,36 @@ fn transporter_malfunction_has_three_damage_and_printed_beam_cost() {
 #[test]
 fn cerritos_creates_two_officers_and_stations_at_six_charge() {
     let mut game = scenario(Player::P0);
-    let ship = put(&mut game, Player::P0, "U.S.S. Cerritos, Following Up", Zone::Hand);
+    let ship = put(
+        &mut game,
+        Player::P0,
+        "U.S.S. Cerritos, Following Up",
+        Zone::Hand,
+    );
     cast(&mut game, ship, None);
     finish(&mut game);
-    let officers: Vec<_> = game.state.objects.iter().enumerate().filter_map(|(id, object)|
-        (object.zone == Zone::Battlefield && object.card == Card(6008)).then_some(id as CardId)
-    ).collect();
+    let officers: Vec<_> = game
+        .state
+        .objects
+        .iter()
+        .enumerate()
+        .filter_map(|(id, object)| {
+            (object.zone == Zone::Battlefield && object.card == Card(6008)).then_some(id as CardId)
+        })
+        .collect();
     assert_eq!(officers.len(), 2);
     assert!(!game.object_view(ship).is_creature());
     let first = put(&mut game, Player::P0, "Hill Giant", Zone::Battlefield);
     let second = put(&mut game, Player::P0, "Hill Giant", Zone::Battlefield);
     let enemy = put(&mut game, Player::P1, "Hill Giant", Zone::Battlefield);
-    act(&mut game, Action::AnnounceActivate {
-        card: ship, ability: 0, counter_payment: Counters::default(),
-    });
+    act(
+        &mut game,
+        Action::AnnounceActivate {
+            card: ship,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
     let wrong = game.object_ref(enemy);
     reject(&mut game, Action::ChooseAdditionalCost { object: wrong });
     let donor = game.object_ref(first);
@@ -295,11 +476,22 @@ fn cerritos_creates_two_officers_and_stations_at_six_charge() {
 #[test]
 fn enterprise_a_creates_three_officers_and_station_grants_lifelink() {
     let mut game = scenario(Player::P0);
-    let ship = put(&mut game, Player::P0, "U.S.S. Enterprise-A, Free Spirit", Zone::Hand);
+    let ship = put(
+        &mut game,
+        Player::P0,
+        "U.S.S. Enterprise-A, Free Spirit",
+        Zone::Hand,
+    );
     cast(&mut game, ship, None);
     finish(&mut game);
-    assert_eq!(game.state.objects.iter().filter(|o|
-        o.zone == Zone::Battlefield && o.card == Card(6008)).count(), 3);
+    assert_eq!(
+        game.state
+            .objects
+            .iter()
+            .filter(|o| o.zone == Zone::Battlefield && o.card == Card(6008))
+            .count(),
+        3
+    );
     let first = put(&mut game, Player::P0, "Hill Giant", Zone::Battlefield);
     let second = put(&mut game, Player::P0, "Hill Giant", Zone::Battlefield);
     station(&mut game, ship, first);
@@ -316,7 +508,12 @@ fn excelsior_destroys_only_tapped_opposing_creature_and_stations_at_eight() {
     let tapped = put(&mut game, Player::P1, "Grizzly Bears", Zone::Battlefield);
     let untapped = put(&mut game, Player::P1, "Grizzly Bears", Zone::Battlefield);
     game.state.objects[tapped as usize].tapped = true;
-    let ship = put(&mut game, Player::P0, "U.S.S. Excelsior, Cutting Edge", Zone::Hand);
+    let ship = put(
+        &mut game,
+        Player::P0,
+        "U.S.S. Excelsior, Cutting Edge",
+        Zone::Hand,
+    );
     cast(&mut game, ship, None);
     finish_target(&mut game, Some(Target::Card(tapped)));
     assert_eq!(game.object_view(tapped).zone, Zone::Graveyard);
@@ -324,7 +521,9 @@ fn excelsior_destroys_only_tapped_opposing_creature_and_stations_at_eight() {
     let first = put(&mut game, Player::P0, "Hill Giant", Zone::Battlefield);
     let second = put(&mut game, Player::P0, "Hill Giant", Zone::Battlefield);
     let third = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
-    for donor in [first, second, third] { station(&mut game, ship, donor); }
+    for donor in [first, second, third] {
+        station(&mut game, ship, donor);
+    }
     assert_eq!(game.counter_count(ship, CounterKind::Charge), 8);
     assert_eq!(stats(&game, ship), (4, 4));
     assert!(game.object_view(ship).keywords.contains(Keywords::FLYING));
@@ -334,7 +533,12 @@ fn excelsior_destroys_only_tapped_opposing_creature_and_stations_at_eight() {
 fn discovery_discovers_on_entry_and_attack_after_station() {
     let mut game = scenario(Player::P0);
     let hit = put(&mut game, Player::P0, "Shock", Zone::Library);
-    let ship = put(&mut game, Player::P0, "U.S.S. Discovery, at Black Alert", Zone::Hand);
+    let ship = put(
+        &mut game,
+        Player::P0,
+        "U.S.S. Discovery, at Black Alert",
+        Zone::Hand,
+    );
     cast(&mut game, ship, None);
     finish(&mut game);
     assert_eq!(game.object_view(hit).zone, Zone::Hand);
@@ -360,7 +564,12 @@ fn voyager_reveals_two_lands_into_battlefield_tapped() {
     let first = put(&mut game, Player::P0, "Forest", Zone::Library);
     let gap = put(&mut game, Player::P0, "Shock", Zone::Library);
     let second = put(&mut game, Player::P0, "Island", Zone::Library);
-    let ship = put(&mut game, Player::P0, "U.S.S. Voyager, Lone Wanderer", Zone::Hand);
+    let ship = put(
+        &mut game,
+        Player::P0,
+        "U.S.S. Voyager, Lone Wanderer",
+        Zone::Hand,
+    );
     cast(&mut game, ship, None);
     finish(&mut game);
     for land in [first, second] {
@@ -371,7 +580,11 @@ fn voyager_reveals_two_lands_into_battlefield_tapped() {
     game.add_counter(ship, CounterKind::Charge, 8);
     assert_eq!(stats(&game, ship), (3, 3));
     assert!(game.object_view(ship).keywords.contains(Keywords::FLYING));
-    assert!(game.object_view(ship).keywords.contains(Keywords::VIGILANCE));
+    assert!(
+        game.object_view(ship)
+            .keywords
+            .contains(Keywords::VIGILANCE)
+    );
 }
 
 #[test]
@@ -379,7 +592,12 @@ fn reliant_returns_small_own_grave_creatures_with_finality_on_both_events() {
     let mut game = scenario(Player::P0);
     let first = put(&mut game, Player::P0, "Grizzly Bears", Zone::Graveyard);
     let enemy = put(&mut game, Player::P1, "Grizzly Bears", Zone::Graveyard);
-    let ship = put(&mut game, Player::P0, "U.S.S. Reliant, From Hell's Heart", Zone::Hand);
+    let ship = put(
+        &mut game,
+        Player::P0,
+        "U.S.S. Reliant, From Hell's Heart",
+        Zone::Hand,
+    );
     cast(&mut game, ship, None);
     finish_target(&mut game, Some(Target::Card(first)));
     assert_eq!(game.object_view(first).zone, Zone::Battlefield);
@@ -394,10 +612,15 @@ fn reliant_returns_small_own_grave_creatures_with_finality_on_both_events() {
     act(&mut game, Action::Attack { card: ship });
     act(&mut game, Action::FinishAttackers);
     for _ in 0..32 {
-        if game.state.pending == (Pending::Targets { player: Player::P0 }) { break; }
-        choose(&mut game, |action| matches!(action,
-            Action::Pass | Action::PutTrigger { .. } | Action::FinishBlockers
-        ));
+        if game.state.pending == (Pending::Targets { player: Player::P0 }) {
+            break;
+        }
+        choose(&mut game, |action| {
+            matches!(
+                action,
+                Action::Pass | Action::PutTrigger { .. } | Action::FinishBlockers
+            )
+        });
     }
     assert_eq!(game.state.pending, Pending::Targets { player: Player::P0 });
     finish_target(&mut game, Some(Target::Card(second)));
@@ -409,25 +632,55 @@ fn reliant_returns_small_own_grave_creatures_with_finality_on_both_events() {
 fn temporal_conqueror_mills_then_returns_an_existing_land_or_makes_treasure() {
     let mut return_game = scenario(Player::P0);
     let old = put(&mut return_game, Player::P0, "Island", Zone::Graveyard);
-    let conqueror = put(&mut return_game, Player::P0, "Temporal Conqueror", Zone::Hand);
+    let conqueror = put(
+        &mut return_game,
+        Player::P0,
+        "Temporal Conqueror",
+        Zone::Hand,
+    );
     cast(&mut return_game, conqueror, None);
     for _ in 0..20 {
-        if matches!(return_game.state.pending, Pending::EffectChoice { .. }) { break; }
-        choose(&mut return_game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+        if matches!(return_game.state.pending, Pending::EffectChoice { .. }) {
+            break;
+        }
+        choose(&mut return_game, |a| {
+            matches!(a, Action::Pass | Action::PutTrigger { .. })
+        });
     }
     let old_ref = return_game.object_ref(old);
-    act(&mut return_game, Action::SelectGraveyardReturn { object: old_ref });
+    act(
+        &mut return_game,
+        Action::SelectGraveyardReturn { object: old_ref },
+    );
     finish(&mut return_game);
     assert_eq!(return_game.object_view(old).zone, Zone::Hand);
-    assert_eq!(return_game.state.objects.iter().filter(|o| o.card == Card(5302) && o.zone == Zone::Battlefield).count(), 0);
+    assert_eq!(
+        return_game
+            .state
+            .objects
+            .iter()
+            .filter(|o| o.card == Card(5302) && o.zone == Zone::Battlefield)
+            .count(),
+        0
+    );
 
     let mut fallback = scenario(Player::P0);
     fallback.state.players[0].library.clear();
-    for _ in 0..3 { put(&mut fallback, Player::P0, "Shock", Zone::Library); }
+    for _ in 0..3 {
+        put(&mut fallback, Player::P0, "Shock", Zone::Library);
+    }
     let conqueror = put(&mut fallback, Player::P0, "Temporal Conqueror", Zone::Hand);
     cast(&mut fallback, conqueror, None);
     finish(&mut fallback);
-    assert_eq!(fallback.state.objects.iter().filter(|o| o.card == Card(5302) && o.zone == Zone::Battlefield).count(), 1);
+    assert_eq!(
+        fallback
+            .state
+            .objects
+            .iter()
+            .filter(|o| o.card == Card(5302) && o.zone == Zone::Battlefield)
+            .count(),
+        1
+    );
 }
 
 #[test]
@@ -435,7 +688,11 @@ fn caretaker_end_step_requires_a_dilemma_and_uses_target_opponent_library() {
     for player in [Player::P0, Player::P1] {
         let mut game = scenario(player);
         let caretaker = put(&mut game, player, "The Caretaker", Zone::Battlefield);
-        assert!(game.object_view(caretaker).keywords.contains(Keywords::VIGILANCE));
+        assert!(
+            game.object_view(caretaker)
+                .keywords
+                .contains(Keywords::VIGILANCE)
+        );
         let hit = put(&mut game, player.other(), "Shock", Zone::Library);
         game.begin_step(Step::End);
         game.advance_replacements(false);
@@ -462,7 +719,12 @@ fn riker_puts_only_the_revealed_lands_in_play_then_sacrifices_them() {
     let first = put(&mut game, Player::P0, "Forest", Zone::Library);
     let gap = put(&mut game, Player::P0, "Shock", Zone::Library);
     let second = put(&mut game, Player::P0, "Island", Zone::Library);
-    put(&mut game, Player::P0, "Will Riker, First in the Field", Zone::Battlefield);
+    put(
+        &mut game,
+        Player::P0,
+        "Will Riker, First in the Field",
+        Zone::Battlefield,
+    );
     game.begin_step(Step::BeginCombat);
     game.advance_replacements(false);
     game.give_priority();
@@ -475,7 +737,9 @@ fn riker_puts_only_the_revealed_lands_in_play_then_sacrifices_them() {
     game.advance_replacements(false);
     game.give_priority();
     finish(&mut game);
-    for land in [first, second] { assert_eq!(game.object_view(land).zone, Zone::Graveyard); }
+    for land in [first, second] {
+        assert_eq!(game.object_view(land).zone, Zone::Graveyard);
+    }
     assert_eq!(game.object_view(unrelated).zone, Zone::Battlefield);
 }
 
@@ -485,35 +749,94 @@ fn coffee_rejects_nonpermanent_hit_and_uses_white_beam_cost() {
     game.state.players[0].library.clear();
     let allowed = put(&mut game, Player::P0, "Grizzly Bears", Zone::Library);
     let forbidden = put(&mut game, Player::P0, "Shock", Zone::Library);
-    let spell = put(&mut game, Player::P0, "There's Coffee in that Nebula", Zone::Hand);
+    let spell = put(
+        &mut game,
+        Player::P0,
+        "There's Coffee in that Nebula",
+        Zone::Hand,
+    );
     cast(&mut game, spell, None);
     for _ in 0..20 {
-        if matches!(game.state.pending, Pending::EffectLibrarySelection { .. }) { break; }
-        choose(&mut game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+        if matches!(game.state.pending, Pending::EffectLibrarySelection { .. }) {
+            break;
+        }
+        choose(&mut game, |a| {
+            matches!(a, Action::Pass | Action::PutTrigger { .. })
+        });
     }
     reject(&mut game, Action::SelectLibrary { card: forbidden });
     act(&mut game, Action::SelectLibrary { card: allowed });
-    if game.legal_actions().contains(&Action::FinishLibrarySelection) { act(&mut game, Action::FinishLibrarySelection); }
+    if game
+        .legal_actions()
+        .contains(&Action::FinishLibrarySelection)
+    {
+        act(&mut game, Action::FinishLibrarySelection);
+    }
     finish(&mut game);
     assert_eq!(game.object_view(allowed).zone, Zone::Hand);
     assert_eq!(game.object_view(forbidden).zone, Zone::Library);
 
     let mut beam = scenario(Player::P0);
-    let spell = put(&mut beam, Player::P0, "There's Coffee in that Nebula", Zone::Graveyard);
+    let spell = put(
+        &mut beam,
+        Player::P0,
+        "There's Coffee in that Nebula",
+        Zone::Graveyard,
+    );
     let creature = put(&mut beam, Player::P0, "Grizzly Bears", Zone::Battlefield);
-    let cost = ManaCost { generic: 2, colored: [1, 0, 0, 0, 0, 0] };
-    act(&mut beam, Action::AnnounceBeamMeUp {
-        card: spell, face: CastFace::Normal, cost, flash_surcharge: false, provider: None,
-    });
+    let cost = ManaCost {
+        generic: 2,
+        colored: [1, 0, 0, 0, 0, 0],
+    };
+    act(
+        &mut beam,
+        Action::AnnounceBeamMeUp {
+            card: spell,
+            face: CastFace::Normal,
+            cost,
+            flash_surcharge: false,
+            provider: None,
+        },
+    );
     act(&mut beam, Action::BeginOrderedCosts);
-    let clauses: Vec<_> = beam.state.announcing.as_ref().unwrap().cast_costs.as_ref().unwrap()
-        .clauses.iter().map(|row| row.clause).collect();
-    for kind in [CastCostClause::Mana, clauses.into_iter().find(|kind| matches!(kind, CastCostClause::BeamMeUpReturn(_, _))).unwrap()] {
-        let clause = beam.state.announcing.as_ref().unwrap().cast_costs.as_ref().unwrap()
-            .clauses.iter().position(|row| row.clause == kind && !row.paid).unwrap() as u16;
+    let clauses: Vec<_> = beam
+        .state
+        .announcing
+        .as_ref()
+        .unwrap()
+        .cast_costs
+        .as_ref()
+        .unwrap()
+        .clauses
+        .iter()
+        .map(|row| row.clause)
+        .collect();
+    for kind in [
+        CastCostClause::Mana,
+        clauses
+            .into_iter()
+            .find(|kind| matches!(kind, CastCostClause::BeamMeUpReturn(_, _)))
+            .unwrap(),
+    ] {
+        let clause = beam
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .cast_costs
+            .as_ref()
+            .unwrap()
+            .clauses
+            .iter()
+            .position(|row| row.clause == kind && !row.paid)
+            .unwrap() as u16;
         act(&mut beam, Action::ChooseCastCost { clause });
-        if matches!(kind, CastCostClause::Mana) { pay(&mut beam); }
-        else { let object = beam.object_ref(creature); act(&mut beam, Action::PayBeamMeUpReturn { object }); }
+        if matches!(kind, CastCostClause::Mana) {
+            pay(&mut beam);
+        } else {
+            let object = beam.object_ref(creature);
+            act(&mut beam, Action::PayBeamMeUpReturn { object });
+        }
     }
     finish(&mut beam);
     assert_eq!(beam.object_view(creature).zone, Zone::Hand);

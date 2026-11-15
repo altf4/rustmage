@@ -42,7 +42,12 @@ fn promotion_counter_uses_named_storage_and_restores_exactly() {
         cast(&mut game, promote, Some(Target::Card(creature)));
         settle(&mut game);
         assert_eq!(game.counter_count(creature, CounterKind::Promotion), 3);
-        assert_eq!(game.object_view(creature).counters.get(CounterKind::Promotion), 3);
+        assert_eq!(
+            game.object_view(creature)
+                .counters
+                .get(CounterKind::Promotion),
+            3
+        );
         assert_eq!(game.object_view(creature).power, 2);
         assert_eq!(game.object_view(creature).toughness, 2);
 

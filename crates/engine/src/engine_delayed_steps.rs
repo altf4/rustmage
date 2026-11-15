@@ -145,7 +145,9 @@ impl Game {
     }
 
     pub(super) fn take_delayed_battlefield_objects_until_end_turn(&mut self, item: &SpellView) {
-        let ids = self.delayed_objects_in_zone(item, Zone::Battlefield).collect::<Vec<_>>();
+        let ids = self
+            .delayed_objects_in_zone(item, Zone::Battlefield)
+            .collect::<Vec<_>>();
         self.take_and_ready_until_end_turn(item, &ids);
     }
 

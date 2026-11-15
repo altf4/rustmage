@@ -67,14 +67,21 @@ fn all_token_recipes_are_substituted_with_group_quantities_and_entry_flags() {
     ]);
     for player in [Player::P0, Player::P1] {
         let mut game = scenario(player);
-        let provider = put(&mut game, player.other(), "Grizzly Bears", Zone::Battlefield);
+        let provider = put(
+            &mut game,
+            player.other(),
+            "Grizzly Bears",
+            Zone::Battlefield,
+        );
         let original = put(&mut game, player, "Opt", Zone::Hand);
         cast(&mut game, original, None);
         settle(&mut game);
         assert_eq!(tokens(&game, player).len(), 5);
-        assert!(tokens(&game, player)
-            .iter()
-            .all(|token| token.card != Card::DrakeToken));
+        assert!(
+            tokens(&game, player)
+                .iter()
+                .all(|token| token.card != Card::DrakeToken)
+        );
 
         game.record_control(game.object_ref(provider), player, None);
         let before = game.snapshot();
@@ -84,7 +91,11 @@ fn all_token_recipes_are_substituted_with_group_quantities_and_entry_flags() {
             .into_iter()
             .find(|action| matches!(action, Action::Cast { card, .. } if *card == substituted))
             .unwrap();
-        let index = game.legal_actions().iter().position(|a| *a == action).unwrap();
+        let index = game
+            .legal_actions()
+            .iter()
+            .position(|a| *a == action)
+            .unwrap();
         let mut indexed = game.clone();
         indexed.apply_index(player, game.revision(), index).unwrap();
         act(&mut game, action);
@@ -101,8 +112,10 @@ fn all_token_recipes_are_substituted_with_group_quantities_and_entry_flags() {
         let mut restored = game.clone();
         restored.restore(&before).unwrap();
         assert_eq!(tokens(&restored, player).len(), 5);
-        assert!(tokens(&restored, player)
-            .iter()
-            .all(|token| token.card != Card::DrakeToken));
+        assert!(
+            tokens(&restored, player)
+                .iter()
+                .all(|token| token.card != Card::DrakeToken)
+        );
     }
 }

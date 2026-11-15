@@ -231,8 +231,12 @@ fn guidance_failure_targets_spacecraft_and_discounts_only_attacking_creatures() 
     let ship = put(&mut game, player.other(), "Rescue Skiff", Zone::Battlefield);
     assert_eq!(game.object_view(ship).kinds & 1, 0);
     let spell = owned(&mut game, player, "Guidance Failure", Zone::Hand);
-    assert!(game.legal_actions().contains(&Action::AnnounceCast { card: spell }),
-        "spacecraft cast absent: {:?}", game.legal_actions());
+    assert!(
+        game.legal_actions()
+            .contains(&Action::AnnounceCast { card: spell }),
+        "spacecraft cast absent: {:?}",
+        game.legal_actions()
+    );
     act(&mut game, Action::AnnounceCast { card: spell });
     act(
         &mut game,
@@ -278,8 +282,13 @@ fn guidance_failure_targets_spacecraft_and_discounts_only_attacking_creatures() 
     let spell = owned(&mut combat, player, "Guidance Failure", Zone::Hand);
     combat.state.players[player.index()].mana = [0, 1, 0, 0, 0, 2];
     assert!(combat.state.attackers.iter().any(|a| a.card == attacker));
-    assert!(combat.legal_actions().contains(&Action::AnnounceCast { card: spell }),
-        "discounted cast absent: {:?}", combat.legal_actions());
+    assert!(
+        combat
+            .legal_actions()
+            .contains(&Action::AnnounceCast { card: spell }),
+        "discounted cast absent: {:?}",
+        combat.legal_actions()
+    );
     act(&mut combat, Action::AnnounceCast { card: spell });
     act(
         &mut combat,
@@ -320,7 +329,12 @@ fn guidance_failure_targets_spacecraft_and_discounts_only_attacking_creatures() 
             target: Target::Card(nonattacker),
         },
     );
-    assert!(ordinary.legal_actions().iter().any(|action| matches!(action, Action::PayCosts { .. })));
+    assert!(
+        ordinary
+            .legal_actions()
+            .iter()
+            .any(|action| matches!(action, Action::PayCosts { .. }))
+    );
 }
 
 const DILEMMA: CardRules = CardRules {

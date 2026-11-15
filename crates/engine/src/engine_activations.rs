@@ -935,9 +935,9 @@ impl Game {
                                 if spec.max > 1 || (spec.max > 0 && ability.cost.remove.is_some()) {
                                     let mut count = 0;
                                     self.visit_item_targets(&packet, spec.rule, |_| {
-                                            count += 1;
-                                            false
-                                        });
+                                        count += 1;
+                                        false
+                                    });
                                     if count >= usize::from(spec.min) {
                                         done = emit(Action::BeginActivate {
                                             card,
@@ -957,7 +957,8 @@ impl Game {
                                         });
                                     }
                                     if !done && spec.max > 0 {
-                                        done = self.visit_item_targets(&packet, spec.rule, |target| {
+                                        done =
+                                            self.visit_item_targets(&packet, spec.rule, |target| {
                                                 emit(Action::Activate {
                                                     card,
                                                     ability: index as u16,

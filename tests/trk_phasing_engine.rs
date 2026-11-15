@@ -79,7 +79,12 @@ fn a_directly_phased_control_aura_releases_and_recaptures_its_host() {
     let _rules = rules();
     for controller in [Player::P0, Player::P1] {
         let mut game = scenario(controller);
-        let host = put(&mut game, controller.other(), "Hill Giant", Zone::Battlefield);
+        let host = put(
+            &mut game,
+            controller.other(),
+            "Hill Giant",
+            Zone::Battlefield,
+        );
         let aura = spawn(
             &mut game,
             controller,

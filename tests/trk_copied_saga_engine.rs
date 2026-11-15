@@ -132,7 +132,10 @@ fn a_permanent_entering_as_a_saga_gets_its_first_chapter_and_final_sacrifice() {
     assert!(game.legal_actions().contains(&choice));
     act(&mut game, choice);
     drive(&mut game);
-    assert_eq!(game.object_view(clone).card, Card::from_name("Amok Time").unwrap());
+    assert_eq!(
+        game.object_view(clone).card,
+        Card::from_name("Amok Time").unwrap()
+    );
     assert_eq!(game.counter_count(clone, CounterKind::Lore), 1);
     assert_eq!(game.state.players[Player::P0.index()].life, life + 1);
     for chapter in 2..=4 {

@@ -48,23 +48,46 @@ fn each_exiler_sees_and_can_play_only_their_exact_face_down_cards() {
         let actor = game.actor().unwrap();
         let revision = game.revision();
         let action = Action::Pass;
-        let index = game.legal_actions().iter().position(|a| *a == action).unwrap();
+        let index = game
+            .legal_actions()
+            .iter()
+            .position(|a| *a == action)
+            .unwrap();
         let checkpoint = game.snapshot();
         let mut indexed = game.clone();
         act(&mut game, action.clone());
         indexed.apply_index(actor, revision, index).unwrap();
         assert_eq!(game.snapshot(), indexed.snapshot());
         indexed.restore(&checkpoint).unwrap();
-        assert_eq!(indexed.apply_index(actor, revision, index), Err(Error::StaleRevision));
+        assert_eq!(
+            indexed.apply_index(actor, revision, index),
+            Err(Error::StaleRevision)
+        );
         act(&mut indexed, action);
         assert_eq!(game.snapshot(), indexed.snapshot());
 
         for (card, beneficiary) in [(theirs, player.other()), (forest, player), (shock, player)] {
             let exact = game.object_ref(card);
             assert_eq!(game.object_view(card).zone, Zone::Exile);
-            assert!(game.observe(beneficiary).objects.iter().any(|o| o.id == card));
-            assert!(!game.observe(beneficiary.other()).objects.iter().any(|o| o.id == card));
-            let permission = game.state.exile_permissions.iter().find(|row| row.object == exact).unwrap();
+            assert!(
+                game.observe(beneficiary)
+                    .objects
+                    .iter()
+                    .any(|o| o.id == card)
+            );
+            assert!(
+                !game
+                    .observe(beneficiary.other())
+                    .objects
+                    .iter()
+                    .any(|o| o.id == card)
+            );
+            let permission = game
+                .state
+                .exile_permissions
+                .iter()
+                .find(|row| row.object == exact)
+                .unwrap();
             assert_eq!(permission.player, beneficiary);
             assert_eq!(permission.expiry, ExilePlayExpiry::WhileExiled);
             assert!(permission.spend_any_mana);
@@ -75,7 +98,12 @@ fn each_exiler_sees_and_can_play_only_their_exact_face_down_cards() {
         game.state.passes = 0;
         game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 1];
         act(&mut game, Action::AnnounceExile { card: shock });
-        act(&mut game, Action::ChooseTarget { target: Target::Player(player.other()) });
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Player(player.other()),
+            },
+        );
         if game.legal_actions().contains(&Action::FinishTargets) {
             act(&mut game, Action::FinishTargets);
         }
@@ -105,9 +133,15 @@ fn second_looked_card_remains_privately_known_if_its_exile_is_prevented() {
     assert_eq!(game.object_view(forest).zone, Zone::Library);
     assert_eq!(
         game.observe(player).known_library_top[player.other().index()]
-            .unwrap().object,
+            .unwrap()
+            .object,
         game.object_ref(forest)
     );
     assert!(game.observe(player.other()).known_library_top[player.other().index()].is_none());
-    assert!(game.state.exile_permissions.iter().all(|row| row.object.card != forest));
+    assert!(
+        game.state
+            .exile_permissions
+            .iter()
+            .all(|row| row.object.card != forest)
+    );
 }

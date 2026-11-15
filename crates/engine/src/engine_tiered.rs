@@ -229,11 +229,20 @@ impl Game {
     ) {
         let mut ids = Vec::new();
         let mut owners = [false; 2];
-        for bound in item.targets.iter().filter(|bound| bound.group == cards_group) {
-            let Some(reference) = bound.object else { continue };
-            if !self.same_target_object(*bound) { continue; }
+        for bound in item
+            .targets
+            .iter()
+            .filter(|bound| bound.group == cards_group)
+        {
+            let Some(reference) = bound.object else {
+                continue;
+            };
+            if !self.same_target_object(*bound) {
+                continue;
+            }
             let object = &self.state.objects[reference.card as usize];
-            if object.zone != Zone::Graveyard || !object.is_card() || ids.contains(&reference.card) {
+            if object.zone != Zone::Graveyard || !object.is_card() || ids.contains(&reference.card)
+            {
                 continue;
             }
             owners[object.owner.index()] = true;

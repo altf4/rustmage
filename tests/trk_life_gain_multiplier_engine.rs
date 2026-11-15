@@ -133,7 +133,12 @@ fn life_gain_cause_doubles_controlled_permanent_triggers_only() {
         let mut game = scenario(player);
         let crusher = put(&mut game, player, "Bear Cub", Zone::Battlefield);
         let observer = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
-        let enemy_observer = put(&mut game, player.other(), "Grizzly Bears", Zone::Battlefield);
+        let enemy_observer = put(
+            &mut game,
+            player.other(),
+            "Grizzly Bears",
+            Zone::Battlefield,
+        );
         let limited = put(&mut game, player, "Hill Giant", Zone::Battlefield);
         let spell = put(&mut game, player, "Opt", Zone::Hand);
         cast(&mut game, spell, None);

@@ -335,9 +335,7 @@ impl Game {
         let Some(resolution) = self.state.resolving.as_ref() else {
             return false;
         };
-        if resolution
-            .program
-            .get(resolution.pc.saturating_sub(1))
+        if resolution.program.get(resolution.pc.saturating_sub(1))
             != Some(&Instruction::MayTargetSpellControllerExile)
         {
             return false;

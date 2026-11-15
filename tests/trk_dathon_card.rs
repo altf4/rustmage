@@ -10,7 +10,9 @@ fn drain_until(game: &mut Game, predicate: impl Fn(&Game) -> bool) {
         if predicate(game) {
             return;
         }
-        choose(game, |action| matches!(action, Action::Pass | Action::PutTrigger { .. }));
+        choose(game, |action| {
+            matches!(action, Action::Pass | Action::PutTrigger { .. })
+        });
     }
     panic!("Dathon trigger did not resolve");
 }
@@ -18,7 +20,12 @@ fn drain_until(game: &mut Game, predicate: impl Fn(&Game) -> bool) {
 #[test]
 fn an_enchantment_cast_draws_and_only_a_saga_cast_damages_before_its_spell() {
     let mut game = scenario(Player::P0);
-    let dathon = put(&mut game, Player::P0, "Dathon, His Heart Open", Zone::Battlefield);
+    let dathon = put(
+        &mut game,
+        Player::P0,
+        "Dathon, His Heart Open",
+        Zone::Battlefield,
+    );
     assert_eq!(stats(&game, dathon), (3, 3));
     let enchantment = put(&mut game, Player::P0, "Rest in Peace", Zone::Hand);
     cast(&mut game, enchantment, None);
@@ -37,7 +44,12 @@ fn an_enchantment_cast_draws_and_only_a_saga_cast_damages_before_its_spell() {
 #[test]
 fn sorcery_activation_chooses_a_counter_already_on_own_enchantment() {
     let mut game = scenario(Player::P0);
-    let dathon = put(&mut game, Player::P0, "Dathon, His Heart Open", Zone::Battlefield);
+    let dathon = put(
+        &mut game,
+        Player::P0,
+        "Dathon, His Heart Open",
+        Zone::Battlefield,
+    );
     let enchantment = put(&mut game, Player::P0, "Rest in Peace", Zone::Battlefield);
     let opposing = put(&mut game, Player::P1, "Rest in Peace", Zone::Battlefield);
     let artifact = put(&mut game, Player::P0, "Short Bow", Zone::Battlefield);
@@ -52,21 +64,46 @@ fn sorcery_activation_chooses_a_counter_already_on_own_enchantment() {
     reject(&mut game, activation.clone());
     game.state.step = Step::Main1;
     act(&mut game, activation);
-    reject(&mut game, Action::ChooseTarget { target: Target::Card(opposing) });
-    reject(&mut game, Action::ChooseTarget { target: Target::Card(artifact) });
-    act(&mut game, Action::ChooseTarget { target: Target::Card(enchantment) });
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(opposing),
+        },
+    );
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(artifact),
+        },
+    );
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(enchantment),
+        },
+    );
     if game.legal_actions().contains(&Action::FinishTargets) {
         act(&mut game, Action::FinishTargets);
     }
     pay(&mut game);
-    drain_until(&mut game, |g| matches!(g.state.pending,
-        Pending::TargetExistingCounterKindToPut { .. }));
-    reject(&mut game, Action::ChooseTargetExistingCounterKindToPut {
-        counter: CounterKind::Charge,
+    drain_until(&mut game, |g| {
+        matches!(
+            g.state.pending,
+            Pending::TargetExistingCounterKindToPut { .. }
+        )
     });
-    act(&mut game, Action::ChooseTargetExistingCounterKindToPut {
-        counter: CounterKind::Stun,
-    });
+    reject(
+        &mut game,
+        Action::ChooseTargetExistingCounterKindToPut {
+            counter: CounterKind::Charge,
+        },
+    );
+    act(
+        &mut game,
+        Action::ChooseTargetExistingCounterKindToPut {
+            counter: CounterKind::Stun,
+        },
+    );
     settle(&mut game);
     assert_eq!(game.counter_count(enchantment, CounterKind::Lore), 1);
     assert_eq!(game.counter_count(enchantment, CounterKind::Stun), 2);

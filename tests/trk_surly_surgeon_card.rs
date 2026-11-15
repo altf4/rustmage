@@ -10,7 +10,12 @@ fn printed_entry_target_is_other_controlled_creature_and_destroy_heals_it() {
     for player in [Player::P0, Player::P1] {
         let mut game = scenario(player);
         let target = put(&mut game, player, "Bear Cub", Zone::Battlefield);
-        let enemy = put(&mut game, player.other(), "Grizzly Bears", Zone::Battlefield);
+        let enemy = put(
+            &mut game,
+            player.other(),
+            "Grizzly Bears",
+            Zone::Battlefield,
+        );
         let surgeon = put(&mut game, player, "Dr. McCoy, Surly Surgeon", Zone::Hand);
         cast(&mut game, surgeon, None);
         for _ in 0..12 {
@@ -23,9 +28,24 @@ fn printed_entry_target_is_other_controlled_creature_and_destroy_heals_it() {
                 matches!(action, Action::Pass | Action::PutTrigger { .. })
             });
         }
-        reject(&mut game, Action::ChooseTarget { target: Target::Card(surgeon) });
-        reject(&mut game, Action::ChooseTarget { target: Target::Card(enemy) });
-        act(&mut game, Action::ChooseTarget { target: Target::Card(target) });
+        reject(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(surgeon),
+            },
+        );
+        reject(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(enemy),
+            },
+        );
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
         if game.legal_actions().contains(&Action::FinishTargets) {
             act(&mut game, Action::FinishTargets);
         }

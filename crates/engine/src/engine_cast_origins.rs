@@ -455,11 +455,16 @@ impl Game {
                         && self.object_ref(id) == row.object
                         && !self.is_face_down(row.object)
                         && self.printed_abilities_available(id)
-                        && row.recipe.definition.static_ability_groups().iter().any(|group| {
-                            group.fragments.iter().any(|fragment| {
-                                matches!(fragment, StaticAbilityFragment::LookAtLibraryTop)
-                            }) && entry_modes::group_enabled(self, row.object, group)
-                        })
+                        && row
+                            .recipe
+                            .definition
+                            .static_ability_groups()
+                            .iter()
+                            .any(|group| {
+                                group.fragments.iter().any(|fragment| {
+                                    matches!(fragment, StaticAbilityFragment::LookAtLibraryTop)
+                                }) && entry_modes::group_enabled(self, row.object, group)
+                            })
                 })
             })
             || self.attached_library_top_permission(player)

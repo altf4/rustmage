@@ -3638,7 +3638,9 @@ pub enum Instruction {
     /// Exile the exact graveyard creature card, copy its printed face after a
     /// successful exile, grant a lasting keyword, and sacrifice the actual token
     /// at the next end step.
-    ExileGraveyardTargetCopyWithNextEndStepSacrifice { keywords: Keywords },
+    ExileGraveyardTargetCopyWithNextEndStepSacrifice {
+        keywords: Keywords,
+    },
     /// Exile the exact creature card, then copy it only if it actually reached exile.
     ExileAndCopyCreatureAs {
         base: (i16, i16),
@@ -6719,7 +6721,9 @@ pub enum ReplacementSpec {
     },
     /// Double each positive counter kind this provider's controller would put
     /// on a creature they control, including an entering creature.
-    ControlledCreatureCountersPlacedByController { factor: u32 },
+    ControlledCreatureCountersPlacedByController {
+        factor: u32,
+    },
     /// Double each positive kind the provider's controller would put on a permanent or player.
     DoubleCountersPlacedByController {
         condition: StatValue,

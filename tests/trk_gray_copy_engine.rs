@@ -2,7 +2,7 @@
 mod support;
 
 use rustmage as _;
-use rustmage_core::cards::authored::{one, CardRules};
+use rustmage_core::cards::authored::{CardRules, one};
 use rustmage_core::{cards::*, engine::*};
 use support::*;
 

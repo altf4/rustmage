@@ -52,7 +52,10 @@ fn antagonist_grants_self_and_borg_token_but_not_nonartifact_creature() {
         if actions.contains(&Action::DeclineResolutionMana) {
             payments += 1;
             if payments == 1 {
-                if !actions.iter().any(|action| matches!(action, Action::PayResolutionMana { .. })) {
+                if !actions
+                    .iter()
+                    .any(|action| matches!(action, Action::PayResolutionMana { .. }))
+                {
                     act(&mut game, Action::TapMana { card: mana_land });
                 }
                 choose(&mut game, |action| {

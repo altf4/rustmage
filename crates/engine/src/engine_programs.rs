@@ -630,11 +630,16 @@ impl Game {
         {
             return;
         }
-        let first_kind_this_turn = !self.state.first_counter_kind_events.as_ref().is_some_and(
-            |rows| rows.iter().any(|row| *row == (object, kind)),
-        );
+        let first_kind_this_turn = !self
+            .state
+            .first_counter_kind_events
+            .as_ref()
+            .is_some_and(|rows| rows.iter().any(|row| *row == (object, kind)));
         if first_kind_this_turn {
-            self.state.first_counter_kind_events.get_or_insert_default().push((object, kind));
+            self.state
+                .first_counter_kind_events
+                .get_or_insert_default()
+                .push((object, kind));
         }
         self.record_counter_placement(
             object,
@@ -724,17 +729,24 @@ impl Game {
                 }
             }
         }
-        if !self.has_trigger(object.card, |a| matches!(a.condition.event(),
+        if !self.has_trigger(object.card, |a| {
+            matches!(a.condition.event(),
             TriggerCondition::SelfCountersAdded { kind: expected, .. }
             | TriggerCondition::FirstSelfCountersAddedThisTurn { kind: expected }
-                if expected == kind)) { return; }
+                if expected == kind)
+        }) {
+            return;
+        }
         let source = self.object_view(object.card);
         for (index, ability) in source.trigger_templates() {
             let qualifies = match ability.condition.event() {
-                TriggerCondition::SelfCountersAdded { kind: expected, controller_only } =>
-                    kind == expected && (!controller_only || source.controller == placed_by),
-                TriggerCondition::FirstSelfCountersAddedThisTurn { kind: expected } =>
-                    kind == expected && first_kind_this_turn,
+                TriggerCondition::SelfCountersAdded {
+                    kind: expected,
+                    controller_only,
+                } => kind == expected && (!controller_only || source.controller == placed_by),
+                TriggerCondition::FirstSelfCountersAddedThisTurn { kind: expected } => {
+                    kind == expected && first_kind_this_turn
+                }
                 _ => false,
             };
             if qualifies {
@@ -6814,14 +6826,7 @@ impl Game {
                 } => {
                     let objects = item.targets.iter().filter_map(|bound| bound.object);
                     let turn = self.state.turn;
-                    self.schedule_delayed_step(
-                        &item,
-                        step,
-                        relation,
-                        ability,
-                        objects,
-                        Some(turn),
-                    );
+                    self.schedule_delayed_step(&item, step, relation, ability, objects, Some(turn));
                 }
                 Instruction::TakeDelayedBattlefieldObjectsUntilEndTurn => {
                     self.take_delayed_battlefield_objects_until_end_turn(&item);
@@ -8010,12 +8015,7 @@ impl Game {
                 }
                 Instruction::ExileTargetLibraryUntilNonlandCastFree => {
                     if let Some(library) = self.program_players(PlayerSet::Targeted, &item).next()
-                        && self.start_exile_until_nonland_cast(
-                            &item,
-                            library,
-                            |_| None,
-                            false,
-                        )
+                        && self.start_exile_until_nonland_cast(&item, library, |_| None, false)
                     {
                         return;
                     }
@@ -9130,12 +9130,7 @@ impl Game {
                     keywords,
                     exile_ability,
                 } => {
-                    self.copy_each_target_temporary(
-                        &item,
-                        exceptions,
-                        keywords,
-                        exile_ability,
-                    );
+                    self.copy_each_target_temporary(&item, exceptions, keywords, exile_ability);
                 }
                 Instruction::CreateCounteredCopyToken {
                     subject,
@@ -13208,7 +13203,9 @@ impl Game {
                     create_if_at_least,
                 } => {
                     let source = item.source.expect("scaled creature change needs a source");
-                    let count = self.stat_value(value, source.object, item.controller).max(0);
+                    let count = self
+                        .stat_value(value, source.object, item.controller)
+                        .max(0);
                     let delta = Stats {
                         power: count
                             .checked_mul(i128::from(power_per_count))

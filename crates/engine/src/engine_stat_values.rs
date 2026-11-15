@@ -1024,7 +1024,8 @@ impl Game {
                     .filter(|(id, object)| {
                         object.zone == Zone::Battlefield
                             && object.controller == owner
-                            && ability_world::CharacteristicWorld::kinds(&query, *id as CardId) & 1 != 0
+                            && ability_world::CharacteristicWorld::kinds(&query, *id as CardId) & 1
+                                != 0
                     })
                     .map(|(id, _)| query.stats(id as CardId).power)
                     .fold(0i128, i128::saturating_add)

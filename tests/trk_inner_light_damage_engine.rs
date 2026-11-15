@@ -10,13 +10,17 @@ const DELAYED_DRAW: CardRules = CardRules {
     effect: Effect::Spell(
         TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
         &[Instruction::DelayTargetEvent {
-            event: DelayedTargetEvent::CombatDamageToPlayer, ability: 0,
+            event: DelayedTargetEvent::CombatDamageToPlayer,
+            ability: 0,
         }],
     ),
     triggers: &[TriggeredAbility {
         condition: TriggerCondition::DelayedTargetEvent,
         targets: TargetPlan::NONE,
-        program: &[Instruction::DrawScaled(PlayerSet::Controller, AmountValue::DamageEventAmount)],
+        program: &[Instruction::DrawScaled(
+            PlayerSet::Controller,
+            AmountValue::DamageEventAmount,
+        )],
     }],
     ..CardRules::EMPTY
 };
@@ -36,13 +40,20 @@ fn delayed_player_damage_remembers_amount_for_both_players_and_owned_restore() {
         let action = Action::Attack { card: creature };
         let revision = game.revision();
         let checkpoint = game.snapshot();
-        let index = game.legal_actions().iter().position(|a| *a == action).unwrap();
+        let index = game
+            .legal_actions()
+            .iter()
+            .position(|a| *a == action)
+            .unwrap();
         let mut indexed = game.clone();
         act(&mut game, action.clone());
         indexed.apply_index(player, revision, index).unwrap();
         assert_eq!(game.snapshot(), indexed.snapshot());
         indexed.restore(&checkpoint).unwrap();
-        assert_eq!(indexed.apply_index(player, revision, index), Err(Error::StaleRevision));
+        assert_eq!(
+            indexed.apply_index(player, revision, index),
+            Err(Error::StaleRevision)
+        );
         act(&mut indexed, action);
         assert_eq!(game.snapshot(), indexed.snapshot());
         act(&mut game, Action::FinishAttackers);
@@ -51,11 +62,22 @@ fn delayed_player_damage_remembers_amount_for_both_players_and_owned_restore() {
                 && game.state.pending == Pending::Priority
                 && game.state.stack.is_empty()
                 && game.state.pending_triggers.is_empty()
-                && game.state.resolving.is_none() { break; }
-            choose(&mut game, |a| matches!(a,
-                Action::Pass | Action::PutTrigger { .. } | Action::FinishBlockers
-                | Action::AssignDamage { target: Target::Player(_), .. }
-            ));
+                && game.state.resolving.is_none()
+            {
+                break;
+            }
+            choose(&mut game, |a| {
+                matches!(
+                    a,
+                    Action::Pass
+                        | Action::PutTrigger { .. }
+                        | Action::FinishBlockers
+                        | Action::AssignDamage {
+                            target: Target::Player(_),
+                            ..
+                        }
+                )
+            });
         }
         assert_eq!(game.state.players[player.other().index()].life, 18);
         assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 2);
