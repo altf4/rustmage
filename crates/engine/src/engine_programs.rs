@@ -1126,6 +1126,7 @@ impl Game {
                         })
                     }
                     TriggerCondition::SelfNontokenEnters => same && !entered.is_token(),
+                    TriggerCondition::SelfEntersUntapped => same && !entered.tapped,
                     TriggerCondition::SelfOffspring => same && event.offspring_paid,
                     TriggerCondition::SelfKicked => same && event.kicked,
                     TriggerCondition::SelfGiftEnters => same && event.gift.is_some(),

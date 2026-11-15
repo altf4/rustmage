@@ -8096,6 +8096,8 @@ pub enum TriggerCondition {
         ordinal: Option<u64>,
     },
     SelfEnters,
+    /// Trigger only if this exact permanent entered the battlefield untapped.
+    SelfEntersUntapped,
     SelfEntersOrTransforms,
     CreaturesFromGraveyardEnterYou {
         other: bool,
