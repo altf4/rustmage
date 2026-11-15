@@ -543,6 +543,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledPermanentAllKindsKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ControlledPermanentAllKindsKeywordsAtSourceCounters { .. }
                             | crate::cards::StaticAbilityFragment::ControlledOtherCounteredCreatureKeywords(..)
+                            | crate::cards::StaticAbilityFragment::SaveOtherPlusOneCreatureFromDestruction
                             | crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
                             | crate::cards::StaticAbilityFragment::ConditionalEquippedCreatureKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. }

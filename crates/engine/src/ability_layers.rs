@@ -436,6 +436,8 @@ pub enum StaticAbilityFragment {
     },
     /// Other controlled creatures with any counter have these keywords.
     ControlledOtherCounteredCreatureKeywords(Keywords),
+    /// Replace destruction of another controlled creature with a +1/+1 counter.
+    SaveOtherPlusOneCreatureFromDestruction,
     /// Live grant to equipped creatures, independent of the Equipment controller.
     ControlledEquippedCreatureKeywords(Keywords),
     ConditionalEquippedCreatureKeywords {

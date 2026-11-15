@@ -5334,8 +5334,9 @@ impl Game {
             self.semantic_actor().unwrap_or(actor)
         };
         let deferred_action = self.state.mana_lots.is_some().then(|| action.clone());
-        // Cold mechanic presence avoids an extra action clone in ordinary games.
-        let zone_action = self.state.zone_rules.is_some().then(|| action.clone());
+        // A live static replacement can request a choice during an action even
+        // before any zone-rule state exists (including during the SBA pass).
+        let zone_action = Some(action.clone());
         let checkpoint = self.state.clone();
         let revision = self.revision;
         let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
