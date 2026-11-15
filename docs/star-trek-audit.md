@@ -1,17 +1,18 @@
 # Star Trek (TRK) set implementation audit
 
 Status: engine phase. No TRK card has been admitted or declared complete by this work.
+Tracking issue: [#682](https://github.com/altf4/rustmage/issues/682).
 
 ## Frozen inputs and scope
 
 - Base: rustmage `0ddbc78533db881eee69004ee319aa409a84c2df` (fetched `origin/main`, November 14, 2026).
 - Oracle: Scryfall TRK card search, captured November 14, 2026; 311 physical Oracle identities, all Standard legal at capture. The full printed rules and individual fact hashes are in [`data/audits/trk.json`](../data/audits/trk.json). The official [TRK release notes](https://magic.wizards.com/en/news/feature/star-trek-release-notes) establish Standard legality, new mechanics, and card-specific rulings.
-- XMage: `magefree/mage` `688ee53a9a2dc4646bf0588cd900f2ab91ca45e8`; `StarTrek.java` SHA-256 `f0a24d1e88b7f6ed10164f692a67a70931b19c031155de1768dee72befbabc12`. It has 440 printings of 244 Oracle identities. The inventory pins each available class path and hash. The remaining 67 cards have no XMage set-table entry at this revision. They remain source-blocked under the implementation skill.
+- XMage: `magefree/mage` `688ee53a9a2dc4646bf0588cd900f2ab91ca45e8`; `StarTrek.java` SHA-256 `f0a24d1e88b7f6ed10164f692a67a70931b19c031155de1768dee72befbabc12`. It has 440 printings of 244 Oracle identities. The inventory pins each available class path and hash. The remaining 67 cards have no XMage set-table entry at this revision. The user explicitly authorized Oracle text and official Wizards rulings as the source evidence for those 67 on November 14; their provenance must record that fallback and the absent XMage class.
 - Fifteen identities already have catalogue ownership (five basics and ten shocklands). Their existing definitions still need TRK set-game acceptance evidence. Cosmetic printings are counted once. TRC Commander-only new cards and SDS alternate printings are outside TRK's Standard membership.
 
 All 311 Oracle bodies and all 244 available XMage classes were inspected in three disjoint audit ranges. The full source inventory records absent classes explicitly; its facts are audit input, not a rules implementation or admission claim. The current `data/standard/cards.json` is dated October 15, 2026 and does not contain TRK. Refreshing the Standard snapshot and the set manifest belongs after the engine checkpoint.
 
-Engine checkpoint progress (November 14): the official 367-type vocabulary is pinned, Federation's distinct non-Borg type count, the temporary no-maximum-hand-size duration, face-a-dilemma event, and Promotion named counter are implemented. Focused targets `trk_creature_taxonomy` (1 case), `trk_federation_engine` (1), `trk_hand_size_engine` (1), `trk_dilemma_engine` (4), `trk_promotion_counter` (1), and the existing `dsk_hand_size_engine` (2) passed individually through the guarded runner. The combined integration check for dilemma and Promotion remains pending. The remaining dependencies below are still required before card authoring.
+Engine checkpoint progress (November 14): the official 367-type vocabulary is pinned; Federation's distinct non-Borg type count, temporary no-maximum-hand-size duration, face-a-dilemma event, Promotion named counter, Quark's controlled-Treasure sacrifice prohibition, and Dr. Crusher's life-gain-caused trigger multiplier are implemented. Focused guarded targets passed: `trk_creature_taxonomy` (1 case), `trk_federation_engine` (1), `trk_hand_size_engine` (1), `trk_dilemma_engine` (4), `trk_promotion_counter` (1), `trk_treasure_sacrifice_engine` (1), `trk_life_gain_multiplier_engine` (1), and existing `dsk_hand_size_engine` (2). Dilemma and Promotion also passed together (5 cases). The remaining dependencies below are still required before card authoring.
 
 ## Required shared engine work before card authoring
 
@@ -26,7 +27,7 @@ Engine checkpoint progress (November 14): the official 367-type vocabulary is pi
 | Phasing | The City on the Edge of Forever phases cards out and uses a token to stop phase-in. | Add phase state and timing, attachment handling, observation/privacy, and owned snapshot behavior. |
 | Duration and turn history | Deep Space Scan and Live Long and Prosper remove maximum hand size only until the next turn. First Contact checks first spell of the game. Jake Sisko checks second resolution of its own landfall ability. | Add exact duration and per-ability/game history; test turn boundaries, source departure, replay, and rollback. |
 | Counter and trigger specializations | Beckett Mariner uses Promotion counters. Dr. Beverly Crusher multiplies only life-gain-caused triggers. | Add counter taxonomy and cause-specific trigger multiplier; test counter movement and non-life-gain control cases. |
-| Cost and permission constraints | Suus Mahna Practitioner and Warp Speed reduce activations by distinct land names; Quark prohibits Treasure sacrifice; Q grants linked exiled-card activation/cast permission; Overflow grants once-per-turn graveyard casting. | Extend only the necessary typed cost/permission machinery, with legality and failed-payment proofs. |
+| Cost and permission constraints | Suus Mahna Practitioner and Warp Speed reduce activations by distinct land names; Quark prohibits Treasure sacrifice; Q grants linked exiled-card activation/cast permission; Overflow grants once-per-turn graveyard casting. | The land-name reduction already uses `ActivationGenericReduction::Stat(StatValue::DistinctNames(...))`, as authored by `Survey Mechan` and exercised by `eoe_activation_reductions_engine`; reuse it for the two TRK cards. Extend the remaining typed permission and sacrifice machinery, with legality and failed-payment proofs. |
 
 Further targeting, permission, and privacy checks: The Holodeck; Vulcan Mind-Meld's opponent-library face-down exile and per-exiling-player play permission; Species 8472's protection from opposing artifact-source abilities; and Zero's opponent-hand choice, owner exile permission, and {2} casting surcharge.
 
@@ -40,7 +41,7 @@ Before card authorship: finish and independently review all shared changes, run 
 
 ## XMage source gaps
 
-The following TRK identities have no XMage set-table entry at the pinned revision; do not infer completion from catalogue metadata:
+The following TRK identities have no XMage set-table entry at the pinned revision. Use the user-authorized official-rules fallback when authoring them; do not infer completion from catalogue metadata:
 
 - All Good Things...
 - Blastoneuron

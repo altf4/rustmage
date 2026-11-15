@@ -771,6 +771,12 @@ impl Game {
                 if matched && self.queue_trigger(&source, index) {
                     self.state.pending_triggers.last_mut().unwrap().life_event =
                         Some(LifeTriggerView { player, amount });
+                    let extra = trigger_multiplicity::additional_life_gain_triggers(
+                        &self.characteristic_query(),
+                        source.id,
+                        player,
+                    );
+                    self.add_event_trigger_multiplicity(extra);
                 }
             }
         }

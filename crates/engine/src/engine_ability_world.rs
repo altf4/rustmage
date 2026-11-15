@@ -870,6 +870,7 @@ pub(super) trait CharacteristicWorld {
                 matches!(
                     f,
                     crate::cards::StaticAbilityFragment::ControlledPermanentsCannotBeSacrificed
+                        | crate::cards::StaticAbilityFragment::ControlledTreasureTokensCannotBeSacrificed
                 ) || matches!(f, crate::cards::StaticAbilityFragment::KeywordGrant(_, grant)
                     if grant.keywords.contains(Keywords::CANT_BE_SACRIFICED))
             })
@@ -896,6 +897,9 @@ pub(super) trait CharacteristicWorld {
         if query.keywords(id).contains(Keywords::CANT_BE_SACRIFICED) {
             return true;
         }
+        let treasure_token = self.is_token(id)
+            && self.kinds(id) & 16 != 0
+            && self.subtypes(id).has(target.card, "Treasure");
         (0..self.game().state.objects.len()).any(|index| {
             let source = index as CardId;
             let provider = self.object(source);
@@ -906,7 +910,11 @@ pub(super) trait CharacteristicWorld {
                 matches!(
                     f,
                     crate::cards::StaticAbilityFragment::ControlledPermanentsCannotBeSacrificed
-                )
+                ) || treasure_token
+                    && matches!(
+                        f,
+                        crate::cards::StaticAbilityFragment::ControlledTreasureTokensCannotBeSacrificed
+                    )
             };
             let printed = provider
                 .card

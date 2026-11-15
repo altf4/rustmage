@@ -48,6 +48,8 @@ pub enum ActivationReductionAmount {
 pub enum AdditionalTriggerScope {
     /// A triggered ability of a permanent this provider's controller controls.
     ControlledPermanent,
+    /// Only a life-gain event by this provider's controller causing a controlled permanent's trigger.
+    ControlledPermanentLifeGain,
     ControlledSubtype(&'static str),
     ControlledCreatureSubtype(&'static str),
     /// Controlled creature sources whose effective power meets the bound.
@@ -158,6 +160,8 @@ pub enum StaticAbilityFragment {
     },
     /// Permanents controlled by this source's controller cannot be sacrificed.
     ControlledPermanentsCannotBeSacrificed,
+    /// Treasure tokens controlled by this source's controller cannot be sacrificed.
+    ControlledTreasureTokensCannotBeSacrificed,
     /// No player may activate abilities of matching battlefield permanent kinds.
     ActivatedPermanentKindsProhibited(u16),
     /// The exact attached permanent's activated abilities cannot be activated.

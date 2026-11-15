@@ -42,6 +42,7 @@ impl Card {
 #[derive(Clone, Copy)]
 enum TriggerCause<'a> {
     Ordinary(Option<i128>),
+    LifeGain(Player),
     Attack,
     Entry(&'a [ObjectRef]),
     CreatureDeath,
@@ -61,6 +62,13 @@ pub(super) fn additional_triggers_with_power<W: CharacteristicWorld + ?Sized>(
     power: i128,
 ) -> usize {
     additional_triggers_for_event(query, id, TriggerCause::Ordinary(Some(power)))
+}
+pub(super) fn additional_life_gain_triggers<W: CharacteristicWorld + ?Sized>(
+    query: &characteristic_query::CharacteristicQuery<'_, W>,
+    id: CardId,
+    player: Player,
+) -> usize {
+    additional_triggers_for_event(query, id, TriggerCause::LifeGain(player))
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn additional_attack_triggers<W: CharacteristicWorld + ?Sized>(
@@ -110,6 +118,9 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
                 let matches_event = match scope {
                     AdditionalTriggerScope::ControlledPermanentAttack => {
                         matches!(cause, TriggerCause::Attack)
+                    }
+                    AdditionalTriggerScope::ControlledPermanentLifeGain => {
+                        matches!(cause, TriggerCause::LifeGain(_))
                     }
                     AdditionalTriggerScope::ControlledPermanentEntry
                     | AdditionalTriggerScope::ControlledLandOrSubtypeEntry(_) => {
@@ -165,6 +176,10 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
                     | AdditionalTriggerScope::ControlledPermanentAttack
                     | AdditionalTriggerScope::ControlledPermanentEntry => {
                         recipient.controller == object.controller
+                    }
+                    AdditionalTriggerScope::ControlledPermanentLifeGain => {
+                        matches!(cause, TriggerCause::LifeGain(player) if player == object.controller)
+                            && recipient.controller == object.controller
                     }
                     AdditionalTriggerScope::EquippedCreature => {
                         query.is_equipment(provider)
