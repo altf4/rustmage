@@ -6695,6 +6695,9 @@ impl Game {
                 Instruction::IncreaseOwnCreatureCountersThisTurn { kind, amount } => {
                     self.increase_own_creature_counters_this_turn(&item, kind, amount);
                 }
+                Instruction::IncreaseControlledPermanentCountersThisTurn { amount } => {
+                    self.increase_controlled_permanent_counters_this_turn(&item, amount);
+                }
                 Instruction::BlinkUntilEndStep { under_owner } => {
                     self.blink_group_until_end_step(&item, under_owner, false, false, None)
                 }

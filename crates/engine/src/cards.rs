@@ -3006,6 +3006,11 @@ pub enum Instruction {
         kind: CounterKind,
         amount: u32,
     },
+    /// This turn, add to every positive counter kind placed on a permanent
+    /// controlled by the resolving ability's controller, regardless of placer.
+    IncreaseControlledPermanentCountersThisTurn {
+        amount: u32,
+    },
     BlinkUntilEndStep {
         under_owner: bool,
     },

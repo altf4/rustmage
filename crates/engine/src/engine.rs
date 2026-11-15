@@ -360,8 +360,8 @@ pub use replacements::{
     CopiedSagaLoreView, CreatedTokenChoiceView, CreatureCounterIncreaseView,
     CreatureDamageShieldScope, CreatureDamageShieldView, DamageDoublerView, DamageEventOrderView,
     DamagePreventionKind, DamagePreventionView, NoncombatDamageIncreaseView,
-    PlayerCounterPlacementView, ProliferateReplacementView, ReplacementChoiceView,
-    ReplacementEffectView, SelfPlayerCounterReplacement, TokenGroupView,
+    PermanentCounterIncreaseView, PlayerCounterPlacementView, ProliferateReplacementView,
+    ReplacementChoiceView, ReplacementEffectView, SelfPlayerCounterReplacement, TokenGroupView,
 };
 
 use crate::shared_vec::SharedVec;
@@ -4563,6 +4563,8 @@ pub struct Observation {
     pub noncombat_damage_increases: Vec<NoncombatDamageIncreaseView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub creature_counter_increases: Vec<CreatureCounterIncreaseView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub permanent_counter_increases: Vec<PermanentCounterIncreaseView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub resolved_ability_modifications: Option<Vec<ResolvedAbilityModificationView>>,
     pub legend_choices: Vec<LegendGroupView>,
@@ -12492,6 +12494,7 @@ impl Game {
         if let Some(roles) = &mut self.state.roles {
             roles.noncombat_damage_increases.clear();
             roles.creature_counter_increases.clear();
+            roles.permanent_counter_increases.clear();
             roles
                 .player_damage_shields
                 .retain(|shield| shield.expires_turn != Some(self.state.turn));
@@ -13986,6 +13989,10 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |roles| roles.creature_counter_increases.clone()),
+            permanent_counter_increases: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |roles| roles.permanent_counter_increases.clone()),
             resolved_ability_modifications: self.resolved_ability_modification_views(),
             role_timestamps: s
                 .roles
