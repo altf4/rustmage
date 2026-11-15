@@ -6751,11 +6751,12 @@ pub enum CounterKind {
     Supply,
     Time,
     Unlock,
+    Promotion,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 60] = [
+    pub const ALL: [Self; 61] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -6816,6 +6817,7 @@ impl CounterKind {
         Self::Supply,
         Self::Time,
         Self::Unlock,
+        Self::Promotion,
     ];
     pub(crate) fn is_named(self) -> bool {
         matches!(
@@ -6875,6 +6877,7 @@ impl CounterKind {
                 | Self::Supply
                 | Self::Time
                 | Self::Unlock
+                | Self::Promotion
         )
     }
 }
