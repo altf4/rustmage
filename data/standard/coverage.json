@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "ac087f5f7c74915dfd68b04181aa2113188f51155aff2c99ed9f894bb7516652",
+  "catalogue_version": "6edb74e92cc2cc8eceb78a5782d1100e9b9026eb10d2f236d8ceaa675f24dc82",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5377,
-  "implemented_total": 5397,
+  "implemented_standard_cards": 5379,
+  "implemented_total": 5399,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 214,
-      "gated": 82
+      "complete": 216,
+      "gated": 80
     },
     "w17": {
       "total": 1,
@@ -43835,8 +43835,8 @@
     {
       "name": "U.S.S. Enterprise-D, Galaxy-Class",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/u_s_s_enterprise_d_galaxy_class.rs",
       "set": "trk"
     },
@@ -43947,8 +43947,8 @@
     {
       "name": "Wesley Crusher, Starfleet Cadet",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/wesley_crusher_starfleet_cadet.rs",
       "set": "trk"
     },
