@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "9cbf80f2298f218d655d74c5ea7f26cc4f45824d196fd6719ab6d62be654ef79",
+  "catalogue_version": "9921c7e515658c1d9c3587f6c12e07e4b33ccf5f20c152972422f10f6a282cca",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5391,
-  "implemented_total": 5411,
+  "implemented_standard_cards": 5392,
+  "implemented_total": 5412,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 228,
-      "gated": 68
+      "complete": 229,
+      "gated": 67
     },
     "w17": {
       "total": 1,
@@ -42187,8 +42187,8 @@
     {
       "name": "De-evolve",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/de_evolve.rs",
       "set": "trk"
     },
