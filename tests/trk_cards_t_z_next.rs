@@ -18,20 +18,41 @@ fn modal(game: &mut Game, spell: CardId, mode: u16, target: Option<Target>) {
 }
 
 fn finish(game: &mut Game) {
+    finish_target(game, None);
+}
+
+fn finish_target(game: &mut Game, target: Option<Target>) {
     for _ in 0..40 {
         if game.state.pending == Pending::Priority && game.state.stack.is_empty()
             && game.state.resolving.is_none() && game.state.pending_triggers.is_empty() {
             return;
         }
         let actions = game.legal_actions();
-        let action = actions.into_iter().find(|action| matches!(action,
-            Action::Pass | Action::PutTrigger { .. }
-            | Action::ArrangeLibrary { .. }
-            | Action::ChooseOptional { accept: true }
-        )).unwrap_or_else(|| panic!("unhandled {:?}", game.state.pending));
+        let action = if let Some(target) = target
+            && actions.contains(&Action::ChooseTarget { target }) {
+            Action::ChooseTarget { target }
+        } else if actions.contains(&Action::FinishStackTargets) {
+            Action::FinishStackTargets
+        } else {
+            actions.into_iter().find(|action| matches!(action,
+                Action::Pass | Action::PutTrigger { .. }
+                | Action::ArrangeLibrary { .. }
+                | Action::ChooseOptional { accept: true }
+            )).unwrap_or_else(|| panic!("unhandled {:?}", game.state.pending))
+        };
         act(game, action);
     }
     panic!("resolution did not finish");
+}
+
+fn station(game: &mut Game, ship: CardId, donor: CardId) {
+    act(game, Action::AnnounceActivate {
+        card: ship, ability: 0, counter_payment: Counters::default(),
+    });
+    let object = game.object_ref(donor);
+    act(game, Action::ChooseAdditionalCost { object });
+    pay(game);
+    finish(game);
 }
 
 #[test]
@@ -176,4 +197,73 @@ fn transporter_malfunction_has_three_damage_and_printed_beam_cost() {
     assert_eq!(beam.object_view(creature).zone, Zone::Hand);
     assert_eq!(beam.object_view(spell).zone, Zone::Exile);
     assert_eq!(beam.state.players[1].life, 17);
+}
+
+#[test]
+fn cerritos_creates_two_officers_and_stations_at_six_charge() {
+    let mut game = scenario(Player::P0);
+    let ship = put(&mut game, Player::P0, "U.S.S. Cerritos, Following Up", Zone::Hand);
+    cast(&mut game, ship, None);
+    finish(&mut game);
+    let officers: Vec<_> = game.state.objects.iter().enumerate().filter_map(|(id, object)|
+        (object.zone == Zone::Battlefield && object.card == Card(6008)).then_some(id as CardId)
+    ).collect();
+    assert_eq!(officers.len(), 2);
+    assert!(!game.object_view(ship).is_creature());
+    let first = put(&mut game, Player::P0, "Hill Giant", Zone::Battlefield);
+    let second = put(&mut game, Player::P0, "Hill Giant", Zone::Battlefield);
+    let enemy = put(&mut game, Player::P1, "Hill Giant", Zone::Battlefield);
+    act(&mut game, Action::AnnounceActivate {
+        card: ship, ability: 0, counter_payment: Counters::default(),
+    });
+    let wrong = game.object_ref(enemy);
+    reject(&mut game, Action::ChooseAdditionalCost { object: wrong });
+    let donor = game.object_ref(first);
+    act(&mut game, Action::ChooseAdditionalCost { object: donor });
+    pay(&mut game);
+    finish(&mut game);
+    assert_eq!(game.counter_count(ship, CounterKind::Charge), 3);
+    assert!(!game.object_view(ship).is_creature());
+    station(&mut game, ship, second);
+    assert_eq!(game.counter_count(ship, CounterKind::Charge), 6);
+    assert_eq!(stats(&game, ship), (4, 4));
+    assert!(game.object_view(ship).keywords.contains(Keywords::FLYING));
+}
+
+#[test]
+fn enterprise_a_creates_three_officers_and_station_grants_lifelink() {
+    let mut game = scenario(Player::P0);
+    let ship = put(&mut game, Player::P0, "U.S.S. Enterprise-A, Free Spirit", Zone::Hand);
+    cast(&mut game, ship, None);
+    finish(&mut game);
+    assert_eq!(game.state.objects.iter().filter(|o|
+        o.zone == Zone::Battlefield && o.card == Card(6008)).count(), 3);
+    let first = put(&mut game, Player::P0, "Hill Giant", Zone::Battlefield);
+    let second = put(&mut game, Player::P0, "Hill Giant", Zone::Battlefield);
+    station(&mut game, ship, first);
+    station(&mut game, ship, second);
+    assert_eq!(stats(&game, ship), (5, 5));
+    let view = game.object_view(ship);
+    assert!(view.keywords.contains(Keywords::FLYING));
+    assert!(view.keywords.contains(Keywords::LIFELINK));
+}
+
+#[test]
+fn excelsior_destroys_only_tapped_opposing_creature_and_stations_at_eight() {
+    let mut game = scenario(Player::P0);
+    let tapped = put(&mut game, Player::P1, "Grizzly Bears", Zone::Battlefield);
+    let untapped = put(&mut game, Player::P1, "Grizzly Bears", Zone::Battlefield);
+    game.state.objects[tapped as usize].tapped = true;
+    let ship = put(&mut game, Player::P0, "U.S.S. Excelsior, Cutting Edge", Zone::Hand);
+    cast(&mut game, ship, None);
+    finish_target(&mut game, Some(Target::Card(tapped)));
+    assert_eq!(game.object_view(tapped).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(untapped).zone, Zone::Battlefield);
+    let first = put(&mut game, Player::P0, "Hill Giant", Zone::Battlefield);
+    let second = put(&mut game, Player::P0, "Hill Giant", Zone::Battlefield);
+    let third = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    for donor in [first, second, third] { station(&mut game, ship, donor); }
+    assert_eq!(game.counter_count(ship, CounterKind::Charge), 8);
+    assert_eq!(stats(&game, ship), (4, 4));
+    assert!(game.object_view(ship).keywords.contains(Keywords::FLYING));
 }
