@@ -14,7 +14,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 ..ActivationCost::ZERO
             },
             targets: TargetPlan::NONE,
-            program: &[Instruction::AddMana(ManaProduction::Fixed([0, 0, 0, 0, 0, 1]))],
+            program: &[Instruction::AddMana(ManaProduction::Fixed([
+                0, 0, 0, 0, 0, 1,
+            ]))],
         },
         ActivatedAbility {
             guard: ActivationGuard::Always,

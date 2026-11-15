@@ -1,5 +1,8 @@
 // Printed Star Trek token behavior; source pinned in the paired provenance record.
-const BOOST: Stats = Stats { power: 1, toughness: 1 };
+const BOOST: Stats = Stats {
+    power: 1,
+    toughness: 1,
+};
 const GROUPS: &[StaticAbilityGroup] = &[StaticAbilityGroup {
     line: 0,
     first_layer: AbilityLayer::Modify,
@@ -12,7 +15,11 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         guard: ActivationGuard::Always,
         origin: ActivationOrigin::Battlefield,
         cycling: false,
-        cost: ActivationCost { generic: 2, mana_component: true, ..ActivationCost::ZERO },
+        cost: ActivationCost {
+            generic: 2,
+            mana_component: true,
+            ..ActivationCost::ZERO
+        },
         targets: one(TargetRule::creature_you_control()),
         program: &[Instruction::AttachSource],
         sorcery: true,
@@ -20,7 +27,10 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     }],
     static_groups: GROUPS,
     extras: &CardExtras {
-        equipment: Some(EquipmentSpec { stats: BOOST, keywords: Keywords::NONE }),
+        equipment: Some(EquipmentSpec {
+            stats: BOOST,
+            keywords: Keywords::NONE,
+        }),
         static_ability_groups: GROUPS,
         ..CardExtras::EMPTY
     },

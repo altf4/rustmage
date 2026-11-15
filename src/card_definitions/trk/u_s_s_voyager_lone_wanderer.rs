@@ -1,24 +1,34 @@
 // Oracle and pinned XMage reviewed. Both revealed lands enter tapped as one exact cohort.
 const BASE: BaseStatSetter = BaseStatSetter {
-    power: Some(3), toughness: Some(3), own_turn: false,
+    power: Some(3),
+    toughness: Some(3),
+    own_turn: false,
     condition: Some(StatValue::AtLeast {
-        value: &StatValue::SourceCounters(CounterKind::Charge), minimum: 8,
+        value: &StatValue::SourceCounters(CounterKind::Charge),
+        minimum: 8,
     }),
 };
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Permanent,
     static_groups: &[StaticAbilityGroup {
-        line: 0, first_layer: AbilityLayer::Type,
+        line: 0,
+        first_layer: AbilityLayer::Type,
         fragments: &[
             StaticAbilityFragment::SourceCounterCreature {
-                own_turn: false, kind: CounterKind::Charge, minimum: 8,
-                form: SourceCreatureForm::AddCreature, subtypes: &[],
+                own_turn: false,
+                kind: CounterKind::Charge,
+                minimum: 8,
+                form: SourceCreatureForm::AddCreature,
+                subtypes: &[],
                 keywords: Keywords::FLYING.union(Keywords::VIGILANCE),
             },
             StaticAbilityFragment::BaseStatSetter(0, BASE),
         ],
     }],
-    extras: &CardExtras { base_stat_setter: Some(BASE), ..CardExtras::EMPTY },
+    extras: &CardExtras {
+        base_stat_setter: Some(BASE),
+        ..CardExtras::EMPTY
+    },
     triggers: &[TriggeredAbility {
         condition: TriggerCondition::SelfEnters,
         targets: TargetPlan::NONE,
@@ -38,22 +48,32 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         })],
     }],
     activated: &[ActivatedAbility {
-        guard: ActivationGuard::Always, origin: ActivationOrigin::Battlefield,
-        cycling: false, exhaust: false, sorcery: true, once_per_turn: false,
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        exhaust: false,
+        sorcery: true,
+        once_per_turn: false,
         cost: ActivationCost {
             additional: Some(AdditionalCost {
                 kind: EffectChoiceKind::TapPermanents(1),
                 filter: SacrificeFilter {
-                    keywords: Keywords::NONE, source_only: false, kinds: 1,
-                    nonland: false, other: true, tokens: None,
-                    artifact_enchantment_or_token: false, subtype: None,
+                    keywords: Keywords::NONE,
+                    source_only: false,
+                    kinds: 1,
+                    nonland: false,
+                    other: true,
+                    tokens: None,
+                    artifact_enchantment_or_token: false,
+                    subtype: None,
                 },
             }),
             ..ActivationCost::ZERO
         },
         targets: TargetPlan::NONE,
         program: &[Instruction::PutCountersScaled {
-            subject: Subject::Source, kind: CounterKind::Charge,
+            subject: Subject::Source,
+            kind: CounterKind::Charge,
             amount: AmountValue::TappedCostCreaturePower,
         }],
     }],

@@ -24,7 +24,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         program: &[Instruction::Modal(&[
             SpellMode {
                 text: "This artifact deals 2 damage to target opponent.",
-                targets: one(TargetRule::Player { opponent_only: true }),
+                targets: one(TargetRule::Player {
+                    opponent_only: true,
+                }),
                 program: &[Instruction::Damage(2)],
             },
             SpellMode {

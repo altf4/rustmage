@@ -7,8 +7,10 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             condition: TriggerCondition::Ward,
             targets: TargetPlan::NONE,
             program: &[Instruction::CounterUnlessPay {
-                cost: generic(2), subject: CounterSubject::Related,
-                exile: false, unpaid_skip: 0,
+                cost: generic(2),
+                subject: CounterSubject::Related,
+                exile: false,
+                unpaid_skip: 0,
             }],
         },
         TriggeredAbility {
@@ -17,10 +19,13 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 relation: CastRelation::Any,
                 guard: StepGuard::Expression {
                     value: StatValue::DilemmasFacedThisTurn,
-                    minimum: Some(1), maximum: None,
+                    minimum: Some(1),
+                    maximum: None,
                 },
             },
-            targets: one(TargetRule::Player { opponent_only: true }),
+            targets: one(TargetRule::Player {
+                opponent_only: true,
+            }),
             program: &[Instruction::ExileTargetLibraryUntilNonlandCastFree],
         },
     ],

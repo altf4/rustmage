@@ -6,9 +6,15 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         guard: ActivationGuard::Always,
         origin: ActivationOrigin::Battlefield,
         cycling: false,
-        cost: ActivationCost { tap: true, ..ActivationCost::ZERO },
+        cost: ActivationCost {
+            tap: true,
+            ..ActivationCost::ZERO
+        },
         targets: TargetPlan::NONE,
-        program: &[Instruction::AddMana(ManaProduction::Choice { mask: 31, amount: 1 })],
+        program: &[Instruction::AddMana(ManaProduction::Choice {
+            mask: 31,
+            amount: 1,
+        })],
         sorcery: false,
         once_per_turn: false,
     }],

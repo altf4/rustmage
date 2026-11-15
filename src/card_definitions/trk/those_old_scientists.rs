@@ -45,9 +45,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 min: 0,
                 max: 2,
             }),
-            program: &[Instruction::ShuffleGraveyardTargetsIntoOwnersLibraries {
-                cards_group: 0,
-            }],
+            program: &[Instruction::ShuffleGraveyardTargetsIntoOwnersLibraries { cards_group: 0 }],
         },
     ],
     ..CardRules::EMPTY

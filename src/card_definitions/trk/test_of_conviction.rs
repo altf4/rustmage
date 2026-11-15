@@ -12,7 +12,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         },
         SpellMode {
             text: "Begin Negotiations — opponent draws one, then you draw two",
-            targets: one(TargetRule::Player { opponent_only: true }),
+            targets: one(TargetRule::Player {
+                opponent_only: true,
+            }),
             program: &[
                 Instruction::Draw(PlayerSet::Targeted, 1),
                 Instruction::Draw(PlayerSet::Controller, 2),

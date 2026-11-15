@@ -48,7 +48,10 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     static_groups: GROUPS,
     extras: &CardExtras {
         equipment: Some(EquipmentSpec {
-            stats: Stats { power: 3, toughness: 0 },
+            stats: Stats {
+                power: 3,
+                toughness: 0,
+            },
             keywords: Keywords::NONE,
         }),
         static_ability_groups: GROUPS,

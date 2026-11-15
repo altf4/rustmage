@@ -8,7 +8,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             nontoken: false,
             subtype: None,
         },
-        targets: one(TargetRule::Player { opponent_only: true }),
+        targets: one(TargetRule::Player {
+            opponent_only: true,
+        }),
         program: &[
             Instruction::PutCounters {
                 subject: Subject::Source,

@@ -24,7 +24,10 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         SpellMode {
             text: "Alter the Past — exile a graveyard card and gain two life",
             targets: one(GRAVE_CARD),
-            program: &[Instruction::Exile, Instruction::GainLife(PlayerSet::Controller, 2)],
+            program: &[
+                Instruction::Exile,
+                Instruction::GainLife(PlayerSet::Controller, 2),
+            ],
         },
         SpellMode {
             text: "Obliterate the Transwarp Network — destroy a small artifact or enchantment",

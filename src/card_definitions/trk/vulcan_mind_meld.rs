@@ -2,7 +2,9 @@
 // independent exact face-down play rights while their cards remain exiled.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Spell(
-        one(TargetRule::Player { opponent_only: true }),
+        one(TargetRule::Player {
+            opponent_only: true,
+        }),
         &[
             Instruction::ExileLibraryTopFaceDownPlay {
                 library: PlayerSet::Controller,

@@ -16,8 +16,15 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             predicate: &TargetPredicate::Attacking,
         }),
         program: &[
-            Instruction::Grow { subject: Subject::Targets, power: 2, toughness: 0 },
-            Instruction::GrantKeywords { subject: Subject::Targets, keywords: Keywords::FIRST_STRIKE },
+            Instruction::Grow {
+                subject: Subject::Targets,
+                power: 2,
+                toughness: 0,
+            },
+            Instruction::GrantKeywords {
+                subject: Subject::Targets,
+                keywords: Keywords::FIRST_STRIKE,
+            },
         ],
     }],
     ..CardRules::EMPTY

@@ -8,20 +8,22 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             guard: StepGuard::Always,
         },
         targets: TargetPlan::NONE,
-        program: &[Instruction::SelectLibraryToSacrificeAtNextOwnEndStep(LibrarySelectionEffect {
-            spec: LibrarySelectionSpec {
-                look: 0,
-                count: LibrarySelectionCount::All,
-                filter: LibrarySelectionFilter::Kinds(2),
-                optional: false,
-                reveal: true,
-                remainder: LibraryRemainder::BottomRandom,
+        program: &[Instruction::SelectLibraryToSacrificeAtNextOwnEndStep(
+            LibrarySelectionEffect {
+                spec: LibrarySelectionSpec {
+                    look: 0,
+                    count: LibrarySelectionCount::All,
+                    filter: LibrarySelectionFilter::Kinds(2),
+                    optional: false,
+                    reveal: true,
+                    remainder: LibraryRemainder::BottomRandom,
+                },
+                look: LibraryLook::UntilKindsCount { kinds: 2, count: 2 },
+                destination: LibraryPickDestination::Battlefield,
+                public: true,
+                maximum_mana_value: None,
             },
-            look: LibraryLook::UntilKindsCount { kinds: 2, count: 2 },
-            destination: LibraryPickDestination::Battlefield,
-            public: true,
-            maximum_mana_value: None,
-        })],
+        )],
     }],
     ..CardRules::EMPTY
 };

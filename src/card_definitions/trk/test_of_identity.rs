@@ -18,7 +18,11 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 predicate: &TargetPredicate::Subtype("Klingon"),
             }),
             program: &[
-                Instruction::Grow { subject: Subject::Targets, power: 1, toughness: 1 },
+                Instruction::Grow {
+                    subject: Subject::Targets,
+                    power: 1,
+                    toughness: 1,
+                },
                 Instruction::GrantKeywords {
                     subject: Subject::Targets,
                     keywords: Keywords::DOUBLE_STRIKE,
@@ -29,8 +33,15 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             text: "I Am Starfleet — discard a card; if you do, draw two",
             targets: TargetPlan::NONE,
             program: &[
-                Instruction::DiscardRememberCount { players: PlayerSet::Controller, amount: 1 },
-                Instruction::IfAmountAtLeast { value: AmountValue::MovedCount, minimum: 1, skip: 1 },
+                Instruction::DiscardRememberCount {
+                    players: PlayerSet::Controller,
+                    amount: 1,
+                },
+                Instruction::IfAmountAtLeast {
+                    value: AmountValue::MovedCount,
+                    minimum: 1,
+                    skip: 1,
+                },
                 Instruction::Draw(PlayerSet::Controller, 2),
             ],
         },

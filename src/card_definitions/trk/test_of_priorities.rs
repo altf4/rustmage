@@ -4,7 +4,10 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         SpellMode {
             text: "Power to Engines — surveil two, then draw",
             targets: TargetPlan::NONE,
-            program: &[Instruction::Surveil(2), Instruction::Draw(PlayerSet::Controller, 1)],
+            program: &[
+                Instruction::Surveil(2),
+                Instruction::Draw(PlayerSet::Controller, 1),
+            ],
         },
         SpellMode {
             text: "Power to Life Support — blink your creature",

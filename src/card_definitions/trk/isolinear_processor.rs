@@ -1,5 +1,8 @@
 // Official release notes: artifact source includes cards and spells in any zone.
-const TAP: ActivationCost = ActivationCost { tap: true, ..ActivationCost::ZERO };
+const TAP: ActivationCost = ActivationCost {
+    tap: true,
+    ..ActivationCost::ZERO
+};
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Permanent,
     activated: &[

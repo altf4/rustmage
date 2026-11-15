@@ -7,29 +7,41 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             power_min: None,
             guard: StepGuard::Threshold {
                 value: StepValue::TotalCreaturePower,
-                minimum: Some(8), maximum: None,
+                minimum: Some(8),
+                maximum: None,
             },
         },
         targets: TargetPlan::NONE,
         program: &[Instruction::DoubleSourcePower],
     }],
     activated: &[ActivatedAbility {
-        guard: ActivationGuard::Always, origin: ActivationOrigin::Battlefield,
-        cycling: false, exhaust: false, sorcery: true, once_per_turn: false,
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        exhaust: false,
+        sorcery: true,
+        once_per_turn: false,
         cost: ActivationCost {
             additional: Some(AdditionalCost {
                 kind: EffectChoiceKind::TapPermanents(2),
                 filter: SacrificeFilter {
-                    keywords: Keywords::NONE, source_only: false,
-                    kinds: 1 | 16, nonland: false, other: false,
-                    tokens: None, artifact_enchantment_or_token: false, subtype: None,
+                    keywords: Keywords::NONE,
+                    source_only: false,
+                    kinds: 1 | 16,
+                    nonland: false,
+                    other: false,
+                    tokens: None,
+                    artifact_enchantment_or_token: false,
+                    subtype: None,
                 },
             }),
             ..ActivationCost::ZERO
         },
         targets: TargetPlan::NONE,
         program: &[Instruction::PutCounters {
-            subject: Subject::Source, kind: CounterKind::PlusOne, amount: 1,
+            subject: Subject::Source,
+            kind: CounterKind::PlusOne,
+            amount: 1,
         }],
     }],
     ..CardRules::EMPTY

@@ -24,7 +24,10 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         SpellMode {
             text: "Plain, Simple Garak — exile a graveyard card and draw",
             targets: one(ANY_GRAVE_CARD),
-            program: &[Instruction::Exile, Instruction::Draw(PlayerSet::Controller, 1)],
+            program: &[
+                Instruction::Exile,
+                Instruction::Draw(PlayerSet::Controller, 1),
+            ],
         },
         SpellMode {
             text: "Of the Obsidian Order — return your creature card to hand",

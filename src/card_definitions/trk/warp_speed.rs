@@ -20,10 +20,13 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     extras: &CardExtras {
         static_ability_groups: GROUPS,
         controlled_entry_untapped: 2,
-        activation_generic_reductions: &[(0, ActivationGenericReduction::Stat {
-            value: NAMES,
-            multiplier: 1,
-        })],
+        activation_generic_reductions: &[(
+            0,
+            ActivationGenericReduction::Stat {
+                value: NAMES,
+                multiplier: 1,
+            },
+        )],
         ..CardExtras::EMPTY
     },
     triggers: &[TriggeredAbility {

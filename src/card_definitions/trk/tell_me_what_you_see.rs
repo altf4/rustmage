@@ -4,9 +4,14 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     triggers: &[
         TriggeredAbility {
             condition: TriggerCondition::SelfEnters,
-            targets: one(TargetRule::Player { opponent_only: true }),
+            targets: one(TargetRule::Player {
+                opponent_only: true,
+            }),
             program: &[
-                Instruction::MayPlayer { player: PlayerSet::Targeted, skip: 2 },
+                Instruction::MayPlayer {
+                    player: PlayerSet::Targeted,
+                    skip: 2,
+                },
                 Instruction::Draw(PlayerSet::Controller, 1),
                 Instruction::Skip(2),
                 Instruction::LoseLife(PlayerSet::Targeted, 4),
@@ -17,7 +22,10 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             condition: TriggerCondition::FaceDilemma(CastRelation::You),
             targets: TargetPlan::NONE,
             program: &[
-                Instruction::MayPlayer { player: PlayerSet::Controller, skip: 1 },
+                Instruction::MayPlayer {
+                    player: PlayerSet::Controller,
+                    skip: 1,
+                },
                 Instruction::ReturnSourceToHand(TargetZone::Battlefield),
             ],
         },
