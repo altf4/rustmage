@@ -448,6 +448,12 @@ impl Game {
         let readiness = self.activation_readiness(actor, ability);
         !pure_loyalty_placement_prohibited(self, self.object_ref(card), &readiness)
             && !ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
+            && (ability.origin != ActivationOrigin::GraveyardBottomLibrary
+                || !ability_world::CharacteristicWorld::zone_move_prevented(
+                    self,
+                    self.object_ref(card),
+                    Zone::Library,
+                ))
             && (!ability.cost.sacrifice
                 || !ability_world::CharacteristicWorld::sacrifice_prohibited(self, card))
             && if self.state.objects[card as usize]
@@ -1382,7 +1388,8 @@ impl Game {
             item.source_attachment = source.attached_to;
         }
         if definition.origin == ActivationOrigin::GraveyardBottomLibrary {
-            let _ = self.move_object_to_library_position(source.object, LibraryDestination::Bottom);
+            self.move_object_to_library_position(source.object, LibraryDestination::Bottom)
+                .expect("legal graveyard-to-library source cost must move its exact card");
         } else if cost.exile_self {
             let event = self.move_object(source.id, Zone::Exile);
             if definition.program.iter().any(|instruction| {

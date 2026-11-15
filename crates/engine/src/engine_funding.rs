@@ -726,8 +726,11 @@ fn source_exile_payable<W: ability_world::CharacteristicWorld + ?Sized>(
     goal.source
         .as_ref()
         .is_none_or(|(source, index, _, definition, _)| {
-            !definition.activation(*index).cost.exile_self
-                || !world.graveyard_exile_prohibited(source.card)
+            (!definition.activation(*index).cost.exile_self
+                || !world.graveyard_exile_prohibited(source.card))
+                && (definition.activation(*index).origin
+                    != ActivationOrigin::GraveyardBottomLibrary
+                    || !world.zone_move_prevented(*source, Zone::Library))
         })
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
