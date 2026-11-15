@@ -2,8 +2,68 @@
 mod support;
 
 use rustmage as _;
+use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
 use support::*;
+
+const ADD_LORE: CardRules = CardRules {
+    effect: Effect::Spell(TargetPlan::Single(TargetSpec::one(TargetRule::Object {
+        zone: TargetZone::Battlefield, kinds: 0, relation: 0,
+        other: false, nonland: false, tapped: false,
+        min_mana: 0, max_mana: u32::MAX,
+    })), &[Instruction::PutCounters {
+        subject: Subject::Targets, kind: CounterKind::Lore, amount: 1,
+    }]),
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn city_phases_artifacts_and_creatures_then_human_locks_them_until_sacrificed() {
+    let _rules = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &ADD_LORE)]);
+    let mut game = scenario(Player::P0);
+    let creature = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let artifact = put(&mut game, Player::P1, "Tricorder", Zone::Battlefield);
+    let land = put(&mut game, Player::P0, "Forest", Zone::Battlefield);
+    let saga = put(&mut game, Player::P0, "The City on the Edge of Forever", Zone::Hand);
+    cast(&mut game, saga, None);
+    finish(&mut game);
+    assert_eq!(game.object_view(creature).zone, Zone::PhasedOut);
+    assert_eq!(game.object_view(artifact).zone, Zone::PhasedOut);
+    assert_eq!(game.object_view(land).zone, Zone::Battlefield);
+    let human = game.state.objects.iter().enumerate().find_map(|(id, o)|
+        (o.zone == Zone::Battlefield && o.card == Card(6017)).then_some(id as CardId)
+    ).unwrap();
+    assert_eq!(stats(&game, human), (0, 1));
+    game.begin_turn();
+    assert_eq!(game.object_view(creature).zone, Zone::PhasedOut);
+
+    let lore = put(&mut game, Player::P0, "Opt", Zone::Hand);
+    cast(&mut game, lore, Some(Target::Card(saga)));
+    finish(&mut game);
+    assert_eq!(game.state.players[0].cards_drawn_this_turn, 2);
+    assert_eq!(game.state.players[0].life, 18);
+    assert_eq!(game.state.players[1].life, 18);
+
+    let lore = put(&mut game, Player::P0, "Opt", Zone::Hand);
+    cast(&mut game, lore, Some(Target::Card(saga)));
+    for _ in 0..24 {
+        if matches!(game.state.pending, Pending::EffectChoice { .. }) { break; }
+        choose(&mut game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+    }
+    let mut declined = game.clone();
+    act(&mut declined, Action::DeclineEffectPayment);
+    finish(&mut declined);
+    assert_eq!(declined.state.players[0].life, 18);
+    assert_eq!(declined.object_view(human).zone, Zone::Battlefield);
+    let human_ref = game.object_ref(human);
+    act(&mut game, Action::Sacrifice { object: human_ref });
+    finish(&mut game);
+    assert_eq!(game.state.players[0].life, 23);
+    assert_ne!(game.object_view(human).zone, Zone::Battlefield);
+    game.begin_turn();
+    assert_eq!(game.object_view(creature).zone, Zone::Battlefield);
+    assert_eq!(game.object_view(artifact).zone, Zone::PhasedOut);
+}
 
 fn modal(game: &mut Game, spell: CardId, mode: u16, target: Option<Target>) {
     act(game, Action::AnnounceCast { card: spell });
