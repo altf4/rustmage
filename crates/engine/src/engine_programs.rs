@@ -5539,6 +5539,9 @@ impl Game {
                 Instruction::CopyTargetToOtherControlledCreatures => {
                     self.copy_target_to_other_controlled_creatures(&item);
                 }
+                Instruction::CopyControlledEquipmentTokensFromTargetUntilEndOfTurn => {
+                    self.copy_controlled_equipment_tokens_from_target(&item);
+                }
                 Instruction::ShuffleGraveyardTargetsIntoPlayerLibrary {
                     player_group,
                     cards_group,

@@ -3247,6 +3247,8 @@ pub enum Instruction {
     CopyTargetToOtherControlledCreatures,
     /// One permanent copy effect over the frozen controlled nonland cohort.
     CopyControlledNonlandsFromTarget,
+    /// Freeze one target Equipment, then copy it onto each controlled Equipment token until cleanup.
+    CopyControlledEquipmentTokensFromTargetUntilEndOfTurn,
     CopyEntryBatchCreature,
     /// Copy each exact entrant in the captured token batch, creating them tapped together.
     CreateTappedCopiesOfEntryBatch,
