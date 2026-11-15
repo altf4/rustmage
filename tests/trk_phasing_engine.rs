@@ -46,6 +46,11 @@ const STOP_PHASE_IN: CardRules = CardRules {
 };
 const AURA: CardRules = CardRules {
     effect: Effect::Aura(TargetPlan::Single(TargetSpec::one(TargetRule::Creature))),
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Control,
+        fragments: &[StaticAbilityFragment::ControlAttached],
+    }],
     aura: Some(AuraSpec {
         kinds: 1,
         relation: -1,
@@ -67,6 +72,34 @@ fn rules() -> fixture_rules::Guard {
         (Card::DrakeToken, &STOP_PHASE_IN),
         (Card::from_name("Pacifism").unwrap(), &AURA),
     ])
+}
+
+#[test]
+fn a_directly_phased_control_aura_releases_and_recaptures_its_host() {
+    let _rules = rules();
+    for controller in [Player::P0, Player::P1] {
+        let mut game = scenario(controller);
+        let host = put(&mut game, controller.other(), "Hill Giant", Zone::Battlefield);
+        let aura = spawn(
+            &mut game,
+            controller,
+            Card::from_name("Pacifism").unwrap(),
+            Zone::Battlefield,
+        );
+        game.state.objects[aura as usize].attached_to = Some(game.object_ref(host));
+        game.refresh_controllers_after(None);
+        assert_eq!(game.object_view(host).controller, controller);
+        let host_ref = game.object_ref(host);
+        game.phase_out_batch(&[aura]);
+        assert_eq!(game.object_view(aura).zone, Zone::PhasedOut);
+        assert_eq!(game.object_view(host).controller, controller.other());
+        assert_eq!(game.object_ref(host), host_ref);
+        game.state.active = controller;
+        game.begin_turn();
+        assert_eq!(game.object_view(aura).zone, Zone::Battlefield);
+        assert_eq!(game.object_view(host).controller, controller);
+        assert_eq!(game.object_ref(host), host_ref);
+    }
 }
 
 #[test]

@@ -44,6 +44,7 @@ impl Game {
         if !affected.iter().any(|&value| value) {
             return;
         }
+        let control_watch = self.freeze_control_watch();
         let phased_defenders: Vec<_> = affected
             .iter()
             .enumerate()
@@ -85,6 +86,9 @@ impl Game {
         self.state
             .first_strikers
             .retain(|&id| !affected[id as usize]);
+        // Phased control sources cease to apply in layer two immediately,
+        // although neither they nor their attachments change zones.
+        self.refresh_controllers_after(Some(control_watch));
     }
 
     /// A typed mass effect such as The City's chapter I uses live types at
