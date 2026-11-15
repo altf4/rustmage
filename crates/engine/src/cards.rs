@@ -6601,6 +6601,8 @@ pub enum ReplacementSpec {
         factor: u32,
     },
     AddToken(Card),
+    /// Replace every positive token group in one creation event with this recipe.
+    ReplaceTokens(Card),
     ReplaceArtifactTokens(Card),
     AddArtifactToken(Card),
 }

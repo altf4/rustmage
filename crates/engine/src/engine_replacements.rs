@@ -2920,6 +2920,7 @@ impl Game {
                     ReplacementSpec::DoubleTokens { effects_only } => !effects_only || b.effect,
                     ReplacementSpec::MultiplyTokens { kinds, .. } => b.has_matching_group(kinds),
                     ReplacementSpec::AddToken(_) => true,
+                    ReplacementSpec::ReplaceTokens(_) => true,
                     ReplacementSpec::FirstTokensCopyAttached => {
                         b.first_this_turn == Some(true)
                             && self.attached_copy_recipe(source).is_some()
@@ -2987,6 +2988,14 @@ impl Game {
                         if let Some(recipe) = b.recipes.get_mut(index) {
                             *recipe = None;
                         }
+                    }
+                }
+            }
+            ReplacementSpec::ReplaceTokens(token) => {
+                for (index, group) in b.groups.iter_mut().enumerate() {
+                    group.token = token;
+                    if let Some(recipe) = b.recipes.get_mut(index) {
+                        *recipe = None;
                     }
                 }
             }
@@ -3320,6 +3329,7 @@ impl Game {
                                 | ReplacementSpec::DoubleTokens { .. }
                                 | ReplacementSpec::AddToken(_)
                                 | ReplacementSpec::AddArtifactToken(_)
+                                | ReplacementSpec::ReplaceTokens(_)
                         ) || matches!(s, ReplacementSpec::MultiplyTokens { kinds, .. }
                             if *kinds == 0 || token.kind_mask() & *kinds != 0)
                             || matches!(s, ReplacementSpec::ReplaceArtifactTokens(_))
