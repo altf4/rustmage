@@ -79,6 +79,56 @@ const ADD_LORE: CardRules = CardRules {
 };
 
 #[test]
+fn naked_time_searches_basic_mountain_and_grants_entry_counters_only_this_turn() {
+    let _rules = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &ADD_LORE)]);
+    let mut game = scenario(Player::P0);
+    let mountain = put(&mut game, Player::P0, "Mountain", Zone::Library);
+    let forest = put(&mut game, Player::P0, "Forest", Zone::Library);
+    let saga = put(&mut game, Player::P0, "The Naked Time", Zone::Hand);
+    cast(&mut game, saga, None);
+    for _ in 0..20 {
+        if game.legal_actions().contains(&Action::ChooseSearch { card: mountain }) { break; }
+        choose(&mut game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+    }
+    reject(&mut game, Action::ChooseSearch { card: forest });
+    act(&mut game, Action::ChooseSearch { card: mountain });
+    if game.legal_actions().contains(&Action::FinishSearch) { act(&mut game, Action::FinishSearch); }
+    finish(&mut game);
+    assert_eq!(game.object_view(mountain).zone, Zone::Battlefield);
+    assert!(game.object_view(mountain).tapped);
+
+    let lore = put(&mut game, Player::P0, "Opt", Zone::Hand);
+    cast(&mut game, lore, Some(Target::Card(saga)));
+    finish(&mut game);
+    assert_eq!(game.counter_count(saga, CounterKind::Lore), 2);
+
+    let own = put(&mut game, Player::P0, "Grizzly Bears", Zone::Hand);
+    cast(&mut game, own, None);
+    finish(&mut game);
+    assert_eq!(game.counter_count(own, CounterKind::PlusOne), 1);
+    assert!(game.object_view(own).keywords.contains(Keywords::HASTE));
+    let opposing = put(&mut game, Player::P1, "Spectral Sailor", Zone::Hand);
+    game.state.priority = Player::P1;
+    cast(&mut game, opposing, None);
+    finish(&mut game);
+    assert_eq!(game.counter_count(opposing, CounterKind::PlusOne), 0);
+
+    game.state.priority = Player::P0;
+    let next_lore = put(&mut game, Player::P0, "Opt", Zone::Hand);
+    cast(&mut game, next_lore, Some(Target::Card(saga)));
+    for _ in 0..24 {
+        if game.legal_actions().contains(&Action::Sacrifice { object: game.object_ref(mountain) }) {
+            break;
+        }
+        choose(&mut game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+    }
+    let mountain_ref = game.object_ref(mountain);
+    act(&mut game, Action::Sacrifice { object: mountain_ref });
+    finish(&mut game);
+    assert_eq!(game.object_view(mountain).zone, Zone::Graveyard);
+}
+
+#[test]
 fn measure_of_a_man_links_nontoken_exile_investigates_and_returns_to_owner() {
     let _rules = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &ADD_LORE)]);
     let mut game = scenario(Player::P0);
