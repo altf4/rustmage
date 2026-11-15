@@ -809,6 +809,14 @@ impl FundingState<'_> {
                 EntryCounterAmount::ColorsSpent => m
                     .cast_payment
                     .map_or(0, |p| (0..5).filter(|&i| p[i] > 0).count() as u64),
+                EntryCounterAmount::ColorsSpentKind(kind) => {
+                    counters.add(
+                        kind,
+                        m.cast_payment
+                            .map_or(0, |p| (0..5).filter(|&i| p[i] > 0).count() as u64),
+                    );
+                    continue;
+                }
                 EntryCounterAmount::ManaSpent => m
                     .cast_payment
                     .map_or(0, |mana| mana.into_iter().map(u64::from).sum()),
@@ -2032,6 +2040,7 @@ impl FundingState<'_> {
                         source: origin,
                         types,
                         additional: true,
+                        until_cleanup: false,
                         timestamp,
                     });
                 if keywords != Keywords::NONE {
@@ -2099,6 +2108,7 @@ impl FundingState<'_> {
                         source: origin,
                         types: &["Spirit"],
                         additional: true,
+                        until_cleanup: false,
                         timestamp,
                     });
                 p.roles.base_stats.push(base_stats::BaseStatsEffectView {

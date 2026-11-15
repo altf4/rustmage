@@ -1120,6 +1120,7 @@ impl Game {
             | AmountValue::MilledCreatures
             | AmountValue::MilledSubtypeCount(_)
             | AmountValue::MovedCount
+            | AmountValue::CapturedEntryResultCount
             | AmountValue::RememberedCount
             | AmountValue::PaidAdditionalCostCount
             | AmountValue::PaidAdditionalCostSelectionCount
@@ -1175,6 +1176,9 @@ impl Game {
                 self.state.players[owner.index()].life_gained_this_turn
             }
             AmountValue::LifeLostThisTurn => self.state.players[owner.index()].life_lost_this_turn,
+            AmountValue::OpponentLifeLostThisTurn => {
+                self.state.players[owner.other().index()].life_lost_this_turn
+            }
             AmountValue::Divided { value, divisor } => {
                 self.amount_value(*value, source, owner) / u128::from(divisor.get())
             }

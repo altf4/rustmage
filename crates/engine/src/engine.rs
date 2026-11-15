@@ -12486,6 +12486,7 @@ impl Game {
         self.expire_base_stats();
         let expired_animations = self.expire_animations();
         let expired_basic_land_types = self.expire_basic_land_types();
+        let expired_creature_types = self.expire_temporary_creature_types();
         self.expire_graveyard_cast_permissions();
         self.expire_paid_graveyard_permissions();
         self.expire_embalm();
@@ -12531,6 +12532,7 @@ impl Game {
                 || expired_vehicles
                 || expired_animations
                 || expired_basic_land_types
+                || expired_creature_types
                 || expired_copies
                 || expired_legend_rule
                 || !retained_damage.is_empty())

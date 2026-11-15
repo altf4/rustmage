@@ -239,6 +239,8 @@ pub enum StaticAbilityFragment {
     SourceNegativePowerCombatDamage,
     /// Replace each nonexempt controller draw with two draws.
     DoubleDrawExceptFirst,
+    /// Replace each individual draw with two draws for this controller.
+    DoubleDraw,
     /// Add one scry before each explore by a creature this player controls.
     ScryBeforeControlledCreatureExplores,
     /// Double each controller draw, including their normal draw-step draw, while true.

@@ -42,6 +42,7 @@ impl Game {
                 self.on_battlefield(id)
                     && self.state.objects[id as usize].controller == player
                     && self.active_rule_fragment(id, |fragment| match *fragment {
+                        crate::cards::StaticAbilityFragment::DoubleDraw => true,
                         crate::cards::StaticAbilityFragment::DoubleDrawExceptFirst => !exempt,
                         crate::cards::StaticAbilityFragment::ConditionalDoubleDraw(condition) => {
                             self.stat_value(condition, self.object_ref(id), player) != 0

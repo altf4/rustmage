@@ -5202,6 +5202,12 @@ pub enum Instruction {
         subject: Subject,
         types: &'static [&'static str],
     },
+    /// Change the exact recipients' creature types until cleanup.
+    ChangeCreatureTypesUntilEndTurn {
+        subject: Subject,
+        types: &'static [&'static str],
+        additional: bool,
+    },
     GrantCreatureGraveyardCastThisTurn {
         entry_counter: Option<CounterKind>,
         additional_types: &'static [&'static str],
@@ -5429,6 +5435,8 @@ pub enum Instruction {
     /// Capture token status before the return; draw even if its destination is replaced.
     ReturnToHandDrawForTokens,
     ReturnToHandDrawForSubtype(&'static str),
+    /// Choose one live controlled permanent matching the filter and return it to hand.
+    ChooseControlledPermanentToHand(SacrificeFilter),
     BottomLibrary,
     TopLibrary,
     AdditionalLandPlays(u64),
@@ -5852,6 +5860,8 @@ pub enum Instruction {
     ExileAndBorrowActivatedAbilities,
     GainLife(PlayerSet, u16),
     GainLifeScaled(PlayerSet, AmountValue),
+    /// Double the controller's signed life total via a gain or loss event.
+    DoubleControllerLifeTotal,
     LoseLife(PlayerSet, u16),
     /// Untargeted loss followed by a gain of the life actually lost.
     DrainOpponents(u16),
@@ -6136,6 +6146,8 @@ pub enum AmountValue {
     LifeGainedThisTurn,
     /// Gross life actually lost by the controller this turn, including life payments.
     LifeLostThisTurn,
+    /// Gross life lost by the opponent during the current turn, before this effect.
+    OpponentLifeLostThisTurn,
     LifeEventAmount,
     CardsDiscardedThisTurn,
     /// Actual cards in this packet's one completed simultaneous discard event.
@@ -6146,6 +6158,8 @@ pub enum AmountValue {
     ReflexiveSubjectCount,
     /// Actual result of the preceding remembered zone-move instruction.
     MovedCount,
+    /// Whether CaptureEntryResult recorded an actual battlefield entry.
+    CapturedEntryResultCount,
     /// The value saved by RememberCount. Other count-producing instructions replace it.
     RememberedCount,
     /// Actual completed departure events of this packet's additional cost.
@@ -6608,6 +6622,8 @@ pub enum EntryCounterAmount {
     ControlledCreatureDeaths,
     GreatestOtherCreaturePower,
     ColorsSpent,
+    /// Sunburst with a specified counter kind, such as charge counters.
+    ColorsSpentKind(CounterKind),
     /// Actual paid mana of a cast entrant, zero for a noncast entry.
     ManaSpent,
     IfNotCastOrZero(u16),
@@ -6646,6 +6662,11 @@ pub enum ReplacementSpec {
     /// Add one of each positive kind, only for the provider controller placing
     /// counters on their own permanent. General providers do not apply entering.
     CountersPlacedByController,
+    /// Multiply one counter kind placed by this provider's controller on an artifact they control.
+    ControlledArtifactCountersPlaced {
+        kind: CounterKind,
+        factor: u32,
+    },
     /// Double each positive kind the provider's controller would put on a permanent or player.
     DoubleCountersPlacedByController {
         condition: StatValue,
@@ -6752,6 +6773,7 @@ impl ReplacementSpec {
             self,
             Self::Counters { .. }
                 | Self::CountersPlacedByController
+                | Self::ControlledArtifactCountersPlaced { .. }
                 | Self::DoubleCountersPlacedByController { .. }
         )
     }

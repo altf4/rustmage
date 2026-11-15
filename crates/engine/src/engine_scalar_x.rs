@@ -477,6 +477,13 @@ impl Game {
                     .moved_count
                     .expect("quantity requires a saved resolution count"),
             ),
+            AmountValue::CapturedEntryResultCount => u128::from(
+                self.state
+                    .resolving
+                    .as_ref()
+                    .and_then(|resolution| resolution.search_result.as_ref())
+                    .is_some_and(|frame| frame.entered.is_some()),
+            ),
             AmountValue::TargetPlayerLibraryToGraveyardThisTurn => item
                 .targets
                 .iter()

@@ -11,7 +11,7 @@ const SACRIFICE_CREATURE: SacrificeFilter = SacrificeFilter {
     keywords: Keywords::NONE,
     source_only: false,
     kinds: 1,
-    nonland: true,
+    nonland: false,
     other: true,
     tokens: None,
     artifact_enchantment_or_token: false,
@@ -537,4 +537,392 @@ fn chosen_name_observes_opponent_cast_and_activation_and_freezes_actor() {
         assert_eq!(game.state.players[player.other().index()].life, 17);
         assert_eq!(game.object_view(kai).zone, Zone::Battlefield);
     }
+}
+
+const GUL_DRAIN: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[Instruction::DrainLifeScaled(
+            AmountValue::OpponentLifeLostThisTurn,
+        )],
+    ),
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn gul_drain_uses_gross_prior_opponent_loss_and_gains_actual_drain() {
+    let opt = Card::from_name("Opt").unwrap();
+    let _rules = fixture_rules::activate(&[(opt, &GUL_DRAIN)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    game.state.players[player.other().index()].life = 16;
+    game.state.players[player.other().index()].life_lost_this_turn = 4;
+    let spell = spawn(&mut game, player, opt, Zone::Hand);
+    cast(&mut game, spell, None);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.other().index()].life, 12);
+    assert_eq!(game.state.players[player.index()].life, 24);
+    assert_eq!(
+        game.state.players[player.other().index()].life_lost_this_turn,
+        8
+    );
+}
+
+const SPOCK_DRAW: CardRules = CardRules {
+    effect: Effect::Creature(1, 1),
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::DoubleDraw],
+    }],
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn unconditional_draw_replacement_applies_to_each_draw_and_owned_restore() {
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &SPOCK_DRAW)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let checkpoint = game.snapshot();
+    let mut branch = game.clone();
+    branch.draw_many(player, 2);
+    assert_eq!(
+        branch.state.players[player.index()].cards_drawn_this_turn,
+        4
+    );
+    assert_eq!(
+        branch
+            .state
+            .objects
+            .iter()
+            .filter(|object| object.owner == player && object.zone == Zone::Hand)
+            .count(),
+        4
+    );
+    branch.restore(&checkpoint).unwrap();
+    assert_eq!(branch.snapshot(), checkpoint);
+    game.draw_many(player.other(), 1);
+    assert_eq!(
+        game.state.players[player.other().index()].cards_drawn_this_turn,
+        1
+    );
+}
+
+const GEORDI_DOUBLE: ReplacementSpec = ReplacementSpec::ControlledArtifactCountersPlaced {
+    kind: CounterKind::Charge,
+    factor: 2,
+};
+const GEORDI: CardRules = CardRules {
+    effect: Effect::Creature(1, 1),
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::Replacement(0, GEORDI_DOUBLE)],
+    }],
+    extras: &CardExtras {
+        replacement_effects: &[GEORDI_DOUBLE],
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+const PLACE_CHARGE: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::Object {
+            zone: TargetZone::Battlefield,
+            kinds: 0,
+            relation: -1,
+            other: false,
+            nonland: false,
+            tapped: false,
+            min_mana: 0,
+            max_mana: u32::MAX,
+        })),
+        &[Instruction::PutCounters {
+            subject: Subject::Targets,
+            kind: CounterKind::Charge,
+            amount: 1,
+        }],
+    ),
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn geordi_doubles_only_own_charge_placements_on_owned_artifacts() {
+    let opt = Card::from_name("Opt").unwrap();
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &GEORDI), (opt, &PLACE_CHARGE)]);
+    for (placer, recipient, expected) in [
+        (Player::P0, "Short Bow", 2),
+        (Player::P0, "Bear Cub", 1),
+        (Player::P1, "Short Bow", 1),
+    ] {
+        let mut game = scenario(Player::P0);
+        put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
+        let target = put(&mut game, Player::P0, recipient, Zone::Battlefield);
+        let spell = spawn(&mut game, placer, opt, Zone::Hand);
+        if placer == Player::P1 {
+            act(&mut game, Action::Pass);
+        }
+        cast(&mut game, spell, Some(Target::Card(target)));
+        settle(&mut game);
+        assert_eq!(game.counter_count(target, CounterKind::Charge), expected);
+    }
+}
+
+const LIFE_LOCK: CardRules = CardRules {
+    effect: Effect::Creature(1, 1),
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::CantLoseFromNonpositiveLife],
+    }],
+    ..CardRules::EMPTY
+};
+const DOUBLE_LIFE: CardRules = CardRules {
+    effect: Effect::Spell(TargetPlan::NONE, &[Instruction::DoubleControllerLifeTotal]),
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn life_total_doubling_handles_positive_and_negative_totals() {
+    let opt = Card::from_name("Opt").unwrap();
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &LIFE_LOCK), (opt, &DOUBLE_LIFE)]);
+    for (starting, expected) in [(7, 14), (-3, -6)] {
+        let player = Player::P0;
+        let mut game = scenario(player);
+        put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+        game.state.players[player.index()].life = starting;
+        let spell = spawn(&mut game, player, opt, Zone::Hand);
+        cast(&mut game, spell, None);
+        settle(&mut game);
+        assert_eq!(game.state.players[player.index()].life, expected);
+        assert_eq!(game.outcome(), None);
+    }
+}
+
+const OWN_LAND: SacrificeFilter = SacrificeFilter {
+    keywords: Keywords::NONE,
+    source_only: false,
+    kinds: 2,
+    nonland: false,
+    other: false,
+    tokens: None,
+    artifact_enchantment_or_token: false,
+    subtype: None,
+};
+const ERICA_LAND_RETURN: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SelfBecomesTapped,
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::CaptureEntryResult,
+                Instruction::PutHandLand { tapped: false },
+                Instruction::IfAmountAtLeast {
+                    value: AmountValue::CapturedEntryResultCount,
+                    minimum: 1,
+                    skip: 1,
+                },
+                Instruction::ScheduleStep {
+                    step: TriggerStep::End,
+                    relation: CastRelation::Any,
+                    ability: 1,
+                },
+            ],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Reflexive,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::ChooseControlledPermanentToHand(OWN_LAND)],
+        },
+    ],
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn optional_hand_land_schedules_return_only_after_accepting_entry() {
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &ERICA_LAND_RETURN)]);
+    struct ResetPrevention;
+    impl Drop for ResetPrevention {
+        fn drop(&mut self) {
+            zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|rule| rule.set(None));
+        }
+    }
+    let _reset = ResetPrevention;
+    for (accept, prevented) in [(false, false), (true, false), (true, true)] {
+        let player = Player::P0;
+        let mut game = scenario(player);
+        let erica = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+        let prior = put(&mut game, player, "Forest", Zone::Battlefield);
+        let from_hand = put(&mut game, player, "Island", Zone::Hand);
+        zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|rule| {
+            rule.set(prevented.then(|| game.object_ref(from_hand)));
+        });
+        game.tap_objects(&[erica]);
+        for _ in 0..8 {
+            if game.legal_actions().iter().any(|action| {
+                matches!(action, Action::PutHandLand { .. } | Action::DeclineHandEntry)
+            }) {
+                break;
+            }
+            let actions = game.legal_actions();
+            let action = actions
+                .iter()
+                .find(|action| matches!(action, Action::Pass | Action::PutTrigger { .. }))
+                .unwrap_or_else(|| panic!("hand entry wait: {:?}: {actions:?}", game.state.pending))
+                .clone();
+            act(&mut game, action);
+        }
+        if accept {
+            let object = game.object_ref(from_hand);
+            act(&mut game, Action::PutHandLand { object });
+        } else {
+            act(&mut game, Action::DeclineHandEntry);
+        }
+        settle(&mut game);
+        assert_eq!(
+            game.object_view(from_hand).zone,
+            if accept && !prevented {
+                Zone::Battlefield
+            } else {
+                Zone::Hand
+            }
+        );
+        game.begin_step(Step::End);
+        game.prepare_triggers();
+        if accept && !prevented {
+            let object = game.object_ref(prior);
+            for _ in 0..8 {
+                if game
+                    .legal_actions()
+                    .contains(&Action::ChooseEffectObject { object })
+                {
+                    break;
+                }
+                let actions = game.legal_actions();
+                let action = actions
+                    .iter()
+                    .find(|action| matches!(action, Action::Pass | Action::PutTrigger { .. }))
+                    .unwrap_or_else(|| {
+                        panic!("delayed return wait: {:?}: {actions:?}", game.state.pending)
+                    })
+                    .clone();
+                act(&mut game, action);
+            }
+            act(&mut game, Action::ChooseEffectObject { object });
+            if game.legal_actions().contains(&Action::FinishEffectChoice) {
+                act(&mut game, Action::FinishEffectChoice);
+            }
+            settle(&mut game);
+            assert_eq!(game.object_view(prior).zone, Zone::Hand);
+        } else {
+            settle(&mut game);
+            assert_eq!(game.object_view(prior).zone, Zone::Battlefield);
+        }
+        zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|rule| rule.set(None));
+    }
+}
+
+const CHARGE_SUNBURST: CardRules = CardRules {
+    effect: Effect::Permanent,
+    extras: &CardExtras {
+        x_symbols: 1,
+        entry_counter_rules: &[EntryCounterRule {
+            guard: StepGuard::Always,
+            amount: EntryCounterAmount::ColorsSpentKind(CounterKind::Charge),
+        }],
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn sunburst_places_charge_counters_for_distinct_paid_colors() {
+    let explosives = Card::from_name("Engineered Explosives").unwrap();
+    let _rules = fixture_rules::activate(&[(explosives, &CHARGE_SUNBURST)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let source = spawn(&mut game, player, explosives, Zone::Hand);
+    game.state.players[player.index()].mana = [1, 1, 0, 0, 0, 0];
+    act(&mut game, Action::AnnounceCast { card: source });
+    act(&mut game, Action::ChooseX { value: 2 });
+    act(&mut game, Action::PayCosts { payment: [1, 1, 0, 0, 0, 0] });
+    settle(&mut game);
+    assert_eq!(game.object_view(source).zone, Zone::Battlefield);
+    assert_eq!(game.counter_count(source, CounterKind::Charge), 2);
+    assert_eq!(game.counter_count(source, CounterKind::PlusOne), 0);
+}
+
+const REPLACE_TYPES: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::Object {
+            zone: TargetZone::Battlefield,
+            kinds: 1,
+            relation: 0,
+            other: false,
+            nonland: false,
+            tapped: false,
+            min_mana: 0,
+            max_mana: u32::MAX,
+        })),
+        &[Instruction::ChangeCreatureTypesUntilEndTurn {
+            subject: Subject::Targets,
+            types: &["Doctor"],
+            additional: false,
+        }],
+    ),
+    ..CardRules::EMPTY
+};
+const ADD_TYPES: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::Object {
+            zone: TargetZone::Battlefield,
+            kinds: 1,
+            relation: 0,
+            other: false,
+            nonland: false,
+            tapped: false,
+            min_mana: 0,
+            max_mana: u32::MAX,
+        })),
+        &[Instruction::ChangeCreatureTypesUntilEndTurn {
+            subject: Subject::Targets,
+            types: &["Warrior"],
+            additional: true,
+        }],
+    ),
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn temporary_creature_type_replacement_and_addition_expire_with_owned_restore() {
+    let opt = Card::from_name("Opt").unwrap();
+    let shock = Card::from_name("Shock").unwrap();
+    let _rules = fixture_rules::activate(&[(opt, &REPLACE_TYPES), (shock, &ADD_TYPES)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let creature = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let replace = spawn(&mut game, player, opt, Zone::Hand);
+    let add = spawn(&mut game, player, shock, Zone::Hand);
+    let checkpoint = game.snapshot();
+    cast(&mut game, replace, Some(Target::Card(creature)));
+    settle(&mut game);
+    assert!(game.object_view(creature).has_subtype("Doctor"));
+    assert!(!game.object_view(creature).has_subtype("Bear"));
+    cast(&mut game, add, Some(Target::Card(creature)));
+    settle(&mut game);
+    assert!(game.object_view(creature).has_subtype("Doctor"));
+    assert!(game.object_view(creature).has_subtype("Warrior"));
+    let active = game.snapshot();
+    let mut branch = game.clone();
+    branch.state.step = Step::Cleanup;
+    branch.finish_cleanup();
+    assert!(branch.object_view(creature).has_subtype("Bear"));
+    assert!(!branch.object_view(creature).has_subtype("Doctor"));
+    assert!(!branch.object_view(creature).has_subtype("Warrior"));
+    branch.restore(&active).unwrap();
+    assert_eq!(branch.snapshot(), active);
+    game.restore(&checkpoint).unwrap();
+    assert_eq!(game.snapshot(), checkpoint);
 }

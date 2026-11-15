@@ -408,6 +408,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_)
                             | crate::cards::StaticAbilityFragment::ControlledBasicLandManaMultiplier(_)
                             | crate::cards::StaticAbilityFragment::DoubleDrawExceptFirst
+                            | crate::cards::StaticAbilityFragment::DoubleDraw
                             | crate::cards::StaticAbilityFragment::ScryBeforeControlledCreatureExplores
                             | crate::cards::StaticAbilityFragment::ConditionalDoubleDraw(_)
                             | crate::cards::StaticAbilityFragment::AdditionalDrawWithAtMostOneCard

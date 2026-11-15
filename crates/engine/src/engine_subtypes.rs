@@ -670,6 +670,7 @@ pub struct CreatureTypesEffectView {
     pub source: ObjectRef,
     pub types: &'static [&'static str],
     pub additional: bool,
+    pub until_cleanup: bool,
     pub timestamp: u64,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -740,6 +741,7 @@ impl Game {
                 source: permission.source,
                 types: permission.additional_types,
                 additional: true,
+                until_cleanup: false,
                 timestamp,
             });
     }
@@ -1575,6 +1577,7 @@ impl Game {
                     source: source.object,
                     types,
                     additional: true,
+                    until_cleanup: false,
                     timestamp,
                 });
         }
@@ -1663,6 +1666,48 @@ impl Game {
         })
     }
 
+    pub(super) fn expire_temporary_creature_types(&mut self) -> bool {
+        self.state.roles.as_mut().is_some_and(|roles| {
+            let count = roles.creature_types.len();
+            roles.creature_types.retain(|row| !row.until_cleanup);
+            count != roles.creature_types.len()
+        })
+    }
+
+    pub(super) fn change_creature_types_until_end_turn(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+        types: &'static [&'static str],
+        additional: bool,
+    ) {
+        let Some(source) = item.source else {
+            return;
+        };
+        assert!(types.iter().all(|t| crate::cards::is_creature_type(t)));
+        let recipients: Vec<_> = self
+            .keyword_subjects(item, subject)
+            .into_iter()
+            .filter(|&id| self.on_battlefield(id) && self.is_creature(id))
+            .map(|id| self.object_ref(id))
+            .collect();
+        if recipients.is_empty() {
+            return;
+        }
+        let timestamp = self.next_role_timestamp();
+        let roles = self.state.roles.get_or_insert_with(Default::default);
+        for recipient in recipients {
+            roles.creature_types.push(CreatureTypesEffectView {
+                recipient,
+                source: source.object,
+                types,
+                additional,
+                until_cleanup: true,
+                timestamp,
+            });
+        }
+    }
+
     pub(super) fn set_creature_types(
         &mut self,
         item: &SpellView,
@@ -1699,6 +1744,7 @@ impl Game {
                 source: source.object,
                 types,
                 additional: false,
+                until_cleanup: false,
                 timestamp,
             });
         }
@@ -1804,6 +1850,7 @@ impl Game {
                     source,
                     types: &["Goblin"],
                     additional: true,
+                    until_cleanup: false,
                     timestamp,
                 });
         }

@@ -198,6 +198,7 @@ pub(super) fn apply_skeleton_return(
             source,
             types: &["Skeleton"],
             additional: true,
+            until_cleanup: false,
             timestamp,
         });
     roles
@@ -915,6 +916,7 @@ impl Game {
                 source,
                 types,
                 additional: true,
+                until_cleanup: false,
                 timestamp,
             });
         if keywords != Keywords::NONE {

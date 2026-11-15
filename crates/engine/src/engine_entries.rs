@@ -1096,6 +1096,13 @@ impl Game {
                     EntryCounterAmount::ColorsSpent => {
                         payment.map_or(0, |p| (0..5).filter(|&i| p[i] > 0).count() as u64)
                     }
+                    EntryCounterAmount::ColorsSpentKind(kind) => {
+                        counters.add(
+                            kind,
+                            payment.map_or(0, |p| (0..5).filter(|&i| p[i] > 0).count() as u64),
+                        );
+                        continue;
+                    }
                     EntryCounterAmount::ManaSpent => {
                         payment.map_or(0, |mana| mana.into_iter().map(u64::from).sum())
                     }
@@ -1640,6 +1647,7 @@ impl Game {
                         source,
                         types: &["Spirit"],
                         additional: true,
+                        until_cleanup: false,
                         timestamp,
                     });
                 roles.base_stats.push(base_stats::BaseStatsEffectView {

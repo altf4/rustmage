@@ -4156,6 +4156,7 @@ impl Game {
                                     matches!(
                                         r.amount,
                                         EntryCounterAmount::ColorsSpent
+                                            | EntryCounterAmount::ColorsSpentKind(_)
                                             | EntryCounterAmount::ManaSpent
                                             | EntryCounterAmount::IfNotCastOrZero(_)
                                             | EntryCounterAmount::WebSlingingReturnedManaValue
@@ -11994,6 +11995,19 @@ impl Game {
                         self.commit_life_gain(player, gain);
                     }
                 }
+                Instruction::DoubleControllerLifeTotal => {
+                    let player = item.controller;
+                    let life = self.state.players[player.index()].life;
+                    if life > 0 {
+                        self.gain_life(player, life);
+                    } else if life < 0 {
+                        self.lose_life(
+                            player,
+                            life.checked_abs()
+                                .capacity("life doubling magnitude exhausted"),
+                        );
+                    }
+                }
                 Instruction::LoseLifeTargetController(amount)
                 | Instruction::DamageTargetController(amount) => {
                     let resolution = self.state.resolving.as_ref().unwrap();
@@ -12680,6 +12694,11 @@ impl Game {
                 Instruction::AddCreatureTypes { subject, types } => {
                     self.add_creature_types(&item, subject, types)
                 }
+                Instruction::ChangeCreatureTypesUntilEndTurn {
+                    subject,
+                    types,
+                    additional,
+                } => self.change_creature_types_until_end_turn(&item, subject, types, additional),
                 Instruction::GrantCreatureGraveyardCastThisTurn {
                     entry_counter,
                     additional_types,
@@ -14137,6 +14156,18 @@ impl Game {
                         }
                     }
                     self.move_target_batch(&targets, Zone::Hand);
+                }
+                Instruction::ChooseControlledPermanentToHand(filter) => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::ReturnToHand,
+                        PlayerSet::Controller,
+                        filter,
+                        1,
+                        None,
+                    ) {
+                        return;
+                    }
                 }
                 Instruction::ReturnCreaturesWithoutSubtype(_)
                 | Instruction::ReturnCreaturesWithoutSubtypes(_) => {
