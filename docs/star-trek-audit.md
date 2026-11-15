@@ -38,6 +38,8 @@ Native assurance on the assembled set exposed a copied-changeling subtype regres
 
 The next native pass exposed an existing Edge of Eternities Seedship scenario where an unrelated static source made an ordinary hand creature enter attacking. The Kira attacking-entry scan now checks that the source actually has the named ability before consulting its availability. Independent review found no blocker; a guarded run passed all 13 EOE scenarios and all three Kira scenarios at a 2.9 GiB memory peak. The full validator must rerun on this engine checkpoint.
 
+The following native pass ran 4,533 cases and then reached Tarkir's fail-closed complete-game input gate. Star Trek's new card crate changed `Cargo.lock`, so the prior Tarkir execution manifest was stale. `scripts/tdm_execution_inputs.py --write` regenerated the manifest over 12,407 current inputs, and `--check` confirmed it. A guarded rerun passed all nine Tarkir target tests, including 52 complete games and the corpus gate, in 85.40 seconds at an 842.9 MiB memory peak. The resulting receipts are under the persistent cache.
+
 ## XMage source gaps
 
 The following TRK identities have no XMage set-table entry at the pinned revision. Use the user-authorized official-rules fallback when authoring them; do not infer completion from catalogue metadata:
