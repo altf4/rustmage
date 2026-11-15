@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "5aaeeb099b057afc0999063d51684dac3f02b346d0011405c9c08553aef416e0",
+  "catalogue_version": "c787f27aa4d18c860f60ff61a5f70194d69b69b8c31dfe362b3bf5accade598e",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5286,
-  "implemented_total": 5306,
+  "implemented_standard_cards": 5292,
+  "implemented_total": 5312,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 123,
-      "gated": 173
+      "complete": 129,
+      "gated": 167
     },
     "w17": {
       "total": 1,
@@ -43611,24 +43611,24 @@
     {
       "name": "Tenacious Drone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/tenacious_drone.rs",
       "set": "trk"
     },
     {
       "name": "Test of Conviction",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/test_of_conviction.rs",
       "set": "trk"
     },
     {
       "name": "Test of Courage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/test_of_courage.rs",
       "set": "trk"
     },
@@ -43643,16 +43643,16 @@
     {
       "name": "Test of Loyalty",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/test_of_loyalty.rs",
       "set": "trk"
     },
     {
       "name": "Test of Priorities",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/test_of_priorities.rs",
       "set": "trk"
     },
@@ -43779,8 +43779,8 @@
     {
       "name": "Transporter Malfunction",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/transporter_malfunction.rs",
       "set": "trk"
     },
