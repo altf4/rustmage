@@ -16,6 +16,7 @@ pub struct HandSizeSourceView {
 pub struct HandSizeTimelineView {
     pub sources: Vec<HandSizeSourceView>,
     pub lasting: [Option<u64>; 2],
+    pub until_next_turn: [Option<u64>; 2],
     pub maximum: [Option<usize>; 2],
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -60,6 +61,7 @@ pub(super) struct HandSizeState {
     pub deferred: bool,
     pub sources: Vec<HandSizeSource>,
     pub lasting: [Option<u64>; 2],
+    pub until_next_turn: [Option<u64>; 2],
     finite_participated: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -167,6 +169,16 @@ impl Game {
         let timestamp = s.next();
         s.lasting[player.index()] = Some(timestamp);
     }
+    pub(super) fn grant_no_maximum_hand_size_until_next_turn(&mut self, player: Player) {
+        let s = self.state.hand_size.get_or_insert_default();
+        let timestamp = s.next();
+        s.until_next_turn[player.index()] = Some(timestamp);
+    }
+    pub(super) fn expire_next_turn_hand_size(&mut self, player: Player) {
+        if let Some(s) = &mut self.state.hand_size {
+            s.until_next_turn[player.index()] = None;
+        }
+    }
     pub(super) fn maximum_hand_size(&self, player: Player) -> Option<usize> {
         let Some(s) = &self.state.hand_size else {
             return Some(7);
@@ -175,7 +187,11 @@ impl Game {
             s.lasting[player.index()].is_some(),
             self.state.players[player.index()].no_maximum_hand_size
         );
-        let mut result = s.lasting[player.index()].map_or((0, Some(7)), |t| (t, None));
+        let mut result = s.lasting[player.index()]
+            .into_iter()
+            .chain(s.until_next_turn[player.index()])
+            .max()
+            .map_or((0, Some(7)), |t| (t, None));
         for row in &s.sources {
             let id = row.source.card;
             let controller = self.state.objects[id as usize].controller;
@@ -240,6 +256,7 @@ impl Game {
                 })
                 .collect(),
             lasting: s.lasting,
+            until_next_turn: s.until_next_turn,
             maximum: [
                 self.maximum_hand_size(Player::P0),
                 self.maximum_hand_size(Player::P1),

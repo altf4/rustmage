@@ -11912,6 +11912,7 @@ impl Game {
         self.expire_next_turn_source_effects(self.state.active);
         self.expire_next_turn_stats(self.state.active);
         self.expire_next_turn_keywords(self.state.active);
+        self.expire_next_turn_hand_size(self.state.active);
         let active = self.state.active.index();
         self.state.players[active].turns_started = self.state.players[active]
             .turns_started

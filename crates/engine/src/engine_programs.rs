@@ -10438,6 +10438,9 @@ impl Game {
                 Instruction::NoMaximumHandSize => {
                     self.grant_no_maximum_hand_size(item.controller);
                 }
+                Instruction::NoMaximumHandSizeUntilNextTurn => {
+                    self.grant_no_maximum_hand_size_until_next_turn(item.controller);
+                }
                 Instruction::Paradigm { ability } => self.resolve_paradigm(&item, ability),
                 Instruction::ExileUntilManaValueCastFree(minimum) => {
                     self.exile_until_mana_value_cast_free(item.controller, minimum);

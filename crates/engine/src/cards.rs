@@ -4886,6 +4886,8 @@ pub enum Instruction {
         ability: u16,
     },
     NoMaximumHandSize,
+    /// A spell grant expires as its controller's next turn begins.
+    NoMaximumHandSizeUntilNextTurn,
     ExileResolvingSpell,
     UntapLands(u16),
     /// Continue only when this sampled nonnegative amount has the requested parity.
