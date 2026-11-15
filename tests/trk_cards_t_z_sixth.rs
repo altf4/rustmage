@@ -27,6 +27,16 @@ fn drive(game: &mut Game) {
     panic!("resolution exceeded 48 actions: {:?}", game.state.pending);
 }
 
+fn advance_turn(game: &mut Game, current: Player) {
+    game.state.step = Step::End;
+    game.state.priority = current;
+    for _ in 0..16 {
+        if game.state.active != current { return; }
+        choose(game, |action| matches!(action, Action::Pass));
+    }
+    panic!("turn did not advance");
+}
+
 fn lore(game: &mut Game, saga: CardId) {
     let spell = put(game, Player::P0, "Opt", Zone::Hand);
     game.state.priority = Player::P0;
@@ -128,6 +138,38 @@ fn wrath_second_chapter_draws_only_for_actual_hand_exile_and_third_rejects_token
 }
 
 #[test]
+fn wrath_first_chapter_takes_only_its_damaged_creature_at_next_combat_this_turn() {
+    let mut game = scenario(Player::P0);
+    let victim = put(&mut game, Player::P1, "V'Ger, the Intruder", Zone::Battlefield);
+    game.state.objects[victim as usize].tapped = true;
+    let saga = put(&mut game, Player::P0, "The Wrath of Khan", Zone::Hand);
+    cast(&mut game, saga, None);
+    for _ in 0..24 {
+        if game.legal_actions().contains(&Action::ChooseTarget { target: Target::Card(victim) }) {
+            act(&mut game, Action::ChooseTarget { target: Target::Card(victim) });
+        } else if game.legal_actions().contains(&Action::FinishStackTargets) {
+            act(&mut game, Action::FinishStackTargets);
+        } else if game.state.pending == Pending::Priority && game.state.stack.is_empty()
+            && game.state.pending_triggers.is_empty() && game.state.resolving.is_none() { break; }
+        else { choose(&mut game, |action| matches!(action, Action::Pass | Action::PutTrigger { .. })); }
+    }
+    assert_eq!(game.object_view(victim).controller, Player::P1);
+    assert!(game.object_view(victim).tapped);
+    assert_eq!(game.object_view(victim).damage, 4);
+    assert!(!game.object_view(victim).keywords.contains(Keywords::HASTE));
+
+    game.begin_step(Step::BeginCombat);
+    game.prepare_triggers();
+    drive(&mut game);
+    assert_eq!(game.object_view(victim).controller, Player::P0);
+    assert!(!game.object_view(victim).tapped);
+    assert!(game.object_view(victim).keywords.contains(Keywords::HASTE));
+    advance_turn(&mut game, Player::P0);
+    assert_eq!(game.object_view(victim).controller, Player::P1);
+    assert!(!game.object_view(victim).keywords.contains(Keywords::HASTE));
+}
+
+#[test]
 fn vger_modes_offer_private_hand_look_or_opponent_power_loss() {
     for mode in [0, 1] {
         let mut game = scenario(Player::P0);
@@ -160,6 +202,10 @@ fn vger_modes_offer_private_hand_look_or_opponent_power_loss() {
             drive(&mut game);
             assert_eq!(stats(&game, opposing), (2, 3));
             assert_eq!(stats(&game, own), (3, 3));
+            advance_turn(&mut game, Player::P0);
+            assert_eq!(stats(&game, opposing), (2, 3));
+            advance_turn(&mut game, Player::P1);
+            assert_eq!(stats(&game, opposing), (3, 3));
         }
     }
 }
