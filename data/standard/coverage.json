@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "05e1305182e931954ac35466d455e92f2380a0b73d301dfd30692a822693a3b9",
+  "catalogue_version": "66094c58114d9c9d332330ef9aea343a48c0b32aec382ab562ccf59d1f929d7d",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5427,
-  "implemented_total": 5447,
+  "implemented_standard_cards": 5448,
+  "implemented_total": 5468,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 264,
-      "gated": 32
+      "complete": 285,
+      "gated": 11
     },
     "w17": {
       "total": 1,
@@ -42347,8 +42347,8 @@
     {
       "name": "Engineered Explosives",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/engineered_explosives.rs",
       "set": "trk"
     },
@@ -42371,8 +42371,8 @@
     {
       "name": "Erica Ortegas, Plucky Pilot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/erica_ortegas_plucky_pilot.rs",
       "set": "trk"
     },
@@ -42387,8 +42387,8 @@
     {
       "name": "Exploratory Mission",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/exploratory_mission.rs",
       "set": "trk"
     },
@@ -42467,8 +42467,8 @@
     {
       "name": "Gabriel Lorca, Mirror Menace",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/gabriel_lorca_mirror_menace.rs",
       "set": "trk"
     },
@@ -42539,8 +42539,8 @@
     {
       "name": "Gray and Adira, Forever Joined",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/gray_and_adira_forever_joined.rs",
       "set": "trk"
     },
@@ -42555,24 +42555,24 @@
     {
       "name": "Gul Dukat, Colonial Prefect",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/gul_dukat_colonial_prefect.rs",
       "set": "trk"
     },
     {
       "name": "Gwyndala, the Progeny",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/gwyndala_the_progeny.rs",
       "set": "trk"
     },
     {
       "name": "H.M.S. Bounty, Unlikely Timeship",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/h_m_s_bounty_unlikely_timeship.rs",
       "set": "trk"
     },
@@ -42611,8 +42611,8 @@
     {
       "name": "Hive Mind Coprocessor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/hive_mind_coprocessor.rs",
       "set": "trk"
     },
@@ -42667,8 +42667,8 @@
     {
       "name": "I'm a Doctor, Not a . . .",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/i_m_a_doctor_not_a.rs",
       "set": "trk"
     },
@@ -42691,8 +42691,8 @@
     {
       "name": "Infinite Diversity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/infinite_diversity.rs",
       "set": "trk"
     },
@@ -42715,8 +42715,8 @@
     {
       "name": "Jadzia Dax, Living Legacy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/jadzia_dax_living_legacy.rs",
       "set": "trk"
     },
@@ -42747,8 +42747,8 @@
     {
       "name": "Khaaaaaaaaaaaannn!",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/khaaaaaaaaaaaannn.rs",
       "set": "trk"
     },
@@ -42763,16 +42763,16 @@
     {
       "name": "Khan, Vengeful Heart",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/khan_vengeful_heart.rs",
       "set": "trk"
     },
     {
       "name": "Kira Nerys, Firebrand",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/kira_nerys_firebrand.rs",
       "set": "trk"
     },
@@ -42819,8 +42819,8 @@
     {
       "name": "Live Long and Prosper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/live_long_and_prosper.rs",
       "set": "trk"
     },
@@ -42843,16 +42843,16 @@
     {
       "name": "Lt. Cmdr. Geordi La Forge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/lt_cmdr_geordi_la_forge.rs",
       "set": "trk"
     },
     {
       "name": "Lwaxana Troi, Charming Guest",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/lwaxana_troi_charming_guest.rs",
       "set": "trk"
     },
@@ -42883,8 +42883,8 @@
     {
       "name": "Marooned",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/marooned.rs",
       "set": "trk"
     },
@@ -42907,8 +42907,8 @@
     {
       "name": "Mirror Universe Intrusion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/mirror_universe_intrusion.rs",
       "set": "trk"
     },
@@ -42923,8 +42923,8 @@
     {
       "name": "Mr. Spock, Science Officer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/mr_spock_science_officer.rs",
       "set": "trk"
     },
