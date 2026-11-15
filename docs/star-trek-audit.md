@@ -1,6 +1,6 @@
 # Star Trek (TRK) set implementation audit
 
-Status: card-authoring phase. The integrated branch admits 244/311 identities: 229 new typed definitions and fifteen existing reprints. The other 67 remain gated. The reprints still need set-game acceptance.
+Status: card-authoring phase. The integrated branch admits 270/311 identities: 255 new typed definitions and fifteen existing reprints. The other 41 remain gated. The reprints still need set-game acceptance.
 Tracking issue: [#682](https://github.com/altf4/rustmage/issues/682).
 
 ## Frozen inputs and scope
@@ -10,7 +10,7 @@ Tracking issue: [#682](https://github.com/altf4/rustmage/issues/682).
 - XMage: `magefree/mage` `688ee53a9a2dc4646bf0588cd900f2ab91ca45e8`; `StarTrek.java` SHA-256 `f0a24d1e88b7f6ed10164f692a67a70931b19c031155de1768dee72befbabc12`. It has 440 printings of 244 Oracle identities. The inventory pins each available class path and hash. The remaining 67 cards have no XMage set-table entry at this revision. The user explicitly authorized Oracle text and official Wizards rulings as the source evidence for those 67 on November 14; their provenance must record that fallback and the absent XMage class.
 - Fifteen identities already have catalogue ownership (five basics and ten shocklands). Their existing definitions still need TRK set-game acceptance evidence. Cosmetic printings are counted once. TRC Commander-only new cards and SDS alternate printings are outside TRK's Standard membership.
 
-All 311 Oracle bodies and all 244 available XMage classes were inspected in three disjoint audit ranges. The full source inventory records absent classes explicitly; its facts are audit input, not a rules implementation or admission claim. The Standard snapshot is pinned to November 14, 2026 with all 296 new TRK identities. `data/sets/trk.json` authenticates all 311 identities against the pinned XMage table and has no unresolved names. The refreshed XMage inventory is pinned to `688ee53a9a2dc4646bf0588cd900f2ab91ca45e8`. The linker admits the fifteen existing reprints and gates all 296 new cards.
+All 311 Oracle bodies and all 244 available XMage classes were inspected in three disjoint audit ranges. The full source inventory records absent classes explicitly; its facts are audit input, not a rules implementation or admission claim. The Standard snapshot is pinned to November 14, 2026 with all 296 new TRK identities. `data/sets/trk.json` authenticates all 311 identities against the pinned XMage table and has no unresolved names. The refreshed XMage inventory is pinned to `688ee53a9a2dc4646bf0588cd900f2ab91ca45e8`. At the initial audit, the linker admitted the fifteen existing reprints and gated the 296 new cards; the current admission count is above.
 
 ## Completed shared engine checkpoint
 
