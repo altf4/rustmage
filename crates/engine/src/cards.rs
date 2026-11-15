@@ -7465,6 +7465,8 @@ pub enum StepGuard {
     SourceUnprepared,
     ClassLevelAtLeast(u8),
     FirstCombatPhase,
+    /// This player has never actually begun an extra turn in this game.
+    NoExtraTurnBegunThisGame,
     SecondMainPhase,
     SourceSneakedThisTurn,
     UnsolvedLifeGainedAtLeast(u128),

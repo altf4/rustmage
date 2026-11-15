@@ -522,6 +522,7 @@ impl FundingState<'_> {
             }
             StepGuard::Always => true,
             StepGuard::FirstCombatPhase => self.game.first_combat_phase(),
+            StepGuard::NoExtraTurnBegunThisGame => !state.has_begun_extra_turn_this_game,
             StepGuard::SecondMainPhase => self.game.second_main_phase(),
             StepGuard::SourceSneakedThisTurn => self.game.source_sneaked_this_turn(source),
             StepGuard::PermanentLeftBattlefieldThisTurn => {

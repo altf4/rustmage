@@ -1550,6 +1550,8 @@ impl Object {
 struct PlayerState {
     /// Actual begun turns, capped after the first three; skipped turns do not count.
     turns_started: u8,
+    /// Scheduled or skipped extra turns do not satisfy this public history fact.
+    has_begun_extra_turn_this_game: bool,
     /// Persistent public designation; never reset by turn or zone changes.
     enduring_story: bool,
     cannot_gain_life_for_game: bool,
@@ -3866,6 +3868,9 @@ pub struct PlayerView {
     pub turns_to_skip: u64,
     /// Actual turns begun, capped at four (four means four or more).
     pub turns_started: u8,
+    /// True after this player actually begins an extra turn, including a later skipped turn.
+    #[serde(skip_serializing_if = "is_false")]
+    pub has_begun_extra_turn_this_game: bool,
     /// Additional land plays granted until the current turn ends.
     pub extra_land_plays_remaining: u64,
     pub no_maximum_hand_size: bool,
@@ -4743,6 +4748,7 @@ impl Game {
         let mut objects = Vec::with_capacity(config.decks.iter().map(Vec::len).sum());
         let mut players = std::array::from_fn(|_| PlayerState {
             turns_started: 0,
+            has_begun_extra_turn_this_game: false,
             enduring_story: false,
             cannot_gain_life_for_game: false,
             speed: 0,
@@ -11954,6 +11960,14 @@ impl Game {
     }
 
     fn begin_turn(&mut self) {
+        if self
+            .state
+            .turn_schedule
+            .as_ref()
+            .is_some_and(|schedule| schedule.current.is_some())
+        {
+            self.state.players[self.state.active.index()].has_begun_extra_turn_this_game = true;
+        }
         // This-turn delayed abilities still observe cleanup SBAs and any
         // priority cycles those actions create (CR 514.3a).
         self.expire_turn_delayed_target_events();
@@ -13475,6 +13489,7 @@ impl Game {
                 colored_spell_reductions: self.colored_spell_reductions_view(i),
                 turns_to_skip: s.turn_skips.as_ref().map_or(0, |v| v[i]),
                 turns_started: s.players[i].turns_started,
+                has_begun_extra_turn_this_game: s.players[i].has_begun_extra_turn_this_game,
                 hexproof_until_end_turn: s.players[i].hexproof_until_end_turn,
                 token_creation_attempted_this_turn: s.players[i].token_creation_attempted_this_turn,
                 mountain_mana_bonus: (s.players[i].mountain_mana_bonus > 0)

@@ -491,6 +491,9 @@ impl Game {
             }
             StepGuard::Always => return true,
             StepGuard::FirstCombatPhase => return self.first_combat_phase(),
+            StepGuard::NoExtraTurnBegunThisGame => {
+                return !p.has_begun_extra_turn_this_game;
+            }
             StepGuard::SecondMainPhase => return self.second_main_phase(),
             StepGuard::SourceSneakedThisTurn => return self.source_sneaked_this_turn(source),
             StepGuard::PermanentLeftBattlefieldThisTurn => {
