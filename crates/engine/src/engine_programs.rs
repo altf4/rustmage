@@ -7401,6 +7401,11 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::ExileTargetCopyCastFreeRepeated(value) => {
+                    if self.exile_target_copy_offer_repeated_free_cast(&item, value) {
+                        return;
+                    }
+                }
                 Instruction::ExileTargetsCopyCastPaid => {
                     if self.exile_targets_copy_offer_paid_cast(&item, None) {
                         return;

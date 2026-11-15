@@ -3128,6 +3128,9 @@ pub enum Instruction {
     /// Exile an exact targeted graveyard card, then offer a free cast of its copy
     /// from the public zone the original is in, including after a prevented move.
     ExileTargetCopyCastFree,
+    /// Exile one exact graveyard target, make the resolved number of card copies,
+    /// and offer each copy as a free cast during this resolution.
+    ExileTargetCopyCastFreeRepeated(StatValue),
     /// Exile the exact targeted graveyard cards and optionally cast each copy by paying.
     ExileTargetsCopyCastPaid,
     /// Skip the following instructions if that offered cast did not commit.

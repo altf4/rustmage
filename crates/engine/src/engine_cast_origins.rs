@@ -982,6 +982,22 @@ impl Game {
         self.offer_exact_free_casts(player, vec![object], origin, remaining_mana_value, false);
     }
 
+    pub(super) fn offer_repeated_exact_free_casts(
+        &mut self,
+        player: Player,
+        remaining: Vec<ObjectRef>,
+        origin: Zone,
+    ) {
+        let count = u16::try_from(remaining.len()).capacity("free card-copy cast count exhausted");
+        assert!(count > 0);
+        self.offer_exact_free_casts(player, remaining, origin, None, false);
+        self.state
+            .resolution_free_casts
+            .as_mut()
+            .unwrap()
+            .casts_remaining = Some(count);
+    }
+
     fn offer_exact_free_casts(
         &mut self,
         player: Player,
