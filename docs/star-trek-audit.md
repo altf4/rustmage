@@ -1,6 +1,6 @@
 # Star Trek (TRK) set implementation audit
 
-Status: card-authoring phase. The integrated branch admits 308/311 identities: 293 new typed definitions and fifteen existing reprints. The other three remain gated. The reprints still need set-game acceptance.
+Status: complete card-authoring checkpoint. The integrated branch admits 311/311 identities: 296 new typed definitions and fifteen existing reprints. Full set-game and release acceptance are in progress.
 Tracking issue: [#682](https://github.com/altf4/rustmage/issues/682).
 
 ## Frozen inputs and scope
@@ -26,13 +26,13 @@ Blastoneuron's shared effect copies the printed creature card only after an exac
 
 The reviewed engine checkpoints for All Good Things..., Borg Cube, Brazen Bluff, and Dominion Saboteur are integrated. Their focused staging rewarms passed 3/3, 2/2, 4/4, and 2/2 respectively. Dominion Saboteur's optional nonlegendary copy and exact donor counter snapshot passed 2/2 isolated engine scenarios, the existing entry-copy regression 5/5, and 1/1 actual-card scenario in isolation and integration after independent review. All Good Things..., Brazen Bluff, and Borg Cube passed their actual-card guarded integration scenarios 1/1, 2/2, and 2/2 after independent review.
 
-Brad Boimler's resolved all-kind permanent counter replacement, Surly Surgeon's destruction replacement, and Bones McCoy's exact death watch and next-end-step return passed isolated guarded scenarios 2/2, 4/4, and 4/4. Their combined staging scenarios passed 2/2, 4/4, and 4/4 after independent review. The copied-Saga temporary-copy regression passed 1/1; entering as a Saga copy remains an unverified acceptance edge. The three dependent card files remain gated until their own scenarios pass.
+Brad Boimler's resolved all-kind permanent counter replacement, Surly Surgeon's destruction replacement, and Bones McCoy's exact death watch and next-end-step return passed isolated guarded scenarios 2/2, 4/4, and 4/4. Their combined staging scenarios passed 2/2, 4/4, and 4/4 after independent review. The dependent actual-card scenarios passed 1/1, 1/1, and 2/2 in isolation and on the 311-card integration branch, after independent review. Both copied-Saga lifecycle regressions passed 2/2, including a permanent entering as a Saga copy. Five TRK cross-mechanic interaction scenarios passed 5/5 on the integrated branch: Station power and thresholds, Federation versus Changeling and Assimilate, dilemma observers and private hand look, Beam Me Up and stack-exit exile, and exact linked Saga exiles.
 
 ## Reuse and interaction checks
 
 Existing typed foundations cover Station thresholds (17 TRK cards), Spacecraft and Planet subtypes, `StatValue::DistinctNames` for 13 Strange New Worlds cards, modal history, many Saga/ward/surveil/landfall effects, and the fifteen existing reprint identities. Their TRK wiring still requires individual rules scenarios. The core audit must also verify Station versus charge counters, Federation versus Assimilate and Changeling, modal choices versus dilemma observers, Beam Me Up versus stack-exit effects, linked exiles, and private choices.
 
-The shared changes, reviews, linker regeneration, and guarded cache warm are complete. Author disjoint typed definitions with paired provenance and focused card scenarios. Full-set acceptance requires all 311 identities, complete games with TRK-only legal decks, all colors and mechanics, deterministic replay, owned raw/index branches, and the repository's release validator. The final batch needs two independent nonauthor reviews and one completed-set PR.
+The shared changes, reviews, linker regeneration, and guarded focused card checks are complete. Full-set acceptance still requires complete games with TRK-only legal decks, all colors and mechanics, deterministic replay, owned raw/index branches, and the repository's release validator. The final batch needs two independent nonauthor reviews and one completed-set PR.
 
 ## XMage source gaps
 
