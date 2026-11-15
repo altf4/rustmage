@@ -10,6 +10,7 @@ import unittest
 from unittest.mock import patch
 
 import validate
+import run_native_tests as native
 
 
 class ValidatorTests(unittest.TestCase):
@@ -270,10 +271,14 @@ class ValidatorTests(unittest.TestCase):
                 executable.parent.mkdir(parents=True, exist_ok=True)
                 executable.write_bytes(b'completed native test executable')
                 dependency.write_bytes(b'reusable dependency')
+                self.assertIn('--retire-binaries', command)
+                count, reclaimed = native.retire_test_binaries([executable], target)
                 report = Path(command[command.index('--report') + 1])
                 report.write_text(json.dumps({
                     'success': True, 'terminal': True, 'active_processes': [],
                     'binaries': [{'binary': str(executable)}],
+                    'retired_native_test_binaries': count,
+                    'retired_native_test_bytes': reclaimed,
                 }))
             if command[:2] == ['cargo', 'build']:
                 self.assertFalse(executable.exists())
@@ -281,9 +286,10 @@ class ValidatorTests(unittest.TestCase):
                 self.assertEqual(preserved.read_bytes(), b'reusable compiled object')
 
         self.on_command = native_report_and_release_check
-        status, path, report, _ = self.invoke(
-            '--target-dir', str(target), '--release', '--python', 'smoke',
-            '--retire-native-binaries')
+        with patch.object(native, 'active_peers', return_value=set()):
+            status, path, report, _ = self.invoke(
+                '--target-dir', str(target), '--release', '--python', 'smoke',
+                '--retire-native-binaries')
         self.assertEqual(status, 0)
         self.assertTrue(report['success'])
         self.assertEqual(report['retired_native_test_binaries'], 1)
@@ -300,13 +306,8 @@ class ValidatorTests(unittest.TestCase):
         executable.write_bytes(b'completed native test executable')
         outside = self.directory/('outside' + ('.exe' if os.name == 'nt' else ''))
         outside.write_bytes(b'not a Cargo test output')
-        native_report = self.directory/'native.json'
-        native_report.write_text(json.dumps({
-            'success': True, 'terminal': True, 'active_processes': [],
-            'binaries': [{'binary': str(executable)}, {'binary': str(outside)}],
-        }))
         with self.assertRaisesRegex(RuntimeError, 'outside the Cargo test outputs'):
-            validate.retire_native_test_binaries(native_report, target)
+            native.retire_test_binaries([executable, outside], target)
         self.assertTrue(executable.exists())
         self.assertTrue(outside.exists())
 

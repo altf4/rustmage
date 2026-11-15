@@ -4,6 +4,7 @@ import errno
 import io
 import json
 import os
+import shutil
 from pathlib import Path
 import stat
 import subprocess
@@ -26,6 +27,148 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class AssuranceRunnerTests(unittest.TestCase):
+    def test_real_guarded_native_batches_link_run_and_retire(self):
+        cache = Path(os.environ.get('XDG_CACHE_HOME', Path.home()/'.cache'))
+        directory = Path(tempfile.mkdtemp(prefix='rustmage-batch-probe-', dir=cache)).resolve()
+        passed = False
+        try:
+            root = directory/'fixture'
+            (root/'tests').mkdir(parents=True)
+            (root/'Cargo.toml').write_text(
+                '[package]\nname="rustmage"\nversion="0.0.0"\nedition="2021"\n'
+                '[lib]\npath="lib.rs"\ntest=false\n'
+                '[profile.test]\ndebug=false\nincremental=false\n')
+            (root/'lib.rs').write_text('pub fn answer() -> u8 { 42 }\n')
+            for name in ['first', 'second']:
+                (root/f'tests/{name}.rs').write_text(
+                    '#[test] fn actual_case() { assert_eq!(rustmage::answer(), 42); }\n')
+            target = directory/'target'
+            report = directory/'native.json'
+            wrapper = os.environ.get('RUSTC_WRAPPER', str(ROOT/'scripts/rustc_guard.py'))
+            arguments = ['run_native_tests.py', '--target-dir', str(target), '--report', str(report),
+                         '--retire-binaries', '--batch-size', '1', '--compile-timeout', '20',
+                         '--suite-timeout', '10']
+            with patch.object(native, 'ROOT', root), patch.object(sys, 'argv', arguments), \
+                    patch.object(native.signal, 'signal'), \
+                    patch.dict(os.environ, {'RUSTC_WRAPPER': wrapper}), \
+                    contextlib.redirect_stdout(io.StringIO()):
+                status = native.main()
+            result = json.loads(report.read_text())
+            self.assertEqual(status, 0, str(directory)+'\n'+json.dumps(result))
+            self.assertEqual(len(result['compile_batches']), 2)
+            self.assertEqual(result['expected_tests'], 2)
+            self.assertEqual(result['retired_native_test_binaries'], 2)
+            self.assertTrue(all(not Path(row['binary']).exists() for row in result['binaries']))
+            self.assertTrue(list((target/'debug/deps').glob('librustmage*.rlib')))
+            second_compile = Path(result['compile_batches'][1]['log']).read_text().splitlines()
+            libraries = [json.loads(line) for line in second_compile if line.startswith('{')]
+            self.assertTrue(any(row.get('fresh') and 'lib' in row.get('target', {}).get('kind', [])
+                                for row in libraries), 'second batch rebuilt its shared library')
+            passed = True
+        finally:
+            if passed:
+                shutil.rmtree(directory)
+
+    def run_batched_fixture(self, *, fail_execution=False, omit_target=False):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary).resolve()
+            target = directory/'target'
+            report = directory/'reports/native.json'
+            dependency = target/'debug/deps/libengine.rlib'
+            release = target/'release/library.snapshot'
+            release.parent.mkdir(parents=True)
+            release.write_bytes(b'preserve production output')
+            builds, executed, binaries = [], [], []
+
+            def command_fixture(command, *, env, log, timeout):
+                if command[:2] == ['cargo', 'metadata']:
+                    log.write_text(json.dumps({'packages': [{
+                        'manifest_path': str(native.ROOT/'Cargo.toml'),
+                        'targets': [{'kind': ['test'], 'name': name}
+                                    for name in ['third', 'first', 'second']],
+                    }]}))
+                elif command[:2] == ['cargo', 'test']:
+                    # Earlier completed batches must be gone before the next link.
+                    self.assertTrue(all(not path.exists() for path in binaries))
+                    names = [command[i+1] for i, arg in enumerate(command) if arg == '--test']
+                    builds.append((names, timeout))
+                    dependency.parent.mkdir(parents=True, exist_ok=True)
+                    dependency.write_bytes(b'reuse engine')
+                    artifacts = []
+                    for name in names[:-1] if omit_target else names:
+                        binary = dependency.parent/(name + ('.exe' if os.name == 'nt' else ''))
+                        binary.write_bytes(b'test executable')
+                        binaries.append(binary)
+                        artifacts.append(dict(reason='compiler-artifact', executable=str(binary),
+                                              profile=dict(test=True), target=dict(kind=['test'], name=name)))
+                    log.write_text(''.join(json.dumps(row)+'\n' for row in artifacts))
+                else:
+                    log.write_text('fixture_case: test\n')
+                return dict(exit=0, seconds=2, log=str(log),
+                            timed_out=False, orphaned_processes=False)
+
+            def execute_fixture(command, *, env, log, timeout, test_timeout):
+                executed.append(Path(command[0]).stem)
+                status = 'FAILED' if fail_execution else 'ok'
+                log.write_text(f'test fixture_case ... {status}\n'
+                               + ('test result: FAILED. 0 passed; 1 failed; 0 ignored;\n'
+                                  if fail_execution else
+                                  'test result: ok. 1 passed; 0 failed; 0 ignored;\n'))
+                return dict(exit=int(fail_execution), seconds=0.001, log=str(log),
+                            timed_out=False, orphaned_processes=False)
+
+            arguments = ['run_native_tests.py', '--target-dir', str(target), '--report', str(report),
+                         '--retire-binaries', '--batch-size', '2', '--compile-timeout', '10']
+            with patch.object(native, 'managed_context', return_value={'backend': 'fixture'}), \
+                    patch.object(native, 'active_peers', return_value=set()), \
+                    patch.object(native.signal, 'signal'), \
+                    patch.object(native, 'run_command', side_effect=command_fixture), \
+                    patch.object(native, 'run_suite', side_effect=execute_fixture), \
+                    patch.object(sys, 'argv', arguments), contextlib.redirect_stdout(io.StringIO()), \
+                    contextlib.redirect_stderr(io.StringIO()):
+                status = native.main()
+            result = json.loads(report.read_text())
+            self.assertTrue(result['terminal'])
+            self.assertEqual(dependency.read_bytes(), b'reuse engine')
+            self.assertEqual(release.read_bytes(), b'preserve production output')
+            if fail_execution or omit_target:
+                self.assertNotEqual(status, 0)
+                self.assertFalse(result['success'])
+                self.assertEqual(len(builds), 1)
+                self.assertTrue(all(path.exists() for path in binaries))
+                self.assertEqual(result['retired_native_test_binaries'], 0)
+            else:
+                self.assertEqual(status, 0)
+                self.assertTrue(result['success'])
+                self.assertEqual([names for names, _ in builds], [['first', 'second'], ['third']])
+                self.assertEqual(executed, ['first', 'second', 'third'])
+                self.assertEqual(result['expected_tests'], 3)
+                self.assertEqual(len(result['tests']), 3)
+                self.assertEqual(result['retired_native_test_binaries'], 3)
+                self.assertTrue(all(not path.exists() for path in binaries))
+                # Discovery and every batch share one compile budget.
+                self.assertEqual([timeout for _, timeout in builds], [8, 6])
+
+    def test_native_batches_execute_every_target_and_reclaim_before_next_compile(self):
+        self.run_batched_fixture()
+
+    def test_failed_native_batch_preserves_outputs_and_stops_before_next_compile(self):
+        self.run_batched_fixture(fail_execution=True)
+
+    def test_native_batches_reject_incomplete_compiler_target_lists(self):
+        self.run_batched_fixture(omit_target=True)
+
+    def test_native_retirement_preserves_outputs_while_processes_are_active(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            target = Path(temporary).resolve()/'target'
+            binary = target/'debug/deps'/('fixture.exe' if os.name == 'nt' else 'fixture')
+            binary.parent.mkdir(parents=True)
+            binary.write_bytes(b'active test')
+            with patch.object(native, 'active_peers', return_value={12345}):
+                with self.assertRaisesRegex(RuntimeError, 'processes remain active'):
+                    native.retire_test_binaries([binary], target)
+            self.assertEqual(binary.read_bytes(), b'active test')
+
     def test_native_listing_repairs_missing_owner_execute_bit(self):
         with tempfile.TemporaryDirectory() as temporary:
             target = Path(temporary)/'target'

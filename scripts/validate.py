@@ -58,35 +58,18 @@ def snapshot_library(target, report_dir):
     return library, digest
 
 
-def retire_native_test_binaries(native_report, target):
-    """Reclaim completed test executables before a separate release build."""
+def native_retirement(native_report):
+    """Record reclamation from the terminal native runner."""
     native = json.loads(native_report.read_text())
     if not native.get('success') or not native.get('terminal') or native.get('active_processes'):
         raise RuntimeError('native assurance is not terminal and successful; preserve outputs')
-    entries = native.get('binaries')
-    if not isinstance(entries, list) or not entries:
-        raise RuntimeError('native assurance has no recorded test binaries; preserve outputs')
-    parent = target/'debug'/'deps'
-    if parent.resolve() != target.resolve()/'debug'/'deps':
-        raise RuntimeError('native test directory escapes the Cargo target; preserve outputs')
-    binaries = []
-    for entry in entries:
-        if not isinstance(entry, dict) or not isinstance(entry.get('binary'), str):
-            raise RuntimeError('invalid native test binary record; preserve outputs')
-        path = Path(entry['binary'])
-        if (not path.is_absolute() or path.is_symlink() or not path.is_file()
-                or path.resolve().parent != parent
-                or path.suffix != ('.exe' if sys.platform == 'win32' else '')):
-            raise RuntimeError('native test binary is outside the Cargo test outputs; preserve outputs')
-        binaries.append(path)
-    if len(set(binaries)) != len(binaries):
-        raise RuntimeError('duplicate native test binary record; preserve outputs')
+    count = native.get('retired_native_test_binaries')
+    reclaimed = native.get('retired_native_test_bytes')
+    if not isinstance(count, int) or count <= 0 or not isinstance(reclaimed, int) or reclaimed < 0:
+        raise RuntimeError('native assurance did not retire its test binaries')
     if active_peers():
         raise RuntimeError('native test processes remain active; preserve outputs')
-    reclaimed = sum(allocated_bytes(path) for path in binaries)
-    for path in binaries:
-        path.unlink()
-    return len(binaries), reclaimed
+    return count, reclaimed
 
 
 def main(argv=None):
@@ -99,7 +82,7 @@ def main(argv=None):
     parser.add_argument('--games', type=int, default=10,
                         help='native benchmark games, only with --release (default: 10)')
     parser.add_argument('--retire-native-binaries', action='store_true',
-                        help='remove completed native test executables before the release build')
+                        help='build/run/remove native test executables in bounded batches')
     parser.add_argument('--timeout', type=float,
                         default=8700 if windows else 6600 if sys.platform == 'darwin' else 5100,
                         help='total wall-clock budget after acquiring the build slot (default: %(default)s seconds)')
@@ -165,7 +148,8 @@ def main(argv=None):
         ('native assurance', [sys.executable, 'scripts/run_native_tests.py',
                               '--target-dir', str(target), '--report', str(report_dir/'native.json'),
                               '--test-timeout', '180', '--suite-timeout', str(native_suite_timeout),
-                              '--compile-timeout', str(native_compile_timeout)],
+                              '--compile-timeout', str(native_compile_timeout)]
+                             + (['--retire-binaries'] if args.retire_native_binaries else []),
          native_compile_timeout + native_suite_timeout + 20),
     ]
     if args.release or args.python != 'none':
@@ -199,7 +183,7 @@ def main(argv=None):
                 print(Path(phase['log']).read_text()[-12000:], flush=True)
                 break
             if name == 'native assurance' and args.retire_native_binaries:
-                count, reclaimed = retire_native_test_binaries(report_dir/'native.json', target)
+                count, reclaimed = native_retirement(report_dir/'native.json')
                 report['retired_native_test_binaries'] = count
                 report['retired_native_test_bytes'] = reclaimed
                 print(f'Retired {count} completed native test executables ({reclaimed} allocated bytes)',

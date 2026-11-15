@@ -2,6 +2,7 @@
 """Link integration tests against cached engine/set libraries and run serially."""
 import argparse
 import errno
+import fnmatch
 import json
 import math
 import re
@@ -16,10 +17,10 @@ import time
 
 if __package__:
     from .resource_limits import bounded_group, managed_context
-    from .build_platform import exec_process
+    from .build_platform import allocated_bytes, exec_process
 else:
     from resource_limits import bounded_group, managed_context
-    from build_platform import exec_process
+    from build_platform import allocated_bytes, exec_process
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -275,6 +276,42 @@ def run_suite(command, *, env, log, timeout, test_timeout):
                 log=str(log))
 
 
+def retire_test_binaries(binaries, target):
+    """Only remove completed Cargo test executables, after their processes exit."""
+    parent = target/'debug'/'deps'
+    if parent.resolve() != target.resolve()/'debug'/'deps':
+        raise RuntimeError('native test directory escapes the Cargo target; preserve outputs')
+    if len(set(binaries)) != len(binaries):
+        raise RuntimeError('duplicate native test binary record; preserve outputs')
+    for path in binaries:
+        if (not path.is_absolute() or path.is_symlink() or not path.is_file()
+                or path.resolve().parent != parent
+                or path.suffix != ('.exe' if sys.platform == 'win32' else '')):
+            raise RuntimeError('native test binary is outside the Cargo test outputs; preserve outputs')
+    if active_peers():
+        raise RuntimeError('native test processes remain active; preserve outputs')
+    reclaimed = sum(allocated_bytes(path) for path in binaries)
+    for path in binaries:
+        path.unlink()
+    return len(binaries), reclaimed
+
+
+def compiled_tests(log, target):
+    binaries = []
+    for line in log.read_text().splitlines():
+        try:
+            message = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if (message.get('reason') == 'compiler-artifact' and message.get('executable')
+                and message.get('profile', {}).get('test')
+                and 'test' in message.get('target', {}).get('kind', [])):
+            binaries.append((message['target'].get('name'), Path(message['executable']).resolve()))
+    if not binaries or any(target not in binary.parents for _, binary in binaries):
+        raise RuntimeError(f'expected integration test binaries under {target}, got {binaries}')
+    return binaries
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--target-dir', type=Path, required=True)
@@ -284,9 +321,15 @@ def main():
     parser.add_argument('--suite-timeout', type=float, default=240)
     parser.add_argument('--test-target', help='compile only this integration target')
     parser.add_argument('--filter', default='', help='execute matching cases in selected targets')
+    parser.add_argument('--retire-binaries', action='store_true',
+                        help='compile, execute and remove test executables in bounded batches')
+    parser.add_argument('--batch-size', type=int, default=32,
+                        help='targets per compile when retiring binaries (default: 32)')
     args = parser.parse_args()
     if any(not math.isfinite(v) or v <= 0 for v in (args.compile_timeout, args.test_timeout, args.suite_timeout)):
         parser.error('timeouts must be positive')
+    if args.batch_size < 1:
+        parser.error('--batch-size must be positive')
     if managed_context() is None:
         exec_process([sys.executable, str(ROOT/'scripts/resource_guard.py'), '--',
                       sys.executable, str(Path(__file__).resolve()), *sys.argv[1:]])
@@ -297,67 +340,106 @@ def main():
     if 'RUSTMAGE_TDM_EVIDENCE_DIR' not in env:
         env['RUSTMAGE_TDM_EVIDENCE_DIR'] = tempfile.mkdtemp(
             prefix='tdm-games-', dir=args.report.resolve().parent)
-    result = dict(success=False, terminal=False, tests=[],
+    result = dict(success=False, terminal=False, tests=[], binaries=[], compile_batches=[],
+                  execution_seconds=0, expected_tests=0,
+                  retired_native_test_binaries=0, retired_native_test_bytes=0,
                   game_evidence_directory=env['RUSTMAGE_TDM_EVIDENCE_DIR'])
     started = time.monotonic()
     try:
         compile_log = args.report.with_name('native-compile.log')
-        result['compile'] = run_command(
-            ['cargo', 'test', '-p', 'rustmage', '--test', args.test_target or '*',
-             '--no-run', '--message-format=json'],
-            env=env, log=compile_log, timeout=args.compile_timeout)
-        if result['compile']['exit']:
-            print(compile_log.read_text()[-12000:], flush=True)
-            return 1
-        binaries = []
-        for line in compile_log.read_text().splitlines():
-            try:
-                message = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-            if (message.get('reason') == 'compiler-artifact' and message.get('executable')
-                    and message.get('profile', {}).get('test')
-                    and 'test' in message.get('target', {}).get('kind', [])):
-                binaries.append(Path(message['executable']).resolve())
-        if not binaries or any(target not in binary.parents for binary in binaries):
-            raise RuntimeError(f'expected integration test binaries under {target}, got {binaries}')
-        result['binaries'] = []
-        expected = 0
-        suite_start = time.monotonic()
-        complete = True
-        for index, binary in enumerate(binaries):
-            listing = args.report.with_name(f'native-list-{index}.log')
-            listed = list_compiled_tests(binary, target=target, filter_name=args.filter,
-                                         env=env, log=listing)
-            if listed['exit']:
+        batches = [[args.test_target or '*']]
+        compile_seconds = 0
+        if args.retire_binaries:
+            metadata_log = args.report.with_name('native-metadata.log')
+            result['metadata'] = run_command(
+                ['cargo', 'metadata', '--no-deps', '--format-version=1'],
+                env=env, log=metadata_log, timeout=min(30, args.compile_timeout))
+            compile_seconds += result['metadata']['seconds']
+            if result['metadata']['exit']:
                 return 1
-            names = [line.removesuffix(': test') for line in listing.read_text().splitlines()
-                     if line.endswith(': test')]
+            package = next(p for p in json.loads(metadata_log.read_text())['packages']
+                           if Path(p['manifest_path']).resolve() == ROOT/'Cargo.toml')
+            names = sorted(t['name'] for t in package['targets']
+                           if 'test' in t['kind']
+                           and fnmatch.fnmatchcase(t['name'], args.test_target or '*'))
             if not names:
-                if args.test_target:
-                    raise RuntimeError('selected target/filter contains no tests')
-                continue
-            expected += len(names)
-            remaining = args.suite_timeout - (time.monotonic()-suite_start)
-            if remaining <= 0:
+                raise RuntimeError('no integration test targets selected')
+            batches = [names[i:i+args.batch_size] for i in range(0, len(names), args.batch_size)]
+        expected = 0
+        complete = True
+        index = 0
+        for batch_index, batch in enumerate(batches):
+            remaining_compile = args.compile_timeout - compile_seconds
+            if remaining_compile <= 0:
                 result['budget_exceeded'] = True
                 complete = False
                 break
-            execution = run_suite(
-                [str(binary), args.filter, '--include-ignored', '--test-threads=1'],
-                env=env, log=args.report.with_name(f'native-execution-{index}.log'),
-                timeout=remaining, test_timeout=args.test_timeout)
-            output = Path(execution['log']).read_text()
-            tests, accounted = suite_results(names, output)
-            for test in tests:
-                test['binary'] = str(binary)
-            result['tests'].extend(tests)
-            result['binaries'].append(dict(binary=str(binary), expected=len(names), execution=execution))
-            if execution['exit'] or not accounted:
-                complete = False
-                print(output[-12000:], flush=True)
+            command = ['cargo', 'test', '-p', 'rustmage']
+            for name in batch:
+                command.extend(['--test', name])
+            command.extend(['--no-run', '--message-format=json'])
+            log = (args.report.with_name(f'native-compile-{batch_index}.log')
+                   if args.retire_binaries else compile_log)
+            compiled = run_command(command, env=env, log=log, timeout=remaining_compile)
+            result['compile_batches'].append(compiled)
+            compile_seconds += compiled['seconds']
+            result['compile'] = dict(compiled, seconds=compile_seconds)
+            if args.retire_binaries:
+                with compile_log.open('a' if batch_index else 'w') as output:
+                    output.write(log.read_text())
+                result['compile']['log'] = str(compile_log)
+            if compiled['exit']:
+                print(log.read_text()[-12000:], flush=True)
+                return 1
+            binaries = compiled_tests(log, target)
+            if args.retire_binaries and (len(binaries) != len(batch)
+                                        or {name for name, _ in binaries} != set(batch)):
+                raise RuntimeError('compiled test targets do not match the selected batch')
+            suite_start = time.monotonic()
+            for _, binary in binaries:
+                listing = args.report.with_name(f'native-list-{index}.log')
+                listed = list_compiled_tests(binary, target=target, filter_name=args.filter,
+                                             env=env, log=listing)
+                if listed['exit']:
+                    return 1
+                names = [line.removesuffix(': test') for line in listing.read_text().splitlines()
+                         if line.endswith(': test')]
+                if not names:
+                    if args.test_target:
+                        raise RuntimeError('selected target/filter contains no tests')
+                    index += 1
+                    continue
+                expected += len(names)
+                remaining = (args.suite_timeout - result['execution_seconds']
+                             - (time.monotonic()-suite_start))
+                if remaining <= 0:
+                    result['budget_exceeded'] = True
+                    complete = False
+                    break
+                execution = run_suite(
+                    [str(binary), args.filter, '--include-ignored', '--test-threads=1'],
+                    env=env, log=args.report.with_name(f'native-execution-{index}.log'),
+                    timeout=remaining, test_timeout=args.test_timeout)
+                output = Path(execution['log']).read_text()
+                tests, accounted = suite_results(names, output)
+                for test in tests:
+                    test['binary'] = str(binary)
+                result['tests'].extend(tests)
+                result['binaries'].append(dict(binary=str(binary), expected=len(names), execution=execution))
+                index += 1
+                if execution['exit'] or not accounted:
+                    complete = False
+                    print(output[-12000:], flush=True)
+                    break
+            result['execution_seconds'] += time.monotonic()-suite_start
+            if not complete:
                 break
-        result['execution_seconds'] = time.monotonic()-suite_start
+            if args.retire_binaries:
+                count, reclaimed = retire_test_binaries([binary for _, binary in binaries], target)
+                result['retired_native_test_binaries'] += count
+                result['retired_native_test_bytes'] += reclaimed
+                print(f'Native batch {batch_index+1}/{len(batches)} passed; retired {count} executables',
+                      flush=True)
         result['expected_tests'] = expected
         result['success'] = complete and expected > 0 and len(result['tests']) == expected
         print(f"Native assurance: {len(result['tests'])}/{expected} cases in {result['execution_seconds']:.3f}s", flush=True)
@@ -365,6 +447,10 @@ def main():
     except KeyboardInterrupt:
         result['interrupted'] = True
         return 130
+    except (OSError, RuntimeError, ValueError, KeyError, StopIteration) as error:
+        result['error'] = str(error)
+        print(str(error), file=sys.stderr, flush=True)
+        return 1
     finally:
         result['active_processes'] = sorted(active_peers())
         if result['active_processes']:
