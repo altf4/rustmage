@@ -331,8 +331,8 @@ impl Game {
         }
         for owner in libraries {
             let ids = exile::top_library_cards(self, owner, u128::from(amount));
-            // The look precedes replacement planning for exile. Its knowledge
-            // is already owned if a replacement decision suspends this event.
+            // The look precedes replacement planning for exile. Only the
+            // current top has a library-top observation before the batch.
             if let Some(&id) = ids.first() {
                 let object = self.object_ref(id);
                 for &player in &beneficiaries {
@@ -340,6 +340,17 @@ impl Game {
                 }
             }
             let events = self.move_objects_raw(&ids, Zone::Exile);
+            // A replacement may leave one of the looked-at cards on top.
+            // Preserve that exact private knowledge after the batch changes
+            // the top; cards that were exiled get their own hidden rows below.
+            if let Some(top) = self.top_library_card(owner)
+                && ids.contains(&top)
+            {
+                let object = self.object_ref(top);
+                for &player in &beneficiaries {
+                    self.remember_private_library_top(owner, player, object);
+                }
+            }
             for event in &events {
                 if !event.moved || event.destination != Zone::Exile {
                     continue;
