@@ -77,7 +77,9 @@ impl Game {
         cast_alternatives: &[PaidCastAlternative],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
-        if self.state.static_sources.is_empty() {
+        if self.state.static_sources.is_empty()
+            && self.state.copy_recipes.as_ref().is_none_or(|rows| rows.is_empty())
+        {
             return false;
         }
         let Some(card) = self.top_library_card(actor) else {
@@ -91,8 +93,6 @@ impl Game {
                 .filter_map(|face| {
                     let definition = face.definition(physical)?;
                     (!definition.is_land()
-                        && (definition.is_creature()
-                            || CastFilter::InstantSorcery.matches(definition))
                         && !matches!(definition.effect(), Effect::Unsupported))
                     .then_some((face, definition, false))
                 })
@@ -102,17 +102,27 @@ impl Game {
             return false;
         }
         let mut evaluation = None;
-        for &id in &self.state.static_sources {
+        let copied = self.state.copy_recipes.as_ref().into_iter()
+            .flat_map(|rows| rows.iter().map(|row| row.object.card));
+        let mut visited = Vec::new();
+        for id in self.state.static_sources.iter().copied().chain(copied) {
+            if visited.contains(&id) { continue; }
+            visited.push(id);
             let provider = &self.state.objects[id as usize];
-            if provider.zone != Zone::Battlefield || provider.controller != actor {
+            if provider.zone != Zone::Battlefield || provider.controller != actor
+                || self.is_face_down(self.object_ref(id)) {
                 continue;
             }
             let source = self.object_ref(id);
-            for (ability, group) in provider.card.static_ability_groups().iter().enumerate() {
+            let source_definition = self.copiable_recipe(source).definition;
+            let copied_definition = source_definition != provider.card;
+            if copied_definition && !self.printed_abilities_available(id) { continue; }
+            for (ability, group) in source_definition.static_ability_groups().iter().enumerate() {
                 if !group.fragments.iter().any(|fragment| {
                     matches!(
                         fragment,
                         StaticAbilityFragment::CastInstantSorceryFromLibraryTopOnceEachTurn
+                            | StaticAbilityFragment::CastFromLibraryTopOnceEachOwnTurn(_)
                             | StaticAbilityFragment::CastCreaturePowerAtMostFromLibraryTopOnceEachTurn(_)
                     )
                 }) || !entry_modes::group_enabled(self, source, group)
@@ -121,7 +131,7 @@ impl Game {
                 }
                 let permission = LibraryTopCastPermission {
                     source,
-                    definition: provider.card,
+                    definition: source_definition,
                     ability: u16::try_from(ability).expect("static ability index"),
                     copy_origin: self.copy_ability_origin(source),
                 };
@@ -130,10 +140,10 @@ impl Game {
                         player: actor,
                         permission,
                     })
-                }) || evaluation
+                }) || (!copied_definition && evaluation
                     .get_or_insert_with(|| self.evaluated_abilities())
                     .as_ref()
-                    .is_some_and(|evaluation| !evaluation.group_available(source, ability))
+                    .is_some_and(|evaluation| !evaluation.group_available(source, ability)))
                 {
                     continue;
                 }
@@ -141,6 +151,9 @@ impl Game {
                     if !group.fragments.iter().any(|fragment| match *fragment {
                         StaticAbilityFragment::CastInstantSorceryFromLibraryTopOnceEachTurn => {
                             CastFilter::InstantSorcery.matches(definition)
+                        }
+                        StaticAbilityFragment::CastFromLibraryTopOnceEachOwnTurn(filter) => {
+                            actor == self.state.active && filter.matches(definition)
                         }
                         StaticAbilityFragment::CastCreaturePowerAtMostFromLibraryTopOnceEachTurn(
                             maximum,
@@ -291,6 +304,15 @@ impl Game {
                             StaticAbilityFragment::LookAtLibraryTop
                                 | StaticAbilityFragment::AttachmentLookAtLibraryTop
                         )
+                    })
+                })
+            })
+            && !self.state.copy_recipes.as_ref().is_some_and(|rows| {
+                rows.iter().any(|row| {
+                    row.recipe.definition.static_ability_groups().iter().any(|group| {
+                        group.fragments.iter().any(|fragment| {
+                            matches!(fragment, StaticAbilityFragment::LookAtLibraryTop)
+                        })
                     })
                 })
             })
