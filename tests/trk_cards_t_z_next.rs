@@ -344,3 +344,118 @@ fn reliant_returns_small_own_grave_creatures_with_finality_on_both_events() {
     assert_eq!(game.object_view(second).zone, Zone::Battlefield);
     assert_eq!(game.counter_count(second, CounterKind::Finality), 1);
 }
+
+#[test]
+fn temporal_conqueror_mills_then_returns_an_existing_land_or_makes_treasure() {
+    let mut return_game = scenario(Player::P0);
+    let old = put(&mut return_game, Player::P0, "Island", Zone::Graveyard);
+    let conqueror = put(&mut return_game, Player::P0, "Temporal Conqueror", Zone::Hand);
+    cast(&mut return_game, conqueror, None);
+    for _ in 0..20 {
+        if matches!(return_game.state.pending, Pending::EffectChoice { .. }) { break; }
+        choose(&mut return_game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+    }
+    let old_ref = return_game.object_ref(old);
+    act(&mut return_game, Action::SelectGraveyardReturn { object: old_ref });
+    finish(&mut return_game);
+    assert_eq!(return_game.object_view(old).zone, Zone::Hand);
+    assert_eq!(return_game.state.objects.iter().filter(|o| o.card == Card(5302) && o.zone == Zone::Battlefield).count(), 0);
+
+    let mut fallback = scenario(Player::P0);
+    fallback.state.players[0].library.clear();
+    for _ in 0..3 { put(&mut fallback, Player::P0, "Shock", Zone::Library); }
+    let conqueror = put(&mut fallback, Player::P0, "Temporal Conqueror", Zone::Hand);
+    cast(&mut fallback, conqueror, None);
+    finish(&mut fallback);
+    assert_eq!(fallback.state.objects.iter().filter(|o| o.card == Card(5302) && o.zone == Zone::Battlefield).count(), 1);
+}
+
+#[test]
+fn caretaker_end_step_requires_a_dilemma_and_uses_target_opponent_library() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let caretaker = put(&mut game, player, "The Caretaker", Zone::Battlefield);
+        assert!(game.object_view(caretaker).keywords.contains(Keywords::VIGILANCE));
+        let hit = put(&mut game, player.other(), "Shock", Zone::Library);
+        game.begin_step(Step::End);
+        game.advance_replacements(false);
+        game.give_priority();
+        finish(&mut game);
+        assert_eq!(game.object_view(hit).zone, Zone::Library);
+
+        let mut active = scenario(player);
+        put(&mut active, player, "The Caretaker", Zone::Battlefield);
+        let hit = put(&mut active, player.other(), "Shock", Zone::Library);
+        active.state.players[player.index()].dilemmas_faced_this_turn = 1;
+        active.begin_step(Step::End);
+        active.advance_replacements(false);
+        active.give_priority();
+        finish_target(&mut active, Some(Target::Player(player.other())));
+        assert_eq!(active.object_view(hit).zone, Zone::Exile);
+    }
+}
+
+#[test]
+fn riker_puts_only_the_revealed_lands_in_play_then_sacrifices_them() {
+    let mut game = scenario(Player::P0);
+    game.state.players[0].library.clear();
+    let first = put(&mut game, Player::P0, "Forest", Zone::Library);
+    let gap = put(&mut game, Player::P0, "Shock", Zone::Library);
+    let second = put(&mut game, Player::P0, "Island", Zone::Library);
+    put(&mut game, Player::P0, "Will Riker, First in the Field", Zone::Battlefield);
+    game.begin_step(Step::BeginCombat);
+    game.advance_replacements(false);
+    game.give_priority();
+    finish(&mut game);
+    assert_eq!(game.object_view(first).zone, Zone::Battlefield);
+    assert_eq!(game.object_view(second).zone, Zone::Battlefield);
+    assert_eq!(game.object_view(gap).zone, Zone::Library);
+    let unrelated = put(&mut game, Player::P0, "Mountain", Zone::Battlefield);
+    game.begin_step(Step::End);
+    game.advance_replacements(false);
+    game.give_priority();
+    finish(&mut game);
+    for land in [first, second] { assert_eq!(game.object_view(land).zone, Zone::Graveyard); }
+    assert_eq!(game.object_view(unrelated).zone, Zone::Battlefield);
+}
+
+#[test]
+fn coffee_rejects_nonpermanent_hit_and_uses_white_beam_cost() {
+    let mut game = scenario(Player::P0);
+    game.state.players[0].library.clear();
+    let allowed = put(&mut game, Player::P0, "Grizzly Bears", Zone::Library);
+    let forbidden = put(&mut game, Player::P0, "Shock", Zone::Library);
+    let spell = put(&mut game, Player::P0, "There's Coffee in that Nebula", Zone::Hand);
+    cast(&mut game, spell, None);
+    for _ in 0..20 {
+        if matches!(game.state.pending, Pending::EffectLibrarySelection { .. }) { break; }
+        choose(&mut game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+    }
+    reject(&mut game, Action::SelectLibrary { card: forbidden });
+    act(&mut game, Action::SelectLibrary { card: allowed });
+    if game.legal_actions().contains(&Action::FinishLibrarySelection) { act(&mut game, Action::FinishLibrarySelection); }
+    finish(&mut game);
+    assert_eq!(game.object_view(allowed).zone, Zone::Hand);
+    assert_eq!(game.object_view(forbidden).zone, Zone::Library);
+
+    let mut beam = scenario(Player::P0);
+    let spell = put(&mut beam, Player::P0, "There's Coffee in that Nebula", Zone::Graveyard);
+    let creature = put(&mut beam, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let cost = ManaCost { generic: 2, colored: [1, 0, 0, 0, 0, 0] };
+    act(&mut beam, Action::AnnounceBeamMeUp {
+        card: spell, face: CastFace::Normal, cost, flash_surcharge: false, provider: None,
+    });
+    act(&mut beam, Action::BeginOrderedCosts);
+    let clauses: Vec<_> = beam.state.announcing.as_ref().unwrap().cast_costs.as_ref().unwrap()
+        .clauses.iter().map(|row| row.clause).collect();
+    for kind in [CastCostClause::Mana, clauses.into_iter().find(|kind| matches!(kind, CastCostClause::BeamMeUpReturn(_, _))).unwrap()] {
+        let clause = beam.state.announcing.as_ref().unwrap().cast_costs.as_ref().unwrap()
+            .clauses.iter().position(|row| row.clause == kind && !row.paid).unwrap() as u16;
+        act(&mut beam, Action::ChooseCastCost { clause });
+        if matches!(kind, CastCostClause::Mana) { pay(&mut beam); }
+        else { let object = beam.object_ref(creature); act(&mut beam, Action::PayBeamMeUpReturn { object }); }
+    }
+    finish(&mut beam);
+    assert_eq!(beam.object_view(creature).zone, Zone::Hand);
+    assert_eq!(beam.object_view(spell).zone, Zone::Exile);
+}
