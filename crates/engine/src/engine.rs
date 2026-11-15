@@ -11111,7 +11111,7 @@ impl Game {
     }
 
     /// Waiting abilities may reach the stack after their exact sources leave.
-    /// Preserve their event facts while retaining the source types used in targeting.
+    /// Preserve event facts while retaining source targeting LKI.
     fn capture_waiting_source_types(&mut self, before: &ObjectView) {
         let state = &mut self.state;
         for item in state
@@ -11598,6 +11598,7 @@ impl Game {
                 .retain(|link| link.exiled != before.reference);
         }
         if before.zone == Zone::Stack {
+            self.capture_waiting_source_types(&before);
             self.state.stack.retain(|spell| {
                 spell.kind != StackKind::Spell
                     || !spell

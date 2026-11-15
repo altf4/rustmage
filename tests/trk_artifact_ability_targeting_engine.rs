@@ -39,6 +39,15 @@ const SPELL: CardRules = CardRules {
     effect: Effect::Spell(TARGET, &[Instruction::Draw(PlayerSet::Controller, 1)]),
     ..CardRules::EMPTY
 };
+const ARTIFACT_CAST_TRIGGER: CardRules = CardRules {
+    effect: Effect::Permanent,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfCast,
+        targets: TARGET,
+        program: &[Instruction::Draw(PlayerSet::Controller, 1)],
+    }],
+    ..CardRules::EMPTY
+};
 const BYPASS_HEXPROOF: CardRules = CardRules {
     effect: Effect::Creature(1, 1),
     static_groups: &[StaticAbilityGroup {
@@ -218,4 +227,39 @@ fn departed_ability_source_uses_last_controller_and_artifact_type() {
             "departure LKI must govern artifact ability target legality"
         );
     }
+}
+
+#[test]
+fn departed_artifact_spell_source_keeps_last_controller_for_its_cast_trigger() {
+    let artifact = Card::from_name("Candy Trail").unwrap();
+    let protected_card = Card::from_name("Gigantosaurus").unwrap();
+    let _rules = fixture_rules::activate(&[
+        (artifact, &ARTIFACT_CAST_TRIGGER),
+        (protected_card, &PROTECTED),
+    ]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let protected = spawn(&mut game, player, protected_card, Zone::Battlefield);
+    let source = spawn(&mut game, player, artifact, Zone::Hand);
+    cast(&mut game, source, None);
+    for _ in 0..8 {
+        let actions = game.legal_actions();
+        if let Some(action) = actions.iter().find(|action| {
+            **action == Action::ChooseTarget { target: Target::Card(protected) }
+        }) {
+            act(&mut game, action.clone());
+        } else if let Some(action) = actions.iter().find(|action| matches!(action, Action::PutTrigger { .. })) {
+            act(&mut game, action.clone());
+        } else if actions.contains(&Action::FinishStackTargets) {
+            act(&mut game, Action::FinishStackTargets);
+        } else {
+            break;
+        }
+    }
+    assert!(game.state.stack.iter().any(|item| matches!(item.kind, StackKind::TriggeredAbility { .. })
+        && item.targets.iter().any(|bound| bound.target == Target::Card(protected))));
+    game.state.objects[source as usize].controller = player.other();
+    game.move_object(source, Zone::Graveyard);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 0);
 }
