@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "8663e2c0f96cebefbc021573715732a594aa3c3ff40c8093be42ac2bca0463db",
+  "catalogue_version": "d519919daf608f83e1c9a1325dc070b7ed78dfbdda2a77cc48a2b112440dcf60",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5371,
-  "implemented_total": 5391,
+  "implemented_standard_cards": 5372,
+  "implemented_total": 5392,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 208,
-      "gated": 88
+      "complete": 209,
+      "gated": 87
     },
     "w17": {
       "total": 1,
@@ -42115,8 +42115,8 @@
     {
       "name": "D-7 Battle Cruiser",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/d_7_battle_cruiser.rs",
       "set": "trk"
     },
