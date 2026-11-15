@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "892ebf7c7545578a7d9d8fe5481287edec5ab96671b8fe0758807f7dafcdf116",
+  "catalogue_version": "e0011eec2c174f85eb641311807f524a5dea929ae86326522e5b7b9cc42413f9",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5236,
-  "implemented_total": 5256,
+  "implemented_standard_cards": 5247,
+  "implemented_total": 5267,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "gated": 223,
-      "complete": 73
+      "complete": 84,
+      "gated": 212
     },
     "w17": {
       "total": 1,
@@ -41651,8 +41651,8 @@
     {
       "name": "70,000 Light-Years from Home",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/70_000_light_years_from_home.rs",
       "set": "trk"
     },
@@ -41667,16 +41667,16 @@
     {
       "name": "Academy Instructor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/academy_instructor.rs",
       "set": "trk"
     },
     {
       "name": "Adversary by Algorithm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/adversary_by_algorithm.rs",
       "set": "trk"
     },
@@ -41739,8 +41739,8 @@
     {
       "name": "Artificial Anomaly",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/artificial_anomaly.rs",
       "set": "trk"
     },
@@ -41795,8 +41795,8 @@
     {
       "name": "Battle-Scarred Survivalist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/battle_scarred_survivalist.rs",
       "set": "trk"
     },
@@ -42019,8 +42019,8 @@
     {
       "name": "Command Decision",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/command_decision.rs",
       "set": "trk"
     },
@@ -43555,8 +43555,8 @@
     {
       "name": "Tal Shiar Operative",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/tal_shiar_operative.rs",
       "set": "trk"
     },
@@ -43579,8 +43579,8 @@
     {
       "name": "Tea, Earl Grey, Hot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/tea_earl_grey_hot.rs",
       "set": "trk"
     },
@@ -43691,8 +43691,8 @@
     {
       "name": "The Duras Sisters",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/the_duras_sisters.rs",
       "set": "trk"
     },
@@ -43803,8 +43803,8 @@
     {
       "name": "Type-2 Phaser",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/type_2_phaser.rs",
       "set": "trk"
     },
@@ -43995,8 +43995,8 @@
     {
       "name": "Year of Hell",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/year_of_hell.rs",
       "set": "trk"
     },
