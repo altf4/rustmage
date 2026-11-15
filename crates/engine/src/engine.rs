@@ -138,6 +138,8 @@ pub mod linked_choices;
 #[doc(hidden)]
 #[path = "engine_linked_exile_effects.rs"]
 pub mod linked_exile_effects;
+#[path = "engine_assimilate.rs"]
+pub mod assimilate;
 pub use life_gain::{LifeGainReplacement, LifeGainReplacementChoice, LifeGainReplacementEffect};
 #[doc(hidden)]
 #[path = "engine_zone_replacements.rs"]

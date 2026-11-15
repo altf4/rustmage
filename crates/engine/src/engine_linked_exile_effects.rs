@@ -5,6 +5,7 @@ use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum LinkedExileMode {
     ReturnCreature { plus_one: u64 },
+    AssimilateCreature,
     CopyMutant,
     CopyCreatureUntilEndOfTurn,
     CopyWhileAttached,
@@ -223,6 +224,16 @@ impl Game {
                     card.is_card() && card.card.is_creature()
                 })
                 .collect(),
+            Some(LinkedExileMode::AssimilateCreature) => self
+                .linked_exile_for_item(&resolution.item)
+                .into_iter()
+                .filter(|object| {
+                    let card = &self.state.objects[object.card as usize];
+                    card.is_card()
+                        && self.current_kinds(object.card) & 1 != 0
+                        && !self.exiled_face_down(*object)
+                })
+                .collect(),
             Some(LinkedExileMode::CopyMutant) => self.linked_exile_for_item(&resolution.item),
             Some(
                 LinkedExileMode::CopyCreatureUntilEndOfTurn
@@ -323,6 +334,9 @@ impl Game {
         let resolution = self.state.resolving.as_mut().unwrap();
         let player = resolution.item.controller;
         match mode {
+            LinkedExileMode::AssimilateCreature => {
+                self.stage_assimilated_entry(object, player);
+            }
             LinkedExileMode::ReturnCreature { plus_one } => {
                 self.state
                     .linked_choices

@@ -51,6 +51,8 @@ pub(super) struct OptionalWheel {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Resolution {
+    /// A battlefield assimilation's type effect follows its counter event.
+    pub pending_assimilated_form: Option<ObjectRef>,
     pub power_difference: Option<Box<effect_choices::PowerDifferenceView>>,
     pub chosen_color: Option<crate::cards::ChoiceColor>,
     pub chosen_card_name: Option<crate::CardName>,
@@ -4274,6 +4276,7 @@ impl Game {
                 )
             });
         self.state.resolving = Some(Resolution {
+            pending_assimilated_form: None,
             power_difference: None,
             chosen_color: None,
             chosen_card_name: None,
@@ -4539,6 +4542,7 @@ impl Game {
             if self.advance_replacements(false) {
                 return;
             }
+            self.finish_pending_assimilated_form();
             if self.finish_blight_copy() {
                 // The creation continuation owns program resumption, including
                 // when all entries and their replacements complete immediately.
@@ -7047,6 +7051,12 @@ impl Game {
                     let gained = self.gain_control(&item, subject, controller);
                     if matches!(instruction, Instruction::GainControlRememberCount { .. }) {
                         self.state.resolving.as_mut().unwrap().moved_count = Some(gained);
+                    }
+                }
+                Instruction::Assimilate(subject) => self.assimilate(&item, subject),
+                Instruction::AssimilateLinkedExileOrExileTarget => {
+                    if self.assimilate_linked_or_exile_target(&item) {
+                        return;
                     }
                 }
                 Instruction::IfSubjectControlledBy {

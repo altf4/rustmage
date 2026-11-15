@@ -4005,6 +4005,12 @@ pub enum Instruction {
         subject: Subject,
         controller: PlayerSet,
     },
+    /// CR 701.72: acquire a permanent or put a creature card onto the battlefield
+    /// with its entry counter and lasting Borg artifact-creature form.
+    Assimilate(Subject),
+    /// Assimilate one creature card linked to this source; if none is available,
+    /// exile the independently targeted permanent with this same source.
+    AssimilateLinkedExileOrExileTarget,
     /// Skip unless the named player controls an exact live permanent in this subject.
     IfSubjectControlledBy {
         subject: Subject,

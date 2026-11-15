@@ -100,6 +100,7 @@ fn attached_instruction(instruction: &Instruction) -> bool {
         | Instruction::IfSubject { subject, .. }
         | Instruction::IfSubjectSubtype { subject, .. }
         | Instruction::GainControl { subject, .. }
+        | Instruction::Assimilate(subject)
         | Instruction::Connive { subject, .. }
         | Instruction::PutCountersScaled { subject, .. }
         | Instruction::AnimateSubject { subject, .. }
