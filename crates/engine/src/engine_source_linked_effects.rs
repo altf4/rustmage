@@ -25,6 +25,9 @@ pub enum SourceLinkedEffectKind {
     PreventUntap,
     /// Source-independent prohibition ending at the recipient’s first untap.
     PreventActivationsUntilUntapped,
+    /// One extra instance of each trigger of this exact creature while the
+    /// original source remains tapped; an untap ends the duration permanently.
+    DoubleRecipientTriggersWhileSourceTapped,
     Control,
     /// One fixed resolving controller; losing source control ends both effects forever.
     ControlAndCombatLockWhileControlled,
@@ -100,6 +103,8 @@ pub(super) fn active<W: CharacteristicWorld + ?Sized>(
         ) || world.object(row.source.card).controller == row.controller)
         && (row.kind != SourceLinkedEffectKind::PreventActivationsUntilUntapped
             || world.object(row.recipient.card).tapped)
+        && (row.kind != SourceLinkedEffectKind::DoubleRecipientTriggersWhileSourceTapped
+            || world.object(row.source.card).tapped)
         && (row.kind != SourceLinkedEffectKind::BlankLandWhileBlighted
             || world.counter_count(row.recipient.card, CounterKind::Blight) != 0)
 }
@@ -147,6 +152,8 @@ impl Game {
                         | SourceLinkedEffectKind::ControlAndCombatLockWhileControlled
                 ) && self.state.objects[source.object.card as usize].controller
                     != item.controller))
+            || (kind == SourceLinkedEffectKind::DoubleRecipientTriggersWhileSourceTapped
+                && !self.state.objects[source.object.card as usize].tapped)
         {
             return;
         }
@@ -449,9 +456,14 @@ impl Game {
 
     pub(super) fn forget_untapped_source_effects(&mut self, untapped: &[ObjectRef]) {
         if let Some(state) = &mut self.state.roles {
-            state.source_linked_effects.retain(|row| {
-                row.kind != SourceLinkedEffectKind::PreventActivationsUntilUntapped
-                    || !untapped.contains(&row.recipient)
+            state.source_linked_effects.retain(|row| match row.kind {
+                SourceLinkedEffectKind::PreventActivationsUntilUntapped => {
+                    !untapped.contains(&row.recipient)
+                }
+                SourceLinkedEffectKind::DoubleRecipientTriggersWhileSourceTapped => {
+                    !untapped.contains(&row.source)
+                }
+                _ => true,
             });
             state.animations.retain(|row| {
                 row.while_source_tapped

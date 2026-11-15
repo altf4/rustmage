@@ -13585,6 +13585,12 @@ impl Game {
                 Instruction::PreventTargetUntapWhileSourceControlled => {
                     self.resolve_source_linked_effect(&item, SourceLinkedEffectKind::PreventUntap);
                 }
+                Instruction::DoubleTargetTriggersWhileSourceTapped => {
+                    self.resolve_source_linked_effect(
+                        &item,
+                        SourceLinkedEffectKind::DoubleRecipientTriggersWhileSourceTapped,
+                    );
+                }
                 Instruction::TapOrUntap => {
                     if let [bound] = item.targets.as_slice()
                         && self.same_target_object(*bound)

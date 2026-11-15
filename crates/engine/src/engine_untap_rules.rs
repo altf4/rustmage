@@ -36,6 +36,7 @@ impl Game {
                     row.kind,
                     SourceLinkedEffectKind::PreventActivationsUntilUntapped
                         | SourceLinkedEffectKind::PreventUntap
+                        | SourceLinkedEffectKind::DoubleRecipientTriggersWhileSourceTapped
                 )
             }) || state
                 .animations

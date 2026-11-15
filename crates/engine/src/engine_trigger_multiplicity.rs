@@ -89,8 +89,23 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
     cause: TriggerCause<'_>,
 ) -> usize {
     let providers = query.trigger_multiplier_sources();
+    let linked = if matches!(cause, TriggerCause::Ordinary(_)) {
+        query.roles().map_or(0, |roles| {
+            roles
+                .source_linked_effects
+                .iter()
+                .filter(|row| {
+                    row.kind == SourceLinkedEffectKind::DoubleRecipientTriggersWhileSourceTapped
+                        && row.recipient == query.reference(id)
+                        && source_linked_effects::active(query, row)
+                })
+                .count()
+        })
+    } else {
+        0
+    };
     if providers.is_empty() {
-        return 0;
+        return linked;
     }
     let recipient = query.object(id);
     let emblem = matches!(cause, TriggerCause::CreatureDeath)
@@ -99,7 +114,7 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
     if recipient.zone != Zone::Battlefield && !emblem {
         return 0;
     }
-    let mut extra = 0usize;
+    let mut extra = linked;
     let mut power = match cause {
         TriggerCause::Ordinary(power) => power,
         _ => None,

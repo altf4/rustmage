@@ -5427,6 +5427,9 @@ pub enum Instruction {
     DamageEachPlayerPerNonbasicLand,
     PreventTargetDamageUntilSourceLeaves,
     PreventTargetUntapWhileSourceControlled,
+    /// The target's triggered abilities trigger one more time until this exact
+    /// source first untaps or leaves the battlefield.
+    DoubleTargetTriggersWhileSourceTapped,
     TapOrUntap,
     Untap,
     /// One simultaneous placement on battlefield permanents matching the count predicate.
