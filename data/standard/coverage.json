@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "d519919daf608f83e1c9a1325dc070b7ed78dfbdda2a77cc48a2b112440dcf60",
+  "catalogue_version": "e3630c8514ace20c147743b62671aeee266b806b5004bdbbfec9d2d529edbbba",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5372,
-  "implemented_total": 5392,
+  "implemented_standard_cards": 5373,
+  "implemented_total": 5393,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 209,
-      "gated": 87
+      "complete": 210,
+      "gated": 86
     },
     "w17": {
       "total": 1,
@@ -43667,8 +43667,8 @@
     {
       "name": "The City on the Edge of Forever",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/the_city_on_the_edge_of_forever.rs",
       "set": "trk"
     },
