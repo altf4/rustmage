@@ -636,6 +636,9 @@ impl Game {
             StatValue::SpellsCastThisTurn => {
                 i128::from(self.state.players[owner.index()].spells_cast_this_turn)
             }
+            StatValue::DilemmasFacedThisTurn => {
+                i128::from(self.state.players[owner.index()].dilemmas_faced_this_turn)
+            }
             StatValue::CommittedCrimeThisTurn => {
                 i128::from(self.state.players[owner.index()].committed_crime_this_turn)
             }

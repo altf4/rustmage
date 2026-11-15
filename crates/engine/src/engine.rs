@@ -1554,6 +1554,7 @@ struct PlayerState {
     lands_entered_this_turn: u64,
     mount_or_vehicle_entries_this_turn: u64,
     spells_cast_this_turn: u64,
+    dilemmas_faced_this_turn: u64,
     spell_mana_spent_this_turn: u64,
     instant_sorcery_cast_this_turn: u64,
     creature_spells_cast_this_turn: u64,
@@ -3843,6 +3844,9 @@ pub struct PlayerView {
     #[serde(skip_serializing_if = "is_zero_u64")]
     pub mount_or_vehicle_entries_this_turn: u64,
     pub spells_cast_this_turn: u64,
+    /// Public count of actual positive modal choices during this turn.
+    #[serde(skip_serializing_if = "is_zero_u64")]
+    pub dilemmas_faced_this_turn: u64,
     pub cards_drawn_this_turn: u64,
     /// Whether this player completed a positive scry or surveil this turn.
     pub scried_or_surveilled_this_turn: bool,
@@ -4726,6 +4730,7 @@ impl Game {
             lands_entered_this_turn: 0,
             mount_or_vehicle_entries_this_turn: 0,
             spells_cast_this_turn: 0,
+            dilemmas_faced_this_turn: 0,
             spell_mana_spent_this_turn: 0,
             instant_sorcery_cast_this_turn: 0,
             creature_spells_cast_this_turn: 0,
@@ -11995,6 +12000,7 @@ impl Game {
             player.lands_entered_this_turn = 0;
             player.mount_or_vehicle_entries_this_turn = 0;
             player.spells_cast_this_turn = 0;
+            player.dilemmas_faced_this_turn = 0;
             player.spell_mana_spent_this_turn = 0;
             player.token_creation_attempted_this_turn = false;
             player.instant_sorcery_cast_this_turn = 0;
@@ -13421,6 +13427,7 @@ impl Game {
                 lands_entered_this_turn: s.players[i].lands_entered_this_turn,
                 mount_or_vehicle_entries_this_turn: s.players[i].mount_or_vehicle_entries_this_turn,
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
+                dilemmas_faced_this_turn: s.players[i].dilemmas_faced_this_turn,
                 cards_drawn_this_turn: s.players[i].cards_drawn_this_turn,
                 scried_or_surveilled_this_turn: s.players[i].scried_or_surveilled_this_turn,
                 committed_crime_this_turn: s.players[i].committed_crime_this_turn,

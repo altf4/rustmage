@@ -1980,6 +1980,18 @@ impl Game {
 
     pub(super) fn declare_mode(&mut self, mode: u16, plan: TargetPlan) {
         let item = &self.state.announcing.as_ref().unwrap().item;
+        let faces_dilemma = !item.is_copy
+            && match item.kind {
+                StackKind::Spell => item
+                    .source
+                    .and_then(|source| source.card.selected_mode_count(mode))
+                    .is_some_and(|count| count > 0),
+                StackKind::ActivatedAbility { .. } | StackKind::TriggeredAbility { .. } => {
+                    item.bounded_mode_count(usize::from(mode)) != Some(0)
+                }
+                _ => false,
+            };
+        let dilemma_player = item.controller;
         if matches!(item.kind, StackKind::TriggeredAbility { .. })
             && let Some(key) = modal_history::key(item)
         {
@@ -1989,7 +2001,31 @@ impl Game {
         announcement.item.mode = Some(mode);
         announcement.plan = plan;
         announcement.group = 0;
+        if faces_dilemma {
+            self.face_dilemma(dilemma_player);
+        }
         self.continue_announcement_choices(false);
+    }
+
+    /// CR 700.17: one event for the choice, even when the chosen mode packet
+    /// contains several modes. It occurs during announcement, before payment.
+    fn face_dilemma(&mut self, player: Player) {
+        self.state.players[player.index()].dilemmas_faced_this_turn += 1;
+        for (source, grant) in self.indexed_trigger_sources(&self.state.cast_sources) {
+            for (index, ability) in source.trigger_templates_from(grant.as_ref()) {
+                let TriggerCondition::FaceDilemma(relation) = ability.condition.event() else {
+                    continue;
+                };
+                let related = match relation {
+                    CastRelation::You => source.controller == player,
+                    CastRelation::Opponent => source.controller != player,
+                    CastRelation::Any => true,
+                };
+                if related && self.queue_trigger_from(&source, index, grant.map(Box::new)) {
+                    self.state.pending_triggers.last_mut().unwrap().event_player = Some(player);
+                }
+            }
+        }
     }
 
     pub(super) fn continue_announcement_choices(&mut self, needs_mode: bool) {

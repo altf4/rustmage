@@ -26,6 +26,7 @@ impl Game {
                     TriggerCondition::SpellCast { .. }
                         | TriggerCondition::SpellCastOrLandPlayed
                         | TriggerCondition::ModalSpellCastByYou
+                        | TriggerCondition::FaceDilemma(_)
                         | TriggerCondition::FirstSpellKindOrOtherCreatureType { .. }
                 )
         }) {
@@ -364,6 +365,7 @@ impl Game {
                         | TriggerCondition::SpellCastUsingSourceMana(_)
                         | TriggerCondition::SpellCastOrLandPlayed
                         | TriggerCondition::ModalSpellCastByYou
+                        | TriggerCondition::FaceDilemma(_)
                         | TriggerCondition::FirstSpellKindOrOtherCreatureType { .. }
                 )
         }) {

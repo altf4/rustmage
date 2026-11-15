@@ -102,6 +102,7 @@ impl Game {
                             | TriggerCondition::SpellCastUsingSourceMana(_)
                             | TriggerCondition::SpellCastOrLandPlayed
                             | TriggerCondition::ModalSpellCastByYou
+                            | TriggerCondition::FaceDilemma(_)
                             | TriggerCondition::FirstSpellKindOrOtherCreatureType { .. }
                             | TriggerCondition::CardDrawn { .. }
                             | TriggerCondition::LibrarySearched { .. }

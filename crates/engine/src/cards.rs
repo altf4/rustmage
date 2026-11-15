@@ -6185,6 +6185,8 @@ pub enum StatValue {
         minimum: u16,
     },
     SpellsCastThisTurn,
+    /// Actual nonempty modal choices made by this player during the current turn.
+    DilemmasFacedThisTurn,
     /// Committed casts this turn excluding the first, independent of the resolving packet.
     SpellsCastAfterFirstThisTurn,
     CreatureSpellsCastThisTurn,
@@ -8052,6 +8054,8 @@ pub enum TriggerCondition {
     Expend(u64),
     /// Capture the number of modes chosen for the controller's committed spell.
     ModalSpellCastByYou,
+    /// One event when a player chooses one or more modes for a spell or ability.
+    FaceDilemma(CastRelation),
     /// The controller's first spell of any listed kind, or first spell of the
     /// chosen creature type excluding the spell this exact source entered from.
     FirstSpellKindOrOtherCreatureType {

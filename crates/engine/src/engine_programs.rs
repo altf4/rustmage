@@ -1326,6 +1326,7 @@ impl Game {
                     | TriggerCondition::SpellCast { .. }
                     | TriggerCondition::SpellCastOrLandPlayed
                     | TriggerCondition::ModalSpellCastByYou
+                    | TriggerCondition::FaceDilemma(_)
                     | TriggerCondition::ManaSpentForSpell
                     | TriggerCondition::Expend(_)
                     | TriggerCondition::AtStep { .. } => false,
