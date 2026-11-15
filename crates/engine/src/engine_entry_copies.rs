@@ -16,6 +16,8 @@ pub(super) struct Preparation {
     pub done: bool,
     pub recipe: Option<CopyRecipe>,
     pub exile: Option<EntryCopyExile>,
+    /// Donor counters chosen by an as-entry effect; not part of the copy recipe.
+    pub copied_counters: Counters,
     /// The exact donor of the replacement currently printed on the entrant.
     origin: Option<ObjectRef>,
     applied: Vec<ObjectRef>,
@@ -24,7 +26,9 @@ pub(super) struct Preparation {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Preparation {
     pub(super) fn bytes(&self) -> usize {
-        std::mem::size_of::<Self>() + self.applied.len() * std::mem::size_of::<ObjectRef>()
+        std::mem::size_of::<Self>()
+            + self.applied.len() * std::mem::size_of::<ObjectRef>()
+            + self.copied_counters.owned_bytes()
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -116,7 +120,9 @@ pub(super) fn candidate<W: ability_world::CharacteristicWorld + ?Sized>(
     let definition = movement.before.card;
     let source = definition.entry_copy_options().source;
     match source {
-        EntryCopySource::Battlefield | EntryCopySource::BattlefieldAtMostManaSpent => {
+        EntryCopySource::Battlefield
+        | EntryCopySource::BattlefieldWithCounters
+        | EntryCopySource::BattlefieldAtMostManaSpent => {
             !batch
                 .iter()
                 .any(|m| m.before.id == id && m.before.zone != Zone::Battlefield)
@@ -149,7 +155,9 @@ pub(super) fn candidate<W: ability_world::CharacteristicWorld + ?Sized>(
                         object.card.front_face().is_creature()
                     }
                     EntryCopySource::GraveyardLand { .. } => object.card.front_face().is_land(),
-                    EntryCopySource::Battlefield | EntryCopySource::BattlefieldAtMostManaSpent => {
+                    EntryCopySource::Battlefield
+                    | EntryCopySource::BattlefieldWithCounters
+                    | EntryCopySource::BattlefieldAtMostManaSpent => {
                         unreachable!()
                     }
                 }
@@ -163,11 +171,16 @@ pub(super) fn chosen_blueprint<W: ability_world::CharacteristicWorld + ?Sized>(
     definition: Card,
     object: ObjectRef,
     battlefield_recipe: impl FnOnce() -> CopyRecipe,
-) -> (CopyRecipe, Option<EntryCopyExile>) {
+) -> (CopyRecipe, Option<EntryCopyExile>, Option<Counters>) {
     match definition.entry_copy_options().source {
         EntryCopySource::Battlefield | EntryCopySource::BattlefieldAtMostManaSpent => {
-            (battlefield_recipe(), None)
+            (battlefield_recipe(), None, None)
         }
+        EntryCopySource::BattlefieldWithCounters => (
+            battlefield_recipe(),
+            None,
+            Some(world.counter_amounts(object.card).to_owned()),
+        ),
         EntryCopySource::GraveyardCreature { exile_trigger } => (
             CopyRecipe::new(world.definition(object.card).front_face()),
             Some(EntryCopyExile {
@@ -175,9 +188,11 @@ pub(super) fn chosen_blueprint<W: ability_world::CharacteristicWorld + ?Sized>(
                 ability: exile_trigger,
                 object,
             }),
+            None,
         ),
         EntryCopySource::GraveyardLand { .. } => (
             CopyRecipe::new(world.definition(object.card).front_face()),
+            None,
             None,
         ),
     }
@@ -187,7 +202,7 @@ pub(super) fn chosen_blueprint<W: ability_world::CharacteristicWorld + ?Sized>(
 pub(super) fn apply_choice(
     movement: &mut entries::EntryMove,
     object: ObjectRef,
-    (recipe, exile): (CopyRecipe, Option<EntryCopyExile>),
+    (recipe, exile, copied_counters): (CopyRecipe, Option<EntryCopyExile>, Option<Counters>),
 ) {
     let definition = movement.before.card;
     let entrant = movement.before.reference;
@@ -198,6 +213,14 @@ pub(super) fn apply_choice(
     apply_blueprint(movement, recipe);
     let preparation = movement.copy_preparation.as_mut().unwrap();
     preparation.exile = exile;
+    if let Some(counters) = copied_counters {
+        for kind in CounterKind::ALL {
+            let amount = counters.get(kind);
+            if amount != 0 {
+                preparation.copied_counters.add(kind, amount);
+            }
+        }
+    }
     // The same replacement has one opportunity per entry (CR614.5). A
     // replacement copied from another exact object can still apply (CR707.5).
     if recipe.definition.entry_copy().is_some() {

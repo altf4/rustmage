@@ -2433,6 +2433,9 @@ pub struct EntryCopySpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum EntryCopySource {
     Battlefield,
+    /// Copy a battlefield blueprint and also freeze that donor's current
+    /// counters as additional, noncopiable counters for the entrant.
+    BattlefieldWithCounters,
     /// Filter the live battlefield blueprint by the entrant's actual cast
     /// payment. An uncast entrant or spell copy has zero mana spent.
     BattlefieldAtMostManaSpent,

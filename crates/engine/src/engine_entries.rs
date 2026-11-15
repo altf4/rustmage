@@ -961,6 +961,7 @@ impl Game {
     fn initialize_entry_counters(&self, movement: &mut EntryMove) {
         if movement.intrinsic_entry_card().is_none() {
             movement.counters = movement.abilityless_entry_counters();
+            Self::add_entry_copy_counters(movement);
             return;
         }
         movement.counters = self.pre_entry_counters_with_payment(
@@ -1030,6 +1031,17 @@ impl Game {
                 CounterKind::PlusOne,
                 u64::from(movement.before.card.kicked_entry_counters()),
             );
+        }
+        Self::add_entry_copy_counters(movement);
+    }
+    fn add_entry_copy_counters(movement: &mut EntryMove) {
+        if let Some(preparation) = &movement.copy_preparation {
+            for kind in CounterKind::ALL {
+                let amount = preparation.copied_counters.get(kind);
+                if amount != 0 {
+                    movement.counters.add(kind, amount);
+                }
+            }
         }
     }
     pub(super) fn has_entry_counter_replacements(&self, card: Card) -> bool {

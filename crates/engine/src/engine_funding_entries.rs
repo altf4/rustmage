@@ -3474,7 +3474,7 @@ impl FundingState<'_> {
     fn visit_entry_copy_choices(
         &self,
         moves: Vec<entries::EntryMove>,
-        seen: &mut Vec<(usize, CopyRecipe)>,
+        seen: &mut Vec<(usize, CopyRecipe, Option<Counters>)>,
         emit: &mut dyn FnMut(Vec<entries::EntryMove>) -> bool,
     ) -> bool {
         let Some(index) = moves
@@ -3519,7 +3519,7 @@ impl FundingState<'_> {
         for (object, choice) in candidates {
             // The deferred exile does not resolve inside funding. Repeated choices
             // with an identical blueprint can share this existential search branch.
-            let key = (index, choice.0);
+            let key = (index, choice.0, choice.2.clone());
             if seen.contains(&key) {
                 continue;
             }
