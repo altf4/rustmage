@@ -41,6 +41,24 @@ fn advance_turn(game: &mut Game, current: Player) {
     panic!("turn did not advance");
 }
 
+fn drain_target(game: &mut Game, target: CardId) {
+    for _ in 0..64 {
+        if game.state.pending == Pending::Priority && game.state.stack.is_empty()
+            && game.state.pending_triggers.is_empty() && game.state.resolving.is_none() {
+            return;
+        }
+        let actions = game.legal_actions();
+        if actions.contains(&Action::ChooseTarget { target: Target::Card(target) }) {
+            act(game, Action::ChooseTarget { target: Target::Card(target) });
+        } else if actions.contains(&Action::FinishStackTargets) {
+            act(game, Action::FinishStackTargets);
+        } else {
+            choose(game, |action| matches!(action, Action::Pass | Action::PutTrigger { .. }));
+        }
+    }
+    panic!("targeted resolution budget exhausted");
+}
+
 fn top_casts(game: &Game, card: CardId) -> Vec<Action> {
     game.legal_actions().into_iter().filter(|action| matches!(action,
         Action::AnnounceLibraryTop { object, method: CastMethod::Normal, .. }
@@ -319,5 +337,47 @@ fn those_old_scientists_draws_discards_returns_a_typed_card_and_shuffles_both_ow
     assert_eq!(game.object_view(enemy_grave).zone, Zone::Library);
     assert!(game.state.players[0].library.contains(&shock));
     assert!(game.state.players[1].library.contains(&enemy_grave));
+    assert_eq!(game.object_view(saga).zone, Zone::Graveyard);
+}
+
+#[test]
+fn inner_light_returns_colored_creature_draws_combat_damage_and_pays_final_chapter() {
+    let _rules = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &ADD_LORE)]);
+    let mut game = scenario(Player::P0);
+    let creature = put(&mut game, Player::P0, "Grizzly Bears", Zone::Graveyard);
+    let saga = put(&mut game, Player::P0, "The Inner Light", Zone::Hand);
+    cast(&mut game, saga, None);
+    drain_target(&mut game, creature);
+    assert_eq!(game.object_view(creature).zone, Zone::Battlefield);
+
+    let lore = put(&mut game, Player::P0, "Opt", Zone::Hand);
+    cast(&mut game, lore, Some(Target::Card(saga)));
+    drain_target(&mut game, creature);
+    assert_eq!(game.counter_count(saga, CounterKind::Lore), 2);
+    assert_eq!(game.observe(Player::P0).delayed_target_events.unwrap().len(), 1);
+
+    game.state.objects[creature as usize].summoning_sick = false;
+    game.state.step = Step::Attackers;
+    game.state.pending = Pending::Attackers;
+    act(&mut game, Action::Attack { card: creature });
+    act(&mut game, Action::FinishAttackers);
+    for _ in 0..32 {
+        if game.state.players[1].life == 18 && game.state.pending == Pending::Priority
+            && game.state.stack.is_empty() && game.state.pending_triggers.is_empty() { break; }
+        choose(&mut game, |action| matches!(action,
+            Action::Pass | Action::PutTrigger { .. } | Action::FinishBlockers));
+    }
+    assert_eq!(game.state.players[1].life, 18);
+    assert_eq!(game.state.players[0].cards_drawn_this_turn, 2);
+
+    let lore = put(&mut game, Player::P0, "Opt", Zone::Hand);
+    game.state.step = Step::Main2;
+    game.state.priority = Player::P0;
+    game.state.players[Player::P0.index()].mana = [8; 6];
+    cast(&mut game, lore, Some(Target::Card(saga)));
+    drain(&mut game);
+    assert_eq!(game.state.players[0].life, 22);
+    assert_eq!(game.state.objects.iter().filter(|object|
+        object.zone == Zone::Battlefield && object.card == Card(5302)).count(), 1);
     assert_eq!(game.object_view(saga).zone, Zone::Graveyard);
 }
