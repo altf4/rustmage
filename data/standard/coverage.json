@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "a12001cdce850474a6a708e1b8f61fc38c2d8c0b301ea1a0869fdac600b2fcba",
+  "catalogue_version": "05e1305182e931954ac35466d455e92f2380a0b73d301dfd30692a822693a3b9",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5426,
-  "implemented_total": 5446,
+  "implemented_standard_cards": 5427,
+  "implemented_total": 5447,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 263,
-      "gated": 33
+      "complete": 264,
+      "gated": 32
     },
     "w17": {
       "total": 1,
@@ -42267,8 +42267,8 @@
     {
       "name": "Dr. Joseph M'Benga",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/dr_joseph_m_benga.rs",
       "set": "trk"
     },
