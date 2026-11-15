@@ -38,6 +38,18 @@ impl Game {
         )
     }
 
+    /// Check the intersection, not the union or pairwise overlap, of card
+    /// types on exact cards still exiled with this source incarnation. Linked
+    /// chapter packets retain their source after the Saga leaves the battlefield.
+    pub(super) fn linked_exiles_share_card_type(&self, item: &SpellView) -> bool {
+        self.linked_exile_for_item(item)
+            .into_iter()
+            .map(|exiled| self.current_kinds(exiled.card))
+            .reduce(|common, kinds| common & kinds)
+            .unwrap_or(u16::MAX)
+            != 0
+    }
+
     pub(super) fn link_exile_to_ability(
         &mut self,
         source: ObjectRef,

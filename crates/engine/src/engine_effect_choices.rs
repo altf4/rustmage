@@ -2604,13 +2604,16 @@ impl Game {
         }
         if matches!(
             choice.kind,
-            EffectChoiceKind::ExileControlledLinked | EffectChoiceKind::ExileGraveyardLinked
+            EffectChoiceKind::ExileControlledLinked
+                | EffectChoiceKind::ExileGraveyardLinked
+                | EffectChoiceKind::ExileFromHandLinked
         ) {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
-            let origin = if choice.kind == EffectChoiceKind::ExileControlledLinked {
-                Zone::Battlefield
-            } else {
-                Zone::Graveyard
+            let origin = match choice.kind {
+                EffectChoiceKind::ExileControlledLinked => Zone::Battlefield,
+                EffectChoiceKind::ExileGraveyardLinked => Zone::Graveyard,
+                EffectChoiceKind::ExileFromHandLinked => Zone::Hand,
+                _ => unreachable!(),
             };
             let ids = choice
                 .selected

@@ -1529,6 +1529,7 @@ impl Game {
             | EffectChoiceKind::HandCreature
             | EffectChoiceKind::HandCreatureAttacking { .. }
             | EffectChoiceKind::HandCreatureHasteSacrifice { .. }
+            | EffectChoiceKind::ExileFromHandLinked
             | EffectChoiceKind::ExileFromHandWithPlaySurcharge(_)
             | EffectChoiceKind::HandCreatureAndLand
             | EffectChoiceKind::HandPermanent { .. }

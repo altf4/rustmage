@@ -1713,6 +1713,9 @@ pub enum EffectChoiceKind {
         maximum_total_stats: u64,
     },
     ExileFromHand,
+    /// Exile a chosen card from hand and link the actual exile object to the
+    /// resolving source for a later ability of that same permanent.
+    ExileFromHandLinked,
     /// Exile a card from the choosing player's hand with an independent play
     /// permission that adds generic mana to spells and taps land entries.
     ExileFromHandWithPlaySurcharge(std::num::NonZeroU32),
@@ -1942,6 +1945,7 @@ impl EffectChoiceKind {
         match self {
             Self::BlightXCost => Self::BlightCost(0),
             Self::ExileFromHandWithPlaySurcharge(_) => Self::ExileFromHand,
+            Self::ExileFromHandLinked => Self::ExileFromHand,
             Self::DiscardOneMatchingOr { .. } => Self::Discard,
             Self::ExileSourceAndNamed { amount, .. } => Self::ExileGraveyardCards(amount),
             Self::ExileControlledForLinkedReturn => Self::ExileControlled,
@@ -2853,6 +2857,11 @@ pub enum Instruction {
     ReturnLinkedExileToHand,
     /// Return every exact still-exiled permanent card under its owner's control.
     ReturnLinkedExileToBattlefield,
+    /// Skip the following instructions unless all exact cards still exiled
+    /// with this source share at least one current card type. An empty set passes.
+    IfLinkedExileSharesCardType {
+        skip: usize,
+    },
     ReturnOneLinkedExileToHand,
     ExileTargetsLinkedToSource,
     ExileAllTargetsLinkedToSource,

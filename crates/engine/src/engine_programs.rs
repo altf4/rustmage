@@ -4913,6 +4913,11 @@ impl Game {
                 Instruction::ReturnLinkedExileToBattlefield => {
                     self.return_linked_exile(&item, Zone::Battlefield);
                 }
+                Instruction::IfLinkedExileSharesCardType { skip } => {
+                    if !self.linked_exiles_share_card_type(&item) {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::ExileTargetLibraryLinked(amount) => {
                     self.exile_target_library_linked(&item, amount)
                 }
