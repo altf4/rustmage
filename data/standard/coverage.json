@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "69012f24ca6253d258cf8a0403b0b7385e7f018ad81ec70aa236841ca7e03b05",
+  "catalogue_version": "f5ceaff1e76385da6ec3df8399654adf139c0ca6ef58ff76cfe510c4ad7c886f",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5450,
-  "implemented_total": 5470,
+  "implemented_standard_cards": 5451,
+  "implemented_total": 5471,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 287,
-      "gated": 9
+      "complete": 288,
+      "gated": 8
     },
     "w17": {
       "total": 1,
@@ -42235,8 +42235,8 @@
     {
       "name": "Dominion Infiltration",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/dominion_infiltration.rs",
       "set": "trk"
     },

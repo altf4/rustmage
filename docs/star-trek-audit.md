@@ -1,6 +1,6 @@
 # Star Trek (TRK) set implementation audit
 
-Status: card-authoring phase. The integrated branch admits 302/311 identities: 287 new typed definitions and fifteen existing reprints. The other nine remain gated. The reprints still need set-game acceptance.
+Status: card-authoring phase. The integrated branch admits 303/311 identities: 288 new typed definitions and fifteen existing reprints. The other eight remain gated. The reprints still need set-game acceptance.
 Tracking issue: [#682](https://github.com/altf4/rustmage/issues/682).
 
 ## Frozen inputs and scope
@@ -19,6 +19,8 @@ The engine now covers the audited shared mechanics: November's 367 creature type
 Each isolated change passed focused guarded rules/contract tests and independent review. On the integrated set branch, a guarded checkpoint passed 58 scenarios in twelve targets covering the new source permissions, Nog, Vulcan Mind-Meld, Species 8472, Beam Me Up, phasing, Lwaxana, Infinite Diversity, and affected DFT, DSK, MKM, and SPM regressions. Its service runtime was 3 minutes 36 seconds, with a 2.8 GiB memory peak. After Star Trek metadata and linkage were generated, the guarded baseline cache test passed 7 Beam Me Up cases in 6 seconds, peaking at 518 MiB. See the tracking issue for commit and review history.
 
 An independently reviewed followup checkpoint for twelve more card dependencies passed 10/10 guarded scenarios and a 10/10 integration rewarm. Further dependencies discovered during authorship are being handled in isolated engine worktrees. Before dependent card files resume, implement and review each engine change, then rewarm the guarded cache.
+
+Dominion Infiltration's shared copy checkpoint freezes each surviving target's copiable values, adds changeling as a copiable exception, grants lasting haste, and exiles only the exact created tokens at the next end step. Independent review caught and verified fixes for subtype-replacing copies, noncreature entry previews, and haste surviving a missed exile. The guarded isolated and integrated engine scenarios passed 2/2 each; its authored card scenario passed 1/1 in isolation and on the linked integration branch.
 
 ## Reuse and interaction checks
 
