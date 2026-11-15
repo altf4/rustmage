@@ -33,6 +33,183 @@ fn mana(color: usize) -> Mana {
     value
 }
 
+#[test]
+fn enterprise_nx_01_taps_and_stuns_then_stations_into_a_flying_creature() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let opposing = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+    let workers = [
+        put(&mut game, player, "Hill Giant", Zone::Battlefield),
+        put(&mut game, player, "Hill Giant", Zone::Battlefield),
+    ];
+    let ship = owned(&mut game, player, "Enterprise NX-01", Zone::Hand);
+    cast(&mut game, ship, None);
+    for _ in 0..8 {
+        if game.legal_actions().contains(&Action::ChooseTarget {
+            target: Target::Card(opposing),
+        }) {
+            break;
+        }
+        choose(&mut game, |a| {
+            matches!(a, Action::Pass | Action::PutTrigger { .. })
+        });
+    }
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(opposing),
+        },
+    );
+    drain(&mut game);
+    assert!(game.object_view(opposing).tapped);
+    assert_eq!(game.counter_count(opposing, CounterKind::Stun), 1);
+    assert_eq!(game.object_view(ship).kinds & 1, 0);
+    for (index, worker) in workers.into_iter().enumerate() {
+        act(
+            &mut game,
+            Action::AnnounceActivate {
+                card: ship,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        let object = game.object_ref(worker);
+        act(&mut game, Action::ChooseAdditionalCost { object });
+        pay(&mut game);
+        drain(&mut game);
+        assert_eq!(
+            game.counter_count(ship, CounterKind::Charge),
+            3 * (index + 1) as u64
+        );
+    }
+    assert_eq!(game.object_view(ship).kinds & 1, 1);
+    assert_eq!(stats(&game, ship), (4, 3));
+    assert!(game.keywords(ship).contains(Keywords::FLYING));
+    assert!(game.keywords(ship).contains(Keywords::VIGILANCE));
+}
+
+#[test]
+fn excalbian_gamemaster_counts_land_names_and_both_death_sources() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    for land in ["Forest", "Island", "Forest"] {
+        put(&mut game, player, land, Zone::Battlefield);
+    }
+    let victim = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let gamemaster = owned(&mut game, player, "Excalbian Gamemaster", Zone::Hand);
+    cast(&mut game, gamemaster, None);
+    drain(&mut game);
+    let officers: Vec<_> = (0..game.state.objects.len())
+        .map(|id| id as CardId)
+        .filter(|&id| {
+            game.object_view(id).zone == Zone::Battlefield
+                && game.object_view(id).card == Card::from_catalogue_id(6008)
+        })
+        .collect();
+    assert_eq!(officers.len(), 2);
+    game.move_object(victim, Zone::Graveyard);
+    for _ in 0..8 {
+        if game.legal_actions().contains(&Action::ChooseTarget {
+            target: Target::Card(gamemaster),
+        }) {
+            break;
+        }
+        choose(&mut game, |a| {
+            matches!(a, Action::Pass | Action::PutTrigger { .. })
+        });
+    }
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(gamemaster),
+        },
+    );
+    drain(&mut game);
+    assert_eq!(game.counter_count(gamemaster, CounterKind::PlusOne), 1);
+    game.move_object(gamemaster, Zone::Graveyard);
+    for _ in 0..8 {
+        if game.legal_actions().contains(&Action::ChooseTarget {
+            target: Target::Card(officers[0]),
+        }) {
+            break;
+        }
+        choose(&mut game, |a| {
+            matches!(a, Action::Pass | Action::PutTrigger { .. })
+        });
+    }
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(officers[0]),
+        },
+    );
+    drain(&mut game);
+    assert_eq!(game.counter_count(officers[0], CounterKind::PlusOne), 1);
+}
+
+#[test]
+fn genesis_effect_damages_creature_destroys_own_land_and_creates_tapped_planet() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let creature = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+    let land = put(&mut game, player, "Forest", Zone::Battlefield);
+    let spell = owned(&mut game, player, "Genesis Effect", Zone::Hand);
+    let first_new = game.state.objects.len();
+    act(&mut game, Action::AnnounceCast { card: spell });
+    for target in [creature, land] {
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+    }
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
+    pay(&mut game);
+    drain(&mut game);
+    assert_eq!(game.object_view(creature).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(land).zone, Zone::Graveyard);
+    let planets: Vec<_> = (first_new..game.state.objects.len())
+        .map(|id| id as CardId)
+        .filter(|&id| game.object_view(id).zone == Zone::Battlefield)
+        .collect();
+    assert_eq!(planets.len(), 1);
+    assert_eq!(
+        game.object_view(planets[0]).card,
+        Card::from_catalogue_id(6009)
+    );
+    assert!(game.object_view(planets[0]).tapped);
+}
+
+#[test]
+fn munitions_enthusiast_death_damage_can_target_player() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let enthusiast = owned(&mut game, player, "Munitions Enthusiast", Zone::Battlefield);
+    assert!(game.keywords(enthusiast).contains(Keywords::TRAMPLE));
+    game.move_object(enthusiast, Zone::Graveyard);
+    for _ in 0..8 {
+        if game.legal_actions().contains(&Action::ChooseTarget {
+            target: Target::Player(player.other()),
+        }) {
+            break;
+        }
+        choose(&mut game, |a| {
+            matches!(a, Action::Pass | Action::PutTrigger { .. })
+        });
+    }
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(player.other()),
+        },
+    );
+    drain(&mut game);
+    assert_eq!(game.state.players[player.other().index()].life, 19);
+}
+
 const NO_DILEMMA: SpellMode = SpellMode {
     text: "Choose nothing",
     targets: TargetPlan::NONE,
