@@ -471,6 +471,14 @@ impl Game {
             });
         }
     }
+    pub(super) fn forget_phased_tapped_source_effects(&mut self, phased: &[ObjectRef]) {
+        if let Some(state) = &mut self.state.roles {
+            state.source_linked_effects.retain(|row| {
+                row.kind != SourceLinkedEffectKind::DoubleRecipientTriggersWhileSourceTapped
+                    || !phased.contains(&row.source)
+            });
+        }
+    }
     pub(super) fn forget_source_linked_effects(&mut self, reference: ObjectRef) {
         if let Some(state) = &mut self.state.roles {
             state.source_linked_effects.retain(|row| {

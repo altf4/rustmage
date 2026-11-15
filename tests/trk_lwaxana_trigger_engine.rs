@@ -296,3 +296,36 @@ fn optional_untap_choice_keeps_or_ends_the_effect() {
     activate_bearer(&mut game, bearer);
     assert_eq!(game.state.players[player.index()].life, 22);
 }
+
+#[test]
+fn phasing_out_tapped_source_ends_duration_permanently() {
+    let _rules = rules();
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let source = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let bearer = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    activate_source(&mut game, source, bearer);
+    settle(&mut game);
+    let source_ref = game.object_ref(source);
+    assert_eq!(game.observe(player).source_linked_effects.unwrap().len(), 1);
+
+    game.phase_out_batch(&[source]);
+    assert_eq!(game.object_view(source).zone, Zone::PhasedOut);
+    assert_eq!(game.object_ref(source), source_ref);
+    assert!(game.observe(player).source_linked_effects.is_none());
+
+    game.state.active = player;
+    game.begin_turn();
+    assert_eq!(game.object_view(source).zone, Zone::Battlefield);
+    assert_eq!(game.object_ref(source), source_ref);
+    if game.observe(player).untap_choice.is_some() {
+        act(&mut game, Action::ChooseOptional { accept: false });
+    }
+    game.state.players[player.index()].mana = [8; 6];
+    game.state.priority = player;
+    game.state.pending = Pending::Priority;
+    game.state.passes = 0;
+    game.tap_objects_as(player, &[source]);
+    activate_bearer(&mut game, bearer);
+    assert_eq!(game.state.players[player.index()].life, 22);
+}

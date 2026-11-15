@@ -50,6 +50,10 @@ impl Game {
             .enumerate()
             .filter_map(|(id, &phased)| phased.then(|| self.object_ref(id as CardId)))
             .collect();
+        // A source that phases out ceases to exist for CR 702.26f. A "for as
+        // long as this remains tapped" duration ends here and never resumes
+        // when that exact incarnation phases in.
+        self.forget_phased_tapped_source_effects(&phased_defenders);
         for (index, object) in self.state.objects.iter_mut().enumerate() {
             if affected[index] {
                 object.zone = Zone::PhasedOut;
