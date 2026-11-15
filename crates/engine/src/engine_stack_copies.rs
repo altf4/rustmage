@@ -718,6 +718,7 @@ impl Game {
         copy.is_copy = true;
         if let Some(cast) = &mut copy.cast {
             cast.payment = [0; 6];
+            cast.first_spell_cast_this_game = false;
             cast.controlled_subtype_at_cast = false;
             cast.behold_exiled = None;
             // The permission-created replacement is external to copiable values.

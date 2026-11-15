@@ -1555,6 +1555,8 @@ struct PlayerState {
     mount_or_vehicle_entries_this_turn: u64,
     spells_cast_this_turn: u64,
     dilemmas_faced_this_turn: u64,
+    /// Persistent across turns; failed announcements and spell copies do not set it.
+    has_cast_spell_this_game: bool,
     spell_mana_spent_this_turn: u64,
     instant_sorcery_cast_this_turn: u64,
     creature_spells_cast_this_turn: u64,
@@ -1762,6 +1764,9 @@ pub struct CastInfo {
     pub exile_on_graveyard: bool,
     /// Player who cast this exact spell; stack control changes do not alter history.
     pub caster: Player,
+    /// Historical cast fact retained by this packet; copies are never cast.
+    #[serde(skip)]
+    pub first_spell_cast_this_game: bool,
     /// A non-targeted promise, declared before targets; absent until chosen.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gift: Option<GiftDeclaration>,
@@ -4731,6 +4736,7 @@ impl Game {
             mount_or_vehicle_entries_this_turn: 0,
             spells_cast_this_turn: 0,
             dilemmas_faced_this_turn: 0,
+            has_cast_spell_this_game: false,
             spell_mana_spent_this_turn: 0,
             instant_sorcery_cast_this_turn: 0,
             creature_spells_cast_this_turn: 0,

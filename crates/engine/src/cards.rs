@@ -3861,6 +3861,11 @@ pub enum Instruction {
         guard: StepGuard,
         skip: usize,
     },
+    /// Skip the following block unless this exact resolving spell was its
+    /// caster's first committed spell cast of the game.
+    IfFirstSpellCastThisGame {
+        skip: usize,
+    },
     /// Historical paid qualification of the exact cast.
     Explore(Subject),
     /// Resolve each explore in order, with a fresh replacement and library choice.

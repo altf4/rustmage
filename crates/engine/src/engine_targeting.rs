@@ -3155,6 +3155,7 @@ impl Game {
                     || self.resolution_offer_spends_any_mana(actor, card),
                 exile_on_graveyard: self.exile_cast_modifiers(actor, card).1,
                 caster: actor,
+                first_spell_cast_this_game: false,
                 gift: None,
                 physical_card: None,
                 face: CastFace::Normal,

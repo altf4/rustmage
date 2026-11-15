@@ -2357,6 +2357,17 @@ impl Game {
     }
 
     pub(super) fn record_cast(&mut self, caster: Player, card: Card, stack: Option<usize>) {
+        // CR 601.2i: only a completed cast changes the game's historical fact.
+        // Store it on the exact spell before later casts or resolution can occur.
+        let first = !self.state.players[caster.index()].has_cast_spell_this_game;
+        self.state.players[caster.index()].has_cast_spell_this_game = true;
+        if let Some(index) = stack {
+            self.state.stack[index]
+                .cast
+                .as_mut()
+                .expect("committed spell has a cast record")
+                .first_spell_cast_this_game = first;
+        }
         // Every committed path classifies the selected spell face, including
         // manual direct-payment insertion. The physical front may differ.
         let card = stack
@@ -6261,6 +6272,16 @@ impl Game {
                         ),
                     };
                     if !holds {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+                Instruction::IfFirstSpellCastThisGame { skip } => {
+                    if item.kind != StackKind::Spell
+                        || item.is_copy
+                        || !item.cast.is_some_and(|cast| {
+                            cast.first_spell_cast_this_game && cast.caster == item.controller
+                        })
+                    {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
