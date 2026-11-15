@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e3630c8514ace20c147743b62671aeee266b806b5004bdbbfec9d2d529edbbba",
+  "catalogue_version": "ac087f5f7c74915dfd68b04181aa2113188f51155aff2c99ed9f894bb7516652",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5373,
-  "implemented_total": 5393,
+  "implemented_standard_cards": 5377,
+  "implemented_total": 5397,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 210,
-      "gated": 86
+      "complete": 214,
+      "gated": 82
     },
     "w17": {
       "total": 1,
@@ -42355,8 +42355,8 @@
     {
       "name": "Ensign Pavel Chekov",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/ensign_pavel_chekov.rs",
       "set": "trk"
     },
@@ -42523,8 +42523,8 @@
     {
       "name": "Gowron, Eager for Battle",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/gowron_eager_for_battle.rs",
       "set": "trk"
     },
@@ -42739,8 +42739,8 @@
     {
       "name": "Kai Winn, Faithless Leader",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/kai_winn_faithless_leader.rs",
       "set": "trk"
     },
@@ -42899,8 +42899,8 @@
     {
       "name": "Miles O'Brien, Transporter Ops",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/miles_o_brien_transporter_ops.rs",
       "set": "trk"
     },
