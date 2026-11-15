@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "9921c7e515658c1d9c3587f6c12e07e4b33ccf5f20c152972422f10f6a282cca",
+  "catalogue_version": "f54f555ab5db64d6829131f0b9b53d4526e5ef92060349470cecaa6d1fb29ce4",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5392,
-  "implemented_total": 5412,
+  "implemented_standard_cards": 5404,
+  "implemented_total": 5424,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 229,
-      "gated": 67
+      "complete": 241,
+      "gated": 55
     },
     "w17": {
       "total": 1,
@@ -41867,56 +41867,56 @@
     {
       "name": "Captain Benjamin Sisko",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/captain_benjamin_sisko.rs",
       "set": "trk"
     },
     {
       "name": "Captain James T. Kirk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/captain_james_t_kirk.rs",
       "set": "trk"
     },
     {
       "name": "Captain Jean-Luc Picard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/captain_jean_luc_picard.rs",
       "set": "trk"
     },
     {
       "name": "Captain Jonathan Archer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/captain_jonathan_archer.rs",
       "set": "trk"
     },
     {
       "name": "Captain Kathryn Janeway",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/captain_kathryn_janeway.rs",
       "set": "trk"
     },
     {
       "name": "Captain Michael Burnham",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/captain_michael_burnham.rs",
       "set": "trk"
     },
     {
       "name": "Captain Pike, Fullness of Time",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/captain_pike_fullness_of_time.rs",
       "set": "trk"
     },
@@ -41955,8 +41955,8 @@
     {
       "name": "Class-F Shuttlecraft",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/class_f_shuttlecraft.rs",
       "set": "trk"
     },
@@ -41971,8 +41971,8 @@
     {
       "name": "Cloak and Phaser",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/cloak_and_phaser.rs",
       "set": "trk"
     },
@@ -41987,8 +41987,8 @@
     {
       "name": "Cold-Blooded Crew",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/cold_blooded_crew.rs",
       "set": "trk"
     },
@@ -42011,8 +42011,8 @@
     {
       "name": "Combadge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/combadge.rs",
       "set": "trk"
     },
@@ -43723,8 +43723,8 @@
     {
       "name": "The Naked Time",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/the_naked_time.rs",
       "set": "trk"
     },
