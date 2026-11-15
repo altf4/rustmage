@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "7380db04e654240bb74be44a21058911436cedc79d268e1897e399f349cd3703",
+  "catalogue_version": "27dc22c280b8fb9b1597e060149e6d2d9d8dc471103522f2d1b1a844c13e4995",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5358,
-  "implemented_total": 5378,
+  "implemented_standard_cards": 5360,
+  "implemented_total": 5380,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 195,
-      "gated": 101
+      "complete": 197,
+      "gated": 99
     },
     "w17": {
       "total": 1,
@@ -42203,8 +42203,8 @@
     {
       "name": "Death Is Irrelevant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/death_is_irrelevant.rs",
       "set": "trk"
     },
@@ -42259,8 +42259,8 @@
     {
       "name": "Dr. Beverly Crusher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/dr_beverly_crusher.rs",
       "set": "trk"
     },
