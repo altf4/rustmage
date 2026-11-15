@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "f9cd18b14e67b0aff96f4a5e9c995c9a0936c8090e203f1492dd09cfe3b8297d",
+  "catalogue_version": "7747ee079855f41d91fc0c8a2fecbfb837dccb50bf18eabe7529d7eb4776af43",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5306,
-  "implemented_total": 5326,
+  "implemented_standard_cards": 5308,
+  "implemented_total": 5328,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 143,
-      "gated": 153
+      "complete": 145,
+      "gated": 151
     },
     "w17": {
       "total": 1,
@@ -41771,8 +41771,8 @@
     {
       "name": "Automated Warfare System",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/automated_warfare_system.rs",
       "set": "trk"
     },
@@ -42035,8 +42035,8 @@
     {
       "name": "Commander Raffi Musiker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/commander_raffi_musiker.rs",
       "set": "trk"
     },
