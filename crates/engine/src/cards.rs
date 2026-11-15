@@ -8744,6 +8744,8 @@ pub enum ActivationOrigin {
     Battlefield,
     Hand,
     Graveyard,
+    /// A graveyard ability that puts its exact source below its owner's library as a cost.
+    GraveyardBottomLibrary,
 }
 /// Starting restrictions, not costs that must still hold during payment.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -8985,7 +8987,8 @@ impl ActivatedAbility {
         self.mana_counter_followup() == Some(ManaCounterFollowup::RemoveTime)
     }
     pub(crate) fn mana_production(&self) -> Option<ManaProduction> {
-        if self.cost.loyalty.is_some() {
+        // Moving a card into a library as a cost makes this a stack ability (CR 605.1a).
+        if self.cost.loyalty.is_some() || self.origin == ActivationOrigin::GraveyardBottomLibrary {
             return None;
         }
         match self.mana_program() {

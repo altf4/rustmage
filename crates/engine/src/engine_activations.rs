@@ -43,7 +43,9 @@ impl ActivatedAbility {
         match self.origin {
             ActivationOrigin::Battlefield => Zone::Battlefield,
             ActivationOrigin::Hand => Zone::Hand,
-            ActivationOrigin::Graveyard => Zone::Graveyard,
+            ActivationOrigin::Graveyard | ActivationOrigin::GraveyardBottomLibrary => {
+                Zone::Graveyard
+            }
         }
     }
 }
@@ -1204,6 +1206,7 @@ impl Game {
                     && !cost.sacrifice
                     && !cost.discard
                     && !cost.exile_self
+                    && definition.origin != ActivationOrigin::GraveyardBottomLibrary
                     && cost.remove.is_none()
                     && cost.loyalty.is_none()
                     && !definition.exerts(),
@@ -1362,7 +1365,11 @@ impl Game {
         // Costs and real mana activations may briefly reach the threshold before
         // the same payment sacrifices its source. Speculative planning never does.
         self.refresh_enduring_stories();
-        if cost.exile_self || cost.discard || cost.sacrifice {
+        if cost.exile_self
+            || definition.origin == ActivationOrigin::GraveyardBottomLibrary
+            || cost.discard
+            || cost.sacrifice
+        {
             // The local announcement is temporarily outside State while costs
             // commit. Freeze its post-payment source facts before departure too.
             let source = self.object_view(source.id);
@@ -1374,7 +1381,9 @@ impl Game {
             item.source_tapped = source.tapped;
             item.source_attachment = source.attached_to;
         }
-        if cost.exile_self {
+        if definition.origin == ActivationOrigin::GraveyardBottomLibrary {
+            let _ = self.move_object_to_library_position(source.object, LibraryDestination::Bottom);
+        } else if cost.exile_self {
             let event = self.move_object(source.id, Zone::Exile);
             if definition.program.iter().any(|instruction| {
                 matches!(

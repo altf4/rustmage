@@ -475,6 +475,7 @@ impl Game {
                     || cost.sacrifice
                     || cost.discard
                     || cost.exile_self
+                    || definition.origin == ActivationOrigin::GraveyardBottomLibrary
                     || cost.remove.is_some()
                     || cost.loyalty.is_some()
                     || definition.exerts();

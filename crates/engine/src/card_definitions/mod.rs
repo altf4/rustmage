@@ -338,6 +338,15 @@ impl CardRules {
         let mut index = 0;
         while index < self.activated.len() {
             let cost = &self.activated[index].cost;
+            if matches!(
+                self.activated[index].origin,
+                ActivationOrigin::GraveyardBottomLibrary
+            ) {
+                assert!(
+                    !cost.sacrifice && !cost.exile_self && !cost.discard,
+                    "library-bottom source cost cannot have another source departure"
+                );
+            }
             if !cost.mana_component {
                 assert!(
                     cost.generic == 0,

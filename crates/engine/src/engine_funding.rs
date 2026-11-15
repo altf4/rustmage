@@ -774,6 +774,7 @@ fn source_obligations(
         || ability.cost.sacrifice
         || ability.cost.discard
         || ability.cost.exile_self
+        || ability.origin == ActivationOrigin::GraveyardBottomLibrary
         || ability.cost.remove.is_some()
         || ability.source_counter_cost().is_some()
         || ability.cost.loyalty.is_some();
