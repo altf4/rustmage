@@ -473,3 +473,220 @@ fn support_mission_uses_last_quest_count_when_source_leaves_before_resolution() 
         assert_eq!(game.counter_count(entrant, CounterKind::PlusOne), expected);
     }
 }
+
+#[test]
+fn pet_sehlat_needs_an_attack_companion() {
+    let mut game = scenario(Player::P0);
+    let pet = put(&mut game, Player::P0, "Pet Sehlat", Zone::Battlefield);
+    game.state.step = Step::Attackers;
+    game.state.pending = Pending::Attackers;
+    reject(&mut game, Action::Attack { card: pet });
+    let bear = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    act(&mut game, Action::Attack { card: pet });
+    reject(&mut game, Action::FinishAttackers);
+    act(&mut game, Action::Attack { card: bear });
+    act(&mut game, Action::FinishAttackers);
+    assert!(game.object_view(pet).tapped);
+}
+
+#[test]
+fn replicator_creates_food_then_a_tapped_copy_of_its_token() {
+    let mut game = scenario(Player::P0);
+    let replicator = put(&mut game, Player::P0, "Replicator", Zone::Hand);
+    cast(&mut game, replicator, None);
+    drain(&mut game);
+    let food = game
+        .state
+        .objects
+        .iter()
+        .enumerate()
+        .find_map(|(id, o)| {
+            (o.zone == Zone::Battlefield && o.card == Card(5246) && o.is_token())
+                .then_some(id as CardId)
+        })
+        .expect("Replicator Food");
+    let nontoken = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    act(
+        &mut game,
+        Action::AnnounceActivate {
+            card: replicator,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(nontoken),
+        },
+    );
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(food),
+        },
+    );
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
+    pay(&mut game);
+    drain(&mut game);
+    let copies: Vec<_> = game
+        .state
+        .objects
+        .iter()
+        .enumerate()
+        .filter_map(|(id, o)| {
+            (id as CardId != food
+                && o.zone == Zone::Battlefield
+                && o.card == Card(5246)
+                && o.is_token())
+            .then_some(id as CardId)
+        })
+        .collect();
+    assert_eq!(copies.len(), 1);
+    assert!(game.object_view(copies[0]).tapped);
+    assert!(!game.object_view(food).tapped);
+}
+
+#[test]
+fn bird_of_prey_cloaks_until_stationed_and_tracks_noncreature_casts() {
+    let mut game = scenario(Player::P0);
+    let bird = put(
+        &mut game,
+        Player::P0,
+        "Romulan Bird-of-Prey",
+        Zone::Battlefield,
+    );
+    assert!(game.keywords(bird).contains(Keywords::HEXPROOF));
+    let spell = put(&mut game, Player::P0, "Open Communications", Zone::Hand);
+    cast(&mut game, spell, None);
+    drain(&mut game);
+    assert_eq!(game.counter_count(bird, CounterKind::Charge), 2);
+    game.add_counter(bird, CounterKind::Charge, 6);
+    assert_eq!(stats(&game, bird), (4, 4));
+    assert!(game.keywords(bird).contains(Keywords::FLYING));
+    assert!(!game.keywords(bird).contains(Keywords::HEXPROOF));
+}
+
+#[test]
+fn salt_vampire_privately_exiles_only_nonland_then_victim_draws() {
+    let mut game = scenario(Player::P0);
+    let nonland = put(&mut game, Player::P1, "Grizzly Bears", Zone::Hand);
+    let land = put(&mut game, Player::P1, "Forest", Zone::Hand);
+    let salt = put(&mut game, Player::P0, "Salt Vampire", Zone::Hand);
+    assert!(game.keywords(salt).contains(Keywords::LIFELINK));
+    cast(&mut game, salt, None);
+    until(&mut game, |g| {
+        matches!(g.state.pending, Pending::Targets { .. })
+    });
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(Player::P1),
+        },
+    );
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
+    until(&mut game, |g| {
+        matches!(g.state.pending, Pending::HandCardChoice { .. })
+    });
+    let choice = game.observe(Player::P0).hand_choice.unwrap();
+    assert_eq!(choice.candidates, [game.object_ref(nonland)]);
+    assert!(game.observe(Player::P1).hand_choice.is_none());
+    let land_ref = game.object_ref(land);
+    reject(
+        &mut game,
+        Action::ChooseHandCard {
+            object: Some(land_ref),
+        },
+    );
+    let nonland_ref = game.object_ref(nonland);
+    act(
+        &mut game,
+        Action::ChooseHandCard {
+            object: Some(nonland_ref),
+        },
+    );
+    assert_eq!(game.object_view(nonland).zone, Zone::Exile);
+    assert_eq!(game.state.players[1].cards_drawn_this_turn, 1);
+}
+
+#[test]
+fn sarek_draws_per_five_non_borg_creature_types_at_own_combat() {
+    let mut game = scenario(Player::P0);
+    let sarek = put(
+        &mut game,
+        Player::P0,
+        "Sarek, Federation Ambassador",
+        Zone::Battlefield,
+    );
+    put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    put(&mut game, Player::P0, "Llanowar Elves", Zone::Battlefield);
+    put(&mut game, Player::P0, "Hill Giant", Zone::Battlefield);
+    let drawn = game.state.players[0].cards_drawn_this_turn;
+    for _ in 0..16 {
+        if game.state.players[0].cards_drawn_this_turn > drawn {
+            break;
+        }
+        choose(&mut game, |a| {
+            matches!(a, Action::Pass | Action::PutTrigger { .. })
+        });
+    }
+    assert_eq!(game.state.players[0].cards_drawn_this_turn, drawn + 1);
+    assert_eq!(game.counter_count(sarek, CounterKind::PlusOne), 0);
+}
+
+#[test]
+fn seven_of_nine_requires_distinct_land_names_for_lasting_base_stats() {
+    let mut game = scenario(Player::P0);
+    let seven = put(
+        &mut game,
+        Player::P0,
+        "Seven of Nine, Unassimilated",
+        Zone::Battlefield,
+    );
+    for name in ["Forest", "Island", "Plains", "Mountain", "Swamp", "Orion"] {
+        put(&mut game, Player::P0, name, Zone::Battlefield);
+    }
+    let action = Action::AnnounceActivate {
+        card: seven,
+        ability: 0,
+        counter_payment: Counters::default(),
+    };
+    reject(&mut game, action.clone());
+    put(&mut game, Player::P0, "Romulus", Zone::Battlefield);
+    act(&mut game, action);
+    pay(&mut game);
+    drain(&mut game);
+    assert_eq!(stats(&game, seven), (7, 9));
+    game.expire_base_stats();
+    assert_eq!(stats(&game, seven), (7, 9));
+    game.move_object(seven, Zone::Exile);
+    game.move_object(seven, Zone::Battlefield);
+    assert_eq!(stats(&game, seven), (0, 4));
+}
+
+#[test]
+fn sulu_remembers_an_equipment_entry_after_it_leaves() {
+    let mut game = scenario(Player::P0);
+    let sulu = put(
+        &mut game,
+        Player::P0,
+        "Sulu, Space Swashbuckler",
+        Zone::Battlefield,
+    );
+    assert!(game.keywords(sulu).contains(Keywords::FIRST_STRIKE));
+    let equipment = put(&mut game, Player::P0, "Short Bow", Zone::Hand);
+    cast(&mut game, equipment, None);
+    drain(&mut game);
+    game.move_object(equipment, Zone::Graveyard);
+    game.state.step = Step::Attackers;
+    game.state.pending = Pending::Attackers;
+    let drawn = game.state.players[0].cards_drawn_this_turn;
+    act(&mut game, Action::Attack { card: sulu });
+    act(&mut game, Action::FinishAttackers);
+    drain(&mut game);
+    assert_eq!(game.state.players[0].cards_drawn_this_turn, drawn + 1);
+}
