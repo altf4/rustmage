@@ -502,6 +502,9 @@ impl Game {
             StepGuard::PermanentLeftBattlefieldThisTurn => {
                 return p.turn_facts.permanent_left_battlefield;
             }
+            StepGuard::PermanentReturnedToYourHandThisTurn => {
+                return p.turn_facts.permanent_returned_to_your_hand;
+            }
             StepGuard::VoidActive => return world.void_active_this_turn(),
             StepGuard::ArtifactEnteredThisTurn => return p.turn_facts.artifact_entered,
             StepGuard::EquipmentOrSpacecraftEnteredThisTurn => {

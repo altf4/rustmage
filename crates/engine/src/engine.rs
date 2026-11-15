@@ -10749,6 +10749,11 @@ impl Game {
             sacrificed_vehicle: events
                 .iter()
                 .any(|event| event.sacrificed_by.is_some() && event.before.has_subtype("Vehicle")),
+            sacrificed_klingon: events.iter().any(|event| {
+                event.sacrificed_by.is_some()
+                    && event.before.is_creature()
+                    && event.before.has_subtype("Klingon")
+            }),
             discarded_kinds: None,
             sacrificed_suspected: events.iter().any(|event| {
                 event.sacrificed_by.is_some() && suspected.contains(&event.before.reference)
@@ -11540,6 +11545,11 @@ impl Game {
             self.state.non_zombie_creature_died_this_turn |= !before.has_subtype("Zombie");
         }
         if before.zone == Zone::Battlefield {
+            if destination == Zone::Hand {
+                self.state.players[before.owner.index()]
+                    .turn_facts
+                    .permanent_returned_to_your_hand = true;
+            }
             let controller = &mut self.state.players[before.controller.index()];
             controller.turn_facts.permanent_left_battlefield = true;
             if before.is_creature() {

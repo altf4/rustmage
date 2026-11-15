@@ -1660,6 +1660,7 @@ impl Game {
                             Instruction::IfSacrificedVehicle { .. }
                                 | Instruction::IfSacrificedOutlaw { .. }
                                 | Instruction::IfSacrificedSuspected { .. }
+                                | Instruction::IfSacrificedKlingon { .. }
                         )
                     })
                 }) {

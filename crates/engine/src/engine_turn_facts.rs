@@ -135,6 +135,8 @@ pub struct TurnFactsView {
     /// A permanent actually left under this player's pre-event control.
     #[serde(skip_serializing_if = "is_false")]
     pub permanent_left_battlefield: bool,
+    #[serde(skip_serializing_if = "is_false")]
+    pub permanent_returned_to_your_hand: bool,
     pub artifact_entered: bool,
     pub hero_entered: bool,
     pub hero_attacked: bool,

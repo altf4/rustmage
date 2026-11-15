@@ -9574,7 +9574,8 @@ impl Game {
                 }
                 Instruction::IfSacrificedVehicle { skip }
                 | Instruction::IfSacrificedOutlaw { skip }
-                | Instruction::IfSacrificedSuspected { skip } => {
+                | Instruction::IfSacrificedSuspected { skip }
+                | Instruction::IfSacrificedKlingon { skip } => {
                     let matches =
                         item.paid_additional_cost
                             .as_ref()
@@ -9584,6 +9585,7 @@ impl Game {
                                 Instruction::IfSacrificedSuspected { .. } => {
                                     paid.sacrificed_suspected
                                 }
+                                Instruction::IfSacrificedKlingon { .. } => paid.sacrificed_klingon,
                                 _ => unreachable!("sacrifice condition"),
                             });
                     if !matches {

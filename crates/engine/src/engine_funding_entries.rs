@@ -531,6 +531,9 @@ impl FundingState<'_> {
             StepGuard::PermanentLeftBattlefieldThisTurn => {
                 self.permanent_left_battlefield[player.index()]
             }
+            StepGuard::PermanentReturnedToYourHandThisTurn => {
+                state.turn_facts.permanent_returned_to_your_hand
+            }
             StepGuard::VoidActive => self.void_active_this_turn,
             StepGuard::ArtifactEnteredThisTurn => state.turn_facts.artifact_entered,
             StepGuard::EquipmentOrSpacecraftEnteredThisTurn => self

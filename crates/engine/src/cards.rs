@@ -4634,6 +4634,11 @@ pub enum Instruction {
     IfSacrificedSuspected {
         skip: usize,
     },
+    /// Test the effective subtype of an object actually sacrificed as this
+    /// ability's cost, frozen before its zone change.
+    IfSacrificedKlingon {
+        skip: usize,
+    },
     /// Continue only if the actual card discarded to pay this spell's cost was nonland.
     IfPaidDiscardWasNonland {
         skip: usize,
@@ -7540,6 +7545,8 @@ pub enum StepGuard {
     /// Trigger-time attachment relation; wrap the step event in When.
     AttachedControllerTurn,
     PermanentLeftBattlefieldThisTurn,
+    /// A permanent actually moved from the battlefield to this player's hand.
+    PermanentReturnedToYourHandThisTurn,
     /// Either player warped a spell or a nonland permanent left this turn.
     VoidActive,
     ArtifactEnteredThisTurn,

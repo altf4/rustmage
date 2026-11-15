@@ -138,6 +138,7 @@ impl Game {
             sacrificed_vehicle: false,
             sacrificed_outlaw: false,
             sacrificed_suspected: false,
+            sacrificed_klingon: false,
             discarded_kinds: self.discarded_card_kinds(&event),
         })
     }
