@@ -949,10 +949,18 @@ pub struct PlayerDamageShieldView {
     pub source: ObjectRef,
     pub source_card: Card,
     pub controller: Player,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_turn: Option<u32>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn prevent_player_damage_until_next_turn(&mut self, item: &SpellView) {
+        self.prevent_player_damage(item, None);
+    }
+    pub(super) fn prevent_player_damage_this_turn(&mut self, item: &SpellView) {
+        self.prevent_player_damage(item, Some(self.state.turn));
+    }
+    fn prevent_player_damage(&mut self, item: &SpellView, expires_turn: Option<u32>) {
         let source = item.source.expect("prevention source");
         self.state
             .roles
@@ -962,6 +970,7 @@ impl Game {
                 source: source.object,
                 source_card: source.card,
                 controller: item.controller,
+                expires_turn,
             });
     }
 }

@@ -1759,6 +1759,7 @@ impl Game {
             kind,
             EffectChoiceKind::ReturnToHandCounting
                 | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
+                | EffectChoiceKind::ReturnGraveyardToHandMatching(_)
                 | EffectChoiceKind::TapAnyUntappedPermanents
                 | EffectChoiceKind::SacrificeAsCost
         ) {
@@ -3204,6 +3205,7 @@ impl Game {
                 choice.kind,
                 EffectChoiceKind::ReturnToHandCounting
                     | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
+                    | EffectChoiceKind::ReturnGraveyardToHandMatching(_)
             ) {
                 let count = events
                     .iter()

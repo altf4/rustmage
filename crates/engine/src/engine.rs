@@ -12448,6 +12448,9 @@ impl Game {
         if let Some(roles) = &mut self.state.roles {
             roles.noncombat_damage_increases.clear();
             roles.creature_counter_increases.clear();
+            roles
+                .player_damage_shields
+                .retain(|shield| shield.expires_turn != Some(self.state.turn));
         }
         for player in &mut self.state.players {
             player.hexproof_until_end_turn = false;

@@ -6611,6 +6611,9 @@ impl Game {
                 Instruction::PreventPlayerDamageUntilNextTurn => {
                     self.prevent_player_damage_until_next_turn(&item)
                 }
+                Instruction::PreventPlayerDamageThisTurn => {
+                    self.prevent_player_damage_this_turn(&item)
+                }
                 Instruction::PreventControlledCreatureDamageThisTurn => self
                     .prevent_creature_damage_this_turn(
                         &item,
@@ -6733,6 +6736,25 @@ impl Game {
                 } => {
                     let objects = self.state.resolving.as_ref().unwrap().milled.clone();
                     self.schedule_delayed_step(&item, step, relation, ability, objects, None);
+                }
+                Instruction::ScheduleStepWithTargetThisTurn {
+                    step,
+                    relation,
+                    ability,
+                } => {
+                    let objects = item.targets.iter().filter_map(|bound| bound.object);
+                    let turn = self.state.turn;
+                    self.schedule_delayed_step(
+                        &item,
+                        step,
+                        relation,
+                        ability,
+                        objects,
+                        Some(turn),
+                    );
+                }
+                Instruction::TakeDelayedBattlefieldObjectsUntilEndTurn => {
+                    self.take_delayed_battlefield_objects_until_end_turn(&item);
                 }
                 Instruction::PreventTargetActivationsWhileTapped => {
                     self.prevent_target_activations_until_untapped(&item);
@@ -7902,6 +7924,18 @@ impl Game {
                     if self.start_exile_until_nonland_cast_or_hand(&item, |_| {
                         maximum_mana_value.checked_add(1)
                     }) {
+                        return;
+                    }
+                }
+                Instruction::ExileTargetLibraryUntilNonlandCastFree => {
+                    if let Some(library) = self.program_players(PlayerSet::Targeted, &item).next()
+                        && self.start_exile_until_nonland_cast(
+                            &item,
+                            library,
+                            |_| None,
+                            false,
+                        )
+                    {
                         return;
                     }
                 }
@@ -10659,6 +10693,15 @@ impl Game {
                 }
                 Instruction::SelectLibraryTo(effect) => {
                     if self.start_library_selection_to(&item, effect) {
+                        return;
+                    }
+                }
+                Instruction::SelectLibraryToSacrificeAtNextOwnEndStep(effect) => {
+                    if self.start_library_selection_completion(
+                        &item,
+                        effect,
+                        library_selection::LibrarySelectionCompletion::SacrificeEnteredAtNextOwnEndStep,
+                    ) {
                         return;
                     }
                 }

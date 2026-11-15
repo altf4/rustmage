@@ -94,7 +94,7 @@ impl Game {
             .collect();
         self.take_and_ready_until_end_turn(item, &ids);
     }
-    fn take_and_ready_until_end_turn(&mut self, item: &SpellView, ids: &[CardId]) {
+    pub(super) fn take_and_ready_until_end_turn(&mut self, item: &SpellView, ids: &[CardId]) {
         if ids.is_empty() {
             return;
         }

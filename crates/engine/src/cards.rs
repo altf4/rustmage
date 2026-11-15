@@ -1237,6 +1237,9 @@ pub enum LibrarySelectionFilter {
     SourceChosenCreatureType,
     HasX,
     Any,
+    /// A permanent spell card; lands are handled by a separate subtype clause.
+    NonlandPermanent,
+    ManaValueAtMost(u64),
     Kinds(u16),
     ExcludingKinds(u16),
     Subtype(&'static str),
@@ -2956,6 +2959,8 @@ pub enum Instruction {
         subtype: &'static str,
     },
     PreventPlayerDamageUntilNextTurn,
+    /// Prevent damage to this packet's controller until the current turn's cleanup.
+    PreventPlayerDamageThisTurn,
     /// Prevent damage to creatures the resolving effect's controller controls this turn.
     PreventControlledCreatureDamageThisTurn,
     /// Prevent creature damage to the controller and their current creatures this turn.
@@ -3012,6 +3017,16 @@ pub enum Instruction {
         relation: CastRelation,
         ability: u16,
     },
+    /// Capture an exact target now; the next matching step this turn has an
+    /// untargeted delayed trigger that follows only that incarnation.
+    ScheduleStepWithTargetThisTurn {
+        step: TriggerStep,
+        relation: CastRelation,
+        ability: u16,
+    },
+    /// Gain control of a delayed exact battlefield cohort, untap it, and
+    /// grant haste until cleanup.
+    TakeDelayedBattlefieldObjectsUntilEndTurn,
     /// Register a one-shot callback for the next matching spell this turn.
     CopyNextSpell {
         ability: u16,
@@ -4379,6 +4394,9 @@ pub enum Instruction {
     ExileUntilNonlandCastOrHand {
         maximum_mana_value: u64,
     },
+    /// Exile from the targeted player's library through a nonland card, then
+    /// offer that exact card as a free cast only during this resolution.
+    ExileTargetLibraryUntilNonlandCastFree,
     /// Offer the exiled nonland only below the resolving ceiling for its chosen spell face.
     ExileUntilNonlandCastBelowOrHand(AmountValue),
     /// Optional one-card discard; actual nonland discard queues this template.
@@ -4905,6 +4923,9 @@ pub enum Instruction {
     SearchRequired(SearchSpec),
     SelectLibrary(LibrarySelectionSpec),
     SelectLibraryTo(LibrarySelectionEffect),
+    /// Put the selected lands onto the battlefield as one entry batch and
+    /// sacrifice only their successful exact entrants at your next end step.
+    SelectLibraryToSacrificeAtNextOwnEndStep(LibrarySelectionEffect),
     /// Save the exact card actually exiled by this library selection.
     SelectLibraryToExileRemember(LibrarySelectionEffect),
     /// Offer a free cast of the exact card saved by the preceding selection.

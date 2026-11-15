@@ -89,6 +89,7 @@ pub enum DamagePreventionKind {
     SourceLinkedDamage,
     ChosenSource(u64),
     UntilNextTurn,
+    ThisTurn,
     ControlledCreaturesThisTurn(u64),
     CreatureSourcesThisTurn(u64),
 }
@@ -1687,13 +1688,18 @@ impl Game {
                 }));
             }
             for shield in &roles.player_damage_shields {
+                let kind = if shield.expires_turn.is_some() {
+                    DamagePreventionKind::ThisTurn
+                } else {
+                    DamagePreventionKind::UntilNextTurn
+                };
                 if event.target == Target::Player(shield.controller)
-                    && !used.contains(&(shield.source, DamagePreventionKind::UntilNextTurn))
+                    && !used.contains(&(shield.source, kind))
                 {
                     out.push(DamagePreventionView {
                         source: shield.source,
                         source_card: shield.source_card,
-                        kind: DamagePreventionKind::UntilNextTurn,
+                        kind,
                     });
                 }
             }
