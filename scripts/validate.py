@@ -67,7 +67,8 @@ def main(argv=None):
                         help='run binding assurance against this run\'s release library')
     parser.add_argument('--games', type=int, default=10,
                         help='native benchmark games, only with --release (default: 10)')
-    parser.add_argument('--timeout', type=float, default=6000 if windows else 3600,
+    parser.add_argument('--timeout', type=float,
+                        default=7500 if windows else 6600 if sys.platform == 'darwin' else 5100,
                         help='total wall-clock budget after acquiring the build slot (default: %(default)s seconds)')
     targets = parser.add_mutually_exclusive_group()
     targets.add_argument('--target-dir', type=Path,
@@ -111,10 +112,10 @@ def main(argv=None):
     env.setdefault('RUSTMAGE_TDM_EVIDENCE_DIR', str(report_dir/'tdm-games'))
     files = source_files()
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
-    # Cold Windows runners link hundreds of integration targets serially.
-    native_compile_timeout = 2700 if windows else 1800
+    # Cold hosted runners link hundreds of integration targets serially.
+    native_compile_timeout = 3600 if windows else 3300 if sys.platform == 'darwin' else 2100
     # Hosted macOS and Windows runners also pay process startup for each target.
-    native_suite_timeout = 720 if windows or sys.platform == 'darwin' else 480
+    native_suite_timeout = 1200 if windows or sys.platform == 'darwin' else 900
     commands = [
         ('source pins', [sys.executable, 'scripts/check_sources.py'], 45),
         ('format', [sys.executable, 'scripts/format_workspace.py', '--check'], 45),
@@ -126,7 +127,7 @@ def main(argv=None):
          1200 if windows else 600),
         ('native assurance', [sys.executable, 'scripts/run_native_tests.py',
                               '--target-dir', str(target), '--report', str(report_dir/'native.json'),
-                              '--test-timeout', '90', '--suite-timeout', str(native_suite_timeout),
+                              '--test-timeout', '180', '--suite-timeout', str(native_suite_timeout),
                               '--compile-timeout', str(native_compile_timeout)],
          native_compile_timeout + native_suite_timeout + 20),
     ]

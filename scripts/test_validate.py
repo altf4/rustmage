@@ -200,13 +200,13 @@ class ValidatorTests(unittest.TestCase):
 
     def test_native_suite_budget_fits_inside_parent_deadline(self):
         for platform, compile_budget, suite_budget, lint_budget, parent_budget in [
-            ('linux', 1800, 480, 600, 3600),
-            ('darwin', 1800, 720, 600, 3600),
-            ('win32', 2700, 720, 1200, 6000),
+            ('linux', 2100, 900, 600, 5100),
+            ('darwin', 3300, 1200, 600, 6600),
+            ('win32', 3600, 1200, 1200, 7500),
         ]:
             with self.subTest(platform=platform), patch.object(validate.sys, 'platform', platform):
                 first_command = len(self.command_timeouts)
-                status, _, report, commands = self.invoke()
+                status, _, report, commands = self.invoke('--release', '--python', 'smoke')
                 timeouts = self.command_timeouts[first_command:]
                 self.assertEqual(status, 0)
                 index = next(i for i, (command, _) in enumerate(commands)
@@ -216,13 +216,14 @@ class ValidatorTests(unittest.TestCase):
                                  compile_budget)
                 self.assertEqual(int(command[command.index('--suite-timeout') + 1]),
                                  suite_budget)
-                self.assertEqual(command[command.index('--test-timeout') + 1], '90')
+                self.assertEqual(command[command.index('--test-timeout') + 1], '180')
                 self.assertEqual(timeouts[index], compile_budget + suite_budget + 20)
                 lint_index = next(i for i, (command, _) in enumerate(commands)
                                   if command[:2] == ['cargo', 'clippy'])
                 self.assertEqual(timeouts[lint_index], lint_budget)
                 self.assertEqual(report['timeout_seconds'], parent_budget)
                 self.assertLess(timeouts[index], parent_budget)
+                self.assertLess(sum(timeouts), parent_budget)
                 self.assertTrue(report['success'])
 
     def test_environment_target_is_reused_and_explicit_target_takes_precedence(self):
