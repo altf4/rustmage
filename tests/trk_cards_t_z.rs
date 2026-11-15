@@ -263,3 +263,99 @@ fn vash_surveils_and_draws_when_a_card_leaves_her_graveyard() {
     drain(&mut game, None);
     assert_eq!(game.state.objects.iter().filter(|o| o.owner == Player::P0 && o.zone == Zone::Hand).count(), before + 1);
 }
+
+fn choose_mode_after_passes(game: &mut Game, mode: u16) {
+    for _ in 0..32 {
+        if game.legal_actions().contains(&Action::ChooseMode { mode }) {
+            act(game, Action::ChooseMode { mode });
+            return;
+        }
+        choose(game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+    }
+    panic!("modal choice did not appear");
+}
+
+#[test]
+fn operative_attack_modes_bind_targets_or_surveil() {
+    for mode in [0, 1] {
+        let mut game = scenario(Player::P0);
+        let operative = put(&mut game, Player::P0, "Tal Shiar Operative", Zone::Battlefield);
+        let recipient = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
+        game.state.objects[operative as usize].summoning_sick = false;
+        game.state.step = Step::Attackers;
+        game.state.pending = Pending::Attackers;
+        act(&mut game, Action::Attack { card: operative });
+        act(&mut game, Action::FinishAttackers);
+        choose_mode_after_passes(&mut game, mode);
+        drain(&mut game, (mode == 0).then_some(recipient));
+        assert_eq!(game.object_view(recipient).keywords.contains(Keywords::DEATHTOUCH), mode == 0);
+        assert_eq!(game.state.players[0].scried_or_surveilled_this_turn, mode == 1);
+    }
+}
+
+#[test]
+fn duras_sisters_death_creates_the_printed_hasty_klingon() {
+    let mut game = scenario(Player::P0);
+    let sisters = put(&mut game, Player::P0, "The Duras Sisters", Zone::Battlefield);
+    let shock = put(&mut game, Player::P1, "Shock", Zone::Hand);
+    game.state.priority = Player::P1;
+    cast(&mut game, shock, Some(Target::Card(sisters)));
+    drain(&mut game, None);
+    assert_eq!(game.object_view(sisters).zone, Zone::Graveyard);
+    let warrior = game.state.objects.iter().enumerate().find_map(|(id, o)| (o.zone == Zone::Battlefield && o.card == Card(6010)).then_some(id as CardId)).unwrap();
+    assert_eq!(stats(&game, warrior), (2, 1));
+    assert!(game.object_view(warrior).keywords.contains(Keywords::HASTE));
+}
+
+#[test]
+fn year_of_hell_chapter_draws_then_damages_each_player() {
+    let mut game = scenario(Player::P0);
+    let saga = put(&mut game, Player::P0, "Year of Hell", Zone::Hand);
+    let before = game.state.objects.iter().filter(|o| o.owner == Player::P0 && o.zone == Zone::Hand).count();
+    cast(&mut game, saga, None);
+    drain(&mut game, None);
+    assert_eq!(game.state.players[0].life, 18);
+    assert_eq!(game.state.players[1].life, 18);
+    assert_eq!(game.state.objects.iter().filter(|o| o.owner == Player::P0 && o.zone == Zone::Hand).count(), before);
+    assert_eq!(game.counter_count(saga, CounterKind::Lore), 1);
+}
+
+#[test]
+fn tea_draws_on_entry_and_both_paid_modes_use_the_sacrificed_source() {
+    for mode in [0, 1] {
+        let mut game = scenario(Player::P0);
+        let tea = put(&mut game, Player::P0, "Tea, Earl Grey, Hot", Zone::Hand);
+        cast(&mut game, tea, None);
+        drain(&mut game, None);
+        assert_eq!(game.state.players[0].cards_drawn_this_turn, 1);
+        act(&mut game, Action::AnnounceActivate { card: tea, ability: 0, counter_payment: Counters::default() });
+        choose_mode_after_passes(&mut game, mode);
+        if mode == 0 {
+            act(&mut game, Action::ChooseTarget { target: Target::Player(Player::P1) });
+        }
+        if game.legal_actions().contains(&Action::FinishTargets) { act(&mut game, Action::FinishTargets); }
+        pay(&mut game);
+        assert_eq!(game.object_view(tea).zone, Zone::Graveyard);
+        drain(&mut game, None);
+        assert_eq!(game.state.players[1].life, if mode == 0 { 18 } else { 20 });
+        assert_eq!(game.state.players[0].life, if mode == 1 { 23 } else { 20 });
+    }
+}
+
+#[test]
+fn phaser_entry_stuns_opponent_and_equips_for_plus_three_power() {
+    let mut game = scenario(Player::P0);
+    let opponent = put(&mut game, Player::P1, "Grizzly Bears", Zone::Battlefield);
+    let bearer = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let phaser = put(&mut game, Player::P0, "Type-2 Phaser", Zone::Hand);
+    cast(&mut game, phaser, None);
+    drain(&mut game, Some(opponent));
+    assert!(game.object_view(opponent).tapped);
+    assert_eq!(game.counter_count(opponent, CounterKind::Stun), 1);
+    act(&mut game, Action::AnnounceActivate { card: phaser, ability: 0, counter_payment: Counters::default() });
+    act(&mut game, Action::ChooseTarget { target: Target::Card(bearer) });
+    if game.legal_actions().contains(&Action::FinishTargets) { act(&mut game, Action::FinishTargets); }
+    pay(&mut game);
+    drain(&mut game, None);
+    assert_eq!(stats(&game, bearer), (5, 2));
+}
