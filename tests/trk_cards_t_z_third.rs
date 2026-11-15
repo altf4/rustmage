@@ -2,6 +2,7 @@
 mod support;
 
 use rustmage as _;
+use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
 use support::*;
 
@@ -14,6 +15,57 @@ fn finish(game: &mut Game) {
         choose(game, |action| matches!(action, Action::Pass | Action::PutTrigger { .. }));
     }
     panic!("resolution did not finish");
+}
+const ADD_LORE: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::Object {
+            zone: TargetZone::Battlefield, kinds: 0, relation: 0,
+            other: false, nonland: false, tapped: false,
+            min_mana: 0, max_mana: u32::MAX,
+        })),
+        &[Instruction::PutCounters {
+            subject: Subject::Targets, kind: CounterKind::Lore, amount: 1,
+        }],
+    ),
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn measure_of_a_man_links_nontoken_exile_investigates_and_returns_to_owner() {
+    let _rules = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &ADD_LORE)]);
+    let mut game = scenario(Player::P0);
+    let artifact = put(&mut game, Player::P1, "Tricorder", Zone::Battlefield);
+    let token = spawn(&mut game, Player::P1, Card(6008), Zone::Battlefield);
+    let saga = put(&mut game, Player::P0, "The Measure of a Man", Zone::Hand);
+    cast(&mut game, saga, None);
+    for _ in 0..24 {
+        let actions = game.legal_actions();
+        if actions.contains(&Action::ChooseTarget { target: Target::Card(artifact) }) {
+            reject(&mut game, Action::ChooseTarget { target: Target::Card(token) });
+            act(&mut game, Action::ChooseTarget { target: Target::Card(artifact) });
+        } else if actions.contains(&Action::FinishStackTargets) {
+            act(&mut game, Action::FinishStackTargets);
+        } else if game.state.pending == Pending::Priority && game.state.stack.is_empty()
+            && game.state.pending_triggers.is_empty() && game.state.resolving.is_none() {
+            break;
+        } else {
+            choose(&mut game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+        }
+    }
+    assert_eq!(game.object_view(artifact).zone, Zone::Exile);
+    assert_eq!(game.object_view(token).zone, Zone::Battlefield);
+    for chapter in [2, 3] {
+        let spell = put(&mut game, Player::P0, "Opt", Zone::Hand);
+        cast(&mut game, spell, Some(Target::Card(saga)));
+        finish(&mut game);
+        if chapter == 2 {
+            assert_eq!(game.counter_count(saga, CounterKind::Lore), 2);
+            assert_eq!(game.state.objects.iter().filter(|o| o.zone == Zone::Battlefield && o.card == Card(5296)).count(), 1);
+        }
+    }
+    assert_eq!(game.object_view(artifact).zone, Zone::Battlefield);
+    assert_eq!(game.object_view(artifact).controller, Player::P1);
+    assert_eq!(game.state.players[0].life, 22);
 }
 
 #[test]
