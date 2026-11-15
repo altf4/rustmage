@@ -95,6 +95,18 @@ pub(super) fn controlled_creature_attacking_entry_sources<
             let source = world.object(id);
             source.zone == Zone::Battlefield
                 && source.controller == controller
+                && world
+                    .definition(id)
+                    .static_ability_groups()
+                    .iter()
+                    .any(|group| {
+                        group.fragments.iter().any(|fragment| {
+                            matches!(
+                                fragment,
+                                StaticAbilityFragment::ControlledCreatureEntryTappedAttacking
+                            )
+                        })
+                    })
                 && world.fragment_available(id, |fragment| {
                     matches!(
                         fragment,

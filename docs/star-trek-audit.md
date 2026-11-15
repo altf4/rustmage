@@ -36,6 +36,8 @@ The shared changes, reviews, linker regeneration, and guarded focused card check
 
 Native assurance on the assembled set exposed a copied-changeling subtype regression in a Kindred land/animated land boundary. A reviewed engine fix now includes copy keyword overrides in the layer-one changeling check for live and entering copies. Its focused guarded regression passed 1/1 at a 2.9 GiB memory peak. The full release validator must rerun after this change.
 
+The next native pass exposed an existing Edge of Eternities Seedship scenario where an unrelated static source made an ordinary hand creature enter attacking. The Kira attacking-entry scan now checks that the source actually has the named ability before consulting its availability. Independent review found no blocker; a guarded run passed all 13 EOE scenarios and all three Kira scenarios at a 2.9 GiB memory peak. The full validator must rerun on this engine checkpoint.
+
 ## XMage source gaps
 
 The following TRK identities have no XMage set-table entry at the pinned revision. Use the user-authorized official-rules fallback when authoring them; do not infer completion from catalogue metadata:
