@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "f5ceaff1e76385da6ec3df8399654adf139c0ca6ef58ff76cfe510c4ad7c886f",
+  "catalogue_version": "75e05446ccd8d540be838aae38fe97573cf656db2077c6dcc7fac607b89f0c5d",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5451,
-  "implemented_total": 5471,
+  "implemented_standard_cards": 5452,
+  "implemented_total": 5472,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 288,
-      "gated": 8
+      "complete": 289,
+      "gated": 7
     },
     "w17": {
       "total": 1,
@@ -41811,8 +41811,8 @@
     {
       "name": "Blastoneuron",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/blastoneuron.rs",
       "set": "trk"
     },

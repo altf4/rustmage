@@ -1,6 +1,6 @@
 # Star Trek (TRK) set implementation audit
 
-Status: card-authoring phase. The integrated branch admits 303/311 identities: 288 new typed definitions and fifteen existing reprints. The other eight remain gated. The reprints still need set-game acceptance.
+Status: card-authoring phase. The integrated branch admits 304/311 identities: 289 new typed definitions and fifteen existing reprints. The other seven remain gated. The reprints still need set-game acceptance.
 Tracking issue: [#682](https://github.com/altf4/rustmage/issues/682).
 
 ## Frozen inputs and scope
@@ -21,6 +21,8 @@ Each isolated change passed focused guarded rules/contract tests and independent
 An independently reviewed followup checkpoint for twelve more card dependencies passed 10/10 guarded scenarios and a 10/10 integration rewarm. Further dependencies discovered during authorship are being handled in isolated engine worktrees. Before dependent card files resume, implement and review each engine change, then rewarm the guarded cache.
 
 Dominion Infiltration's shared copy checkpoint freezes each surviving target's copiable values, adds changeling as a copiable exception, grants lasting haste, and exiles only the exact created tokens at the next end step. Independent review caught and verified fixes for subtype-replacing copies, noncreature entry previews, and haste surviving a missed exile. The guarded isolated and integrated engine scenarios passed 2/2 each; its authored card scenario passed 1/1 in isolation and on the linked integration branch.
+
+Blastoneuron's shared effect copies the printed creature card only after an exact, successful graveyard exile; it grants lasting haste and sacrifices the created token at the next end step. Its isolated and integrated engine scenarios passed 2/2 each after independent review. The authored card scenario passed 1/1 in isolation and integration, including a simultaneous two-card graveyard departure that triggers once.
 
 ## Reuse and interaction checks
 
