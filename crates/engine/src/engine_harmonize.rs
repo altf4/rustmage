@@ -26,6 +26,8 @@ impl Announcement {
                 | CastMethod::LinkedExileWaterbend
                 | CastMethod::Mayhem
                 | CastMethod::WebSlinging
+                | CastMethod::BeamMeUp
+                | CastMethod::BeamMeUpGranted(_)
                 | CastMethod::GrantedZeroFlashback,
             ) => 0,
             Some(CastMethod::Warp) => u32::from(self.warp_spec().x_symbols),

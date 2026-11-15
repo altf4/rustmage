@@ -732,6 +732,29 @@ impl Game {
         {
             return false;
         }
+        if method == CastMethod::BeamMeUp
+            && (object.zone != Zone::Graveyard
+                || object.owner != actor
+                || !object.is_card()
+                || face != CastFace::Normal
+                || object.card.beam_me_up_cost() != mana_base)
+        {
+            return false;
+        }
+        if let CastMethod::BeamMeUpGranted(provider) = method
+            && (object.zone != Zone::Graveyard
+                || object.owner != actor
+                || !object.is_card()
+                || face != CastFace::Normal
+                || object.card.kind_mask() & 12 == 0
+                || !mana_base.is_some_and(|cost| {
+                    crate::cards::mana_symbols::printed_cost(object.card.info().mana_cost)
+                        .is_some_and(|printed| printed.options.contains(&cost))
+                })
+                || !self.beam_grant_sources(actor).contains(&provider))
+        {
+            return false;
+        }
         if face == CastFace::Back
             && object.card.transforming_double_face()
             && !self
@@ -881,6 +904,8 @@ impl Game {
                     | CastMethod::Harmonize
                     | CastMethod::Mayhem
                     | CastMethod::WebSlinging
+                    | CastMethod::BeamMeUp
+                    | CastMethod::BeamMeUpGranted(_)
                     | CastMethod::Miracle
             );
         if fixed_x
@@ -933,6 +958,8 @@ impl Game {
                             | CastMethod::Miracle
                             | CastMethod::Sneak
                             | CastMethod::WebSlinging
+                            | CastMethod::BeamMeUp
+                            | CastMethod::BeamMeUpGranted(_)
                     )
             },
             |spec| spec.x_symbols > 0,
@@ -1037,6 +1064,8 @@ impl Game {
             CastMethod::GraveyardAdditionalCosts
                 | CastMethod::LinkedExileCounterCost
                 | CastMethod::WebSlinging
+                | CastMethod::BeamMeUp
+                | CastMethod::BeamMeUpGranted(_)
         ) || origin_counter_cost.is_some()
             && method == CastMethod::Free
             && object.zone == Zone::Exile

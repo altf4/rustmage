@@ -952,6 +952,7 @@ define_actions! {
     Blight { object: ObjectRef },
     PaySneakReturn { object: ObjectRef },
     PayWebSlingingReturn { object: ObjectRef },
+    PayBeamMeUpReturn { object: ObjectRef },
     ChooseTeamwork { pay: bool },
     ChooseTeammate { object: ObjectRef },
     FinishTeamwork,
@@ -1180,6 +1181,12 @@ define_actions! {
         cost: ManaCost,
         flash_surcharge: bool,
         origin: WebSlingingOrigin,
+    },
+    AnnounceBeamMeUp {
+        card: CardId,
+        cost: ManaCost,
+        flash_surcharge: bool,
+        provider: Option<ObjectRef>,
     },
     AnnounceOmen { card: CardId },
     AnnounceRoom { card: CardId, door: RoomDoor, flash_surcharge: bool },
@@ -1658,6 +1665,8 @@ pub enum CastMethod {
     Sneak,
     GrantedMayhem,
     WebSlinging,
+    BeamMeUp,
+    BeamMeUpGranted(ObjectRef),
     LibraryLife,
 }
 impl CastMethod {
@@ -1682,6 +1691,8 @@ impl CastMethod {
         matches!(
             self,
             Self::Normal
+                | Self::BeamMeUp
+                | Self::BeamMeUpGranted(_)
                 | Self::GraveyardCounterCost
                 | Self::LinkedExileCounterCost
                 | Self::GraveyardAdditionalCosts
@@ -3068,6 +3079,9 @@ enum Pending {
         player: Player,
     },
     WebSlingingReturnCost {
+        player: Player,
+    },
+    BeamMeUpReturnCost {
         player: Player,
     },
     TeamworkIntent {
@@ -5050,6 +5064,7 @@ impl Game {
             | Pending::BlightPayment { player }
             | Pending::SneakReturnCost { player }
             | Pending::WebSlingingReturnCost { player }
+            | Pending::BeamMeUpReturnCost { player }
             | Pending::TeamworkIntent { player }
             | Pending::TeamworkPayment { player }
             | Pending::Saddle { player }
@@ -5710,6 +5725,9 @@ impl Game {
             Pending::SneakReturnCost { .. } => return self.visit_sneak_return_cost(&mut emit),
             Pending::WebSlingingReturnCost { .. } => {
                 return self.visit_web_slinging_return_cost(&mut emit);
+            }
+            Pending::BeamMeUpReturnCost { .. } => {
+                return self.visit_beam_me_up_return_cost(&mut emit);
             }
             Pending::TeamworkIntent { .. } => {
                 let a = s.announcing.as_ref().unwrap();
@@ -8913,6 +8931,19 @@ impl Game {
                 flash_surcharge,
                 origin,
             ),
+            Action::AnnounceBeamMeUp {
+                card,
+                cost,
+                flash_surcharge,
+                provider,
+            } => self.start_paid_cast_alternative(
+                actor,
+                card,
+                CastFace::Normal,
+                PaidCastAlternative::BeamMeUp(cost),
+                flash_surcharge,
+                provider.map_or(PaidCastOrigin::BeamMeUp, PaidCastOrigin::BeamMeUpGranted),
+            ),
             Action::AnnounceSneak { card, permission } => {
                 if let Some((source, kind)) = permission {
                     self.consume_graveyard_type(source, kind);
@@ -9454,6 +9485,7 @@ impl Game {
             Action::Blight { object } => self.choose_effect_object(actor, object),
             Action::PaySneakReturn { object } => self.pay_sneak_return(object),
             Action::PayWebSlingingReturn { object } => self.pay_web_slinging_return(object),
+            Action::PayBeamMeUpReturn { object } => self.pay_beam_me_up_return(object),
             Action::ChooseTeamwork { pay } => self.choose_teamwork(pay),
             Action::ChooseTeammate { object } => self.choose_teammate(object),
             Action::FinishTeamwork => self.finish_teamwork(),
@@ -13324,6 +13356,7 @@ impl Game {
                 Pending::BlightPayment { .. } => "blight_payment",
                 Pending::SneakReturnCost { .. } => "sneak_return_cost",
                 Pending::WebSlingingReturnCost { .. } => "web_slinging_return_cost",
+                Pending::BeamMeUpReturnCost { .. } => "beam_me_up_return_cost",
                 Pending::TeamworkIntent { .. } => "teamwork_intent",
                 Pending::TeamworkPayment { .. } => "teamwork_payment",
                 Pending::Saddle { .. } => "saddle",

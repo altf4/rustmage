@@ -181,6 +181,7 @@ impl Announcement {
             CastMethod::Foretell => self.item.source?.card.foretell_cost(),
             CastMethod::GrantedFixedFlashback(cost) => Some(cost),
             CastMethod::WebSlinging => self.origin_alternative_cost,
+            CastMethod::BeamMeUp | CastMethod::BeamMeUpGranted(_) => self.origin_alternative_cost,
             CastMethod::LinkedExileWaterbend => self.origin_alternative_cost,
             CastMethod::Warp => Some(self.warp_spec().mana),
             CastMethod::Airbend => Some(ManaCost {
@@ -307,7 +308,9 @@ impl Announcement {
                     | CastMethod::GrantedZeroFlashback
                     | CastMethod::GrantedFixedFlashback(_)
                     | CastMethod::Miracle
-                    | CastMethod::WebSlinging => {
+                    | CastMethod::WebSlinging
+                    | CastMethod::BeamMeUp
+                    | CastMethod::BeamMeUpGranted(_) => {
                         self.fixed_alternative_cost().is_some_and(|base| {
                             self.cost.is_some_and(|cost| {
                                 self.cost_before_exile_play_surcharge(cost) != base
@@ -542,12 +545,16 @@ impl Announcement {
                 self.warp_cost_options()
             }
             StackKind::Spell
-                if self
-                    .item
-                    .cast
-                    .is_some_and(|cast| cast.method == CastMethod::WebSlinging) =>
+                if self.item.cast.is_some_and(|cast| {
+                    matches!(
+                        cast.method,
+                        CastMethod::WebSlinging
+                            | CastMethod::BeamMeUp
+                            | CastMethod::BeamMeUpGranted(_)
+                    )
+                }) =>
             {
-                std::iter::once(self.fixed_alternative_cost().expect("Web-slinging cost"))
+                std::iter::once(self.fixed_alternative_cost().expect("selected return cost"))
                     .chain([].iter().copied())
             }
             StackKind::Spell

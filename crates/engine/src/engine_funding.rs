@@ -6376,8 +6376,13 @@ impl Game {
             );
         }
         if a.item.cast.is_some_and(|c| {
-            matches!(c.method, CastMethod::Sneak | CastMethod::WebSlinging)
-                || c.method.pays_life_for_mana_value()
+            matches!(
+                c.method,
+                CastMethod::Sneak
+                    | CastMethod::WebSlinging
+                    | CastMethod::BeamMeUp
+                    | CastMethod::BeamMeUpGranted(_)
+            ) || c.method.pays_life_for_mana_value()
         }) {
             let mut proposal = a.clone();
             proposal.cost = Some(cost);
@@ -7158,10 +7163,12 @@ impl Game {
                 .additional_cost()
                 .is_some_and(|s| matches!(s.kind.payment_kind(), EffectChoiceKind::BlightCost(_)))
             || announcement.has_compound_sneak_cost()
-            || announcement
-                .item
-                .cast
-                .is_some_and(|cast| cast.method == CastMethod::WebSlinging)
+            || announcement.item.cast.is_some_and(|cast| {
+                matches!(
+                    cast.method,
+                    CastMethod::WebSlinging | CastMethod::BeamMeUp | CastMethod::BeamMeUpGranted(_)
+                )
+            })
             || announcement.additional_cost().is_some_and(|cost| {
                 cost.kind == EffectChoiceKind::ReturnTappedCreature
                     || cost.kind.uses_target_mana_value()

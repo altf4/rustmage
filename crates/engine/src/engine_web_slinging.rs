@@ -17,11 +17,18 @@ pub(super) const RETURN_COST: AdditionalCost = AdditionalCost {
     },
 };
 
+pub(super) const BEAM_RETURN_COST: AdditionalCost = AdditionalCost {
+    kind: EffectChoiceKind::ReturnToHand,
+    filter: RETURN_COST.filter,
+};
+
 /// Exact permission when a casting route has an independent cost or consequence.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum PaidCastOrigin {
     Ordinary,
+    BeamMeUp,
+    BeamMeUpGranted(ObjectRef),
     LibraryTop {
         permission: LibraryTopCastPermission,
     },
@@ -64,6 +71,7 @@ pub type WebSlingingOrigin = PaidCastOrigin;
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub(super) enum PaidCastAlternative {
     WebSlinging(ManaCost),
+    BeamMeUp(ManaCost),
     Source { provider: ObjectRef, cost: ManaCost },
     Evidence { provider: ObjectRef, threshold: u64 },
 }
@@ -72,7 +80,7 @@ pub(super) enum PaidCastAlternative {
 impl PaidCastAlternative {
     fn mana_base(self) -> ManaCost {
         match self {
-            Self::WebSlinging(cost) | Self::Source { cost, .. } => cost,
+            Self::WebSlinging(cost) | Self::BeamMeUp(cost) | Self::Source { cost, .. } => cost,
             Self::Evidence { .. } => ManaCost::ZERO,
         }
     }
@@ -94,6 +102,10 @@ impl PaidCastAlternative {
     fn method(self, origin: PaidCastOrigin) -> CastMethod {
         match self {
             Self::WebSlinging(_) => CastMethod::WebSlinging,
+            Self::BeamMeUp(_) => match origin {
+                PaidCastOrigin::BeamMeUpGranted(provider) => CastMethod::BeamMeUpGranted(provider),
+                _ => CastMethod::BeamMeUp,
+            },
             Self::Source { .. } | Self::Evidence { .. } => match origin {
                 PaidCastOrigin::LinkedExileCounters { .. } => CastMethod::LinkedExileCounterCost,
                 PaidCastOrigin::GraveyardAdditional => CastMethod::GraveyardAdditionalCosts,
@@ -116,6 +128,33 @@ pub(super) struct PaidCastTerms {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn beam_grant_sources(&self, actor: Player) -> Vec<ObjectRef> {
+        if self.state.active != actor || !matches!(self.state.step, Step::Main1 | Step::Main2) {
+            return Vec::new();
+        }
+        let mut sources = Vec::new();
+        for &id in &self.state.static_sources {
+            let source = &self.state.objects[id as usize];
+            if source.zone != Zone::Battlefield || source.controller != actor {
+                continue;
+            }
+            for fragment in source
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(|group| group.fragments)
+            {
+                if matches!(fragment, StaticAbilityFragment::GrantGraveyardBeamMeUp)
+                    && self.continuous_fragment_available(id, |found| std::ptr::eq(found, fragment))
+                {
+                    sources.push(self.object_ref(id));
+                    break;
+                }
+            }
+        }
+        sources
+    }
+
     pub(super) fn source_cast_alternatives(&self, actor: Player) -> Vec<PaidCastAlternative> {
         let mut alternatives = Vec::new();
         for &id in &self.state.static_sources {
@@ -221,6 +260,41 @@ impl Game {
             {
                 return true;
             }
+            if face == CastFace::Normal
+                && object.zone == Zone::Graveyard
+                && object.owner == actor
+                && definition.beam_me_up_cost().is_some()
+                && self.visit_paid_cast_alternative_face(
+                    actor,
+                    card,
+                    face,
+                    sorcery,
+                    PaidCastOrigin::BeamMeUp,
+                    &[],
+                    emit,
+                )
+            {
+                return true;
+            }
+            if face == CastFace::Normal
+                && object.zone == Zone::Graveyard
+                && object.owner == actor
+                && definition.kind_mask() & 12 != 0
+            {
+                for provider in self.beam_grant_sources(actor) {
+                    if self.visit_paid_cast_alternative_face(
+                        actor,
+                        card,
+                        face,
+                        sorcery,
+                        PaidCastOrigin::BeamMeUpGranted(provider),
+                        &[],
+                        emit,
+                    ) {
+                        return true;
+                    }
+                }
+            }
             if face == CastFace::Normal && object.zone == Zone::Graveyard && object.owner == actor {
                 for (eligible, origin) in [
                     (
@@ -261,7 +335,10 @@ impl Game {
         let physical = self.state.objects[card as usize].card;
         let mut terms = PaidCastTerms::default();
         match origin {
-            PaidCastOrigin::Ordinary | PaidCastOrigin::GraveyardType { .. } => {}
+            PaidCastOrigin::Ordinary
+            | PaidCastOrigin::BeamMeUp
+            | PaidCastOrigin::BeamMeUpGranted(_)
+            | PaidCastOrigin::GraveyardType { .. } => {}
             PaidCastOrigin::PaidResolution => terms.alternative.exact_paid_resolution_offer = true,
             PaidCastOrigin::LibraryTop { permission } => {
                 terms.alternative.library_top = Some(permission);
@@ -330,17 +407,43 @@ impl Game {
         else {
             return false;
         };
-        let web = self.web_slinging_bases(actor, definition);
-        if web.is_empty() && cast_alternatives.is_empty() {
+        let beam = (origin == PaidCastOrigin::BeamMeUp)
+            .then(|| definition.beam_me_up_cost())
+            .flatten();
+        if origin == PaidCastOrigin::BeamMeUp && beam.is_none() {
+            return false;
+        }
+        let granted_beam = matches!(origin, PaidCastOrigin::BeamMeUpGranted(_));
+        let web = if beam.is_none() && !granted_beam {
+            self.web_slinging_bases(actor, definition)
+        } else {
+            Vec::new()
+        };
+        if beam.is_none() && !granted_beam && web.is_empty() && cast_alternatives.is_empty() {
             return false;
         }
         let Some(terms) = self.paid_cast_terms(actor, card, face, origin) else {
             return false;
         };
-        let choices = web
-            .into_iter()
-            .map(PaidCastAlternative::WebSlinging)
-            .chain(cast_alternatives.iter().copied());
+        let choices: Vec<_> = if let Some(cost) = beam {
+            vec![PaidCastAlternative::BeamMeUp(cost)]
+        } else if granted_beam {
+            let Some(printed) =
+                crate::cards::mana_symbols::printed_cost(definition.info().mana_cost)
+            else {
+                return false;
+            };
+            printed
+                .options
+                .into_iter()
+                .map(PaidCastAlternative::BeamMeUp)
+                .collect()
+        } else {
+            web.into_iter()
+                .map(PaidCastAlternative::WebSlinging)
+                .chain(cast_alternatives.iter().copied())
+                .collect()
+        };
         for choice in choices {
             let method = choice.method(origin);
             let cost = choice.mana_base();
@@ -376,6 +479,15 @@ impl Game {
                         cost,
                         flash_surcharge,
                         origin,
+                    },
+                    PaidCastAlternative::BeamMeUp(_) => Action::AnnounceBeamMeUp {
+                        card,
+                        cost,
+                        flash_surcharge,
+                        provider: match origin {
+                            PaidCastOrigin::BeamMeUpGranted(provider) => Some(provider),
+                            _ => None,
+                        },
                     },
                     PaidCastAlternative::Source { provider, .. } => {
                         Action::AnnounceCastWithManaAlternative {
@@ -447,6 +559,12 @@ impl Game {
         self.set_cast_face(&mut item, face);
         item.cast.as_mut().unwrap().method = method;
         item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
+        if matches!(
+            method,
+            CastMethod::BeamMeUp | CastMethod::BeamMeUpGranted(_)
+        ) {
+            self.state.objects[card as usize].flashback = true;
+        }
         Self::set_fixed_alternative_x(&mut item);
         if terms.alternative.linked_exile_paid.is_some()
             || method == CastMethod::LinkedExileCounterCost
@@ -523,6 +641,25 @@ impl Game {
             .as_mut()
             .unwrap()
             .web_slinging_return_mana_value = Some(mana_value);
+        self.state.pending = Pending::CastCosts {
+            player: announcement.item.controller,
+        };
+        self.move_object(object.card, Zone::Hand);
+        if self.state.entry_batch.is_none() && self.state.replacements.is_none() {
+            self.finish_announcement();
+        }
+    }
+
+    pub(super) fn pay_beam_me_up_return(&mut self, object: ObjectRef) {
+        let announcement = self.state.announcing.as_mut().unwrap();
+        let costs = announcement.cast_costs.as_mut().unwrap();
+        let index = usize::from(costs.active.take().unwrap());
+        let provider = match costs.clauses[index].clause {
+            CastCostClause::BeamMeUpReturn(_, provider) => provider,
+            _ => unreachable!("selected Beam Me Up return clause"),
+        };
+        costs.clauses[index].clause = CastCostClause::BeamMeUpReturn(Some(object), provider);
+        costs.clauses[index].paid = true;
         self.state.pending = Pending::CastCosts {
             player: announcement.item.controller,
         };

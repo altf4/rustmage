@@ -142,6 +142,25 @@ impl CostContext {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl FundingState<'_> {
+    pub(super) fn beam_return_prohibited(&self, candidate: ObjectRef) -> bool {
+        self.attachment_sources().iter().copied().any(|id| {
+            let aura = self.object(id);
+            aura.zone == Zone::Battlefield
+                && aura.attached_to == Some(candidate)
+                && CharacteristicWorld::printed_abilities_available(self, id)
+                && CharacteristicWorld::definition(self, id)
+                    .static_ability_groups()
+                    .iter()
+                    .flat_map(|group| group.fragments)
+                    .any(|fragment| {
+                        matches!(
+                            fragment,
+                            crate::cards::StaticAbilityFragment::AttachedCannotBeBeamedUp
+                        )
+                    })
+        })
+    }
+
     pub(super) fn mana_window_open(&self, goal: &FundingGoal) -> bool {
         goal.requires_mana() && self.cast_costs.as_ref().is_none_or(|c| !c.mana_closed)
     }
@@ -163,7 +182,8 @@ impl FundingState<'_> {
                     .all(|row| match row.clause {
                         CastCostClause::Mana
                         | CastCostClause::Behold(_)
-                        | CastCostClause::WebSlingingReturn(_) => true,
+                        | CastCostClause::WebSlingingReturn(_)
+                        | CastCostClause::BeamMeUpReturn(_, _) => true,
                         CastCostClause::Additional => c.additional.is_some_and(|spec| {
                             matches!(
                                 spec.kind.payment_kind(),
@@ -274,14 +294,17 @@ impl FundingState<'_> {
                 | CastCostClause::Casualty(_)
                 | CastCostClause::Conspire(_)
                 | CastCostClause::Harmonize(_) => {}
-                CastCostClause::SneakReturn(_) | CastCostClause::WebSlingingReturn(_)
+                CastCostClause::SneakReturn(_)
+                | CastCostClause::WebSlingingReturn(_)
+                | CastCostClause::BeamMeUpReturn(_, _)
                     if !row.paid =>
                 {
                     return false;
                 }
                 CastCostClause::Behold(_)
                 | CastCostClause::SneakReturn(_)
-                | CastCostClause::WebSlingingReturn(_) => {}
+                | CastCostClause::WebSlingingReturn(_)
+                | CastCostClause::BeamMeUpReturn(_, _) => {}
             }
         }
         let mut hand = 0usize;
@@ -1366,6 +1389,22 @@ impl FundingState<'_> {
                         let object = self.reference(resource.id);
                         if selected.is_none_or(|wanted| wanted == object)
                             && self.cost_object(web_slinging::RETURN_COST, object, c.source)
+                            && (rest.is_empty()
+                                || self.cost_departures(&[object], Zone::Hand, &mut |world| {
+                                    world.complete_cost_rows(&later, &rest)
+                                }))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                CastCostClause::BeamMeUpReturn(selected, provider) => {
+                    for resource in &self.resources {
+                        let object = self.reference(resource.id);
+                        if selected.is_none_or(|wanted| wanted == object)
+                            && Some(object) != provider
+                            && !self.beam_return_prohibited(object)
+                            && self.cost_object(web_slinging::BEAM_RETURN_COST, object, c.source)
                             && (rest.is_empty()
                                 || self.cost_departures(&[object], Zone::Hand, &mut |world| {
                                     world.complete_cost_rows(&later, &rest)
@@ -2529,6 +2568,35 @@ impl Game {
             let active = usize::from(costs.active.unwrap());
             costs.clauses[active].clause = CastCostClause::WebSlingingReturn(Some(object));
             if choice.cost_completion() && emit(Action::PayWebSlingingReturn { object }) {
+                return true;
+            }
+        }
+        false
+    }
+    pub(in crate::engine) fn visit_beam_me_up_return_cost(
+        &self,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let announcement = self.state.announcing.as_ref().unwrap();
+        let world = self.cast_cost_world(announcement);
+        for (id, permanent) in self.state.objects.iter().enumerate() {
+            if permanent.zone != Zone::Battlefield {
+                continue;
+            }
+            let object = self.object_ref(id as CardId);
+            let mut choice = world.clone();
+            let costs = choice.cast_costs.as_ref().unwrap();
+            let active = usize::from(costs.active.unwrap());
+            let provider = match costs.clauses[active].clause {
+                CastCostClause::BeamMeUpReturn(_, provider) => provider,
+                _ => unreachable!("pending Beam Me Up return cost"),
+            };
+            if Some(object) == provider || choice.beam_return_prohibited(object) {
+                continue;
+            }
+            let costs = choice.cast_costs.as_mut().unwrap();
+            costs.clauses[active].clause = CastCostClause::BeamMeUpReturn(Some(object), provider);
+            if choice.cost_completion() && emit(Action::PayBeamMeUpReturn { object }) {
                 return true;
             }
         }

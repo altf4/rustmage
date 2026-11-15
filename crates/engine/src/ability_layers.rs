@@ -103,6 +103,11 @@ pub enum StaticAbilityFragment {
     SpellAlternativeManaCost(ManaCost),
     /// You may collect evidence for the specified amount instead of paying a spell's mana cost.
     SpellAlternativeEvidenceCost(u64),
+    /// During your main phase, owned instant and sorcery cards in your graveyard
+    /// may be cast for their printed mana cost by returning another creature.
+    GrantGraveyardBeamMeUp,
+    /// The permanent enchanted by this Aura cannot pay a Beam Me Up return cost.
+    AttachedCannotBeBeamedUp,
     /// Initiates its controller's persistent speed designation as a state-based action.
     StartYourEngines,
     /// No player can draw cards while this rule ability is active.

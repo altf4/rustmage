@@ -9342,6 +9342,9 @@ impl Card {
     pub(crate) fn web_slinging_cost(self) -> Option<ManaCost> {
         authored::rules(self).and_then(|rules| rules.extras.web_slinging_cost)
     }
+    pub(crate) fn beam_me_up_cost(self) -> Option<ManaCost> {
+        authored::rules(self).and_then(|rules| rules.extras.beam_me_up_cost)
+    }
     pub(crate) fn disguise_spec(self) -> Option<DisguiseSpec> {
         let extras = authored::rules(self)?.extras;
         extras

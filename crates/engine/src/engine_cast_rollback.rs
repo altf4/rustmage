@@ -288,6 +288,7 @@ impl Game {
             | Action::AnnounceDisguiseGraveyard { card, .. }
             | Action::AnnounceSneak { card, .. }
             | Action::AnnounceWebSlinging { card, .. }
+            | Action::AnnounceBeamMeUp { card, .. }
             | Action::AnnounceAdventure { card }
             | Action::AnnounceOmen { card }
             | Action::AnnounceRoom { card, .. }

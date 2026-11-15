@@ -116,6 +116,7 @@ impl Announcement {
                     | CastCostClause::Harmonize(object) => add(object),
                     CastCostClause::SneakReturn(Some(object))
                     | CastCostClause::WebSlingingReturn(Some(object)) => add(object),
+                    CastCostClause::BeamMeUpReturn(Some(object), _) => add(object),
                     _ => (),
                 }
             }
