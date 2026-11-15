@@ -149,7 +149,7 @@ impl Game {
             || match event.destination {
                 Zone::Battlefield | Zone::Stack | Zone::Graveyard | Zone::Command => true,
                 Zone::Exile => !self.exiled_face_down(event.after),
-                Zone::Library | Zone::Hand | Zone::Outside => false,
+                Zone::Library | Zone::Hand | Zone::PhasedOut | Zone::Outside => false,
             };
         (event.moved && known).then_some(event.before.kinds)
     }

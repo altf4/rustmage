@@ -1072,6 +1072,8 @@ impl Game {
                 OutsideAdmissionDestination::Library => Zone::Library,
             },
             generation: 0,
+            phased_out_under: None,
+            phased_out_indirectly: false,
             tapped: false,
             summoning_sick: false,
             flashback: false,

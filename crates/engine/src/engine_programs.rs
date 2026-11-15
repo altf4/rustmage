@@ -7156,6 +7156,7 @@ impl Game {
                 Instruction::DestroyAllCreaturesRememberOwned => {
                     self.destroy_creatures_recording_graveyard(None, true, Some(item.controller));
                 }
+                Instruction::PhaseOutAll(kinds) => self.phase_out_all(kinds),
                 Instruction::ReturnOwnedGraveyardNonlandPermanents => {
                     self.return_owned_graveyard_permanents(&item, 1 | 16 | 32 | 64 | 256, 2, false);
                 }

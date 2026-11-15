@@ -383,6 +383,7 @@ impl Game {
                     matches!(
                         fragment,
                         crate::cards::StaticAbilityFragment::ControlledInstantSorcerySplitSecond
+                            | crate::cards::StaticAbilityFragment::PermanentsCantPhaseIn
                             | crate::cards::StaticAbilityFragment::ControlledInstantSorceryKeywords(_)
                             | crate::cards::StaticAbilityFragment::ControlledInstantSorcerySubtypeKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ReplaceLifePaymentWithLibraryExile

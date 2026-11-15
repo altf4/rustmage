@@ -112,6 +112,8 @@ pub enum StaticAbilityFragment {
     StartYourEngines,
     /// No player can draw cards while this rule ability is active.
     CantDrawCards,
+    /// Phased-out permanents cannot return while this permanent's rule is active.
+    PermanentsCantPhaseIn,
     /// Skip a draw for this source's controller if their library is empty.
     SkipEmptyLibraryDraws,
     LinkedExileFreeCastBySubtypeUnion(&'static [&'static str]),

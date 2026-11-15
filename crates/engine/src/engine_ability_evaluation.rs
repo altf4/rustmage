@@ -1428,7 +1428,8 @@ impl Game {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ObjectView {
     pub(super) fn printed_abilities_available(&self) -> bool {
-        self.abilities.as_ref().is_none_or(|value| value.printed)
+        self.zone != Zone::PhasedOut
+            && self.abilities.as_ref().is_none_or(|value| value.printed)
     }
     pub(super) fn static_grant_available(
         &self,

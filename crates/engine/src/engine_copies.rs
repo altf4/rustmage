@@ -419,6 +419,8 @@ impl Game {
                     controller: player,
                     zone: Zone::Outside,
                     generation,
+                    phased_out_under: None,
+                    phased_out_indirectly: false,
                     tapped: false,
                     summoning_sick: false,
                     flashback: false,

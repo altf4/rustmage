@@ -1161,7 +1161,8 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         index: usize,
         group: &crate::cards::StaticAbilityGroup,
     ) -> bool {
-        entry_modes::group_enabled(self, source, group)
+        self.object(source.card).zone != Zone::PhasedOut
+            && entry_modes::group_enabled(self, source, group)
             && self
                 .evaluation
                 .as_ref()
@@ -1172,6 +1173,9 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         source: CardId,
         matches: impl Fn(&StaticAbilityFragment) -> bool,
     ) -> bool {
+        if self.object(source).zone == Zone::PhasedOut {
+            return false;
+        }
         if !self.on_battlefield(source) {
             return true;
         }
@@ -1418,6 +1422,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             controller: obj.controller,
             battle_protector: self.world.battle_protector(self.object_ref(id)),
             zone: obj.zone,
+            phased_out: obj.zone == Zone::PhasedOut,
             tapped: obj.tapped,
             summoning_sick: obj.summoning_sick,
             cast_for_warp: obj.cast_for_warp,

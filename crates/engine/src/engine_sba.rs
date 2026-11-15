@@ -184,7 +184,9 @@ impl Game {
             std::array::from_fn(|_| std::collections::BTreeMap::new());
         for (index, object) in self.state.objects.iter().enumerate() {
             let id = index as CardId;
-            if object.is_token() && !matches!(object.zone, Zone::Battlefield | Zone::Outside) {
+            if object.is_token()
+                && !matches!(object.zone, Zone::Battlefield | Zone::PhasedOut | Zone::Outside)
+            {
                 batch.ceased.push(id);
             }
             if object.copy_kind == CopyKind::Spell

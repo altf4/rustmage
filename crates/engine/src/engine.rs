@@ -621,6 +621,8 @@ pub mod source_counter_cost;
 #[doc(hidden)]
 #[path = "engine_untap_rules.rs"]
 pub mod untap_rules;
+#[path = "engine_phasing.rs"]
+pub mod phasing;
 pub use ability_evaluation::{AbilityAvailabilityView, GrantedAbilityView, GrantedStaticRule};
 #[doc(hidden)]
 #[path = "engine_ability_order.rs"]
@@ -792,6 +794,9 @@ pub enum Zone {
     Library,
     Hand,
     Battlefield,
+    /// Internal status for a permanent still on the battlefield under CR 702.26.
+    /// Phasing never uses the zone-change machinery or changes object identity.
+    PhasedOut,
     Stack,
     Graveyard,
     Exile,
@@ -1476,6 +1481,10 @@ struct Object {
     controller: Player,
     zone: Zone,
     generation: u64,
+    /// Controller at the direct phasing event; determines the untap step for return.
+    phased_out_under: Option<Player>,
+    /// An attachment phased out with its host and returns only with that host.
+    phased_out_indirectly: bool,
     tapped: bool,
     // True until this creature's controller begins their next turn.
     summoning_sick: bool,
@@ -3641,6 +3650,9 @@ pub struct ObjectView {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub battle_protector: Option<Player>,
     pub zone: Zone,
+    /// Public battlefield status. Phasing does not change a permanent's game zone.
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub phased_out: bool,
     pub tapped: bool,
     pub summoning_sick: bool,
     pub cast_for_warp: bool,
@@ -4801,6 +4813,8 @@ impl Game {
                     controller: p,
                     zone: Zone::Library,
                     generation: 0,
+                    phased_out_under: None,
+                    phased_out_indirectly: false,
                     tapped: false,
                     summoning_sick: false,
                     flashback: false,
@@ -11636,6 +11650,8 @@ impl Game {
             obj.card
         };
         obj.zone = destination;
+        obj.phased_out_under = None;
+        obj.phased_out_indirectly = false;
         // Only stack and battlefield objects have independent control.
         obj.controller = if matches!(destination, Zone::Battlefield | Zone::Stack) {
             entry_controller.unwrap_or(before.controller)
@@ -12096,6 +12112,7 @@ impl Game {
             }
         }
         self.state.step = Step::Untap;
+        self.phase_in_for_untap(self.state.active);
         if !self.untap_active_player() {
             self.begin_step(Step::Upkeep);
             self.give_priority();
@@ -12832,7 +12849,13 @@ impl Game {
                         || self.shares_information(viewer, o.owner)
                         || s.known_hand.contains(&self.object_ref(*i as CardId)))
             })
-            .map(|(i, _)| query.object_view(i as CardId))
+            .map(|(i, _)| {
+                let mut object = query.object_view(i as CardId);
+                if object.phased_out {
+                    object.zone = Zone::Battlefield;
+                }
+                object
+            })
             .collect();
         let attack_payment = s
             .combat_payment

@@ -87,6 +87,9 @@ impl Game {
     ) -> Vec<(ObjectView, Option<AttachmentTriggerView>)> {
         let mut out = Vec::new();
         for &id in ids {
+            if self.state.objects[id as usize].zone == Zone::PhasedOut {
+                continue;
+            }
             let giver = self.object_view(id);
             if giver.trigger_templates().any(|(_, a)| {
                 !a.condition.is_granted()

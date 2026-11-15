@@ -4050,6 +4050,8 @@ pub enum Instruction {
     },
     /// Destroy all creatures, remembering the controller's creature cards actually put into their graveyard.
     DestroyAllCreaturesRememberOwned,
+    /// Change the status of every current permanent of any listed kind in one event.
+    PhaseOutAll(u16),
     /// Simultaneously return the controller's nonland permanent cards.
     ReturnOwnedGraveyardNonlandPermanents,
     /// Simultaneously return every land card in the controller's graveyard tapped.
