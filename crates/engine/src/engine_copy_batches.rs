@@ -84,6 +84,7 @@ impl Game {
                 temporary_tokens::TokenInstructions {
                     item: item.clone(),
                     keywords,
+                    permanent_keywords: true,
                     attack: temporary_tokens::TokenAttack::None,
                     cleanup: temporary_tokens::TokenCleanup::NextEndStepExile {
                         ability: exile_ability,

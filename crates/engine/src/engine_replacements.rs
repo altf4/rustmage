@@ -3135,6 +3135,7 @@ impl Game {
             TokenCompletion::TemporaryTokens(Box::new(temporary_tokens::TokenInstructions {
                 item: item.clone(),
                 keywords: Keywords::NONE,
+                permanent_keywords: false,
                 attack: temporary_tokens::TokenAttack::ChooseDefender,
                 cleanup: temporary_tokens::TokenCleanup::NextEndStepSacrifice,
             })),
@@ -3170,6 +3171,7 @@ impl Game {
             TokenCompletion::TemporaryTokens(Box::new(temporary_tokens::TokenInstructions {
                 item: item.clone(),
                 keywords: Keywords::NONE,
+                permanent_keywords: false,
                 attack: temporary_tokens::TokenAttack::DefendingPlayer,
                 cleanup: temporary_tokens::TokenCleanup::OwnEndStepSacrifice,
             })),
@@ -3191,6 +3193,7 @@ impl Game {
             TokenCompletion::TemporaryTokens(Box::new(temporary_tokens::TokenInstructions {
                 item: item.clone(),
                 keywords: Keywords::NONE,
+                permanent_keywords: false,
                 attack: temporary_tokens::TokenAttack::None,
                 cleanup: temporary_tokens::TokenCleanup::OwnEndStepSacrifice,
             })),

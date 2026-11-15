@@ -49,10 +49,18 @@ fn tokens(game: &Game) -> Vec<CardId> {
 #[test]
 fn every_surviving_target_gets_its_own_hasty_changeling_copy_then_exile() {
     let _rules = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &INFILTRATE)]);
-    for depart in [false, true] {
+    for (depart, replaced_types) in [(false, false), (true, false), (false, true)] {
         let mut game = scenario(Player::P0);
         let first = put(&mut game, Player::P1, "Bear Cub", Zone::Battlefield);
         let second = put(&mut game, Player::P1, "Hill Giant", Zone::Battlefield);
+        if replaced_types {
+            let mut recipe = CopyRecipe::new(Card::GrizzlyBears);
+            recipe.overrides = Some(CopyOverrides {
+                types: Some(CopyTypes { replace: true, ..CopyTypes::default() }),
+                ..CopyOverrides::NONE
+            });
+            game.apply_temporary_copy(game.object_ref(first), recipe, CopyDeadline::EndOfTurn);
+        }
         let own = put(&mut game, Player::P0, "Bear Cub", Zone::Battlefield);
         let spell = put(&mut game, Player::P0, "Opt", Zone::Hand);
         act(&mut game, Action::AnnounceCast { card: spell });
@@ -84,14 +92,41 @@ fn every_surviving_target_gets_its_own_hasty_changeling_copy_then_exile() {
             assert!(game.has_subtype(id, "Borg"));
             assert_eq!(game.counter_count(id, CounterKind::PlusOne), 0);
         }
-        assert!(created.iter().any(|&id| game.object_view(id).card == Card::from_name("Bear Cub").unwrap()));
+        let first_copy = if replaced_types { Card::GrizzlyBears } else { Card::from_name("Bear Cub").unwrap() };
+        assert!(created.iter().any(|&id| game.object_view(id).card == first_copy));
         if !depart {
             assert!(created.iter().any(|&id| game.object_view(id).card == Card::from_name("Hill Giant").unwrap()));
         }
         assert_eq!(game.observe(Player::P0).delayed_steps.unwrap().len(), 1);
+        // The delayed trigger can fail to exile a token. Haste has no printed
+        // duration, so cleanup alone must not remove it from a survivor.
+        let mut survivor = game.clone();
+        survivor.state.step = Step::Cleanup;
+        survivor.finish_cleanup();
+        for &id in &created {
+            assert!(survivor.keywords(id).contains(Keywords::HASTE));
+        }
         game.begin_step(Step::End);
         game.prepare_triggers();
         settle(&mut game);
         assert!(created.into_iter().all(|id| game.object_view(id).zone != Zone::Battlefield));
     }
+}
+
+#[test]
+fn noncreature_copy_with_changeling_has_no_creature_subtypes_in_entry_preview() {
+    let mut game = scenario(Player::P0);
+    let artifact = put(&mut game, Player::P0, "Short Bow", Zone::Hand);
+    let mut view = game.object_view(artifact);
+    view.copy_recipe = Some(CopyRecipe::new(view.card).with_exceptions(CopyExceptions {
+        add_keywords: Keywords::CHANGELING,
+        ..CopyExceptions::NONE
+    }));
+    let entry = rustmage_core::engine::entries::EntryMove::from_view(
+        view,
+        Zone::Battlefield,
+        false,
+    );
+    assert!(!Game::entry_replacement_subtypes(&entry).contains("Vulcan"));
+    assert!(!Game::entry_choice_subtypes(&entry).contains("Borg"));
 }

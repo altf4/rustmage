@@ -8775,6 +8775,7 @@ impl Game {
                             temporary_tokens::TokenInstructions {
                                 item: item.clone(),
                                 keywords: Keywords::HASTE,
+                                permanent_keywords: false,
                                 attack: temporary_tokens::TokenAttack::None,
                                 cleanup: temporary_tokens::TokenCleanup::NextEndStepDestroy,
                             },
@@ -8796,6 +8797,7 @@ impl Game {
                             temporary_tokens::TokenInstructions {
                                 item: item.clone(),
                                 keywords: Keywords::NONE,
+                                permanent_keywords: false,
                                 attack: if attacking
                                     && self.attacking_return_combat(item.controller)
                                 {
@@ -8832,6 +8834,7 @@ impl Game {
                             temporary_tokens::TokenInstructions {
                                 item: item.clone(),
                                 keywords,
+                                permanent_keywords: false,
                                 attack: temporary_tokens::TokenAttack::None,
                                 cleanup,
                             },
@@ -8858,6 +8861,7 @@ impl Game {
                                 temporary_tokens::TokenInstructions {
                                     item: item.clone(),
                                     keywords: Keywords::NONE,
+                                    permanent_keywords: false,
                                     attack: temporary_tokens::TokenAttack::None,
                                     cleanup: temporary_tokens::TokenCleanup::NextEndStepSacrifice,
                                 },
@@ -8878,6 +8882,7 @@ impl Game {
                                 temporary_tokens::TokenInstructions {
                                     item: item.clone(),
                                     keywords,
+                                    permanent_keywords: false,
                                     attack: temporary_tokens::TokenAttack::None,
                                     cleanup: temporary_tokens::TokenCleanup::NextEndStepSacrifice,
                                 },
@@ -9081,6 +9086,7 @@ impl Game {
                                 temporary_tokens::TokenInstructions {
                                     item: item.clone(),
                                     keywords: Keywords::NONE,
+                                    permanent_keywords: false,
                                     attack: temporary_tokens::TokenAttack::None,
                                     cleanup: temporary_tokens::TokenCleanup::NextEndStepExile {
                                         ability,

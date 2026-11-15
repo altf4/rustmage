@@ -1782,6 +1782,7 @@ impl Game {
         if m.before
             .copy_recipe
             .is_some_and(|recipe| recipe.intrinsic_keywords().contains(Keywords::CHANGELING))
+            && m.entry_kinds() & CREATURE_OR_KINDRED != 0
         {
             result.set_flag(ALL_CREATURE_TYPES, true);
         }
