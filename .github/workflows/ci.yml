@@ -107,11 +107,13 @@ jobs:
           revision=$(python -c "import json; print(json.load(open('data/standard/xmage-inventory.json'))['xmage_source_commit'])")
           git init "$RUSTMAGE_XMAGE_SOURCE"
           git -C "$RUSTMAGE_XMAGE_SOURCE" remote add origin https://github.com/magefree/mage.git
-          git -C "$RUSTMAGE_XMAGE_SOURCE" fetch --depth=1 origin "$revision"
-          # Existing authored cards retain Java source pins at the preceding Standard snapshot.
-          git -C "$RUSTMAGE_XMAGE_SOURCE" fetch --depth=1 origin 492369c7844b8d76479f0393ff9eb6b0b0cf30d7
-          # Null Summoner is pinned to the immutable head of unmerged XMage PR #16468.
-          git -C "$RUSTMAGE_XMAGE_SOURCE" fetch --depth=1 origin 11d430e97f277fad0fafe604fabbaa97f944d441
+          # Fetch all pinned revisions together so shallow metadata changes once.
+          # Existing authored cards retain pins at the preceding Standard snapshot;
+          # Null Summoner uses the immutable head of unmerged XMage PR #16468.
+          git -C "$RUSTMAGE_XMAGE_SOURCE" fetch --depth=1 origin \
+            "$revision" \
+            492369c7844b8d76479f0393ff9eb6b0b0cf30d7 \
+            11d430e97f277fad0fafe604fabbaa97f944d441
           # check_sources reads immutable blobs with one git cat-file process.
           # No full XMage working tree or Java build is needed.
 
