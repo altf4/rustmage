@@ -634,7 +634,7 @@ impl Game {
             .state
             .first_counter_kind_events
             .as_ref()
-            .is_some_and(|rows| rows.iter().any(|row| *row == (object, kind)));
+            .is_some_and(|rows| rows.contains(&(object, kind)));
         if first_kind_this_turn {
             self.state
                 .first_counter_kind_events
@@ -1358,7 +1358,6 @@ impl Game {
                     | TriggerCondition::SelfCast
                     | TriggerCondition::SpellCast { .. }
                     | TriggerCondition::SpellCastOrLandPlayed
-                    | TriggerCondition::OpponentCastsOrActivatesChosenName
                     | TriggerCondition::ModalSpellCastByYou
                     | TriggerCondition::FaceDilemma(_)
                     | TriggerCondition::ManaSpentForSpell
@@ -2546,11 +2545,9 @@ impl Game {
                     if source.controller != caster
                         && matches!(source.entry_choice,
                             Some(EntryChoiceValue::CardName(name)) if name.matches(spell_name))
+                        && self.queue_trigger_from(&source, index, grant.map(Box::new))
                     {
-                        if self.queue_trigger_from(&source, index, grant.map(Box::new)) {
-                            self.state.pending_triggers.last_mut().unwrap().event_player =
-                                Some(caster);
-                        }
+                        self.state.pending_triggers.last_mut().unwrap().event_player = Some(caster);
                     }
                     continue;
                 }

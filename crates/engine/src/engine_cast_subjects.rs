@@ -156,13 +156,12 @@ impl Game {
         {
             return false;
         }
-        if let Some(player) = self.player_or_planeswalker_defender(defender) {
-            if self.state.combat_rules.as_ref().is_some_and(|rules| {
+        if let Some(player) = self.player_or_planeswalker_defender(defender)
+            && (self.state.combat_rules.as_ref().is_some_and(|rules| {
                 rules.player_attack_prohibitions[actor.index()] & (1 << player.index()) != 0
-            }) || self.aura_protects_defender(attacker, player)
-            {
-                return false;
-            }
+            }) || self.aura_protects_defender(attacker, player))
+        {
+            return false;
         }
         if let CombatDefender::Planeswalker(walker) | CombatDefender::Battle(walker) = defender {
             let object = &self.state.objects[walker.card as usize];

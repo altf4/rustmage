@@ -47,14 +47,16 @@ impl Game {
         let before: Vec<_> = affected
             .iter()
             .enumerate()
-            .filter_map(|(id, &phased)| phased.then(|| self.object_view(id as CardId)))
+            .filter(|row| *row.1)
+            .map(|(id, _)| self.object_view(id as CardId))
             .collect();
         self.capture_phased_entering_explorers(&before.iter().collect::<Vec<_>>());
         let control_watch = self.freeze_control_watch();
         let phased_defenders: Vec<_> = affected
             .iter()
             .enumerate()
-            .filter_map(|(id, &phased)| phased.then(|| self.object_ref(id as CardId)))
+            .filter(|row| *row.1)
+            .map(|(id, _)| self.object_ref(id as CardId))
             .collect();
         // A source that phases out ceases to exist for CR 702.26f. A "for as
         // long as this remains tapped" duration ends here and never resumes
