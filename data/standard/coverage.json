@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "8fa8053b053fe71eb83f01966b1febd6bc14c5441cc20b1b29c9a8d834390b54",
+  "catalogue_version": "892ebf7c7545578a7d9d8fe5481287edec5ab96671b8fe0758807f7dafcdf116",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5229,
-  "implemented_total": 5249,
+  "implemented_standard_cards": 5236,
+  "implemented_total": 5256,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "gated": 230,
-      "complete": 66
+      "gated": 223,
+      "complete": 73
     },
     "w17": {
       "total": 1,
@@ -41699,8 +41699,8 @@
     {
       "name": "Andoria",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/andoria.rs",
       "set": "trk"
     },
@@ -41747,16 +41747,16 @@
     {
       "name": "Assault Drone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/assault_drone.rs",
       "set": "trk"
     },
     {
       "name": "Assembly Specialist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/assembly_specialist.rs",
       "set": "trk"
     },
@@ -41779,8 +41779,8 @@
     {
       "name": "Bajor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/bajor.rs",
       "set": "trk"
     },
@@ -41931,8 +41931,8 @@
     {
       "name": "Cardassia Prime",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/cardassia_prime.rs",
       "set": "trk"
     },
@@ -42027,8 +42027,8 @@
     {
       "name": "Command Subadjunct",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/command_subadjunct.rs",
       "set": "trk"
     },
@@ -42155,8 +42155,8 @@
     {
       "name": "Data, New Life",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/data_new_life.rs",
       "set": "trk"
     },
