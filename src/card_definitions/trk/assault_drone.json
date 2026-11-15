@@ -1,0 +1,14 @@
+{
+  "name": "Assault Drone",
+  "catalogue_id": 5723,
+  "oracle_id": "18832d7a-9a1f-45f1-a0f9-8e768a36af07",
+  "facts_sha256": "ece565f2e12bfd90897b8e932cf37626f20b5b611ba31bdc9889c6b658bba36a",
+  "physical_metadata_sha256": "d79b317e28746b01d938053a91753ecbea9153092ac40a68f65ebd431a9ee325",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/a/AssaultDrone.java",
+  "java_sha256": "d395797d542354ea1007e255a5c666baadf140a43db1e2f05b6bf7ef5ab2c2b3",
+  "xmage_class": "mage.cards.a.AssaultDrone"
+}

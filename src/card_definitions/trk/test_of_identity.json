@@ -1,0 +1,14 @@
+{
+  "name": "Test of Identity",
+  "catalogue_id": 5959,
+  "oracle_id": "8cb700bb-daa5-4a26-bb84-e22bc11bdaff",
+  "facts_sha256": "bfff5df0aec6283d9e6a8b250a97c23137607e42830d3e7ab8e20704e8262ed9",
+  "physical_metadata_sha256": "49420210796821cabaa03b71dd4a9c5e497223c204580789355c6dbd65a2336d",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/t/TestOfIdentity.java",
+  "java_sha256": "066bdefb6561ef60d3b544177ea90186c3a43587bf83b96bb766baab1f97300f",
+  "xmage_class": "mage.cards.t.TestOfIdentity"
+}

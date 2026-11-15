@@ -1,0 +1,14 @@
+{
+  "name": "Neelix, Moral Support",
+  "catalogue_id": 5873,
+  "oracle_id": "7fba522b-a292-4d1f-9999-f787ba2d5fd1",
+  "facts_sha256": "5bb35520bfb0fd241d87d1727085fbaa451f7b746c64a1a92ca79c984dbd2db0",
+  "physical_metadata_sha256": "f7f9ddf21ff3b6059175c5191aab0c2ce7a79f00a674fa44ce849e3440216da1",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/n/NeelixMoralSupport.java",
+  "java_sha256": "09cc137f7ee0dd528162299aedf08fa2b8f2ce3fbd8a63e4b735440b26ab6b9e",
+  "xmage_class": "mage.cards.n.NeelixMoralSupport"
+}

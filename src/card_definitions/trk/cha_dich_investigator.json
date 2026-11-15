@@ -1,0 +1,14 @@
+{
+  "name": "Cha'DIch Investigator",
+  "catalogue_id": 5748,
+  "oracle_id": "cfdef803-6f7a-4055-8d51-8e8c60953928",
+  "facts_sha256": "2c958bb46dd6f38e3a53bc3ec88d2d0c79018e89ff8f61b9cfb9aad5ff2d91b6",
+  "physical_metadata_sha256": "f97ce82381cff93733e6edd3a1a24f15863eb8b3c95cb5d90c697340331037f3",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/c/ChaDIchInvestigator.java",
+  "java_sha256": "6513b91bd67c6864307d7cd07f28bf87db1db0ab37a075dd1859a6cb0cec26bb",
+  "xmage_class": "mage.cards.c.ChaDIchInvestigator"
+}

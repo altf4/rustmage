@@ -1,0 +1,13 @@
+{
+  "name": "Zefram Cochrane, Warp Pioneer",
+  "catalogue_id": 6005,
+  "oracle_id": "fea67446-f413-4a8c-b79a-49172e798fff",
+  "facts_sha256": "f392528fb90a6f5f776ab238f3dc0cd07cab89768cd35092c76cd526f16c8b68",
+  "physical_metadata_sha256": "7e3d9b392e2f971b9417f68c6422a15bad1be7521e3cffd91be1516213a1385a",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

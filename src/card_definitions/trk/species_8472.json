@@ -1,0 +1,13 @@
+{
+  "name": "Species 8472",
+  "catalogue_id": 5931,
+  "oracle_id": "645a5619-d0b2-4153-aae0-ca2adc6f5e3d",
+  "facts_sha256": "9ea604d4e064f128cd6bcba807b8025f9c465199ce74c6c985e973d54d474108",
+  "physical_metadata_sha256": "13203b5fc6e437215f9a1c0d30211ef1a8854152249590b08387caa146ea81b0",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

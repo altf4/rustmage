@@ -1,0 +1,14 @@
+{
+  "name": "Federation Outpost",
+  "catalogue_id": 5805,
+  "oracle_id": "a8bcc930-3efe-4595-b164-f5985e1dc289",
+  "facts_sha256": "f1089ce3afeef1e1ae7bea95c01b7135487335937ea80261c43689b80b8eef4d",
+  "physical_metadata_sha256": "bdcc2589c5bfe5e4397ab84fcc566034d1b99280a754803ed244bee382886b3a",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/f/FederationOutpost.java",
+  "java_sha256": "4c13a04af6734d88b80c6c1cfe921171bde715d47ba4469b6df00778fddddd6c",
+  "xmage_class": "mage.cards.f.FederationOutpost"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Troubling Tribbles",
+  "catalogue_id": 5979,
+  "oracle_id": "fc76eddd-8f2a-45e3-95d2-3074d971effb",
+  "facts_sha256": "d1b1a56c741cec36cb0ac5d464927ead9d871494571baf59f9279f1c7a786cd3",
+  "physical_metadata_sha256": "49bdb4f3b9cd8c7368314968c32477db999c22cfd14e69994b8e23acefc13b82",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/t/TroublingTribbles.java",
+  "java_sha256": "3a2b41a53ccd6a646ec3b0c2fb170cc58dfc6c731e6e0153a243ba55a9a25f88",
+  "xmage_class": "mage.cards.t.TroublingTribbles"
+}

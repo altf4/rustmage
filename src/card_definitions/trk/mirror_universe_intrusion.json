@@ -1,0 +1,13 @@
+{
+  "name": "Mirror Universe Intrusion",
+  "catalogue_id": 5868,
+  "oracle_id": "007d08e8-4db2-47d1-ba39-8bb8efa491a1",
+  "facts_sha256": "859aa7a7855e4f0f273ec705629b5d54e46112481c9d75bc117e8082cc8f7354",
+  "physical_metadata_sha256": "e220d7ca212b8fdef651395077cd5ca3e889e49b4aea305ccf596b1d63c95a11",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

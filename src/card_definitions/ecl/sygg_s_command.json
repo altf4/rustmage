@@ -2,13 +2,13 @@
   "name": "Sygg's Command",
   "catalogue_id": 4298,
   "oracle_id": "7fe5baab-b182-4cd9-bea5-912ce9b1464a",
-  "facts_sha256": "c5fcd7273760c58916cfd17bd769323869b593e8e6c52951a5fa93bdc13212b6",
+  "facts_sha256": "bf0e36dfca9d5d50c0d12bdcd809ad001b909f21c42b8372ed70a3b6b6a7ce5b",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "66cd26eceb7778af0f6cc5af309479fb21046dfc6c2e64ea576ed16e2967a4f2"
   },
-  "physical_metadata_sha256": "aec9682dc2b91f38e6a2c0945f6f8d119b76507c1aaaa47e6bb1cb1f512a29ed",
+  "physical_metadata_sha256": "a426aa79a5fca8fc41b4a5400449b367903d292192f32a779ee2f496adf59bdb",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/s/SyggsCommand.java",
   "java_sha256": "bb940345a883d5f51946a7c1fc6ee6fe1360d0c85dbc726395d4b0a6b38b9b0b",

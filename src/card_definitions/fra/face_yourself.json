@@ -2,13 +2,13 @@
   "name": "Face Yourself",
   "catalogue_id": 1423,
   "oracle_id": "3c0fe71c-bee1-41d3-aeb5-1723028eedde",
-  "facts_sha256": "9f1df18df28ef850dbb705b5660cd14522b890c4bc8e4c5c7eeaeb39ab00e0ed",
+  "facts_sha256": "0f1fb44b01768a03b210e118252676722a82ff9b7fe31d0600ea90bc9c8e60d0",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e7abaf4ca9b95c82ff6593d436d8c9eb84ae876707421b46bce95f77d5506670"
   },
-  "physical_metadata_sha256": "5bec5b024ea170b7196de297b7440246bf672f048fc118bd7a09a9887c9bd2d3",
+  "physical_metadata_sha256": "7f991d756c9199638778e08c175d1fe32f775ff2ead9d1070a8518471667fbeb",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/f/FaceYourself.java",
   "java_sha256": "eb70f13e93387bfca8c5dc983c2c534e65c1205d282fa52ab73de33825b56c87",

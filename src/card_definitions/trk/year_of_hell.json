@@ -1,0 +1,14 @@
+{
+  "name": "Year of Hell",
+  "catalogue_id": 6004,
+  "oracle_id": "83f426db-3b25-4407-afd0-0465e3900c24",
+  "facts_sha256": "4695c4260116ebc90ee78fd325485d4d9cce2c8bfb6080c6984d20fd7866ba50",
+  "physical_metadata_sha256": "0d90a391bb7844928bd3562b30ea1612742277f22c9a5fa59e133abdb8356a99",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/y/YearOfHell.java",
+  "java_sha256": "5e712a7b291d87ddfc598c8fe854593fc2794e9c808dc823618659f25c0f8663",
+  "xmage_class": "mage.cards.y.YearOfHell"
+}

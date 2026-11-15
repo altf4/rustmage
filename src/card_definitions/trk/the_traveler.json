@@ -1,0 +1,14 @@
+{
+  "name": "The Traveler",
+  "catalogue_id": 5972,
+  "oracle_id": "b61718eb-dc6a-4199-b7c7-42eccf4158e8",
+  "facts_sha256": "bac7dae62349c55069b8254696b49a1aad3a23d7ecc9dcdfdaf637c966211b39",
+  "physical_metadata_sha256": "bc8f1643fb70da0935f339b3ade6c7f3acf43b4f97f3c9053fc29915a607dd53",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheTraveler.java",
+  "java_sha256": "8aa4833f13eabf3d0dee8a11b820ff2229e094d1bfb2022b248839ae5fa4af46",
+  "xmage_class": "mage.cards.t.TheTraveler"
+}

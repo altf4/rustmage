@@ -1,0 +1,14 @@
+{
+  "name": "Test of Priorities",
+  "catalogue_id": 5961,
+  "oracle_id": "cd24de4f-ce88-4fbb-9e8d-93ea7c260b4c",
+  "facts_sha256": "8e719efd1cef91ca07916caa08ddf4fb6cc941911afc35135c65e06983574be0",
+  "physical_metadata_sha256": "99a6813f5d89b603870e7a78a0172f4c3086d957090d1700c219f8474c7d0f9b",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/t/TestOfPriorities.java",
+  "java_sha256": "e0ddcb223131568b1133181602bf65aec825463e5bac79451e380430c0af9f27",
+  "xmage_class": "mage.cards.t.TestOfPriorities"
+}

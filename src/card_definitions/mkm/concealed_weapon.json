@@ -2,13 +2,13 @@
   "name": "Concealed Weapon",
   "catalogue_id": 822,
   "oracle_id": "104565b1-2db8-4c01-ae3d-14087768be45",
-  "facts_sha256": "a9409e9e99693172fb47d4482758cbee30beca753ec3348b92e7e5f499741914",
+  "facts_sha256": "556adcc796832c7178f1f9feb5e4b63a72fe9b119b804ce3be1f2a2490856539",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3be44b3f2cfeb6fef355c1563439210f4dfe20d5f41398b862457d0c99df47ee"
   },
-  "physical_metadata_sha256": "4442009897e90a787ca885cc5980a3266023769e56ad095ea0ad6ee49085c377",
+  "physical_metadata_sha256": "7f8d3d9dc9d6fe2b752b4cb3d936b5eef8fb4d510157a92dc1fb24134510218e",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/c/ConcealedWeapon.java",
   "java_sha256": "cf6fae09b90e3bd38f6f5c0b4972ccc1335a2c7d172e28d28171f7d5c0e4d3b5",

@@ -1,0 +1,14 @@
+{
+  "name": "70,000 Light-Years from Home",
+  "catalogue_id": 5711,
+  "oracle_id": "9356aee1-3d2b-4d17-8863-663e1ddf56f3",
+  "facts_sha256": "580e63ca7047b61fdbb38360f99773f97f0b49a2c6cdf4cf7b6efa8fb4556cbb",
+  "physical_metadata_sha256": "649f262e980d8b6d1503ce57ca22483340b85ddbd2ce3e1030de980160b62767",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/SeventyThousandLightYearsFromHome.java",
+  "java_sha256": "436a72f2e6dde74c86b9f9811527d6d555155c4fbf48835f2ad53891b0e0f608",
+  "xmage_class": "mage.cards.s.SeventyThousandLightYearsFromHome"
+}

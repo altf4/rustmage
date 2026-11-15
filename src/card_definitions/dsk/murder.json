@@ -2,13 +2,13 @@
   "name": "Murder",
   "catalogue_id": 2879,
   "oracle_id": "938b4e2c-88d9-4637-bc00-e228920c9a78",
-  "facts_sha256": "bd62427aa5a040437f003ae7d99f59584697451dd9c675a0e122b4b02278b6e5",
+  "facts_sha256": "f9d13f418e29d92d15545c5e25cdbd6144a15f735b2f1b89ba1eb81cdae1a86c",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7761a1ab10fd167bd461532991e9ffaeabc1d8cb255dfa56a57de27a5bcbd1f0"
   },
-  "physical_metadata_sha256": "15a0d42f44ac4ef5b4c1a2fd67781a79bc4e5ef2eddc0943bafc43bf5ce35175",
+  "physical_metadata_sha256": "7ae2a6eb7b5483bfaf808326efef128b8885fc369069b70c0d830723a2cc1256",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/m/Murder.java",
   "java_sha256": "8065902fac08cbb0ddd46ad350defcb4d289e38355d506a0efe6a19a77cf793d",

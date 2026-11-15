@@ -1,0 +1,13 @@
+{
+  "name": "Jett Reno, Problem Solver",
+  "catalogue_id": 5846,
+  "oracle_id": "492ba01e-c0fa-414c-95fd-df5b59212d2a",
+  "facts_sha256": "82bc785d9cb6ca520237b19f2d87b8c2b4711a9f7ded6ae43aab0fb373456d00",
+  "physical_metadata_sha256": "3d420b01326f94b592c3f64581af09e440d3fe67cf035a79f2e9b165e04fae6e",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

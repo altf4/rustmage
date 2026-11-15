@@ -1,0 +1,14 @@
+{
+  "name": "Vulcan",
+  "catalogue_id": 5994,
+  "oracle_id": "c7b6bc1f-9161-415e-a097-d9c8cd81d4ae",
+  "facts_sha256": "fd6bfc45ef4e5c2e2f72b69e6def9acbe27ef0b2dc81bcc827e8b6edc28eb5ab",
+  "physical_metadata_sha256": "0937af2191aa9f4924b4fe5a5b7e0aa953b3ed9028e6892d5dfca46d8e9dcdc6",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/v/Vulcan.java",
+  "java_sha256": "4d4b96d65cf70063e76c82b21399a8fd060b3315401980170e193abbc1f3447e",
+  "xmage_class": "mage.cards.v.Vulcan"
+}

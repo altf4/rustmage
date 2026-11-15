@@ -1,0 +1,14 @@
+{
+  "name": "D-7 Battle Cruiser",
+  "catalogue_id": 5769,
+  "oracle_id": "5e696f9a-425c-470a-870e-10d2ba3bb27d",
+  "facts_sha256": "e66e2ed7b4e63444555c74be5a0989c09b9022c38770125476587c91b872389e",
+  "physical_metadata_sha256": "ea22f3218e1de3044fb22ea72be4706d29d49df2480d65a4a8df236c43fd0581",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/d/D7BattleCruiser.java",
+  "java_sha256": "13a017e0c500166a6c3296ca82571c6e1c6be5389595486c96c4456c04748e8e",
+  "xmage_class": "mage.cards.d.D7BattleCruiser"
+}

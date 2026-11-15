@@ -1,0 +1,14 @@
+{
+  "name": "Spatial Anomaly",
+  "catalogue_id": 5930,
+  "oracle_id": "a4f31512-a91c-42e0-9929-5069386c3c71",
+  "facts_sha256": "87223e9086da368f223ccaf60bc0c2c5871a28efbfbda7bfed118f4d9d07d565",
+  "physical_metadata_sha256": "808a54f583d38217d23e84bd0ac76867bacc0254262262be789c946d28cf79db",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpatialAnomaly.java",
+  "java_sha256": "e563428d3c1bf2626d433ba470c56e124f9b45ad5cdde988d15d135e42b813d7",
+  "xmage_class": "mage.cards.s.SpatialAnomaly"
+}

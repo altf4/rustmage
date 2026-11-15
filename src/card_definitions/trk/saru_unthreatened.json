@@ -1,0 +1,14 @@
+{
+  "name": "Saru, Unthreatened",
+  "catalogue_id": 5918,
+  "oracle_id": "b6a21e53-6f62-4874-b9cc-84ae177a0da6",
+  "facts_sha256": "661446acf79eab57e5344b66666829d87a85922f6f081a9e4626640f9f722f78",
+  "physical_metadata_sha256": "d427d0f53d534851684985afc38ffd669ecb9bf4f486dcca44766bc72a5d85ef",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/SaruUnthreatened.java",
+  "java_sha256": "3165c86b7376345a1a4a2670ffc81804641df1f4665745e4913967a645990996",
+  "xmage_class": "mage.cards.s.SaruUnthreatened"
+}

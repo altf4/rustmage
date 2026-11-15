@@ -1,0 +1,14 @@
+{
+  "name": "Khaaaaaaaaaaaannn!",
+  "catalogue_id": 5848,
+  "oracle_id": "45b1a19b-6a0c-4534-9106-99c2e5fc30d6",
+  "facts_sha256": "4e21326705f3a9ad0498dee4c176ba6e4f14ea9b4870b0276a0a36301297a720",
+  "physical_metadata_sha256": "4fece50dbc41f62d0139bfee1ee855fb6cc538eadf7bec8e6c27908eb24b812a",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/k/Khaaaaaaaaaaaannn.java",
+  "java_sha256": "2fd707c112605feb5f2cdde119b757c4dd37572bfea8ed67846ee3062ba5364b",
+  "xmage_class": "mage.cards.k.Khaaaaaaaaaaaannn"
+}

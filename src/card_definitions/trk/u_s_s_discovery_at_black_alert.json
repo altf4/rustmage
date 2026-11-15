@@ -1,0 +1,14 @@
+{
+  "name": "U.S.S. Discovery, at Black Alert",
+  "catalogue_id": 5982,
+  "oracle_id": "13dbfe3f-1e04-4c4f-953c-7c949dba9d33",
+  "facts_sha256": "17ba42b36598d3bb4c951505e30c30cc78cbc804fce37ef0f858ea1fcea79e71",
+  "physical_metadata_sha256": "bcaead9f42102f21888264bc16406f389ecf099f49b2b555b7cc478855bb72dd",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/u/USSDiscoveryAtBlackAlert.java",
+  "java_sha256": "b3923bfeb62d19719671019b28e6a69faea09877a5602bf8fab78dcc4f89a4d8",
+  "xmage_class": "mage.cards.u.USSDiscoveryAtBlackAlert"
+}

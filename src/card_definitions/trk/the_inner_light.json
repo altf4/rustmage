@@ -1,0 +1,13 @@
+{
+  "name": "The Inner Light",
+  "catalogue_id": 5968,
+  "oracle_id": "0de3aad2-5f4c-4437-b0b3-4b867309528d",
+  "facts_sha256": "46705c08c95a270c2c10eb0ea5672020e99197e1ae0c022f4d64dee3816eb4aa",
+  "physical_metadata_sha256": "8d12bc53fff3e2540da596b79f62ec13fc3341a8b938e90ee6b90295eac81191",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

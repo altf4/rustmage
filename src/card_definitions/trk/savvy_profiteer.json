@@ -1,0 +1,14 @@
+{
+  "name": "Savvy Profiteer",
+  "catalogue_id": 5920,
+  "oracle_id": "e96a9f9a-9326-4f0b-98ad-23210c97299f",
+  "facts_sha256": "9f0c30825d9354972897b5f9714d1e5da4826d0d5ebcf129eaebf87782368fa4",
+  "physical_metadata_sha256": "33d7ce3aa67f7bc71b7dbfc07a5e0b8b4804610bbb1613feaabdb75ae2c31728",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/SavvyProfiteer.java",
+  "java_sha256": "d35ad979923aa0a8ab5c4fb2139f1f5e236676ef4fd0f13ceea0c1c6bdbe69a8",
+  "xmage_class": "mage.cards.s.SavvyProfiteer"
+}

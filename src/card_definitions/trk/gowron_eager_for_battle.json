@@ -1,0 +1,13 @@
+{
+  "name": "Gowron, Eager for Battle",
+  "catalogue_id": 5820,
+  "oracle_id": "40616029-e1a8-4e7c-bc7b-e381779c57cc",
+  "facts_sha256": "e35a316fc71c95f23d3caf6342c085c04fbbda368d6f2524cd00e7874c71d675",
+  "physical_metadata_sha256": "0541eeb8c98d10c667789ea9759875409d1135366b7634277b3e32b4b27b98e5",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Anthropological Mission",
+  "catalogue_id": 5720,
+  "oracle_id": "535c0280-fdb5-4ff8-8608-c2f98b8a7ffc",
+  "facts_sha256": "8013d86e30c3dbc1327c1315fee0cd29d7749e8e9ffd50fd26715a4646671147",
+  "physical_metadata_sha256": "58119181064839015a441bdd249e0a6e62ebc988dae8b076ba74d60e26d733f2",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/a/AnthropologicalMission.java",
+  "java_sha256": "0de17bc8057c8d55035442cd66d582acf319bcb7b317fafdfa7dddeb52faf3df",
+  "xmage_class": "mage.cards.a.AnthropologicalMission"
+}

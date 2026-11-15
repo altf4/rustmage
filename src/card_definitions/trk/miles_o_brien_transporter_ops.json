@@ -1,0 +1,13 @@
+{
+  "name": "Miles O'Brien, Transporter Ops",
+  "catalogue_id": 5867,
+  "oracle_id": "31e3f39f-8b18-4316-984f-4d57d2d480ca",
+  "facts_sha256": "56daf1154bb72fced4eec53814d9fadcb62968f022d54d4149b36b95e1b70164",
+  "physical_metadata_sha256": "7472e0eb911e7653f7053bfb100c76bbe0aee822b04359cce0fa0067734cac02",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

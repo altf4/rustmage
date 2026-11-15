@@ -1,0 +1,13 @@
+{
+  "name": "Sulu, Space Swashbuckler",
+  "catalogue_id": 5941,
+  "oracle_id": "d090131d-428c-4a98-afc5-595b9bc7adce",
+  "facts_sha256": "c7992fdebdc61745a40fdabc81726920d852d73cebc7e9f007cc3bcecd05f5f8",
+  "physical_metadata_sha256": "0aa163aa48db3f2ad84af130794fef03a53a5942bd81ac42a77f37ed61280a38",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Collective Drone",
+  "catalogue_id": 5755,
+  "oracle_id": "d9806ba7-8af4-4e8e-9238-7bc40c6bee0b",
+  "facts_sha256": "f851d628a1ee98f81ef1fb48facc93d851a952c0fcb22cabf6f2bbc8762c88e9",
+  "physical_metadata_sha256": "eb7ec17296afc5b1226514b7064f497be649c643886281fe4a2df6c647949256",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/c/CollectiveDrone.java",
+  "java_sha256": "9cb296e9bb3a2708d8f509ed826f475722bd7ec1e4612532cb1239bc6ca37aaa",
+  "xmage_class": "mage.cards.c.CollectiveDrone"
+}

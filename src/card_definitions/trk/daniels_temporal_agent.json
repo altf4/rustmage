@@ -1,0 +1,14 @@
+{
+  "name": "Daniels, Temporal Agent",
+  "catalogue_id": 5773,
+  "oracle_id": "2e44a02f-af94-4696-b979-cdf68285c87a",
+  "facts_sha256": "3a7223f7fb162e338f4fcf7dc171d94066a00578670c189d82f6a4d2aded0f54",
+  "physical_metadata_sha256": "9913dcde5c41fe06c34ec4a65e0d769c0dbe22f136fa68469624d559e256f40b",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/d/DanielsTemporalAgent.java",
+  "java_sha256": "3c00f9ff95815ba17ae26cc427f20289799fb8c06bf38c4d5dc678e8dc3042f7",
+  "xmage_class": "mage.cards.d.DanielsTemporalAgent"
+}

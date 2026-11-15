@@ -2,13 +2,13 @@
   "name": "Mystic Monastery",
   "catalogue_id": 2899,
   "oracle_id": "834b8f71-9a45-42ae-9e99-e749fa6fb45e",
-  "facts_sha256": "fb92d769603155fc35367baf39e0beedfae14eddb0c8d5fefcb5aaf9a2caf295",
+  "facts_sha256": "eb2fcb5c3fb09410ae4f6b8b2376e9c829d06677798b4be93e8b782231da24e8",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "867920f6eca25c10b8b6165946f36e10fc987fa51e1e4a4542d356b41d2fecfe"
   },
-  "physical_metadata_sha256": "dbf764127f17381b37e71c799ba5d64b961c4cf3389568bfd06f5a2b2dfc61f1",
+  "physical_metadata_sha256": "96801d84f96e34ddc5c190d3ee7bfefb4e5fcefaefc09632c7815dd917c80cd1",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/m/MysticMonastery.java",
   "java_sha256": "45a3e86f91a47f7cb3b8acfc17655605fb122d19cdac509719617cfb7e5453ce",

@@ -2,13 +2,13 @@
   "name": "Trystan's Command",
   "catalogue_id": 4696,
   "oracle_id": "ecc4e230-a546-4cb4-987c-87300060bbe2",
-  "facts_sha256": "0d8000a0f82a3854b07b989c96ea4070587ea22ce383fb7a10e0229ef032aed2",
+  "facts_sha256": "8d0ad029b4344167309ebe622e4bedab54dd2315295590bcc32a72b04b0c8f7c",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e67de96dfe5d2b9cfa5c6cda1eec7ad0d6bcf49c927196069125f2f5f54479dd"
   },
-  "physical_metadata_sha256": "efad41ce7c57ec292539fc2a2dab12c15ffa4b824d9093736dd3c880317e50a5",
+  "physical_metadata_sha256": "a8c418ce99c158bf81a6a7ce0518e49359529ede233e641bf6c9a15481fdbe7f",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/t/TrystansCommand.java",
   "java_sha256": "930d62802c23deb87c7b189f5bdaf000364b01bc5941b8ee28347aed2cd12cc5",

@@ -1,0 +1,14 @@
+{
+  "name": "Sylvia Tilly, Joy of Discovery",
+  "catalogue_id": 5945,
+  "oracle_id": "d4c1dbc8-23d8-49e0-bc2d-d005e9215172",
+  "facts_sha256": "9b0990092bdf36db325701dc1ed7ff4b133b20de54bf02a91b9eed3050d671ca",
+  "physical_metadata_sha256": "5b3d42138812cdf20b2c076ddd5ea0b945223dd3eef22dc973fd4bd702d96a78",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/SylviaTillyJoyOfDiscovery.java",
+  "java_sha256": "e6d043b0844c845ea68a9fdbb62c7f7f54433b3486183044341d5ef2d17e0141",
+  "xmage_class": "mage.cards.s.SylviaTillyJoyOfDiscovery"
+}

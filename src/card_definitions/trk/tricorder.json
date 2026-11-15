@@ -1,0 +1,14 @@
+{
+  "name": "Tricorder",
+  "catalogue_id": 5978,
+  "oracle_id": "1385679f-bdcd-4d7e-8266-1df0e36cc2da",
+  "facts_sha256": "7929b581c262ebd21477d20e7db10bd81d73d3a51435e294ed76dc8206d2f35e",
+  "physical_metadata_sha256": "971d6d794f0c730c0bc27f7f18f48d75d931ef005b72f20be081b4243d69fa96",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/t/Tricorder.java",
+  "java_sha256": "9526deab3ecabc31ed26680362d424bca0e2a4e460986d3b433a507b22012e35",
+  "xmage_class": "mage.cards.t.Tricorder"
+}

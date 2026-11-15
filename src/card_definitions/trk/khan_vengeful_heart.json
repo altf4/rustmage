@@ -1,0 +1,13 @@
+{
+  "name": "Khan, Vengeful Heart",
+  "catalogue_id": 5850,
+  "oracle_id": "d2a86d0c-a4fe-434c-a45c-812cdec9169f",
+  "facts_sha256": "e67877e307b8f011d8fc0927c396dd2d223cb274a4c58ac0cd669aef7c02b73d",
+  "physical_metadata_sha256": "0c22ca57373c1e87f6aa3346e3b3ef3118d92fa2ed232d7c262bf01cc3bef739",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

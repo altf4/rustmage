@@ -1,0 +1,14 @@
+{
+  "name": "Organic Avulsion Unit",
+  "catalogue_id": 5880,
+  "oracle_id": "f1e28022-b06b-4efb-9f85-c36d8302ef99",
+  "facts_sha256": "a10fe0f4e549b6af61f4d97b73cba015cd694c510bbe2602578d98b2e879ab8d",
+  "physical_metadata_sha256": "bbdcaf5c18deaee7d1eccf8ec4861258f5633ab8fc53b792710e2de53c302a59",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/o/OrganicAvulsionUnit.java",
+  "java_sha256": "7d8a48c7fdb8c48a21d6a7b0114a8fe6c4abbedc6084d0b8399237b90746a197",
+  "xmage_class": "mage.cards.o.OrganicAvulsionUnit"
+}

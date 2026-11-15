@@ -1,0 +1,14 @@
+{
+  "name": "Rogue Artificial Intelligence",
+  "catalogue_id": 5908,
+  "oracle_id": "4849f2f8-0c0e-470d-a4f5-76547a9570a0",
+  "facts_sha256": "305f842dbfad87aa19c739cfc5c617322de8eff7b47f55780b4e5f4196d357a2",
+  "physical_metadata_sha256": "8388c1e80bff01d96510cba87c84a07c7b9e6e56374d0924782198e1fa56f7e2",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/r/RogueArtificialIntelligence.java",
+  "java_sha256": "bdc3732847ca6ec1587772e79e52e671ef1946f3446103c78341da3d4f3a76a5",
+  "xmage_class": "mage.cards.r.RogueArtificialIntelligence"
+}

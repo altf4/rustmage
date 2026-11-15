@@ -1,0 +1,14 @@
+{
+  "name": "Starfleet Academy",
+  "catalogue_id": 5934,
+  "oracle_id": "de8ebef9-fa0e-42df-a1bc-5c4b86d1bdd1",
+  "facts_sha256": "8807fcc4255cea12fc9e034d8b1204d5a20083c1a08a33760915a7acd3973de0",
+  "physical_metadata_sha256": "3d248a1aec9410109dcdf94ea6e443dcbe0b23cbd07c4d69bb439e3bdd8be45e",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/StarfleetAcademy.java",
+  "java_sha256": "21e83bb2929d8b378e40b2afeba7de1977da233743ec0023587691e7d544513c",
+  "xmage_class": "mage.cards.s.StarfleetAcademy"
+}

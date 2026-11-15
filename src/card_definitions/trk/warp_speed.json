@@ -1,0 +1,14 @@
+{
+  "name": "Warp Speed",
+  "catalogue_id": 5997,
+  "oracle_id": "5a824931-2b65-42b1-8653-d4313a6693d2",
+  "facts_sha256": "cd508391220bfe6651cea019fc07f14b82ea5cdefda5d9788470587f5b0e8582",
+  "physical_metadata_sha256": "119bd2a5395a4b21de1354f31fcdafd45d2989c4efc6535e62369b33ebc2c4bd",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/w/WarpSpeed.java",
+  "java_sha256": "cee7926c0e75acf1437a9f3a7e0bb40f7a0b55e7f9557003083e0a7d2b409d18",
+  "xmage_class": "mage.cards.w.WarpSpeed"
+}

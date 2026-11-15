@@ -1,0 +1,13 @@
+{
+  "name": "Melkotian Adjudicator",
+  "catalogue_id": 5866,
+  "oracle_id": "1fdcdb1c-a140-40ee-b711-5ea539eb1084",
+  "facts_sha256": "cdd8354636bee368ed3c6da0f4da07bd557ecc41ef89d33073145f8fe7b841d8",
+  "physical_metadata_sha256": "a2b119b4b783fcf0fd779c77f1e407eb3ece3745008943901c7e8e57fc636f31",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

@@ -2,13 +2,13 @@
   "name": "The Apprentice's Folly",
   "catalogue_id": 4419,
   "oracle_id": "f45542a0-0d49-4b56-9c3e-663ff8d0529a",
-  "facts_sha256": "a98fe93fc34c42c1d9d857bbabcda7023546b37c2d9989a1f565ccf14c3e0880",
+  "facts_sha256": "c1e66e4f861cc34241c950e0ff7dd4eb8daf040fd047e93722b080911d51d0ce",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c54ff4e4d35953c0291e1dbccbe0811870b62fa6ff199d6c2552be3a12623be0"
   },
-  "physical_metadata_sha256": "c641248c8838ccf5d637771b2b6630652f7b33d2a665d3f9459993b33631e8ca",
+  "physical_metadata_sha256": "cc026da4432343e32a2d4c207d8b522edb38bc9bef2009ab002aa9b843ec5981",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/t/TheApprenticesFolly.java",
   "java_sha256": "de6232ec11c8b484ab80007226f8d883d52d607922bcdfe23841c03a161267bc",

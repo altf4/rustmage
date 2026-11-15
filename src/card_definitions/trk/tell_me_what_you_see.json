@@ -1,0 +1,13 @@
+{
+  "name": "Tell Me What You See",
+  "catalogue_id": 5953,
+  "oracle_id": "abfdfae5-61aa-42d6-9c8e-83fda59de233",
+  "facts_sha256": "e905b3b0628323842473bc7342d2a6b76b671434eb0f3ffa48a6ef06616904c2",
+  "physical_metadata_sha256": "c920eec3f650dac2f92ff12e9910b0c8dc1be87ab67915ff1ebaf1647210c611",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

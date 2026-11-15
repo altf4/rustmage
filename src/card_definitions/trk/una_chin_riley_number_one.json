@@ -1,0 +1,14 @@
+{
+  "name": "Una Chin-Riley, Number One",
+  "catalogue_id": 5988,
+  "oracle_id": "0529c6fa-a35f-4d33-b274-93446ce68419",
+  "facts_sha256": "ae6bf1e5ef442a3c2c4a2f6db5601ceae57d4942a352eae633e6784dc0bef1a8",
+  "physical_metadata_sha256": "2dd549815ce8624d285f27a7d98c4b934a310cb84796e2c5b1d7d821de23bef7",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnaChinRileyNumberOne.java",
+  "java_sha256": "7e40e6047bdd616ef6a9f42e8be6cd4e3d6dfcfbae344698354ac6235e18fc51",
+  "xmage_class": "mage.cards.u.UnaChinRileyNumberOne"
+}

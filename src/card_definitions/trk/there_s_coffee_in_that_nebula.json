@@ -1,0 +1,14 @@
+{
+  "name": "There's Coffee in that Nebula",
+  "catalogue_id": 5975,
+  "oracle_id": "887614f9-f12f-47bc-ae56-1438cd7cad10",
+  "facts_sha256": "4c50b947189ce87876a4e4a458ff54754981da3e2660a49e823bd4f0df9714a7",
+  "physical_metadata_sha256": "2ae509e4ea55ce0fc4b5ce37ff734de8f36e63f3299bd41a6cf8576e7502ffe5",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheresCoffeeInThatNebula.java",
+  "java_sha256": "c4e5053cecab7846f2287c28391e97969adada10c4106baeaf2f34b07c5c7f34",
+  "xmage_class": "mage.cards.t.TheresCoffeeInThatNebula"
+}

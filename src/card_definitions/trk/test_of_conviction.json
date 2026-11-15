@@ -1,0 +1,14 @@
+{
+  "name": "Test of Conviction",
+  "catalogue_id": 5957,
+  "oracle_id": "beffaea5-beeb-4d4e-aca3-82c698caf6f8",
+  "facts_sha256": "710ce11280504ee0bd2b264d1fa65d0589bfa79c224d14e7370f4cd5846b469b",
+  "physical_metadata_sha256": "b0279053237442cfdc73dc093c57734be7aa4462b25e0ad87974aabe17b6fccb",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/t/TestOfConviction.java",
+  "java_sha256": "15c26c65f8c394932cb1716c6688ce584f7f107cd7836e5aeb01acb7baad6cb5",
+  "xmage_class": "mage.cards.t.TestOfConviction"
+}

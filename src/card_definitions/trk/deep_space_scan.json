@@ -1,0 +1,14 @@
+{
+  "name": "Deep Space Scan",
+  "catalogue_id": 5782,
+  "oracle_id": "5dabb7c1-8937-42b0-87c6-1cc7af46aaae",
+  "facts_sha256": "851cbcdb59311176e576c6c51e418311bea9a7c86e6f08207e750083788df22c",
+  "physical_metadata_sha256": "2d6da03266579260f323ab922875f5204da3d8c7faf3893c7312be3571a25e22",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/d/DeepSpaceScan.java",
+  "java_sha256": "92fae909ad1e2f573c6c877991c942dd7fcaa0dec66b1bbe33ad4c9f32de198c",
+  "xmage_class": "mage.cards.d.DeepSpaceScan"
+}

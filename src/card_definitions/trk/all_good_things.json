@@ -1,0 +1,13 @@
+{
+  "name": "All Good Things...",
+  "catalogue_id": 5715,
+  "oracle_id": "61dc9770-1e29-49fa-a31b-b63b5f0496fb",
+  "facts_sha256": "bd89ef1483c9cacc9d8d9386b5818c256559e4c6a18d3a1c859a6798fd06b5ca",
+  "physical_metadata_sha256": "f10d4ef507bc3a9fe8b5766289f8fa1cdd480b70c1c0a579e2111f65c9a85051",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

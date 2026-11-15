@@ -1,0 +1,14 @@
+{
+  "name": "Cleveland Booker, Empath",
+  "catalogue_id": 5750,
+  "oracle_id": "b80879d3-5abd-47e5-8b8c-61db120854e4",
+  "facts_sha256": "9591fd676411b1a2ae9f96a8e76dfe73b28c9e3cefa6f51119e207e3f126f414",
+  "physical_metadata_sha256": "2bb03c15634713c99ee65dea3d2674f79a42a4fc0477d565498add58c571f022",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/c/ClevelandBookerEmpath.java",
+  "java_sha256": "f999b8d9f30f3929a30879dc9e435fd0ac618ae42c74a5a119a2fabe5a762a32",
+  "xmage_class": "mage.cards.c.ClevelandBookerEmpath"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Cloak and Phaser",
+  "catalogue_id": 5751,
+  "oracle_id": "668a9b6b-731c-4127-9c88-1c6112ffd590",
+  "facts_sha256": "d578f8ecc7000dbc815765d25a047bd5bf92818b36323ed0f305695e53e51f92",
+  "physical_metadata_sha256": "e1d01c646a881f5fcb07f372ab872b9d78f8b488d807e91437352907b335fee6",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/c/CloakAndPhaser.java",
+  "java_sha256": "dbe24f0d2f047758650f57579def1f1dabbfcc1b40198cb9aaf7e02474a689a3",
+  "xmage_class": "mage.cards.c.CloakAndPhaser"
+}

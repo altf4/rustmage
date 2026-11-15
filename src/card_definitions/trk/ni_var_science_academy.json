@@ -1,0 +1,14 @@
+{
+  "name": "Ni'Var Science Academy",
+  "catalogue_id": 5874,
+  "oracle_id": "45bf09bb-4141-4166-bdae-6dac39e7f316",
+  "facts_sha256": "8bc8b2c20174a0ff5b4895eb18be27157a17e5a44917f048461e38ba7d4280a8",
+  "physical_metadata_sha256": "b216af3e0f2d2ab3585a35a2af755888db84b73002b174c579d06e2283e8e42d",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/n/NiVarScienceAcademy.java",
+  "java_sha256": "ef0ab199352a70b36742f4fce2c4e5e7362ca71247a94f111104d0cdb9b10269",
+  "xmage_class": "mage.cards.n.NiVarScienceAcademy"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "Exploratory Mission",
+  "catalogue_id": 5803,
+  "oracle_id": "3fdba8ee-6dfe-480d-b84a-43922229d9b4",
+  "facts_sha256": "f5518557141c6e8285446c6c924921053373b8b76eff2aca9e934b4415270ead",
+  "physical_metadata_sha256": "9c1f1695d24584774c2a72d3c4a9d8403764eb5d1a2dc9e934716625363d65b3",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

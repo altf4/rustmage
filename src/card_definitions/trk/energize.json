@@ -1,0 +1,14 @@
+{
+  "name": "Energize",
+  "catalogue_id": 5797,
+  "oracle_id": "275257ea-3c72-4ca9-b2fc-e50efa071bdb",
+  "facts_sha256": "b874bf4993b9b2d28cf544d3807699277cf856d90a14ec7929e778a8995f809e",
+  "physical_metadata_sha256": "a0728573b817492cf6d8d273beaa1ad97fab94c6bd36271d5271cd47f7438f96",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/e/Energize.java",
+  "java_sha256": "dce3f9a46a5506d9e3c0355c83f903e0ad46557a330a7ebcb960fe8394ab891e",
+  "xmage_class": "mage.cards.e.Energize"
+}

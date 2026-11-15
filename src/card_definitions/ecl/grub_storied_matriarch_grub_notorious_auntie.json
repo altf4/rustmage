@@ -2,13 +2,13 @@
   "name": "Grub, Storied Matriarch // Grub, Notorious Auntie",
   "catalogue_id": 1893,
   "oracle_id": "180286e4-67fa-44d5-9e90-4a4e99c016a7",
-  "facts_sha256": "3302569c39bceaeb20e835fe61f90e70bbb75165991f596add704ded21f79aa1",
+  "facts_sha256": "3c8aef85e144ccb6457b9c0f41a1d7f8c6f361d569ec84cfbb4d7ceeef8c0139",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "dea99b038d2b675e629360f1b67aa4baf4e9831a2015b8c3fd8f03721dbae476"
   },
-  "physical_metadata_sha256": "e2dba6b6db689fb4510b492694bee57682163ad24544b20a660536414f1324d1",
+  "physical_metadata_sha256": "48124655f6981a71f5903d6073c7e184d597bbbe51cc2f545d044342e63baa47",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/g/GrubStoriedMatriarch.java",
   "java_sha256": "e979eae2403bfa2003243cf3b7c46de1aebc8d1100f3db51d7bd3b1fa2023f6a",

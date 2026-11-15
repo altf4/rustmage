@@ -1,0 +1,13 @@
+{
+  "name": "Nyota Uhura, Communications",
+  "catalogue_id": 5876,
+  "oracle_id": "d89f34e4-8628-4faf-89e6-c9c16023ae8b",
+  "facts_sha256": "b676a1e46bafa0b4e1011c678f07d2b469d43a1da036c16ea83faca2d958fa59",
+  "physical_metadata_sha256": "293f12681fe49d47c83160610e0cab3badbc7acba3ad069722eda9fefc892f5d",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

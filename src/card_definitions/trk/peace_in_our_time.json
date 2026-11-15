@@ -1,0 +1,13 @@
+{
+  "name": "Peace in Our Time",
+  "catalogue_id": 5885,
+  "oracle_id": "b19ce6f2-7778-4779-8173-973eb7ee0b02",
+  "facts_sha256": "ad487d4425dd2a041d31fecfb163c673c831db046ec16bf26dc0756e984927f2",
+  "physical_metadata_sha256": "f2fedca66459c0cc866ce082aa42f1018a21b00ac35a0f6da05dcec7b62abac6",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

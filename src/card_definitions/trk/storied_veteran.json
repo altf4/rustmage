@@ -1,0 +1,14 @@
+{
+  "name": "Storied Veteran",
+  "catalogue_id": 5937,
+  "oracle_id": "b1012ac3-77f8-4384-b947-84c094d6b59e",
+  "facts_sha256": "b8e672db33a36c55d82d0163a51f98518e5ea4e3ed9b83582be13f02102f28da",
+  "physical_metadata_sha256": "527a6e0f6f1cbe4cbc3e824b89c62b2778f6577d3e815ab0978f5a9d1b22e3f5",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/StoriedVeteran.java",
+  "java_sha256": "96d4ace59aca2a9379fb7c11e92fb3a11a4cb240507e1830470f117911800512",
+  "xmage_class": "mage.cards.s.StoriedVeteran"
+}

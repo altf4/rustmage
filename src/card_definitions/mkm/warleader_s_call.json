@@ -2,13 +2,13 @@
   "name": "Warleader's Call",
   "catalogue_id": 4980,
   "oracle_id": "a751c07b-fc21-4854-96e7-f71abf4e86c9",
-  "facts_sha256": "63ce769e6e8adc05fae82622269ebbbca7c11af5f2f70e6a93daa312110e5153",
+  "facts_sha256": "68e47ced83e712d55820ddc39990cc5918c2a71fa23680ddfa61e4a78deaa361",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a7a00298ea674d0544befc70f70b7e6f955c3928d738cb57be4ae0c6e5ff476c"
   },
-  "physical_metadata_sha256": "9ccdf8d29303ae3f1ffe5a91ca37a860a9657fb9712c2ea2bbb921b50620f149",
+  "physical_metadata_sha256": "c982bc82187d524b8817d57491ef3c7ac269de41280168a94882bcbc174cf981",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/w/WarleadersCall.java",
   "java_sha256": "0e176d8a09986c7594be4cbcde4e6baab0a774eaaddb37a44646a3cdccee1cd7",

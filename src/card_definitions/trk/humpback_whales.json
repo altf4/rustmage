@@ -1,0 +1,14 @@
+{
+  "name": "Humpback Whales",
+  "catalogue_id": 5837,
+  "oracle_id": "a7285536-6cc1-448e-839a-606d585fbd9d",
+  "facts_sha256": "6412130a3126c5d35101ef51cef15a017e46effb694f0703b9fdeb8e97b3e9da",
+  "physical_metadata_sha256": "8b126e1a5b89ad2998e906ceb7645c3cbd154e046f3332174a990c9c7c2f767c",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/h/HumpbackWhales.java",
+  "java_sha256": "639611f8f07e1944a1f96103012da98bbf526f0e4446608a416f6122290121ec",
+  "xmage_class": "mage.cards.h.HumpbackWhales"
+}

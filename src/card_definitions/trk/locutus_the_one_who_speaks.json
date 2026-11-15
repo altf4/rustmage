@@ -1,0 +1,14 @@
+{
+  "name": "Locutus, the One Who Speaks",
+  "catalogue_id": 5858,
+  "oracle_id": "46ba09a7-42e4-42cd-911c-71d0ade01180",
+  "facts_sha256": "2787b3d6cd8650eec7816820c53aa8ffcc178c5b4736cdaf4c3435dc03fb4add",
+  "physical_metadata_sha256": "0115cb5a58db410db042753cc7e198021833812a62023d54a8fd83188e608795",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/l/LocutusTheOneWhoSpeaks.java",
+  "java_sha256": "ffc1699aad68a606b099161f298bfe8ec1681a775cbbec8e34a5649873764514",
+  "xmage_class": "mage.cards.l.LocutusTheOneWhoSpeaks"
+}

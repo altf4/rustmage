@@ -1,0 +1,14 @@
+{
+  "name": "I'm a Doctor, Not a . . .",
+  "catalogue_id": 5838,
+  "oracle_id": "ad1d8eca-e3bf-479f-a442-bcd8c31bfe7f",
+  "facts_sha256": "3fb958b80632e4e30507b5655aee6a0d3dc071f0f254cdb1dd52609685f0413a",
+  "physical_metadata_sha256": "2211d19b9544c964ea5882f4e80b2fa72d5c5b390f93c832f3f86324e10abafb",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/i/ImADoctorNotA.java",
+  "java_sha256": "3f74cd1e84a61f9dd20cceda568a853622a4af5957751f60b93d63109a63061c",
+  "xmage_class": "mage.cards.i.ImADoctorNotA"
+}

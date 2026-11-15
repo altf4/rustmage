@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "catalogue_version": "f7afeb23ddff9ef63659afb7e58458a47567082b1c194175f864a07d3671c6fb",
-  "standard_legal_cards": 5163,
+  "catalogue_version": "32d46b408884931425e6d1fe042e41ffc3238d56c19646bf0ea2a230f8ab3f3b",
+  "standard_legal_cards": 5459,
   "implemented_standard_cards": 5163,
   "implemented_total": 5183,
   "token_definitions": 221,
@@ -164,6 +164,10 @@
     "tmt": {
       "total": 189,
       "complete": 189
+    },
+    "trk": {
+      "total": 296,
+      "gated": 296
     },
     "w17": {
       "total": 1,
@@ -41642,6 +41646,2374 @@
       "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/oin_the_brave.rs",
       "set": "hob"
+    },
+    {
+      "name": "70,000 Light-Years from Home",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/70_000_light_years_from_home.rs",
+      "set": "trk"
+    },
+    {
+      "name": "A Good Day to Die",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/a_good_day_to_die.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Academy Instructor",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/academy_instructor.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Adversary by Algorithm",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/adversary_by_algorithm.rs",
+      "set": "trk"
+    },
+    {
+      "name": "All Good Things...",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/all_good_things.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Amok Time",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/amok_time.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Andoria",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/andoria.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Andromedan Automatons",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/andromedan_automatons.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Antagonist Incorporator",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/antagonist_incorporator.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Anthropological Mission",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/anthropological_mission.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Armus, Skin of Evil",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/armus_skin_of_evil.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Artificial Anomaly",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/artificial_anomaly.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Assault Drone",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/assault_drone.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Assembly Specialist",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/assembly_specialist.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Astute Terraformer",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/astute_terraformer.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Automated Warfare System",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/automated_warfare_system.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Bajor",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/bajor.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Bat'leth",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/bat_leth.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Battle-Scarred Survivalist",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/battle_scarred_survivalist.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Beckett Mariner, Impetuous Ensign",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/beckett_mariner_impetuous_ensign.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Blastoneuron",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/blastoneuron.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Boarding Action",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/boarding_action.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Borg Cube",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/borg_cube.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Brad Boimler, Eager Ensign",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/brad_boimler_eager_ensign.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Branching Timeline",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/branching_timeline.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Brazen Bluff",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/brazen_bluff.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Cantankerous Captain",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/cantankerous_captain.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Captain Benjamin Sisko",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/captain_benjamin_sisko.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Captain James T. Kirk",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/captain_james_t_kirk.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Captain Jean-Luc Picard",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/captain_jean_luc_picard.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Captain Jonathan Archer",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/captain_jonathan_archer.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Captain Kathryn Janeway",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/captain_kathryn_janeway.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Captain Michael Burnham",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/captain_michael_burnham.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Captain Pike, Fullness of Time",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/captain_pike_fullness_of_time.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Captain's Tutelage",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/captain_s_tutelage.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Cardassia Prime",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/cardassia_prime.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Cetacean Ops",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/cetacean_ops.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Cha'DIch Investigator",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/cha_dich_investigator.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Class-F Shuttlecraft",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/class_f_shuttlecraft.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Cleveland Booker, Empath",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/cleveland_booker_empath.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Cloak and Phaser",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/cloak_and_phaser.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Cloistered Telepath",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/cloistered_telepath.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Cold-Blooded Crew",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/cold_blooded_crew.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Collation Trimatrix",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/collation_trimatrix.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Collective Drone",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/collective_drone.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Combadge",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/combadge.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Command Decision",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/command_decision.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Command Subadjunct",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/command_subadjunct.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Commander Raffi Musiker",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/commander_raffi_musiker.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Common Goal",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/common_goal.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Conquest Mission",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/conquest_mission.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Consider the Prime Directive",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/consider_the_prime_directive.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Constable Odo",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/constable_odo.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Crystalline Entity",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/crystalline_entity.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Culber and Stamets, Star-Crossed",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/culber_and_stamets_star_crossed.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Cybernetic Specialist",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/cybernetic_specialist.rs",
+      "set": "trk"
+    },
+    {
+      "name": "D'Ghor Bloodletter",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/d_ghor_bloodletter.rs",
+      "set": "trk"
+    },
+    {
+      "name": "D'Vana Tendi, Optimistic Ensign",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/d_vana_tendi_optimistic_ensign.rs",
+      "set": "trk"
+    },
+    {
+      "name": "D-7 Battle Cruiser",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/d_7_battle_cruiser.rs",
+      "set": "trk"
+    },
+    {
+      "name": "DOT-7 Repair Squad",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/dot_7_repair_squad.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Dahar Master",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/dahar_master.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Dal R'El, Augment Orphan",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/dal_r_el_augment_orphan.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Daniels, Temporal Agent",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/daniels_temporal_agent.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Data, New Life",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/data_new_life.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Dathon and Picard at El-Adrel",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/dathon_and_picard_at_el_adrel.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Dathon, His Heart Open",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/dathon_his_heart_open.rs",
+      "set": "trk"
+    },
+    {
+      "name": "David and Carol Marcus, Creators",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/david_and_carol_marcus_creators.rs",
+      "set": "trk"
+    },
+    {
+      "name": "De-evolve",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/de_evolve.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Deanna Troi, Psychic Counsel",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/deanna_troi_psychic_counsel.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Death Is Irrelevant",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/death_is_irrelevant.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Deep Space 9",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/deep_space_9.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Deep Space Scan",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/deep_space_scan.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Dominion Assault Force",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/dominion_assault_force.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Dominion Infiltration",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/dominion_infiltration.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Dominion Saboteur",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/dominion_saboteur.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Dominion Supervisor",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/dominion_supervisor.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Dr. Beverly Crusher",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/dr_beverly_crusher.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Dr. Joseph M'Benga",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/dr_joseph_m_benga.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Dr. Leonard \"Bones\" McCoy",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/dr_leonard_bones_mccoy.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Dr. McCoy, Surly Surgeon",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/dr_mccoy_surly_surgeon.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Earth, Sector 001",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/earth_sector_001.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Eject the Warp Core",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/eject_the_warp_core.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Elim Garak, Simple Tailor",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/elim_garak_simple_tailor.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Emergency Holographic Crew",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/emergency_holographic_crew.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Emergency Medical Hologram",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/emergency_medical_hologram.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Encounter the Unknown",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/encounter_the_unknown.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Energize",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/energize.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Engineered Explosives",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/engineered_explosives.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Ensign Pavel Chekov",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/ensign_pavel_chekov.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Enterprise NX-01",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/enterprise_nx_01.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Erica Ortegas, Plucky Pilot",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/erica_ortegas_plucky_pilot.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Excalbian Gamemaster",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/excalbian_gamemaster.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Exploratory Mission",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/exploratory_mission.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Federation Field Medic",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/federation_field_medic.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Federation Outpost",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/federation_outpost.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Federation Probe",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/federation_probe.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Federation Resupply",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/federation_resupply.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Ferenginar",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/ferenginar.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Final Frontier",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/final_frontier.rs",
+      "set": "trk"
+    },
+    {
+      "name": "First Contact",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/first_contact.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Free Borg Revolutionaries",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/free_borg_revolutionaries.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Fugitive Listener",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/fugitive_listener.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Gabriel Lorca, Mirror Menace",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/gabriel_lorca_mirror_menace.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Gaseous Anomaly",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/gaseous_anomaly.rs",
+      "set": "trk"
+    },
+    {
+      "name": "General Chang, Cold Warrior",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/general_chang_cold_warrior.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Genesis Device",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/genesis_device.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Genesis Effect",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/genesis_effect.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Georgiou, Terran Emperor",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/georgiou_terran_emperor.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Ghost of Illyria",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/ghost_of_illyria.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Gowron, Eager for Battle",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/gowron_eager_for_battle.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Grand Nagus Zek",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/grand_nagus_zek.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Gray and Adira, Forever Joined",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/gray_and_adira_forever_joined.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Guidance Failure",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/guidance_failure.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Gul Dukat, Colonial Prefect",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/gul_dukat_colonial_prefect.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Gwyndala, the Progeny",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/gwyndala_the_progeny.rs",
+      "set": "trk"
+    },
+    {
+      "name": "H.M.S. Bounty, Unlikely Timeship",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/h_m_s_bounty_unlikely_timeship.rs",
+      "set": "trk"
+    },
+    {
+      "name": "He's Dead, Jim",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/he_s_dead_jim.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Hemmer, Fixing What Is Broken",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/hemmer_fixing_what_is_broken.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Highly Illogical",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/highly_illogical.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Hit It!",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/hit_it.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Hive Mind Coprocessor",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/hive_mind_coprocessor.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Holo-Engineer",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/holo_engineer.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Hologram Janeway",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/hologram_janeway.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Hologram Stalker",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/hologram_stalker.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Horta",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/horta.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Hoshi Sato, Exolinguist",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/hoshi_sato_exolinguist.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Humpback Whales",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/humpback_whales.rs",
+      "set": "trk"
+    },
+    {
+      "name": "I'm a Doctor, Not a . . .",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/i_m_a_doctor_not_a.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Impossible Choice",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/impossible_choice.rs",
+      "set": "trk"
+    },
+    {
+      "name": "In the Pale Moonlight",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/in_the_pale_moonlight.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Infinite Diversity",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/infinite_diversity.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Interstellar Effigy",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/interstellar_effigy.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Isolinear Processor",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/isolinear_processor.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Jadzia Dax, Living Legacy",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/jadzia_dax_living_legacy.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Jake Sisko, War Correspondent",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/jake_sisko_war_correspondent.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Jett Reno, Problem Solver",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/jett_reno_problem_solver.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Kai Winn, Faithless Leader",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/kai_winn_faithless_leader.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Khaaaaaaaaaaaannn!",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/khaaaaaaaaaaaannn.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Khan, Despot by Design",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/khan_despot_by_design.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Khan, Vengeful Heart",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/khan_vengeful_heart.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Kira Nerys, Firebrand",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/kira_nerys_firebrand.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Kirk, Commanding Officer",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/kirk_commanding_officer.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Kobayashi Maru Scenario",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/kobayashi_maru_scenario.rs",
+      "set": "trk"
+    },
+    {
+      "name": "L'Rell, Fierce Visionary",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/l_rell_fierce_visionary.rs",
+      "set": "trk"
+    },
+    {
+      "name": "La'An Noonien-Singh, Security",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/la_an_noonien_singh_security.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Lieutenant Commander Data",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/lieutenant_commander_data.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Live Long and Prosper",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/live_long_and_prosper.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Locutus, the One Who Speaks",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/locutus_the_one_who_speaks.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Lore, Positronic Provocateur",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/lore_positronic_provocateur.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Lt. Cmdr. Geordi La Forge",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/lt_cmdr_geordi_la_forge.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Lwaxana Troi, Charming Guest",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/lwaxana_troi_charming_guest.rs",
+      "set": "trk"
+    },
+    {
+      "name": "MACO Strike Team",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/maco_strike_team.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Make It So",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/make_it_so.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Malfunctioning Holodeck",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/malfunctioning_holodeck.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Marooned",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/marooned.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Melkotian Adjudicator",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/melkotian_adjudicator.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Miles O'Brien, Transporter Ops",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/miles_o_brien_transporter_ops.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Mirror Universe Intrusion",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/mirror_universe_intrusion.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Moopsy",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/moopsy.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Mr. Spock, Science Officer",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/mr_spock_science_officer.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Mugato",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/mugato.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Munitions Enthusiast",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/munitions_enthusiast.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Neelix, Moral Support",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/neelix_moral_support.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Ni'Var Science Academy",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/ni_var_science_academy.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Nog, Ambitious Cadet",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/nog_ambitious_cadet.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Nyota Uhura, Communications",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/nyota_uhura_communications.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Oberth-Class Starship",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/oberth_class_starship.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Obsidian Order Operative",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/obsidian_order_operative.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Open Communications",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/open_communications.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Organic Avulsion Unit",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/organic_avulsion_unit.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Orion",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/orion.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Overflow Submatrix",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/overflow_submatrix.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Pah-Wraith",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/pah_wraith.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Pattern Buffer Preservation",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/pattern_buffer_preservation.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Peace in Our Time",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/peace_in_our_time.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Perils of the Past",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/perils_of_the_past.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Pet Sehlat",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/pet_sehlat.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Phlox, Unorthodox Doctor",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/phlox_unorthodox_doctor.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Photosynthetic Physician",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/photosynthetic_physician.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Picard, Leading by Example",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/picard_leading_by_example.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Planetary Bombardment",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/planetary_bombardment.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Planetary Patrol",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/planetary_patrol.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Plasma Cascade",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/plasma_cascade.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Primary Unimatrix Adjunct",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/primary_unimatrix_adjunct.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Pure Energy",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/pure_energy.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Q Continuum",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/q_continuum.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Q, Stacking the Deck",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/q_stacking_the_deck.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Qo'noS",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/qo_nos.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Quark's Bar",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/quark_s_bar.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Quark, Humble Proprietor",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/quark_humble_proprietor.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Ravenous Cosmozoan",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/ravenous_cosmozoan.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Reckless Impulse",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/reckless_impulse.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Red Alert!",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/red_alert.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Relentless Drednok",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/relentless_drednok.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Replicator",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/replicator.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Resistance Is Futile",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/resistance_is_futile.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Risa",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/risa.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Rogue Artificial Intelligence",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/rogue_artificial_intelligence.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Rok-Tahk, Budding Scientist",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/rok_tahk_budding_scientist.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Romulan Bird-of-Prey",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/romulan_bird_of_prey.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Romulus",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/romulus.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Rules of Acquisition",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/rules_of_acquisition.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Rutherford, Upgraded Ensign",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/rutherford_upgraded_ensign.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Saavik, Stoic Student",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/saavik_stoic_student.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Salt Vampire",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/salt_vampire.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Sarcophagus, Ship of the Dead",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/sarcophagus_ship_of_the_dead.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Sarek, Federation Ambassador",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/sarek_federation_ambassador.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Saru, Unthreatened",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/saru_unthreatened.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Saurian Explorer",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/saurian_explorer.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Savvy Profiteer",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/savvy_profiteer.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Scotty, Miracle Worker",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/scotty_miracle_worker.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Sela, Tal Shiar Paradox",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/sela_tal_shiar_paradox.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Set Phasers to . . .",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/set_phasers_to.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Seven of Nine",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/seven_of_nine.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Seven of Nine, Unassimilated",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/seven_of_nine_unassimilated.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Shields Up!",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/shields_up.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Shuttle Ace",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/shuttle_ace.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Sickbay",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/sickbay.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Silicate Surveyor",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/silicate_surveyor.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Spatial Anomaly",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/spatial_anomaly.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Species 8472",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/species_8472.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Spock, Always Your Friend",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/spock_always_your_friend.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Stable Wormhole",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/stable_wormhole.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Starfleet Academy",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/starfleet_academy.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Starfleet Security",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/starfleet_security.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Starfleet Spanner Jockey",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/starfleet_spanner_jockey.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Storied Veteran",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/storied_veteran.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Stray from History",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/stray_from_history.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Subcommander T'Pol",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/subcommander_t_pol.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Subspace Anomaly",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/subspace_anomaly.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Sulu, Space Swashbuckler",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/sulu_space_swashbuckler.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Support Mission",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/support_mission.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Suurok-Class Science Vessel",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/suurok_class_science_vessel.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Suus Mahna Practitioner",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/suus_mahna_practitioner.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Sylvia Tilly, Joy of Discovery",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/sylvia_tilly_joy_of_discovery.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Syndicate Liquidators",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/syndicate_liquidators.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Tactical Officer",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/tactical_officer.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Tal Shiar Analyst",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/tal_shiar_analyst.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Tal Shiar Operative",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/tal_shiar_operative.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Targ Wrangler",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/targ_wrangler.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Tasha Yar, Out of Time",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/tasha_yar_out_of_time.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Tea, Earl Grey, Hot",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/tea_earl_grey_hot.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Tell Me What You See",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/tell_me_what_you_see.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Temporal Anomaly",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/temporal_anomaly.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Temporal Conqueror",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/temporal_conqueror.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Tenacious Drone",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/tenacious_drone.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Test of Conviction",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/test_of_conviction.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Test of Courage",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/test_of_courage.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Test of Identity",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/test_of_identity.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Test of Loyalty",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/test_of_loyalty.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Test of Priorities",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/test_of_priorities.rs",
+      "set": "trk"
+    },
+    {
+      "name": "The Caretaker",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/the_caretaker.rs",
+      "set": "trk"
+    },
+    {
+      "name": "The City on the Edge of Forever",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/the_city_on_the_edge_of_forever.rs",
+      "set": "trk"
+    },
+    {
+      "name": "The Destruction of Praxis",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/the_destruction_of_praxis.rs",
+      "set": "trk"
+    },
+    {
+      "name": "The Doctor, EMH",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/the_doctor_emh.rs",
+      "set": "trk"
+    },
+    {
+      "name": "The Duras Sisters",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/the_duras_sisters.rs",
+      "set": "trk"
+    },
+    {
+      "name": "The Holodeck",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/the_holodeck.rs",
+      "set": "trk"
+    },
+    {
+      "name": "The Inner Light",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/the_inner_light.rs",
+      "set": "trk"
+    },
+    {
+      "name": "The Measure of a Man",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/the_measure_of_a_man.rs",
+      "set": "trk"
+    },
+    {
+      "name": "The Naked Time",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/the_naked_time.rs",
+      "set": "trk"
+    },
+    {
+      "name": "The Needs of the Many",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/the_needs_of_the_many.rs",
+      "set": "trk"
+    },
+    {
+      "name": "The Traveler",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/the_traveler.rs",
+      "set": "trk"
+    },
+    {
+      "name": "The Unicomplex",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/the_unicomplex.rs",
+      "set": "trk"
+    },
+    {
+      "name": "The Wrath of Khan",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/the_wrath_of_khan.rs",
+      "set": "trk"
+    },
+    {
+      "name": "There's Coffee in that Nebula",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/there_s_coffee_in_that_nebula.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Those Old Scientists",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/those_old_scientists.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Transporter Malfunction",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/transporter_malfunction.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Tricorder",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/tricorder.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Troubling Tribbles",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/troubling_tribbles.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Type-2 Phaser",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/type_2_phaser.rs",
+      "set": "trk"
+    },
+    {
+      "name": "U.S.S. Cerritos, Following Up",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/u_s_s_cerritos_following_up.rs",
+      "set": "trk"
+    },
+    {
+      "name": "U.S.S. Discovery, at Black Alert",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/u_s_s_discovery_at_black_alert.rs",
+      "set": "trk"
+    },
+    {
+      "name": "U.S.S. Enterprise-A, Free Spirit",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/u_s_s_enterprise_a_free_spirit.rs",
+      "set": "trk"
+    },
+    {
+      "name": "U.S.S. Enterprise-D, Galaxy-Class",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/u_s_s_enterprise_d_galaxy_class.rs",
+      "set": "trk"
+    },
+    {
+      "name": "U.S.S. Excelsior, Cutting Edge",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/u_s_s_excelsior_cutting_edge.rs",
+      "set": "trk"
+    },
+    {
+      "name": "U.S.S. Reliant, From Hell's Heart",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/u_s_s_reliant_from_hell_s_heart.rs",
+      "set": "trk"
+    },
+    {
+      "name": "U.S.S. Voyager, Lone Wanderer",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/u_s_s_voyager_lone_wanderer.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Una Chin-Riley, Number One",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/una_chin_riley_number_one.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Unexplored Territory",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/unexplored_territory.rs",
+      "set": "trk"
+    },
+    {
+      "name": "V'Ger, the Intruder",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/v_ger_the_intruder.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Vash, Freelance Archaeologist",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/vash_freelance_archaeologist.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Vengeance Mission",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/vengeance_mission.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Vexing Drone",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/vexing_drone.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Vulcan",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/vulcan.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Vulcan Mind-Meld",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/vulcan_mind_meld.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Warp Core",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/warp_core.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Warp Speed",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/warp_speed.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Wesley Crusher, Starfleet Cadet",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/wesley_crusher_starfleet_cadet.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Will Riker, First in the Field",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/will_riker_first_in_the_field.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Worf, Honor-Bound Warrior",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/worf_honor_bound_warrior.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Worf, Intelligence Contractor",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/worf_intelligence_contractor.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Xenobotanist",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/xenobotanist.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Xindi Surveyors",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/xindi_surveyors.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Year of Hell",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/year_of_hell.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Zefram Cochrane, Warp Pioneer",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/zefram_cochrane_warp_pioneer.rs",
+      "set": "trk"
+    },
+    {
+      "name": "Zero, Incorporeal Sensate",
+      "standard_legal": true,
+      "implemented": false,
+      "implementation": null,
+      "definition": "src/card_definitions/trk/zero_incorporeal_sensate.rs",
+      "set": "trk"
     }
   ]
 }

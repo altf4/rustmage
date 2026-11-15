@@ -77,6 +77,7 @@ dependencies = [
  "rustmage-cards-tle",
  "rustmage-cards-tmc",
  "rustmage-cards-tmt",
+ "rustmage-cards-trk",
  "rustmage-cards-w17",
  "rustmage-cards-woe",
  "rustmage-cards-znr",
@@ -367,6 +368,13 @@ dependencies = [
 
 [[package]]
 name = "rustmage-cards-tmt"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-trk"
 version = "0.1.0"
 dependencies = [
  "rustmage-core",

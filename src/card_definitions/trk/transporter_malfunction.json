@@ -1,0 +1,14 @@
+{
+  "name": "Transporter Malfunction",
+  "catalogue_id": 5977,
+  "oracle_id": "6eb9865e-513c-43c6-81e1-6ad000e9c48e",
+  "facts_sha256": "46d9b81147f9e0f65a10bb08f8602f2fdb8aa59d8b922edc9bd83e8b4c7a89ae",
+  "physical_metadata_sha256": "50414b44d0187d0bf593eda1662e03c597d75f4c47a02964d2fdbd175792242d",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/t/TransporterMalfunction.java",
+  "java_sha256": "470a627414a7d415f1e08353f7d3139af2bb6e647382b696170d742c45202b92",
+  "xmage_class": "mage.cards.t.TransporterMalfunction"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Dominion Supervisor",
+  "catalogue_id": 5786,
+  "oracle_id": "d151c8ed-58bf-4b82-a993-1d81f789aa0e",
+  "facts_sha256": "c0d7d8d75bdb30815fbb1bd1a0564cb94d31a43feb5825ff1fe42be0d9c6c27a",
+  "physical_metadata_sha256": "715c5592639208fcf72a908cda0e903fdfdcbb96aa066c51e308bdd2ef947f29",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/d/DominionSupervisor.java",
+  "java_sha256": "16751557382a265b09bf122b5cac9aa8cccb709eca59d812de9007fb6bd860b3",
+  "xmage_class": "mage.cards.d.DominionSupervisor"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Georgiou, Terran Emperor",
+  "catalogue_id": 5818,
+  "oracle_id": "31932df4-0be8-45c4-8b22-84119d9c20ba",
+  "facts_sha256": "7e7de05038f9cf7a8b38763ac345c7428614b46adf51f86cc0133c20f17d25af",
+  "physical_metadata_sha256": "ca819b94765eda447a47b44d545bf99c30e7e8acfdc49f07b0f228ec3bb1cbdd",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/g/GeorgiouTerranEmperor.java",
+  "java_sha256": "3989face12f5f05fe3a964baa617123edba494485af2bb99234788f7a74316d3",
+  "xmage_class": "mage.cards.g.GeorgiouTerranEmperor"
+}

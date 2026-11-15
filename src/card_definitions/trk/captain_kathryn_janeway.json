@@ -1,0 +1,14 @@
+{
+  "name": "Captain Kathryn Janeway",
+  "catalogue_id": 5742,
+  "oracle_id": "d77d1895-ce02-4302-87c9-649e852fd0ea",
+  "facts_sha256": "2ccdc66877a30c04a18c66261367ea6b14f8f5bbda841b0ff93505face220d5a",
+  "physical_metadata_sha256": "70b855b60d74e453f489452472d39a34c3073e7144d4d25b4d6feb3be2411047",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/c/CaptainKathrynJaneway.java",
+  "java_sha256": "cc8f1c6654a8470a49c2fa6658587494ac4556eeb8e6e266ca0067afcf07aeb7",
+  "xmage_class": "mage.cards.c.CaptainKathrynJaneway"
+}

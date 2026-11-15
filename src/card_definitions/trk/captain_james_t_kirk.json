@@ -1,0 +1,14 @@
+{
+  "name": "Captain James T. Kirk",
+  "catalogue_id": 5739,
+  "oracle_id": "19edde54-153f-46b8-8a8d-a20fdef0667f",
+  "facts_sha256": "e374fa50fd59e7208c2e9139f0b3496aa89e378d8403ed3232380c42a8030d33",
+  "physical_metadata_sha256": "eaf8df55a4975f69b2171f06303576db4976fbb169cdc47d4add33dde541864a",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/c/CaptainJamesTKirk.java",
+  "java_sha256": "11adbd05ba188db6a84d45b68e00faff986fc18aa054c214342dce738ab76cb6",
+  "xmage_class": "mage.cards.c.CaptainJamesTKirk"
+}

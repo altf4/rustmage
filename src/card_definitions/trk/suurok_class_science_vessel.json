@@ -1,0 +1,14 @@
+{
+  "name": "Suurok-Class Science Vessel",
+  "catalogue_id": 5943,
+  "oracle_id": "5d2016ed-3ea0-4938-b95e-ee582307e475",
+  "facts_sha256": "966477580f2660429b2037fd13b18bd390ac783405b492013bf924bbc368aacf",
+  "physical_metadata_sha256": "77fa1b2eabd4bec1bc97e8f399ffafd95da52f1e9c37ad64a802241a3d8523d7",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/SuurokClassScienceVessel.java",
+  "java_sha256": "3c943f577145e0f90228c720993e6ddc03ddf35f9a38771dee565066d0952794",
+  "xmage_class": "mage.cards.s.SuurokClassScienceVessel"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "The Doctor, EMH",
+  "catalogue_id": 5965,
+  "oracle_id": "3b04f5b9-40d9-49aa-a38d-0f946401263c",
+  "facts_sha256": "19f3e49f6580ad887ff8aebc2e0b1a6665bcba78cff2f786f3a601b8c4150435",
+  "physical_metadata_sha256": "9e5c2620cb424e0284149a0fa74fda1b199b13fc5b98de5ebb15b6a7674e52ab",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheDoctorEMH.java",
+  "java_sha256": "86791218cb86f6895f5650096c556c54ed9ce911056314f66a1c3e63d7c82d28",
+  "xmage_class": "mage.cards.t.TheDoctorEMH"
+}

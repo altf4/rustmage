@@ -2,13 +2,13 @@
   "name": "Brigid's Command",
   "catalogue_id": 551,
   "oracle_id": "6487fc1b-5c83-4d09-94d3-175725bcb922",
-  "facts_sha256": "94193eac64e8940accd1da2bbc035ba8915a9fe596f7c4176f24b8bdf53d3487",
+  "facts_sha256": "1f1d8e44c10c1db32e3c4fb79abe4712dccc49e1743abb60546db0a876310f28",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9d4e41029cb10f87d926f9976297939608aedf6c2c0710d55ad8315afc1cfb9c"
   },
-  "physical_metadata_sha256": "2f8b8b65402267f738f6d46835002aab90c5e3790d6dc5558f963571eb93d076",
+  "physical_metadata_sha256": "f9167c69f06cfec825d8174639747d7e463b5da1d7b40b2184b7ee7fbfc75dc9",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/b/BrigidsCommand.java",
   "java_sha256": "17fa4f06a0d4f889565d9f64c13b0164dd5fb5c267394510a926badfc1fce535",

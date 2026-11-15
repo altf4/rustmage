@@ -1,0 +1,14 @@
+{
+  "name": "Primary Unimatrix Adjunct",
+  "catalogue_id": 5894,
+  "oracle_id": "be3dd0c8-32c2-4a56-9290-1fc9e366bae2",
+  "facts_sha256": "211c94598d8e657a5654acfffb5451fb57e3a0f329c1885b83af68432c32b024",
+  "physical_metadata_sha256": "97a484410f0e3fb3587d2856f1c364f9aafe6762f75d3dfd5ee6c579700796fc",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/p/PrimaryUnimatrixAdjunct.java",
+  "java_sha256": "a9c180a5e7dc8f287c0ed07b25fb8546b5192f5fc2e2e39f717a25f447fb6406",
+  "xmage_class": "mage.cards.p.PrimaryUnimatrixAdjunct"
+}

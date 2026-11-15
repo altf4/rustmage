@@ -2,13 +2,13 @@
   "name": "Negate",
   "catalogue_id": 2914,
   "oracle_id": "3407fe41-fdd3-4119-8f70-4bc4590a379f",
-  "facts_sha256": "34e74431417b713872cd1af5d0dcfb47afae4c865874994fe263eb5c138bd075",
+  "facts_sha256": "dc2777ec2a4bd9312c82c52e2fccc1494731cbf0e9c0b19429126c267082fbd9",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "642f0b5225c497321025fb71832e9cf93a9c72977defa5511a8af2ea05e475f1"
   },
-  "physical_metadata_sha256": "8e7924137b0cc17180990e3ec3f6f5178eaa9b75041ab74f77db35939765872c",
+  "physical_metadata_sha256": "7a9f9f42937016a7bf2d6b9a353d5e745362a8e6e61b3334a4651b0bcbfa0285",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/n/Negate.java",
   "java_sha256": "6947cb935343a89e782f1aa5ee82047dfb5a5ecc9dca147b8974f1384be55908",

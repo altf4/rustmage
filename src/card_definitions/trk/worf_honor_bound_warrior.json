@@ -1,0 +1,14 @@
+{
+  "name": "Worf, Honor-Bound Warrior",
+  "catalogue_id": 6000,
+  "oracle_id": "2ecda53d-ac24-4b28-aed8-2a5fb1449f85",
+  "facts_sha256": "162bc539c617e0d52826bb2c262ea4f52ad97f0046ab1c4ed430a88b1e697699",
+  "physical_metadata_sha256": "91491029c181747e1eadd75a1d07872d36f45baec381f144500ba6180a37f16d",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/w/WorfHonorBoundWarrior.java",
+  "java_sha256": "81ed2dc80e340dae9b9034180db5e25f223065ce13010ace4ad6824f709af29c",
+  "xmage_class": "mage.cards.w.WorfHonorBoundWarrior"
+}

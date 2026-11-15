@@ -1,0 +1,14 @@
+{
+  "name": "Cetacean Ops",
+  "catalogue_id": 5747,
+  "oracle_id": "64e39ec9-358a-4aa0-a7e9-164e8aa0b236",
+  "facts_sha256": "48f1816756bd2ffcfb346a43e840ff27bff5ddfaafcaf8bc4e57044afe8c7665",
+  "physical_metadata_sha256": "1849101c7ca91cdd82903a7a186326484033dcf527396b9c6c73059a320e4d9e",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/c/CetaceanOps.java",
+  "java_sha256": "e6395265e794666b382d6161ab920096dd1c99a59c9094fd95655b1e81424c82",
+  "xmage_class": "mage.cards.c.CetaceanOps"
+}

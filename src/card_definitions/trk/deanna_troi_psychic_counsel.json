@@ -1,0 +1,14 @@
+{
+  "name": "Deanna Troi, Psychic Counsel",
+  "catalogue_id": 5779,
+  "oracle_id": "cf612cbe-7af8-48fd-875e-a669e05cfb49",
+  "facts_sha256": "d719e321057e594a058455964d461db749f996f19630cefedf8ddc16370fffd2",
+  "physical_metadata_sha256": "497ddd54198af2805ded14b5c6cb32dbdab7df37a1b63a0a72da95330909a11a",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/d/DeannaTroiPsychicCounsel.java",
+  "java_sha256": "992793f0bfc20aa14449df1a83fdc129a38cd13b11550ecaf8cc23e1c7a7448f",
+  "xmage_class": "mage.cards.d.DeannaTroiPsychicCounsel"
+}

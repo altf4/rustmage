@@ -1,0 +1,13 @@
+{
+  "name": "Infinite Diversity",
+  "catalogue_id": 5841,
+  "oracle_id": "c7d8ed66-d66e-42fd-9c3e-8c2d8194e009",
+  "facts_sha256": "aab5b4fd1f455bff6ef24535701ec60fba9000c45dee3a10a09f1af1decf6d02",
+  "physical_metadata_sha256": "a4fb8e83ce44d3e3553502532c1d1ddee6d003e4ed16ddd3cc5a364f1c2ec94d",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

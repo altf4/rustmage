@@ -1,0 +1,13 @@
+{
+  "name": "H.M.S. Bounty, Unlikely Timeship",
+  "catalogue_id": 5826,
+  "oracle_id": "eaa47a9b-79ad-4f42-a98b-dcf76138207c",
+  "facts_sha256": "437dc841695920d0ba96d89129950b242de6dd78eccb4dfa016629135b18e574",
+  "physical_metadata_sha256": "7f12e17ed27987a80f2f397cc9e019d1ff1f2bd701ce164cfd027ab89e0c3e58",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

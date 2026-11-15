@@ -2,13 +2,13 @@
   "name": "Fabled Passage",
   "catalogue_id": 1421,
   "oracle_id": "0c85b8f7-0bd0-4680-9ec5-d4b110460a54",
-  "facts_sha256": "a0ecb913d25a8f80488b27c0bf8cc42ecc8cb7078e39a0ae3cef4b9474057b55",
+  "facts_sha256": "6424feb83e88304ea24ce12cf32c2655479365cf1916814860c31924330fde59",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d80513a7e26f8c3e82bbd0d80117178ba4776ea23da3cdc4abeb3d93779e3c0d"
   },
-  "physical_metadata_sha256": "3b6e69d3b940e2c85d89b9ef7ee4a1e84c5d923b0bc2f0cdaa0970ebecde94f5",
+  "physical_metadata_sha256": "09b1b3e055c19a0260243d0ddb5443eb968053a6a7aed10187a4aed251eee92e",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/f/FabledPassage.java",
   "java_sha256": "10532cb675a21c66ef0de87553f4810e10f0a1942ae5b7fc17e553dfb2e89964",

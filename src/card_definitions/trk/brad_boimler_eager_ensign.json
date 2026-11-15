@@ -1,0 +1,13 @@
+{
+  "name": "Brad Boimler, Eager Ensign",
+  "catalogue_id": 5734,
+  "oracle_id": "10af9cd9-1700-48f9-97e1-61e239536fef",
+  "facts_sha256": "2c749ed0534f8c12ccb4085189c125a067a9f00b859d4fd8e1394f81dc8fceaa",
+  "physical_metadata_sha256": "7504f70e313f69da74f2724afab78d239e9b814a10134ca39dc2cf2b7204dd8d",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

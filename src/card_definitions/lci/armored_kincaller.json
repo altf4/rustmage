@@ -2,13 +2,13 @@
   "name": "Armored Kincaller",
   "catalogue_id": 227,
   "oracle_id": "6aad6906-96ec-4994-bfc3-9a76f893bc8c",
-  "facts_sha256": "1be00970aa6df4298febac77f27efdcd718e563ff31bde7c4bd98145bc580261",
+  "facts_sha256": "cb1fb6a9004f67f5810ee16069516700f2ee088fa2ead2b6cbfee007e91861f3",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e6c43b41a2395d25fbf26f8c24fabc4e4e9791be6ddcbd891f2dfef8df3166a0"
   },
-  "physical_metadata_sha256": "2f636ffe0094c5a2b7ea0c0be2968d26549c621e5e212cb1d21f867600c2df43",
+  "physical_metadata_sha256": "84e81868bb958894d851fe4efaa769bdd3579989af9f033ddbc546c2e1d19248",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/a/ArmoredKincaller.java",
   "java_sha256": "c34264da956b967ec90dff3b2f13f9aa7fa630a27b0dcee3d1f9b937387ac789",

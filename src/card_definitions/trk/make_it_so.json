@@ -1,0 +1,14 @@
+{
+  "name": "Make It So",
+  "catalogue_id": 5863,
+  "oracle_id": "a9368972-4697-4a10-97e3-324149a26fba",
+  "facts_sha256": "0d0f80a68eac5351cddf4c4fe53203a031524c05708eeab1c4873a89ffdfe8fc",
+  "physical_metadata_sha256": "212b1d56b02284395dd54f77c9c53a9d62c860a7ff678387d2607e6d68167363",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/m/MakeItSo.java",
+  "java_sha256": "c00cbc6a32db3cb7a775ca9049a7e87a43660cfe328e7e836efabd97b80700b7",
+  "xmage_class": "mage.cards.m.MakeItSo"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "Rules of Acquisition",
+  "catalogue_id": 5912,
+  "oracle_id": "5068eba6-ccf0-45f2-b0db-40f787ee3308",
+  "facts_sha256": "9a83bfb1737def5d071f1df78b6a02922b78c64f43d69e17625586724c966b34",
+  "physical_metadata_sha256": "3d949a66f404495bf8871e7d6611cf0e281a5b58ec051bf2b0cf93f4f4121e34",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

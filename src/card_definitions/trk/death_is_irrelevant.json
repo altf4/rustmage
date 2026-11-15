@@ -1,0 +1,13 @@
+{
+  "name": "Death Is Irrelevant",
+  "catalogue_id": 5780,
+  "oracle_id": "aeec05f1-43ea-4012-82d8-cded5494535d",
+  "facts_sha256": "85aee15ec253ad57f81d031ce022d645513521f22f8f2522e8b1adc1aaea7531",
+  "physical_metadata_sha256": "e6791b76036f9d471401b66878aa94be28047541a1ed1a4ea93157f731935139",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

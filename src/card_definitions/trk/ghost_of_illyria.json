@@ -1,0 +1,14 @@
+{
+  "name": "Ghost of Illyria",
+  "catalogue_id": 5819,
+  "oracle_id": "e705b055-14b3-4de0-b4a7-39626839dea8",
+  "facts_sha256": "5e0995b06f2f3f4e4985281cb0d1a35d8c454ad3aa6b1e7503127cbaf93e0a03",
+  "physical_metadata_sha256": "85340d3dc7cb953924a108fa0542b8aa96f2a73c9418d2b94c9c5dc856e1d698",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/g/GhostOfIllyria.java",
+  "java_sha256": "40a834b00f71c0f945bc8aaa89d901e258ac0c3710041688dfc3b01b22944b29",
+  "xmage_class": "mage.cards.g.GhostOfIllyria"
+}

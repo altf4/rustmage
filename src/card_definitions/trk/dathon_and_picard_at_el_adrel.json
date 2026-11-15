@@ -1,0 +1,14 @@
+{
+  "name": "Dathon and Picard at El-Adrel",
+  "catalogue_id": 5775,
+  "oracle_id": "76b7e1ee-43f0-4b56-822a-71b064c9201b",
+  "facts_sha256": "9ed7165092602a5dfcd1fe33d4630fc974890607bea0d7ddd788ff5d69eb199d",
+  "physical_metadata_sha256": "58415754e5d68276d21d0765f201efe464f5f898399d2021cc4b9754817ab53b",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/d/DathonAndPicardAtElAdrel.java",
+  "java_sha256": "fbaddb28779fc187dcc7eba777e8863db19f7c598b464c65c4d4d572e38eec2b",
+  "xmage_class": "mage.cards.d.DathonAndPicardAtElAdrel"
+}

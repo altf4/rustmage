@@ -1,0 +1,14 @@
+{
+  "name": "Conquest Mission",
+  "catalogue_id": 5761,
+  "oracle_id": "35906166-71d1-4089-bbe4-4055edb81fb0",
+  "facts_sha256": "c2d0a42faa4fd2a278c4d7d3cc171441266a3cc4e5d057710ddfc7824234651e",
+  "physical_metadata_sha256": "3c114e5616c92095e7b25e70161d59ae228fe0ee80a7d0c5d46289cd3bba44ff",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/c/ConquestMission.java",
+  "java_sha256": "330dca9981093e6f9c3dfa241415ba8eab4703ad16350212a46f767aacb56f3c",
+  "xmage_class": "mage.cards.c.ConquestMission"
+}

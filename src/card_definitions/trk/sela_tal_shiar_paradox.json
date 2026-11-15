@@ -1,0 +1,14 @@
+{
+  "name": "Sela, Tal Shiar Paradox",
+  "catalogue_id": 5922,
+  "oracle_id": "0cbf0f7a-7f5e-4819-9a9f-f655f92fd5f1",
+  "facts_sha256": "6fab4b36324e17e553e28560020128e008557c0cfea3d1e7f30136c946086c2b",
+  "physical_metadata_sha256": "fc328882a7db91ae6ec1842771d2dbe8f2849e34550c2da7836d887246ac71b4",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/SelaTalShiarParadox.java",
+  "java_sha256": "a5794ace5b2a01ddf9ba05500e28ba37460a49ebe24341967ffc5ef767082cfd",
+  "xmage_class": "mage.cards.s.SelaTalShiarParadox"
+}

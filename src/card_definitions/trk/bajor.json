@@ -1,0 +1,14 @@
+{
+  "name": "Bajor",
+  "catalogue_id": 5727,
+  "oracle_id": "93d7f6e7-b6b0-48f3-891a-73970826af3b",
+  "facts_sha256": "a98c1042ed631105d12332056a4bd9d55af40a541a7b2fbca0249f03340ea7c2",
+  "physical_metadata_sha256": "f2b255cc83e79a1bbee8ff96e793b068e044c5c7fba2bc68389ebfd95b5c6a3e",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/b/Bajor.java",
+  "java_sha256": "dabedd9455e65e9f034ec2942728db54c860dda9b1322251f38ba22cc7c28dcf",
+  "xmage_class": "mage.cards.b.Bajor"
+}

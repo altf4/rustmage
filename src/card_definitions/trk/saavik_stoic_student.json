@@ -1,0 +1,14 @@
+{
+  "name": "Saavik, Stoic Student",
+  "catalogue_id": 5914,
+  "oracle_id": "53aaa919-d08f-4b76-8583-bc2d4635f991",
+  "facts_sha256": "54408a809b31d282bc062f44622feb1ae4f73d9b4a4ee0cf2a5f9d6e090cdb92",
+  "physical_metadata_sha256": "1f646f8dc2ffd6829c2046eb5a1acb819832379ab9153bd11f0b2ce7f8b6e6c3",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/SaavikStoicStudent.java",
+  "java_sha256": "10bf2eb310aa0d1444bbcc55b9888c5ba76ee68ccf04d4a3eae0c9f16d5329ef",
+  "xmage_class": "mage.cards.s.SaavikStoicStudent"
+}

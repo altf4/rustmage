@@ -1,0 +1,14 @@
+{
+  "name": "Final Frontier",
+  "catalogue_id": 5809,
+  "oracle_id": "26f7e903-2a00-4878-b8b7-d5abe35c9526",
+  "facts_sha256": "1b99cdf2b7a63143f783b48c4e6b3d5260fc33c95807e9430ead3a5eccb5cc1c",
+  "physical_metadata_sha256": "28048bee020ed49264db5d71dfa7f445aeff31001d03a0a2f9d0e0426f1c43d5",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/f/FinalFrontier.java",
+  "java_sha256": "7fe071834b2c2c2db8d192e79cc32b9b46026b1d4f2db4bc304d1fba2488adef",
+  "xmage_class": "mage.cards.f.FinalFrontier"
+}

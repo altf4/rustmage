@@ -1,0 +1,13 @@
+{
+  "name": "Erica Ortegas, Plucky Pilot",
+  "catalogue_id": 5801,
+  "oracle_id": "8b2514e5-4124-4f6c-b6b7-24c0ab3d3971",
+  "facts_sha256": "a531fa9bcb82a657564a7c8cad1b7686679296a8ff4e5a639936546bd272db0a",
+  "physical_metadata_sha256": "f92a7a24240ec27846584c8bb37e9ab4792bb0ea1f940b4d1aab81c1d3339262",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

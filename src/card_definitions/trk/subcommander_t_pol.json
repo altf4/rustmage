@@ -1,0 +1,14 @@
+{
+  "name": "Subcommander T'Pol",
+  "catalogue_id": 5939,
+  "oracle_id": "e6973668-4ea7-4920-82a5-73abfc1c9fd5",
+  "facts_sha256": "681f335cabf2c770d6ade741b4f6061506c03e9f9ee40ee11f61cdc3336c7979",
+  "physical_metadata_sha256": "da1efdab00c08e3779b5998a818f5299e582d601e5abd3e25438e18c4b6e92ce",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/SubcommanderTPol.java",
+  "java_sha256": "ea8f33c7e320dc872c57a45db66a7257f9427a8b9896728b522ab88d024e6c4d",
+  "xmage_class": "mage.cards.s.SubcommanderTPol"
+}

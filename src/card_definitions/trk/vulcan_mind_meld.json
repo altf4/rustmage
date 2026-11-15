@@ -1,0 +1,13 @@
+{
+  "name": "Vulcan Mind-Meld",
+  "catalogue_id": 5995,
+  "oracle_id": "a6aa204a-0be9-4a38-b54c-82538adfe7f1",
+  "facts_sha256": "67ada1f9f3b7a47d36b42737313ed35a69d67f1b2df579e459f1524977b5baca",
+  "physical_metadata_sha256": "2fa55bfb6b2c9df39f77f7da74dde1f184ee22d2eecc36854c33e8061811403f",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

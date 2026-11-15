@@ -1,0 +1,14 @@
+{
+  "name": "Plasma Cascade",
+  "catalogue_id": 5893,
+  "oracle_id": "46ce40e9-b7fb-4f40-a7ab-f8a2234d1d63",
+  "facts_sha256": "e62927efb16f368d252f8c4db16c4ab5a473334479eb788dcadaaec7eae9fbcc",
+  "physical_metadata_sha256": "9349c444da503d7cc0aed484ceb6db98b987b73545af3fc3ce4ad0377f8fa88c",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/p/PlasmaCascade.java",
+  "java_sha256": "bed09fa66243cdb55cb6856fe86065c7b7990d4891850a28eab3cac1d52e32d0",
+  "xmage_class": "mage.cards.p.PlasmaCascade"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Type-2 Phaser",
+  "catalogue_id": 5980,
+  "oracle_id": "9d4d3682-e904-412d-b8ae-734962865dfb",
+  "facts_sha256": "fbc2c2fb9f226fbc8ba34cb096a6a77b3ff7c4326558e28d4b3884c39487f9cb",
+  "physical_metadata_sha256": "1f5e836c952d311015095374026c6a6a3ebe2c1d2aa1325227e904cf35c248e9",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/t/Type2Phaser.java",
+  "java_sha256": "b7857cc32782e0511cd1523404d80473bc9dc80dae04d69f6dd11d387421350b",
+  "xmage_class": "mage.cards.t.Type2Phaser"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Resistance Is Futile",
+  "catalogue_id": 5906,
+  "oracle_id": "49975689-85f8-4221-bb11-3d3f68a1a7ac",
+  "facts_sha256": "e22281ac6c11ff6f73b915aecfbe47a02c2fe11a1ff3ac3a11f4bc18adb42829",
+  "physical_metadata_sha256": "ceeec05dc65b295cfa40af37e95b327261e95a6f93e109e5a381d38c4de72f02",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/r/ResistanceIsFutile.java",
+  "java_sha256": "61a1382bebbcde0b34bf1f395ff89fbdb97cac9797d881ea88a80106c89781ae",
+  "xmage_class": "mage.cards.r.ResistanceIsFutile"
+}

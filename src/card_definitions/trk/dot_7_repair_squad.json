@@ -1,0 +1,14 @@
+{
+  "name": "DOT-7 Repair Squad",
+  "catalogue_id": 5770,
+  "oracle_id": "b860f64c-e830-49ea-a478-5dc87e8a3be1",
+  "facts_sha256": "f8edb1c4dd17774ff174f1b1bc25cb8b5d3596b3eb55ee04a00dee7ba0a73a9c",
+  "physical_metadata_sha256": "ca1ed9a3d75dd8fe4eb1283fa0b886583a21bba9ca551ed6fe1d11e4e74cefa2",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/d/DOT7RepairSquad.java",
+  "java_sha256": "8ccdc68972f4cfcf44516854d1e2fa1c459dff7d28aa54e4010c9c70b5f5bdbc",
+  "xmage_class": "mage.cards.d.DOT7RepairSquad"
+}

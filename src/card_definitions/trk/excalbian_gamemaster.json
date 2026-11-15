@@ -1,0 +1,14 @@
+{
+  "name": "Excalbian Gamemaster",
+  "catalogue_id": 5802,
+  "oracle_id": "f409e869-ea1a-4e08-b19e-949436d01cc1",
+  "facts_sha256": "7039c577f81cdd7fecdad99dd3959cc9231d5063b1dfb312d6eb99f89d035553",
+  "physical_metadata_sha256": "460e619395f53e6fdaab1cf786781381ef4d0f00b85e6f695e163d558d2920d2",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/e/ExcalbianGamemaster.java",
+  "java_sha256": "f139a372fe5fbb353478d377482a39c3217e7a05e04dd59499c49b634a94ff2d",
+  "xmage_class": "mage.cards.e.ExcalbianGamemaster"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Dominion Assault Force",
+  "catalogue_id": 5783,
+  "oracle_id": "b093916c-cc0a-4b3b-9de6-8a2db53cdfe0",
+  "facts_sha256": "6a915e279d4d9b5cf20012cf9a54b4395a87e909cac5a08a26345fc9d26888a3",
+  "physical_metadata_sha256": "ae3f6eb32802169b0e3db7db7faf7d9d3b8cb4e73c1fd78d795da0d19d093fcf",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/d/DominionAssaultForce.java",
+  "java_sha256": "c2a6caa79681d7c4bfcd7709e83a532b59d37f4c6ee1bb6f10f52a23a750bc08",
+  "xmage_class": "mage.cards.d.DominionAssaultForce"
+}

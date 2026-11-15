@@ -1,0 +1,13 @@
+{
+  "name": "Borg Cube",
+  "catalogue_id": 5733,
+  "oracle_id": "a59b854c-0e04-4581-b9d3-1516263d7ace",
+  "facts_sha256": "20741d42e78020f49f1ea3d85e80840b0cac7bf3f8dd1ec281e1cfc92a292bbd",
+  "physical_metadata_sha256": "d92f8821ea5b0b1be743efeb68ecbff8d20b8fc02ca5fde3905c19554d94ec75",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

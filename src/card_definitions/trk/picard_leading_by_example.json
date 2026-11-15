@@ -1,0 +1,14 @@
+{
+  "name": "Picard, Leading by Example",
+  "catalogue_id": 5890,
+  "oracle_id": "4b36f8e2-ba7d-4bc7-890f-dd6ab73eef17",
+  "facts_sha256": "8d9e008a00ff4b8994e4bb5d6abc66e5dd64f32bdadecb32d265ba4eabab1758",
+  "physical_metadata_sha256": "fb5d35e30a27c9fe8d58e1645f2f25793ed41e417eba1829d42b1b36f0f1f130",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/p/PicardLeadingByExample.java",
+  "java_sha256": "832f11f69c93f3b57996b341349d3888bcacc554dbbe84d9da9dfb9372dda2fe",
+  "xmage_class": "mage.cards.p.PicardLeadingByExample"
+}

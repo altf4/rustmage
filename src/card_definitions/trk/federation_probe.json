@@ -1,0 +1,14 @@
+{
+  "name": "Federation Probe",
+  "catalogue_id": 5806,
+  "oracle_id": "6fc7401f-66fe-4d17-be2f-afcf892be740",
+  "facts_sha256": "1fabab7430edf5d872f1f91a473b7841ec9fc13f73bf85c59c48193569e4e367",
+  "physical_metadata_sha256": "1f75468d883f5eff2c1b59752c265933fcf5f1f5a28cebe10996daafd1305ac5",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/f/FederationProbe.java",
+  "java_sha256": "112a09e45c1aabecab8f7295a3b395ecf7ef7e4879f5084b689c48939164f8f9",
+  "xmage_class": "mage.cards.f.FederationProbe"
+}

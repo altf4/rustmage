@@ -1,0 +1,14 @@
+{
+  "name": "Genesis Effect",
+  "catalogue_id": 5817,
+  "oracle_id": "ec763f36-3504-4bfe-8481-1a7d0bff8d8e",
+  "facts_sha256": "ae52bb90c4335ccb97814601fdde9ed57f8df9011036690f4c1598e3947665ea",
+  "physical_metadata_sha256": "f063d48662de41e950201b8e7621f731f8262662898f1fc546a0f53702b1e62c",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/g/GenesisEffect.java",
+  "java_sha256": "91dd452613543b9c1d8e5c376c81e437aa577646ce20c766291bc217c6fa7e3c",
+  "xmage_class": "mage.cards.g.GenesisEffect"
+}

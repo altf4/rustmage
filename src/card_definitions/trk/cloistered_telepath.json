@@ -1,0 +1,14 @@
+{
+  "name": "Cloistered Telepath",
+  "catalogue_id": 5752,
+  "oracle_id": "8656291d-8de7-4341-b1ee-0fcd65d629a4",
+  "facts_sha256": "7454ba5df1d54c41d28f04f254e904425297e4fe6db77065f1c39c7222282243",
+  "physical_metadata_sha256": "6eb472f30aeda0961c3c672834631b302f7249b35ca155bcca3e48a04b761ca5",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/c/CloisteredTelepath.java",
+  "java_sha256": "7e664f8cc138161560ca6202899acf3ff34ab0a8de7c0bc8aede85757125a9a3",
+  "xmage_class": "mage.cards.c.CloisteredTelepath"
+}

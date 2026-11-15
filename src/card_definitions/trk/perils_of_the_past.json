@@ -1,0 +1,14 @@
+{
+  "name": "Perils of the Past",
+  "catalogue_id": 5886,
+  "oracle_id": "f1f77fb4-2c83-4cbf-894e-624abe6cd95f",
+  "facts_sha256": "ec0a689357f113d96478e384071d5c1601a227e44721eec4292bc5290102f771",
+  "physical_metadata_sha256": "f4dd83b7ec7d978a57a25b63254771e588933360f7450fb6052aa7eab8ff8ea1",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/p/PerilsOfThePast.java",
+  "java_sha256": "0f1450b5f4ad9652fdf932decd391fdd2f7c5951c8fd12394e55c503adae2af7",
+  "xmage_class": "mage.cards.p.PerilsOfThePast"
+}

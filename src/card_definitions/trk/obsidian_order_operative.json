@@ -1,0 +1,13 @@
+{
+  "name": "Obsidian Order Operative",
+  "catalogue_id": 5878,
+  "oracle_id": "7145e1b7-b991-4651-b21d-0620cb017090",
+  "facts_sha256": "3784223cf021c6f80c8b033210b8e2587d3d5bfae1b54ba72f91ea0a9cda3246",
+  "physical_metadata_sha256": "55925e695e53789dda699a7f9635bf2bdd52f593f7a849d88288b346f0f53a65",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Sarcophagus, Ship of the Dead",
+  "catalogue_id": 5916,
+  "oracle_id": "22b86863-c992-405b-949a-bdf8859884ef",
+  "facts_sha256": "d4c56f692563199b49d1bd23e348cb142c1f847a5c719d3c726a66472c8bec49",
+  "physical_metadata_sha256": "95ca9ae96ba3b7d3f0786f5974b3e2b92de7177721fff05a37cb8a9fd9e094c7",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/SarcophagusShipOfTheDead.java",
+  "java_sha256": "3424f10a69a7888d9eb3e4ed1b9ac42c331a395bb7934e400c47948032ffff93",
+  "xmage_class": "mage.cards.s.SarcophagusShipOfTheDead"
+}

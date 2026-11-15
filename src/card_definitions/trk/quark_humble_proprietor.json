@@ -1,0 +1,13 @@
+{
+  "name": "Quark, Humble Proprietor",
+  "catalogue_id": 5900,
+  "oracle_id": "61703e94-cb57-44d8-b37b-7b14b3cfd86d",
+  "facts_sha256": "15e01dae2ce7274faa49c5927e870cebb40ccadd611b931dde0d392b75fb8e4f",
+  "physical_metadata_sha256": "6c21b2d7228bc0b4115d34bbabde2a650cdcfdf0432eb0c5ffa28a7dba870c6b",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

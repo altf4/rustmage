@@ -1,0 +1,14 @@
+{
+  "name": "Temporal Anomaly",
+  "catalogue_id": 5954,
+  "oracle_id": "cf0d1859-699e-47d4-bc91-7c5ff61fabe9",
+  "facts_sha256": "aa77b349d00f7de4234ecb50289cfe6f07e74a632eb8be81be3428fdffe2fa1b",
+  "physical_metadata_sha256": "0f072cf5ae4da58b22ad2df6bc254b01777064c650b1d7715ac318e61cfaef6a",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/t/TemporalAnomaly.java",
+  "java_sha256": "9a44c003530aca5038d870c73cbe51fb821d350d5305768cdde95066e60f5c5d",
+  "xmage_class": "mage.cards.t.TemporalAnomaly"
+}

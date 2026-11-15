@@ -59,6 +59,7 @@ rustmage-cards-tla = { path = "crates/cards/tla", version = "=0.1.0" }
 rustmage-cards-tle = { path = "crates/cards/tle", version = "=0.1.0" }
 rustmage-cards-tmc = { path = "crates/cards/tmc", version = "=0.1.0" }
 rustmage-cards-tmt = { path = "crates/cards/tmt", version = "=0.1.0" }
+rustmage-cards-trk = { path = "crates/cards/trk", version = "=0.1.0" }
 rustmage-cards-w17 = { path = "crates/cards/w17", version = "=0.1.0" }
 rustmage-cards-woe = { path = "crates/cards/woe", version = "=0.1.0" }
 rustmage-cards-znr = { path = "crates/cards/znr", version = "=0.1.0" }

@@ -1,0 +1,14 @@
+{
+  "name": "Impossible Choice",
+  "catalogue_id": 5839,
+  "oracle_id": "e277ed07-2113-4465-a45c-a64490814c1d",
+  "facts_sha256": "a2b344001f010e841ea8c5ebf48b0ed230d3588f5855c7a28b2f3c8c4fcdf062",
+  "physical_metadata_sha256": "469f5a62c30fbc2be2c044bac20daa82d456f11bb5005e928d6818c29444ce7a",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/i/ImpossibleChoice.java",
+  "java_sha256": "0c1f484f7f0ee0949f44c385b0656796a560e556d6eb0a6fb0b85d15f62fa761",
+  "xmage_class": "mage.cards.i.ImpossibleChoice"
+}

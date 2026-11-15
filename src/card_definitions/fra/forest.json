@@ -2,13 +2,13 @@
   "name": "Forest",
   "catalogue_id": 4,
   "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
-  "facts_sha256": "191d17171bc11d7b26d625ceb8f828799439304fc668127c733de3e0f65bdbd6",
+  "facts_sha256": "f65360bc3e5db44a8b5b5ac3d8c8555351a8463afa951c4988e0ffbcfe654fed",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b9cc4953af7b7c675b92bcdd1ce82fa93315b8eb4463676837a2ce18de2b8d88"
   },
-  "physical_metadata_sha256": "952613d0e928c4d12d1bdd60af4cd63c7b4aef33c97136e67da220fb7f32b006",
+  "physical_metadata_sha256": "f565e16d402587abc6937b866f8493601824409432de429ada2e5a2f15fd8ea6",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage/src/main/java/mage/cards/basiclands/Forest.java",
   "java_sha256": "77b52732425a0d2b9a8f53d2fff7014dab7897b56b23b69792872d8c95955716",

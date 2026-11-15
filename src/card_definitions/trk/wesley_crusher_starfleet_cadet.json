@@ -1,0 +1,14 @@
+{
+  "name": "Wesley Crusher, Starfleet Cadet",
+  "catalogue_id": 5998,
+  "oracle_id": "5c3cbb08-cbe1-42f5-9ac7-e558b85648bb",
+  "facts_sha256": "bd3dac519d6612a89df1435bbed4884bbf81cb59f8da69602f43dcef7889816d",
+  "physical_metadata_sha256": "6e1694fb1d6bb48c8a3f9998a134b8736e5e3065493ebcc79b3800fc48340158",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/w/WesleyCrusherStarfleetCadet.java",
+  "java_sha256": "223b9a405c1370132cdbe703ac4e357e30fa453af873646d14a992b3287b7bcc",
+  "xmage_class": "mage.cards.w.WesleyCrusherStarfleetCadet"
+}

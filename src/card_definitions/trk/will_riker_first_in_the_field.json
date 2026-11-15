@@ -1,0 +1,13 @@
+{
+  "name": "Will Riker, First in the Field",
+  "catalogue_id": 5999,
+  "oracle_id": "7c1fd7c6-2f3d-496f-9f09-660a13ef923f",
+  "facts_sha256": "7e35c96606796f8e9084f7366121c84ff6eee6a636d451c82844495ef61947a0",
+  "physical_metadata_sha256": "87f833eb2f44aad6d1dbd00ff4179623bb384d7476eb4330db1a77fe3f12d881",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

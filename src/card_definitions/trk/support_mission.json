@@ -1,0 +1,14 @@
+{
+  "name": "Support Mission",
+  "catalogue_id": 5942,
+  "oracle_id": "59a4c4cf-07b4-4009-bbea-7da7b31f09a1",
+  "facts_sha256": "a3e0b9a4b6beab1c3e51615677d2a5de750e34b80878e3d37ce97ece5726fc4f",
+  "physical_metadata_sha256": "ce9f4ba3702cdc312a3cf2a3c6ea9a69071d31602998c24c4f30ea3428811dd4",
+  "complete": false,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/SupportMission.java",
+  "java_sha256": "0baa93df078c5f9af9658a085db831e1e72bf968bd51ee26806c2f8156a26a3c",
+  "xmage_class": "mage.cards.s.SupportMission"
+}
