@@ -4,7 +4,7 @@
   "oracle_id": "aff720b4-b8ef-46ea-9a3d-e101999e6526",
   "facts_sha256": "2a9115d5ed296606efce7968a436b39f393cd3079f38d702cb7e0c758c40f8ea",
   "physical_metadata_sha256": "ceda7a55f15cd95dd836a0bdb3f2d99156bd5f9c145a0eb34a943b60eee0a993",
-  "complete": false,
+  "complete": true,
   "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
   "audit_source": "data/audits/trk.json",
   "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
