@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "27dc22c280b8fb9b1597e060149e6d2d9d8dc471103522f2d1b1a844c13e4995",
+  "catalogue_version": "8663e2c0f96cebefbc021573715732a594aa3c3ff40c8093be42ac2bca0463db",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5360,
-  "implemented_total": 5380,
+  "implemented_standard_cards": 5371,
+  "implemented_total": 5391,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 197,
-      "gated": 99
+      "complete": 208,
+      "gated": 88
     },
     "w17": {
       "total": 1,
@@ -41859,8 +41859,8 @@
     {
       "name": "Cantankerous Captain",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/cantankerous_captain.rs",
       "set": "trk"
     },
@@ -41995,8 +41995,8 @@
     {
       "name": "Collation Trimatrix",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/collation_trimatrix.rs",
       "set": "trk"
     },
@@ -42043,8 +42043,8 @@
     {
       "name": "Common Goal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/common_goal.rs",
       "set": "trk"
     },
@@ -42075,8 +42075,8 @@
     {
       "name": "Crystalline Entity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/crystalline_entity.rs",
       "set": "trk"
     },
@@ -42131,8 +42131,8 @@
     {
       "name": "Dahar Master",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/dahar_master.rs",
       "set": "trk"
     },
@@ -42363,8 +42363,8 @@
     {
       "name": "Enterprise NX-01",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/enterprise_nx_01.rs",
       "set": "trk"
     },
@@ -42379,8 +42379,8 @@
     {
       "name": "Excalbian Gamemaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/excalbian_gamemaster.rs",
       "set": "trk"
     },
@@ -42499,8 +42499,8 @@
     {
       "name": "Genesis Effect",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/genesis_effect.rs",
       "set": "trk"
     },
@@ -42939,8 +42939,8 @@
     {
       "name": "Munitions Enthusiast",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/munitions_enthusiast.rs",
       "set": "trk"
     },
@@ -43635,8 +43635,8 @@
     {
       "name": "Test of Identity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/test_of_identity.rs",
       "set": "trk"
     },
@@ -43923,8 +43923,8 @@
     {
       "name": "Vulcan Mind-Meld",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/vulcan_mind_meld.rs",
       "set": "trk"
     },
