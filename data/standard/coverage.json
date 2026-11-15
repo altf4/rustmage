@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "2ce19778edcfae829549380fa0a51fa7cdcaa151a68a33a3700a19722d4edc97",
+  "catalogue_version": "a9b08d522e6032e7eeae9e07648c17c5a13e46e5d02ea1571d85c6a943c1104c",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5419,
-  "implemented_total": 5439,
+  "implemented_standard_cards": 5425,
+  "implemented_total": 5445,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 256,
-      "gated": 40
+      "complete": 262,
+      "gated": 34
     },
     "w17": {
       "total": 1,
@@ -43563,16 +43563,16 @@
     {
       "name": "Targ Wrangler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/targ_wrangler.rs",
       "set": "trk"
     },
     {
       "name": "Tasha Yar, Out of Time",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/tasha_yar_out_of_time.rs",
       "set": "trk"
     },
@@ -43683,8 +43683,8 @@
     {
       "name": "The Doctor, EMH",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/the_doctor_emh.rs",
       "set": "trk"
     },
@@ -43771,8 +43771,8 @@
     {
       "name": "Those Old Scientists",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/those_old_scientists.rs",
       "set": "trk"
     },
@@ -43971,8 +43971,8 @@
     {
       "name": "Worf, Intelligence Contractor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/worf_intelligence_contractor.rs",
       "set": "trk"
     },
@@ -44011,8 +44011,8 @@
     {
       "name": "Zero, Incorporeal Sensate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/zero_incorporeal_sensate.rs",
       "set": "trk"
     }
