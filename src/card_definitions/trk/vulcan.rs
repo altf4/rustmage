@@ -1,2 +1,28 @@
-// Pending complete typed implementation and rules scenarios.
-pub(in crate::cards) const RULES: CardRules = CardRules::EMPTY;
+// Oracle and pinned XMage reviewed.
+pub(in crate::cards) const RULES: CardRules = CardRules {
+    effect: Effect::Land,
+    entry: EntryTapped::Always,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfEnters,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::GainLife(PlayerSet::Controller, 1)],
+    }],
+    activated: &[ActivatedAbility {
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        exhaust: false,
+        once_per_turn: false,
+        sorcery: false,
+        cost: ActivationCost {
+            tap: true,
+            ..ActivationCost::ZERO
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::AddMana(ManaProduction::Choice {
+            mask: 3,
+            amount: 1,
+        })],
+    }],
+    ..CardRules::EMPTY
+};
