@@ -1,6 +1,6 @@
 # Star Trek (TRK) set implementation audit
 
-Status: card-authoring phase. The shared engine checkpoint passed; 296 new TRK identities are gated pending complete typed definitions and rules scenarios. Fifteen existing reprints remain admitted but need set-game acceptance.
+Status: card-authoring phase. The integrated branch admits 131/311 identities: 116 new typed definitions and fifteen existing reprints. The other 180 remain gated. The reprints still need set-game acceptance.
 Tracking issue: [#682](https://github.com/altf4/rustmage/issues/682).
 
 ## Frozen inputs and scope
@@ -18,7 +18,7 @@ The engine now covers the audited shared mechanics: November's 367 creature type
 
 Each isolated change passed focused guarded rules/contract tests and independent review. On the integrated set branch, a guarded checkpoint passed 58 scenarios in twelve targets covering the new source permissions, Nog, Vulcan Mind-Meld, Species 8472, Beam Me Up, phasing, Lwaxana, Infinite Diversity, and affected DFT, DSK, MKM, and SPM regressions. Its service runtime was 3 minutes 36 seconds, with a 2.8 GiB memory peak. After Star Trek metadata and linkage were generated, the guarded baseline cache test passed 7 Beam Me Up cases in 6 seconds, peaking at 518 MiB. See the tracking issue for commit and review history.
 
-If authoring exposes a missed shared dependency, return to the engine checkpoint, implement and independently review it, then rewarm the guarded cache before the dependent card files resume.
+An independently reviewed followup checkpoint for twelve more card dependencies passed 10/10 guarded scenarios and a 10/10 integration rewarm. Further dependencies discovered during authorship are being handled in isolated engine worktrees. Before dependent card files resume, implement and review each engine change, then rewarm the guarded cache.
 
 ## Reuse and interaction checks
 
