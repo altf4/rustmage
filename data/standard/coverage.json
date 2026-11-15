@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "54f43f1a2ee41fa50dee7f1bf5c8a9d16cbc3ed574cd57685465817573f5cfea",
+  "catalogue_version": "f8419e1042bb14df0221c4d9fdfab067ed935b483e3de615821f1eb64842f5c9",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5456,
-  "implemented_total": 5476,
+  "implemented_standard_cards": 5459,
+  "implemented_total": 5479,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,7 @@
     },
     "trk": {
       "total": 296,
-      "complete": 293,
-      "gated": 3
+      "complete": 296
     },
     "w17": {
       "total": 1,
@@ -41835,8 +41834,8 @@
     {
       "name": "Brad Boimler, Eager Ensign",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/brad_boimler_eager_ensign.rs",
       "set": "trk"
     },
@@ -42275,16 +42274,16 @@
     {
       "name": "Dr. Leonard \"Bones\" McCoy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/dr_leonard_bones_mccoy.rs",
       "set": "trk"
     },
     {
       "name": "Dr. McCoy, Surly Surgeon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/dr_mccoy_surly_surgeon.rs",
       "set": "trk"
     },
