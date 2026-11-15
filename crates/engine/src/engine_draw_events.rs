@@ -34,21 +34,31 @@ impl Game {
         let exempt = self.state.step == Step::Draw
             && self.state.active == player
             && !self.state.players[player.index()].drew_in_own_draw_step;
-        self.state
-            .static_sources
-            .iter()
-            .copied()
+        let world = self.characteristic_query();
+        ability_world::CharacteristicWorld::static_source_candidates(&world)
+            .into_iter()
             .filter(move |&id| {
-                self.on_battlefield(id)
-                    && self.state.objects[id as usize].controller == player
-                    && self.active_rule_fragment(id, |fragment| match *fragment {
+                self.on_battlefield(id) && self.state.objects[id as usize].controller == player && {
+                    let definition =
+                        ability_world::CharacteristicWorld::recipe(&world, id).definition;
+                    let matches = |fragment: &crate::cards::StaticAbilityFragment| match *fragment {
                         crate::cards::StaticAbilityFragment::DoubleDraw => true,
                         crate::cards::StaticAbilityFragment::DoubleDrawExceptFirst => !exempt,
                         crate::cards::StaticAbilityFragment::ConditionalDoubleDraw(condition) => {
                             self.stat_value(condition, self.object_ref(id), player) != 0
                         }
                         _ => false,
-                    })
+                    };
+                    if definition != self.state.objects[id as usize].card {
+                        ability_world::CharacteristicWorld::printed_abilities_available(&world, id)
+                            && definition
+                                .static_ability_groups()
+                                .iter()
+                                .any(|group| group.fragments.iter().any(matches))
+                    } else {
+                        self.active_rule_fragment(id, matches)
+                    }
+                }
             })
             .map(|id| self.object_ref(id))
     }

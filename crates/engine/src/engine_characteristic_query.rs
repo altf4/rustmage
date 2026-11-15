@@ -1524,6 +1524,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     fn stored_recipe(&self, id: CardId) -> Option<CopyRecipe> {
         self.world.stored_recipe(id)
     }
+    fn copy_rows_state(&self) -> &copies::Rows {
+        self.world.copy_rows_state()
+    }
     fn provided_origin(&self, object: ObjectRef) -> Option<u64> {
         self.world.provided_origin(object)
     }

@@ -983,7 +983,7 @@ pub(super) fn counter_replacements<W: super::ability_world::CharacteristicWorld 
     used: &[CounterReplacementId],
 ) -> Vec<CounterReplacement> {
     let mut out = Vec::new();
-    for &id in world.static_sources() {
+    for id in world.static_source_candidates() {
         let provider = world.object(id);
         if provider.zone != Zone::Battlefield
             || (provider.controller != p.controller && provider.controller != p.placed_by)
@@ -991,7 +991,8 @@ pub(super) fn counter_replacements<W: super::ability_world::CharacteristicWorld 
             continue;
         }
         let reference = world.reference(id);
-        for (index, &spec) in provider.card.replacement_effects().iter().enumerate() {
+        let definition = world.recipe(id).definition;
+        for (index, &spec) in definition.replacement_effects().iter().enumerate() {
             let applies = match spec {
                 ReplacementSpec::DoubleCountersPlacedByController { condition } => {
                     provider.controller == p.placed_by
@@ -1003,14 +1004,18 @@ pub(super) fn counter_replacements<W: super::ability_world::CharacteristicWorld 
             let ability = u16::try_from(index).expect("immutable replacement index");
             if applies
                 && !used.contains(&CounterReplacementId::Printed(reference, ability))
-                && world.fragment_available(id, |fragment| {
-                    matches!(fragment,
-                    crate::cards::StaticAbilityFragment::Replacement(slot, _) if *slot == ability)
+                && (if definition != provider.card {
+                    world.printed_abilities_available(id)
+                } else {
+                    world.fragment_available(id, |fragment| {
+                        matches!(fragment,
+                        crate::cards::StaticAbilityFragment::Replacement(slot, _) if *slot == ability)
+                    })
                 })
             {
                 out.push(CounterReplacement::Printed(ReplacementEffectView {
                     source: reference,
-                    source_card: provider.card,
+                    source_card: definition,
                     ability,
                 }));
             }

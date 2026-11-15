@@ -258,6 +258,9 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
         let index = rows.binary_search_by_key(&id, |row| row.object.card).ok()?;
         (rows[index].object == reference).then_some(rows[index].recipe)
     }
+    fn copy_rows_state(&self) -> &copies::Rows {
+        &self.copy_recipes
+    }
     fn static_sources(&self) -> &[CardId] {
         self.entry_projection
             .as_ref()

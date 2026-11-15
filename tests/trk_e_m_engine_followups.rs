@@ -609,6 +609,27 @@ fn unconditional_draw_replacement_applies_to_each_draw_and_owned_restore() {
     );
 }
 
+#[test]
+fn copied_spock_provider_doubles_draws_and_restores_when_copy_ends() {
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &SPOCK_DRAW)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let copy = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let source = game.object_ref(copy);
+    let baseline = game.snapshot();
+    game.set_copy_recipe(source, CopyRecipe::new(Card::GrizzlyBears));
+    let copied = game.snapshot();
+    game.draw_many(player, 1);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 2);
+    game.restore(&copied).unwrap();
+    assert_eq!(game.snapshot(), copied);
+    game.clear_copy_recipe(source);
+    game.draw_many(player, 1);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
+    game.restore(&baseline).unwrap();
+    assert_eq!(game.snapshot(), baseline);
+}
+
 const GEORDI_DOUBLE: ReplacementSpec = ReplacementSpec::ControlledArtifactCountersPlaced {
     kind: CounterKind::Charge,
     factor: 2,
@@ -667,6 +688,30 @@ fn geordi_doubles_only_own_charge_placements_on_owned_artifacts() {
         settle(&mut game);
         assert_eq!(game.counter_count(target, CounterKind::Charge), expected);
     }
+}
+
+#[test]
+fn copied_geordi_provider_replaces_charge_placement_and_clearing_copy_removes_it() {
+    let opt = Card::from_name("Opt").unwrap();
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &GEORDI), (opt, &PLACE_CHARGE)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let copy = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let target = put(&mut game, player, "Short Bow", Zone::Battlefield);
+    let copy_ref = game.object_ref(copy);
+    let baseline = game.snapshot();
+    game.set_copy_recipe(copy_ref, CopyRecipe::new(Card::GrizzlyBears));
+    let spell = spawn(&mut game, player, opt, Zone::Hand);
+    cast(&mut game, spell, Some(Target::Card(target)));
+    settle(&mut game);
+    assert_eq!(game.counter_count(target, CounterKind::Charge), 2);
+    game.restore(&baseline).unwrap();
+    assert_eq!(game.snapshot(), baseline);
+    game.clear_copy_recipe(copy_ref);
+    let spell = spawn(&mut game, player, opt, Zone::Hand);
+    cast(&mut game, spell, Some(Target::Card(target)));
+    settle(&mut game);
+    assert_eq!(game.counter_count(target, CounterKind::Charge), 1);
 }
 
 const LIFE_LOCK: CardRules = CardRules {
@@ -762,7 +807,10 @@ fn optional_hand_land_schedules_return_only_after_accepting_entry() {
         game.tap_objects(&[erica]);
         for _ in 0..8 {
             if game.legal_actions().iter().any(|action| {
-                matches!(action, Action::PutHandLand { .. } | Action::DeclineHandEntry)
+                matches!(
+                    action,
+                    Action::PutHandLand { .. } | Action::DeclineHandEntry
+                )
             }) {
                 break;
             }
@@ -847,7 +895,12 @@ fn sunburst_places_charge_counters_for_distinct_paid_colors() {
     game.state.players[player.index()].mana = [1, 1, 0, 0, 0, 0];
     act(&mut game, Action::AnnounceCast { card: source });
     act(&mut game, Action::ChooseX { value: 2 });
-    act(&mut game, Action::PayCosts { payment: [1, 1, 0, 0, 0, 0] });
+    act(
+        &mut game,
+        Action::PayCosts {
+            payment: [1, 1, 0, 0, 0, 0],
+        },
+    );
     settle(&mut game);
     assert_eq!(game.object_view(source).zone, Zone::Battlefield);
     assert_eq!(game.counter_count(source, CounterKind::Charge), 2);
