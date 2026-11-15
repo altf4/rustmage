@@ -1184,6 +1184,7 @@ define_actions! {
     },
     AnnounceBeamMeUp {
         card: CardId,
+        face: CastFace,
         cost: ManaCost,
         flash_surcharge: bool,
         provider: Option<ObjectRef>,
@@ -8933,13 +8934,14 @@ impl Game {
             ),
             Action::AnnounceBeamMeUp {
                 card,
+                face,
                 cost,
                 flash_surcharge,
                 provider,
             } => self.start_paid_cast_alternative(
                 actor,
                 card,
-                CastFace::Normal,
+                face,
                 PaidCastAlternative::BeamMeUp(cost),
                 flash_surcharge,
                 provider.map_or(PaidCastOrigin::BeamMeUp, PaidCastOrigin::BeamMeUpGranted),

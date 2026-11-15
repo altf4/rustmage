@@ -43,6 +43,14 @@ const VANILLA_SORCERY: CardRules = CardRules {
     effect: Effect::Spell(TargetPlan::NONE, &[]),
     ..CardRules::EMPTY
 };
+const X_SORCERY: CardRules = CardRules {
+    effect: Effect::Spell(TargetPlan::NONE, &[]),
+    extras: &CardExtras {
+        x_symbols: 1,
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
 const MAROONED_AURA: CardRules = CardRules {
     effect: Effect::Aura(one(TargetRule::Creature)),
     aura: Some(AuraSpec {
@@ -67,6 +75,7 @@ const MAROONED_AURA: CardRules = CardRules {
 fn beam(card: CardId) -> Action {
     Action::AnnounceBeamMeUp {
         card,
+        face: CastFace::Normal,
         cost: BEAM_COST,
         flash_surcharge: false,
         provider: None,
@@ -236,6 +245,7 @@ fn granted_beam_uses_printed_cost_only_in_main_phase_and_excludes_provider() {
     };
     let action = Action::AnnounceBeamMeUp {
         card: spell,
+        face: CastFace::Normal,
         cost,
         flash_surcharge: false,
         provider: Some(provider_ref),
@@ -311,4 +321,73 @@ fn enchanted_creature_cannot_pay_beam_return() {
         Zone::Battlefield
     );
     assert_eq!(game.state.objects[other as usize].zone, Zone::Hand);
+}
+
+#[test]
+fn granted_beam_keeps_printed_x_and_uses_the_declared_value() {
+    let _rules = fixture_rules::activate(&[
+        (Card::from_name("Exsanguinate").unwrap(), &X_SORCERY),
+        (Card::from_name("Hill Giant").unwrap(), &GRANTER),
+    ]);
+    let actor = Player::P0;
+    let mut game = scenario(actor);
+    let spell = put(&mut game, actor, "Exsanguinate", Zone::Graveyard);
+    let provider = put(&mut game, actor, "Hill Giant", Zone::Battlefield);
+    let creature = put(&mut game, actor, "Grizzly Bears", Zone::Battlefield);
+    let returned = game.object_ref(creature);
+    let action = Action::AnnounceBeamMeUp {
+        card: spell,
+        face: CastFace::Normal,
+        cost: ManaCost {
+            colored: [0, 0, 2, 0, 0, 0],
+            generic: 0,
+        },
+        flash_surcharge: false,
+        provider: Some(game.object_ref(provider)),
+    };
+    game.state.players[actor.index()].mana = [0, 0, 2, 0, 0, 3];
+    assert!(game.legal_actions().contains(&action));
+    act(&mut game, action);
+    act(&mut game, Action::ChooseX { value: 3 });
+    pay_beam(&mut game, returned);
+    let item = &game.state.stack[0];
+    assert_eq!(item.x, Some(3));
+    assert_eq!(item.mana_value(), 5);
+    assert_eq!(item.cast.unwrap().payment, [0, 0, 2, 0, 0, 3]);
+    settle(&mut game);
+    assert_eq!(game.state.objects[spell as usize].zone, Zone::Exile);
+}
+
+#[test]
+fn granted_beam_casts_the_instant_adventure_face_at_its_own_cost() {
+    let _rules = fixture_rules::activate(&[(Card::from_name("Hill Giant").unwrap(), &GRANTER)]);
+    let actor = Player::P0;
+    let mut game = scenario(actor);
+    let front = Card::from_name("Questing Druid").unwrap();
+    let adventure = front.adventure_spell().unwrap();
+    let spell = put(&mut game, actor, "Questing Druid", Zone::Graveyard);
+    let provider = put(&mut game, actor, "Hill Giant", Zone::Battlefield);
+    let creature = put(&mut game, actor, "Grizzly Bears", Zone::Battlefield);
+    let returned = game.object_ref(creature);
+    let action = Action::AnnounceBeamMeUp {
+        card: spell,
+        face: CastFace::Adventure,
+        cost: ManaCost {
+            colored: [0, 0, 0, 1, 0, 0],
+            generic: 1,
+        },
+        flash_surcharge: false,
+        provider: Some(game.object_ref(provider)),
+    };
+    game.state.players[actor.index()].mana = [0, 0, 0, 1, 0, 1];
+    assert!(game.legal_actions().contains(&action));
+    act(&mut game, action);
+    pay_beam(&mut game, returned);
+    let item = &game.state.stack[0];
+    assert_eq!(item.cast.unwrap().face, CastFace::Adventure);
+    assert_eq!(item.cast.unwrap().physical_card, Some(front));
+    assert_eq!(item.source.unwrap().card, adventure);
+    assert_eq!(item.cast.unwrap().payment, [0, 0, 0, 1, 0, 1]);
+    game.move_object(spell, Zone::Hand);
+    assert_eq!(game.state.objects[spell as usize].zone, Zone::Exile);
 }

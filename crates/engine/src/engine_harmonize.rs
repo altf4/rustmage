@@ -15,10 +15,19 @@ impl Announcement {
             self.spell_waterbend_additional(),
             Some(crate::cards::WaterbendAdditional::RequiredX)
         ));
+        let card = self.item.source.expect("object-backed cost").card;
+        if self
+            .item
+            .cast
+            .is_some_and(|cast| matches!(cast.method, CastMethod::BeamMeUpGranted(_)))
+        {
+            return crate::cards::mana_symbols::printed_cost(card.info().mana_cost)
+                .map_or(0, |cost| cost.x_symbols)
+                + waterbend_x;
+        }
         if self.source_mana_alternative().is_some() {
             return waterbend_x;
         }
-        let card = self.item.source.expect("object-backed cost").card;
         let base_x = match self.item.cast.map(|cast| cast.method) {
             Some(CastMethod::Harmonize) => u32::from(card.harmonize_x_symbols()),
             Some(
@@ -27,7 +36,6 @@ impl Announcement {
                 | CastMethod::Mayhem
                 | CastMethod::WebSlinging
                 | CastMethod::BeamMeUp
-                | CastMethod::BeamMeUpGranted(_)
                 | CastMethod::GrantedZeroFlashback,
             ) => 0,
             Some(CastMethod::Warp) => u32::from(self.warp_spec().x_symbols),

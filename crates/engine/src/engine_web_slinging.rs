@@ -276,8 +276,7 @@ impl Game {
             {
                 return true;
             }
-            if face == CastFace::Normal
-                && object.zone == Zone::Graveyard
+            if object.zone == Zone::Graveyard
                 && object.owner == actor
                 && definition.kind_mask() & 12 != 0
             {
@@ -482,6 +481,7 @@ impl Game {
                     },
                     PaidCastAlternative::BeamMeUp(_) => Action::AnnounceBeamMeUp {
                         card,
+                        face,
                         cost,
                         flash_surcharge,
                         provider: match origin {
@@ -565,7 +565,9 @@ impl Game {
         ) {
             self.state.objects[card as usize].flashback = true;
         }
-        Self::set_fixed_alternative_x(&mut item);
+        if !matches!(method, CastMethod::BeamMeUpGranted(_)) {
+            Self::set_fixed_alternative_x(&mut item);
+        }
         if terms.alternative.linked_exile_paid.is_some()
             || method == CastMethod::LinkedExileCounterCost
         {

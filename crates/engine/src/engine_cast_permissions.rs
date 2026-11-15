@@ -745,12 +745,6 @@ impl Game {
             && (object.zone != Zone::Graveyard
                 || object.owner != actor
                 || !object.is_card()
-                || face != CastFace::Normal
-                || object.card.kind_mask() & 12 == 0
-                || !mana_base.is_some_and(|cost| {
-                    crate::cards::mana_symbols::printed_cost(object.card.info().mana_cost)
-                        .is_some_and(|printed| printed.options.contains(&cost))
-                })
                 || !self.beam_grant_sources(actor).contains(&provider))
         {
             return false;
@@ -783,6 +777,15 @@ impl Game {
         let Some(definition) = definition else {
             return false;
         };
+        if matches!(method, CastMethod::BeamMeUpGranted(_))
+            && (definition.kind_mask() & 12 == 0
+                || !mana_base.is_some_and(|cost| {
+                    crate::cards::mana_symbols::printed_cost(definition.info().mana_cost)
+                        .is_some_and(|printed| printed.options.contains(&cost))
+                }))
+        {
+            return false;
+        }
         if method == CastMethod::Plot && definition.is_land() {
             return false;
         }
@@ -905,7 +908,6 @@ impl Game {
                     | CastMethod::Mayhem
                     | CastMethod::WebSlinging
                     | CastMethod::BeamMeUp
-                    | CastMethod::BeamMeUpGranted(_)
                     | CastMethod::Miracle
             );
         if fixed_x
@@ -959,14 +961,15 @@ impl Game {
                             | CastMethod::Sneak
                             | CastMethod::WebSlinging
                             | CastMethod::BeamMeUp
-                            | CastMethod::BeamMeUpGranted(_)
                     )
             },
             |spec| spec.x_symbols > 0,
         );
         let waterbend_x =
             definition.waterbend_additional() == Some(crate::cards::WaterbendAdditional::RequiredX);
-        let scalar_x = waterbend_x || !source_alternative && scalar_x;
+        let scalar_x = waterbend_x
+            || (!source_alternative || matches!(method, CastMethod::BeamMeUpGranted(_)))
+                && scalar_x;
         if object.zone == Zone::Library
             && library_top.is_none()
             && method != CastMethod::LibraryLife
