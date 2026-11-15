@@ -3606,6 +3606,10 @@ pub enum Instruction {
     /// Exile surviving graveyard targets, then copy the actual exiled creatures
     /// in one event and sacrifice that token group at the controller's next end step.
     ExileGraveyardTargetsCopyUntilOwnEndStep,
+    /// Exile the exact graveyard creature card, copy its printed face after a
+    /// successful exile, grant a lasting keyword, and sacrifice the actual token
+    /// at the next end step.
+    ExileGraveyardTargetCopyWithNextEndStepSacrifice { keywords: Keywords },
     /// Exile the exact creature card, then copy it only if it actually reached exile.
     ExileAndCopyCreatureAs {
         base: (i16, i16),

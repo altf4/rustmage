@@ -2,6 +2,49 @@
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn exile_graveyard_target_copy_next_end_step(
+        &mut self,
+        item: &SpellView,
+        keywords: Keywords,
+    ) {
+        let Some((id, card)) = item.targets.iter().find_map(|bound| {
+            let Target::Card(id) = bound.target else {
+                return None;
+            };
+            let object = self.state.objects.get(id as usize)?;
+            (self.same_target_object(*bound)
+                && object.zone == Zone::Graveyard
+                && object.is_card()
+                && object.card.is_creature())
+            .then_some((id, object.card.front_face()))
+        }) else {
+            return;
+        };
+        let event = self.move_object(id, Zone::Exile);
+        let exiled = event.moved
+            && event.was_card
+            && event.destination == Zone::Exile
+            && self.object_ref(id) == event.after;
+        if !exiled {
+            return;
+        }
+        self.stage_copy_recipes_with_completion(
+            item.controller,
+            vec![CopyRecipe::new(card)],
+            1,
+            false,
+            replacements::TokenCompletion::TemporaryTokens(Box::new(
+                temporary_tokens::TokenInstructions {
+                    item: item.clone(),
+                    keywords,
+                    permanent_keywords: true,
+                    attack: temporary_tokens::TokenAttack::None,
+                    cleanup: temporary_tokens::TokenCleanup::NextEndStepSacrifice,
+                },
+            )),
+        );
+    }
+
     pub(super) fn exile_graveyard_targets_copy_until_own_end_step(&mut self, item: &SpellView) {
         let targets: Vec<_> = item
             .targets

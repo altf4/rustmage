@@ -9161,6 +9161,9 @@ impl Game {
                 Instruction::ExileGraveyardTargetsCopyUntilOwnEndStep => {
                     self.exile_graveyard_targets_copy_until_own_end_step(&item);
                 }
+                Instruction::ExileGraveyardTargetCopyWithNextEndStepSacrifice { keywords } => {
+                    self.exile_graveyard_target_copy_next_end_step(&item, keywords);
+                }
                 Instruction::ExileAndCopyCreatureAs {
                     base,
                     color,
