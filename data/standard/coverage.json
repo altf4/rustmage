@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "f54f555ab5db64d6829131f0b9b53d4526e5ef92060349470cecaa6d1fb29ce4",
+  "catalogue_version": "d4a79e1669a9f2394202644b1569c9761bd6b45d3debce9bf085147d1f54bccb",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5404,
-  "implemented_total": 5424,
+  "implemented_standard_cards": 5418,
+  "implemented_total": 5438,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 241,
-      "gated": 55
+      "complete": 255,
+      "gated": 41
     },
     "w17": {
       "total": 1,
@@ -42491,8 +42491,8 @@
     {
       "name": "Genesis Device",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/genesis_device.rs",
       "set": "trk"
     },
@@ -42515,8 +42515,8 @@
     {
       "name": "Ghost of Illyria",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/ghost_of_illyria.rs",
       "set": "trk"
     },
@@ -42547,8 +42547,8 @@
     {
       "name": "Guidance Failure",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/guidance_failure.rs",
       "set": "trk"
     },
@@ -42603,8 +42603,8 @@
     {
       "name": "Hit It!",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/hit_it.rs",
       "set": "trk"
     },
@@ -42619,8 +42619,8 @@
     {
       "name": "Holo-Engineer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/holo_engineer.rs",
       "set": "trk"
     },
@@ -42635,8 +42635,8 @@
     {
       "name": "Hologram Stalker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/hologram_stalker.rs",
       "set": "trk"
     },
@@ -42675,16 +42675,16 @@
     {
       "name": "Impossible Choice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/impossible_choice.rs",
       "set": "trk"
     },
     {
       "name": "In the Pale Moonlight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/in_the_pale_moonlight.rs",
       "set": "trk"
     },
@@ -42723,8 +42723,8 @@
     {
       "name": "Jake Sisko, War Correspondent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/jake_sisko_war_correspondent.rs",
       "set": "trk"
     },
@@ -42755,8 +42755,8 @@
     {
       "name": "Khan, Despot by Design",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/khan_despot_by_design.rs",
       "set": "trk"
     },
@@ -42787,8 +42787,8 @@
     {
       "name": "Kobayashi Maru Scenario",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/kobayashi_maru_scenario.rs",
       "set": "trk"
     },
@@ -42859,8 +42859,8 @@
     {
       "name": "MACO Strike Team",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/maco_strike_team.rs",
       "set": "trk"
     },
@@ -42891,8 +42891,8 @@
     {
       "name": "Melkotian Adjudicator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/melkotian_adjudicator.rs",
       "set": "trk"
     },
@@ -44003,8 +44003,8 @@
     {
       "name": "Zefram Cochrane, Warp Pioneer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/zefram_cochrane_warp_pioneer.rs",
       "set": "trk"
     },
