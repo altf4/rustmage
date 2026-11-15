@@ -934,6 +934,19 @@ impl FundingState<'_> {
         } else {
             m.entry_kinds()
         };
+        for source in
+            entry_tap::controlled_creature_attacking_entry_sources(self, m.controller, kinds)
+        {
+            m.attacking_entry_creature = true;
+            if m.attacking.is_none() {
+                m.choose_attacking_defender = true;
+            }
+            effects.push(entry_tap::EntryTapEffect {
+                source,
+                intrinsic: false,
+                kind: entry_tap::EntryTapKind::Tapped,
+            });
+        }
         for &id in self.static_sources() {
             let o = self.object(id);
             if o.zone == Zone::Battlefield

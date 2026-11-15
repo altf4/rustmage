@@ -819,6 +819,8 @@ pub enum StaticAbilityFragment {
     EntryTriggerSuppression(u16, u16),
     OpponentEntryTapped(u16, u16),
     ControlledEntryUntapped,
+    /// Controlled creatures enter tapped and attacking while you control an attacker.
+    ControlledCreatureEntryTappedAttacking,
     StaticCastRestriction(u16, u8),
 }
 

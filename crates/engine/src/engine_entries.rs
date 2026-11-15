@@ -85,6 +85,8 @@ pub(super) struct EntryMove {
     pub attacking: Option<CombatDefender>,
     pub sneak_paid: bool,
     pub choose_attacking_defender: bool,
+    /// Prospective creature fact frozen before entry replacement choices.
+    pub attacking_entry_creature: bool,
     pub skipped: bool,
     pub reveal_hand: bool,
     pub exile_free_until_end: Option<Player>,
@@ -392,6 +394,7 @@ impl EntryMove {
             attacking: None,
             sneak_paid: false,
             choose_attacking_defender: false,
+            attacking_entry_creature: false,
             skipped: false,
             reveal_hand: false,
             exile_free_until_end: None,
@@ -805,6 +808,24 @@ impl Game {
                 }
             };
             let mut effects = self.entry_tap_effects(movement);
+            let prospective_kinds = if movement.requires_characteristic_preview(self) {
+                self.ghost_entry_preview(&movement.replacement_preview())
+                    .map_or_else(|| movement.entry_kinds(), |view| view.kinds)
+            } else {
+                movement.entry_kinds()
+            };
+            if !entry_tap::controlled_creature_attacking_entry_sources(
+                self,
+                movement.controller,
+                prospective_kinds,
+            )
+            .is_empty()
+            {
+                movement.attacking_entry_creature = true;
+                if movement.attacking.is_none() {
+                    movement.choose_attacking_defender = true;
+                }
+            }
             if movement.face_down.is_none()
                 && let EntryTapped::UnlessBehold(subtype) = movement.intrinsic_entry_tapped()
             {
@@ -1905,8 +1926,8 @@ impl Game {
             }) {
                 let movement = &self.state.entry_batch.as_ref().unwrap().moves[index];
                 if movement.choose_attacking_defender {
-                    let attacking =
-                        self.attacking_return_combat(owner) && movement.entry_kinds() & 1 != 0;
+                    let attacking = self.attacking_return_combat(owner)
+                        && (movement.attacking_entry_creature || movement.entry_kinds() & 1 != 0);
                     if attacking
                         && self.visit_entry_attacking_defenders(owner, &mut |defender| {
                             defender != CombatDefender::Player(owner.other())
