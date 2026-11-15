@@ -202,7 +202,7 @@ class ValidatorTests(unittest.TestCase):
         for platform, compile_budget, suite_budget, lint_budget, parent_budget in [
             ('linux', 2100, 900, 600, 5100),
             ('darwin', 3300, 1200, 600, 6600),
-            ('win32', 3600, 1200, 1200, 7500),
+            ('win32', 5000, 1200, 1200, 8700),
         ]:
             with self.subTest(platform=platform), patch.object(validate.sys, 'platform', platform):
                 first_command = len(self.command_timeouts)

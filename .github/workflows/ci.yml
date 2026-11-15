@@ -159,7 +159,7 @@ jobs:
 
       - name: Validate cards, interactions and Python API
         if: steps.scope.outputs.code == 'true'
-        timeout-minutes: 130
+        timeout-minutes: ${{ matrix.os == 'windows-latest' && 148 || 130 }}
         run: |
           retire=()
           if [[ "$RUNNER_OS" == "macOS" ]]; then

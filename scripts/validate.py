@@ -101,7 +101,7 @@ def main(argv=None):
     parser.add_argument('--retire-native-binaries', action='store_true',
                         help='remove completed native test executables before the release build')
     parser.add_argument('--timeout', type=float,
-                        default=7500 if windows else 6600 if sys.platform == 'darwin' else 5100,
+                        default=8700 if windows else 6600 if sys.platform == 'darwin' else 5100,
                         help='total wall-clock budget after acquiring the build slot (default: %(default)s seconds)')
     targets = parser.add_mutually_exclusive_group()
     targets.add_argument('--target-dir', type=Path,
@@ -148,7 +148,9 @@ def main(argv=None):
     files = source_files()
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
     # Cold hosted runners link hundreds of integration targets serially.
-    native_compile_timeout = 3600 if windows else 3300 if sys.platform == 'darwin' else 2100
+    # Cold Windows linked 683 of 872 integration targets in the former 3600s
+    # budget. Keep a bounded margin for the remaining serial links.
+    native_compile_timeout = 5000 if windows else 3300 if sys.platform == 'darwin' else 2100
     # Hosted macOS and Windows runners also pay process startup for each target.
     native_suite_timeout = 1200 if windows or sys.platform == 'darwin' else 900
     commands = [
