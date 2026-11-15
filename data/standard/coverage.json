@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e598eb428650e05df44116ba1589e3226a6417c9233e93237a98ed251937da66",
+  "catalogue_version": "93e001286661719f1b350591ea653443725f769cfd16b65567f0267c3cd063c6",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5338,
-  "implemented_total": 5358,
+  "implemented_standard_cards": 5348,
+  "implemented_total": 5368,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 175,
-      "gated": 121
+      "complete": 185,
+      "gated": 111
     },
     "w17": {
       "total": 1,
@@ -41707,8 +41707,8 @@
     {
       "name": "Andromedan Automatons",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/andromedan_automatons.rs",
       "set": "trk"
     },
@@ -42051,24 +42051,24 @@
     {
       "name": "Conquest Mission",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/conquest_mission.rs",
       "set": "trk"
     },
     {
       "name": "Consider the Prime Directive",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/consider_the_prime_directive.rs",
       "set": "trk"
     },
     {
       "name": "Constable Odo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/constable_odo.rs",
       "set": "trk"
     },
@@ -42195,8 +42195,8 @@
     {
       "name": "Deanna Troi, Psychic Counsel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/deanna_troi_psychic_counsel.rs",
       "set": "trk"
     },
@@ -43603,8 +43603,8 @@
     {
       "name": "Temporal Conqueror",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/temporal_conqueror.rs",
       "set": "trk"
     },
@@ -43659,8 +43659,8 @@
     {
       "name": "The Caretaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/the_caretaker.rs",
       "set": "trk"
     },
@@ -43715,8 +43715,8 @@
     {
       "name": "The Measure of a Man",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/the_measure_of_a_man.rs",
       "set": "trk"
     },
@@ -43763,8 +43763,8 @@
     {
       "name": "There's Coffee in that Nebula",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/there_s_coffee_in_that_nebula.rs",
       "set": "trk"
     },
@@ -43955,8 +43955,8 @@
     {
       "name": "Will Riker, First in the Field",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/will_riker_first_in_the_field.rs",
       "set": "trk"
     },
