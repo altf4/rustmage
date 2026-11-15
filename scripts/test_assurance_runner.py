@@ -1,5 +1,6 @@
 """Fast infrastructure contracts; never allocate to provoke a cgroup kill."""
 import contextlib
+import errno
 import io
 import json
 import os
@@ -25,15 +26,22 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class AssuranceRunnerTests(unittest.TestCase):
-    @unittest.skipIf(os.name == 'nt', 'POSIX executable mode required')
     def test_native_listing_repairs_missing_owner_execute_bit(self):
         with tempfile.TemporaryDirectory() as temporary:
             target = Path(temporary)/'target'
             binary = target/'debug/deps/fixture'
             binary.parent.mkdir(parents=True)
+            log = Path(temporary)/'listing.log'
+            if os.name == 'nt':
+                denied = PermissionError(errno.EACCES, 'Permission denied', str(binary))
+                with patch.object(native, 'run_command', side_effect=denied) as command:
+                    with self.assertRaises(PermissionError):
+                        native.list_compiled_tests(
+                            binary, target=target, filter_name='', env=os.environ.copy(), log=log)
+                self.assertEqual(command.call_count, 1)
+                return
             binary.write_text('#!/bin/sh\nprintf "fixture_case: test\\n"\n')
             binary.chmod(0o600)
-            log = Path(temporary)/'listing.log'
             with patch.object(native, 'group_members', return_value=set()):
                 result = native.list_compiled_tests(
                     binary, target=target, filter_name='', env=os.environ.copy(), log=log)
