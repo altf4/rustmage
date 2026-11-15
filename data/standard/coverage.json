@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "cec178730267ed0150731bd0a5c731fbded925eb84c01bedf38e2201edffa7db",
+  "catalogue_version": "e598eb428650e05df44116ba1589e3226a6417c9233e93237a98ed251937da66",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5334,
-  "implemented_total": 5354,
+  "implemented_standard_cards": 5338,
+  "implemented_total": 5358,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 171,
-      "gated": 125
+      "complete": 175,
+      "gated": 121
     },
     "w17": {
       "total": 1,
@@ -41659,8 +41659,8 @@
     {
       "name": "A Good Day to Die",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/a_good_day_to_die.rs",
       "set": "trk"
     },
@@ -42219,8 +42219,8 @@
     {
       "name": "Deep Space Scan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/deep_space_scan.rs",
       "set": "trk"
     },
@@ -43595,8 +43595,8 @@
     {
       "name": "Temporal Anomaly",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/temporal_anomaly.rs",
       "set": "trk"
     },
@@ -43963,8 +43963,8 @@
     {
       "name": "Worf, Honor-Bound Warrior",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/worf_honor_bound_warrior.rs",
       "set": "trk"
     },
