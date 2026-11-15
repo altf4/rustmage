@@ -147,8 +147,16 @@ impl Game {
     }
 
     pub(super) fn can_attack_defender(&self, attacker: CardId, defender: CombatDefender) -> bool {
+        let actor = self.state.objects[attacker as usize].controller;
+        if self
+            .state
+            .combat_rules
+            .as_ref()
+            .is_some_and(|rules| rules.cannot_attack_this_turn[actor.index()])
+        {
+            return false;
+        }
         if let Some(player) = self.player_or_planeswalker_defender(defender) {
-            let actor = self.state.objects[attacker as usize].controller;
             if self.state.combat_rules.as_ref().is_some_and(|rules| {
                 rules.player_attack_prohibitions[actor.index()] & (1 << player.index()) != 0
             }) || self.aura_protects_defender(attacker, player)

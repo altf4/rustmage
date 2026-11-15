@@ -3918,6 +3918,8 @@ pub struct PlayerView {
     pub life_gained_this_turn: u128,
     pub life_lost_this_turn: u128,
     pub attacked_this_turn: bool,
+    #[serde(skip_serializing_if = "is_false")]
+    pub cannot_attack_this_turn: bool,
     pub life: i128,
     pub poison_counters: u64,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -12273,6 +12275,7 @@ impl Game {
             rules.clear_phase_schedule();
             rules.attack_without_defender.clear();
             rules.player_attack_prohibitions = [0; 2];
+            rules.cannot_attack_this_turn = [false; 2];
         }
         self.state.casting_prohibited = false;
         self.state.damage_prevention_prohibited = false;
@@ -13536,6 +13539,10 @@ impl Game {
                 life_gained_this_turn: s.players[i].life_gained_this_turn,
                 life_lost_this_turn: s.players[i].life_lost_this_turn,
                 attacked_this_turn: s.players[i].attacked_this_turn,
+                cannot_attack_this_turn: s
+                    .combat_rules
+                    .as_ref()
+                    .is_some_and(|rules| rules.cannot_attack_this_turn[i]),
                 life: s.players[i].life,
                 poison_counters: s.players[i].poison_counters,
                 other_counters: crate::cards::PlayerCounterKind::ALL

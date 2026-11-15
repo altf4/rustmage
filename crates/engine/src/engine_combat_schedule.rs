@@ -79,6 +79,16 @@ impl Game {
         }
     }
 
+    pub(super) fn prohibit_attacks_this_turn(&mut self, item: &SpellView, players: PlayerSet) {
+        let affected: Vec<_> = self.program_players(players, item).collect();
+        for player in affected {
+            self.state
+                .combat_rules
+                .get_or_insert_with(Default::default)
+                .cannot_attack_this_turn[player.index()] = true;
+        }
+    }
+
     pub(super) fn require_created_attacks_this_combat(&mut self, created: &[ObjectRef]) {
         if !matches!(
             self.state.step,

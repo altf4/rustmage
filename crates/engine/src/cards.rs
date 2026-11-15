@@ -5629,6 +5629,8 @@ pub enum Instruction {
     RequireAllAttacksUntilNextTurn,
     /// The specified players can't attack this ability's controller or their planeswalkers this turn.
     ProhibitAttacksOnControllerOrPlaneswalkersThisTurn(PlayerSet),
+    /// The specified players cannot declare attackers at all this turn.
+    ProhibitAttacksThisTurn(PlayerSet),
     /// Create the replacement-aware group, then register one departure clause
     /// if the exact original source is still on the battlefield.
     CreateTokensWithSourceDeparture {
@@ -5789,6 +5791,12 @@ pub enum Instruction {
     },
     /// An optional instruction chosen by an affected player during resolution.
     MayForPlayer {
+        player: PlayerSet,
+        skip: usize,
+    },
+    /// Ask the affected player whether to draw; skip the following block if
+    /// drawing is prohibited or the player declines.
+    MayDrawForPlayer {
         player: PlayerSet,
         skip: usize,
     },
@@ -6769,11 +6777,12 @@ pub enum CounterKind {
     Time,
     Unlock,
     Promotion,
+    Peace,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 61] = [
+    pub const ALL: [Self; 62] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -6835,6 +6844,7 @@ impl CounterKind {
         Self::Time,
         Self::Unlock,
         Self::Promotion,
+        Self::Peace,
     ];
     pub(crate) fn is_named(self) -> bool {
         matches!(
@@ -6895,6 +6905,7 @@ impl CounterKind {
                 | Self::Time
                 | Self::Unlock
                 | Self::Promotion
+                | Self::Peace
         )
     }
 }

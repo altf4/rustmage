@@ -51,6 +51,8 @@ pub(super) struct CombatRulesState {
     pub require_all_attack_until_next_turn: [usize; 2],
     /// Protected player seats, indexed by the attacking player.
     pub player_attack_prohibitions: [u8; 2],
+    /// An optional draw-for-peace choice forbids every attack declaration.
+    pub cannot_attack_this_turn: [bool; 2],
     pub damaged_players: Vec<CombatDamagePlayerView>,
     pub player_damage_this_turn: PlayerCombatDamageView,
     excess: Option<ExcessDamage>,

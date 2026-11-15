@@ -9194,6 +9194,9 @@ impl Game {
                 Instruction::ProhibitAttacksOnControllerOrPlaneswalkersThisTurn(players) => {
                     self.prohibit_attacks_on_controller_or_planeswalkers_this_turn(&item, players);
                 }
+                Instruction::ProhibitAttacksThisTurn(players) => {
+                    self.prohibit_attacks_this_turn(&item, players);
+                }
                 Instruction::RestrictBlockerPower { group, minimum } => {
                     self.restrict_blocker_power(&item, group, minimum);
                 }
@@ -11241,6 +11244,17 @@ impl Game {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
                     assert!(skip_to <= resolution.program.len());
                     if let Some(player) = self.program_players(player, &item).next() {
+                        self.state.pending = Pending::EffectOptional { player, skip_to };
+                        return;
+                    }
+                    self.state.resolving.as_mut().unwrap().pc = skip_to;
+                }
+                Instruction::MayDrawForPlayer { player, skip } => {
+                    let skip_to = resolution.pc.checked_add(skip).expect("program offset");
+                    assert!(skip_to <= resolution.program.len());
+                    if !self.draws_prohibited()
+                        && let Some(player) = self.program_players(player, &item).next()
+                    {
                         self.state.pending = Pending::EffectOptional { player, skip_to };
                         return;
                     }
