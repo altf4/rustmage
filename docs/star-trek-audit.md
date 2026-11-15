@@ -11,7 +11,7 @@ Status: engine phase. No TRK card has been admitted or declared complete by this
 
 All 311 Oracle bodies and all 244 available XMage classes were inspected in three disjoint audit ranges. The full source inventory records absent classes explicitly; its facts are audit input, not a rules implementation or admission claim. The current `data/standard/cards.json` is dated October 15, 2026 and does not contain TRK. Refreshing the Standard snapshot and the set manifest belongs after the engine checkpoint.
 
-Engine checkpoint progress (November 14): the official 367-type vocabulary is pinned, Federation's distinct non-Borg type count is implemented, and the temporary no-maximum-hand-size duration is implemented. Focused targets `trk_creature_taxonomy` (1 case), `trk_federation_engine` (1), `trk_hand_size_engine` (1), and the existing `dsk_hand_size_engine` (2) passed through the guarded runner. The remaining dependencies below are still required before card authoring.
+Engine checkpoint progress (November 14): the official 367-type vocabulary is pinned, Federation's distinct non-Borg type count, the temporary no-maximum-hand-size duration, face-a-dilemma event, and Promotion named counter are implemented. Focused targets `trk_creature_taxonomy` (1 case), `trk_federation_engine` (1), `trk_hand_size_engine` (1), `trk_dilemma_engine` (4), `trk_promotion_counter` (1), and the existing `dsk_hand_size_engine` (2) passed individually through the guarded runner. The combined integration check for dilemma and Promotion remains pending. The remaining dependencies below are still required before card authoring.
 
 ## Required shared engine work before card authoring
 
