@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "d332096afaaa385bbe692027a182f6251f0eb9572f445c1516bd091c74fc46c0",
+  "catalogue_version": "338aa4c2cbe5ad7d6af763c7a341b3c6c8028eb21d44c9f8e436721911d3d272",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5163,
-  "implemented_total": 5183,
+  "implemented_standard_cards": 5212,
+  "implemented_total": 5232,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,7 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "gated": 296
+      "gated": 247,
+      "complete": 49
     },
     "w17": {
       "total": 1,
@@ -42290,16 +42291,16 @@
     {
       "name": "Earth, Sector 001",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/earth_sector_001.rs",
       "set": "trk"
     },
     {
       "name": "Eject the Warp Core",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/eject_the_warp_core.rs",
       "set": "trk"
     },
@@ -42322,8 +42323,8 @@
     {
       "name": "Emergency Medical Hologram",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/emergency_medical_hologram.rs",
       "set": "trk"
     },
@@ -42338,8 +42339,8 @@
     {
       "name": "Energize",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/energize.rs",
       "set": "trk"
     },
@@ -42426,8 +42427,8 @@
     {
       "name": "Ferenginar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/ferenginar.rs",
       "set": "trk"
     },
@@ -42578,8 +42579,8 @@
     {
       "name": "He's Dead, Jim",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/he_s_dead_jim.rs",
       "set": "trk"
     },
@@ -42642,8 +42643,8 @@
     {
       "name": "Horta",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/horta.rs",
       "set": "trk"
     },
@@ -42658,8 +42659,8 @@
     {
       "name": "Humpback Whales",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/humpback_whales.rs",
       "set": "trk"
     },
@@ -42914,8 +42915,8 @@
     {
       "name": "Moopsy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/moopsy.rs",
       "set": "trk"
     },
@@ -42930,8 +42931,8 @@
     {
       "name": "Mugato",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/mugato.rs",
       "set": "trk"
     },
@@ -42946,16 +42947,16 @@
     {
       "name": "Neelix, Moral Support",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/neelix_moral_support.rs",
       "set": "trk"
     },
     {
       "name": "Ni'Var Science Academy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/ni_var_science_academy.rs",
       "set": "trk"
     },
@@ -42978,8 +42979,8 @@
     {
       "name": "Oberth-Class Starship",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/oberth_class_starship.rs",
       "set": "trk"
     },
@@ -42994,24 +42995,24 @@
     {
       "name": "Open Communications",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/open_communications.rs",
       "set": "trk"
     },
     {
       "name": "Organic Avulsion Unit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/organic_avulsion_unit.rs",
       "set": "trk"
     },
     {
       "name": "Orion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/orion.rs",
       "set": "trk"
     },
@@ -43090,32 +43091,32 @@
     {
       "name": "Planetary Bombardment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/planetary_bombardment.rs",
       "set": "trk"
     },
     {
       "name": "Planetary Patrol",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/planetary_patrol.rs",
       "set": "trk"
     },
     {
       "name": "Plasma Cascade",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/plasma_cascade.rs",
       "set": "trk"
     },
     {
       "name": "Primary Unimatrix Adjunct",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/primary_unimatrix_adjunct.rs",
       "set": "trk"
     },
@@ -43130,8 +43131,8 @@
     {
       "name": "Q Continuum",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/q_continuum.rs",
       "set": "trk"
     },
@@ -43146,16 +43147,16 @@
     {
       "name": "Qo'noS",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/qo_nos.rs",
       "set": "trk"
     },
     {
       "name": "Quark's Bar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/quark_s_bar.rs",
       "set": "trk"
     },
@@ -43170,32 +43171,32 @@
     {
       "name": "Ravenous Cosmozoan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/ravenous_cosmozoan.rs",
       "set": "trk"
     },
     {
       "name": "Reckless Impulse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/reckless_impulse.rs",
       "set": "trk"
     },
     {
       "name": "Red Alert!",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/red_alert.rs",
       "set": "trk"
     },
     {
       "name": "Relentless Drednok",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/relentless_drednok.rs",
       "set": "trk"
     },
@@ -43218,8 +43219,8 @@
     {
       "name": "Risa",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/risa.rs",
       "set": "trk"
     },
@@ -43250,8 +43251,8 @@
     {
       "name": "Romulus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/romulus.rs",
       "set": "trk"
     },
@@ -43314,8 +43315,8 @@
     {
       "name": "Saurian Explorer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/saurian_explorer.rs",
       "set": "trk"
     },
@@ -43378,8 +43379,8 @@
     {
       "name": "Shuttle Ace",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/shuttle_ace.rs",
       "set": "trk"
     },
@@ -43402,8 +43403,8 @@
     {
       "name": "Spatial Anomaly",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/spatial_anomaly.rs",
       "set": "trk"
     },
@@ -43434,8 +43435,8 @@
     {
       "name": "Starfleet Academy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/starfleet_academy.rs",
       "set": "trk"
     },
@@ -43450,8 +43451,8 @@
     {
       "name": "Starfleet Spanner Jockey",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/starfleet_spanner_jockey.rs",
       "set": "trk"
     },
@@ -43482,8 +43483,8 @@
     {
       "name": "Subspace Anomaly",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/subspace_anomaly.rs",
       "set": "trk"
     },
@@ -43506,8 +43507,8 @@
     {
       "name": "Suurok-Class Science Vessel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/suurok_class_science_vessel.rs",
       "set": "trk"
     },
@@ -43538,16 +43539,16 @@
     {
       "name": "Tactical Officer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/tactical_officer.rs",
       "set": "trk"
     },
     {
       "name": "Tal Shiar Analyst",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/tal_shiar_analyst.rs",
       "set": "trk"
     },
@@ -43698,8 +43699,8 @@
     {
       "name": "The Holodeck",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/the_holodeck.rs",
       "set": "trk"
     },
@@ -43738,8 +43739,8 @@
     {
       "name": "The Traveler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/the_traveler.rs",
       "set": "trk"
     },
@@ -43786,16 +43787,16 @@
     {
       "name": "Tricorder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/tricorder.rs",
       "set": "trk"
     },
     {
       "name": "Troubling Tribbles",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/troubling_tribbles.rs",
       "set": "trk"
     },
@@ -43874,8 +43875,8 @@
     {
       "name": "Unexplored Territory",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/unexplored_territory.rs",
       "set": "trk"
     },
@@ -43890,8 +43891,8 @@
     {
       "name": "Vash, Freelance Archaeologist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/vash_freelance_archaeologist.rs",
       "set": "trk"
     },
@@ -43906,16 +43907,16 @@
     {
       "name": "Vexing Drone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/vexing_drone.rs",
       "set": "trk"
     },
     {
       "name": "Vulcan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/vulcan.rs",
       "set": "trk"
     },
@@ -43930,8 +43931,8 @@
     {
       "name": "Warp Core",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/warp_core.rs",
       "set": "trk"
     },
@@ -43978,16 +43979,16 @@
     {
       "name": "Xenobotanist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/xenobotanist.rs",
       "set": "trk"
     },
     {
       "name": "Xindi Surveyors",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/xindi_surveyors.rs",
       "set": "trk"
     },
