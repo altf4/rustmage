@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "dcfd89239b607e64c28e4a6cd2b24850ff289039cc11468a0f1531e773a02e16",
+  "catalogue_version": "5aaeeb099b057afc0999063d51684dac3f02b346d0011405c9c08553aef416e0",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5282,
-  "implemented_total": 5302,
+  "implemented_standard_cards": 5286,
+  "implemented_total": 5306,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 119,
-      "gated": 177
+      "complete": 123,
+      "gated": 173
     },
     "w17": {
       "total": 1,
@@ -41691,8 +41691,8 @@
     {
       "name": "Amok Time",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/amok_time.rs",
       "set": "trk"
     },
@@ -41963,8 +41963,8 @@
     {
       "name": "Cleveland Booker, Empath",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/cleveland_booker_empath.rs",
       "set": "trk"
     },
@@ -42107,8 +42107,8 @@
     {
       "name": "D'Vana Tendi, Optimistic Ensign",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/d_vana_tendi_optimistic_ensign.rs",
       "set": "trk"
     },
@@ -42123,8 +42123,8 @@
     {
       "name": "DOT-7 Repair Squad",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/dot_7_repair_squad.rs",
       "set": "trk"
     },
