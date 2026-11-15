@@ -173,6 +173,23 @@ impl Game {
                     _ => unreachable!(),
                 }]
                 .program;
+                if dies
+                    && let Some(counter) =
+                        program.iter().find_map(|instruction| match instruction {
+                            Instruction::ScheduleDelayedDeathReturnWithCounter(counter) => {
+                                Some(*counter)
+                            }
+                            _ => None,
+                        })
+                {
+                    packet.return_link = Some(Box::new(return_links::ReturnLinkView::from_event(
+                        event,
+                        event.before.owner,
+                        Some((counter, 1)),
+                        false,
+                        false,
+                    )));
+                }
                 self.state.pending_triggers.push(packet);
                 self.capture_battlefield_departure_facts(event, program);
             } else {

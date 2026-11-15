@@ -3028,6 +3028,9 @@ pub enum Instruction {
         counter: CounterKind,
         amount: u64,
     },
+    /// A delayed death trigger remembers its exact graveyard arrival and creates
+    /// an owner-controlled return at the beginning of the next end step.
+    ScheduleDelayedDeathReturnWithCounter(CounterKind),
     ResolveDelayedReturn,
     CaptureDelayedReturnTarget,
     /// Return the delayed packet's exact, still-present battlefield group.

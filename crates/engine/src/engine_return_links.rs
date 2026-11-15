@@ -361,7 +361,7 @@ impl Game {
         let events = self.move_objects_raw(&returning, Zone::Hand);
         self.finish_zone_events(&events, &[]);
     }
-    fn register_delayed_return(&mut self, item: &SpellView, returning: ReturnLinkView) {
+    pub(super) fn register_delayed_return(&mut self, item: &SpellView, returning: ReturnLinkView) {
         let Some(source) = item.source else {
             return;
         };

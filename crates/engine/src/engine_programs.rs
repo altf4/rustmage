@@ -6723,6 +6723,11 @@ impl Game {
                     tapped,
                     (counter, amount),
                 ),
+                Instruction::ScheduleDelayedDeathReturnWithCounter(_) => {
+                    if let Some(link) = &item.return_link {
+                        self.register_delayed_return(&item, (**link).clone());
+                    }
+                }
                 Instruction::ReturnEventCardToHand => self.return_event_card_to_hand(&item),
                 Instruction::ExileEventGraveyardCard
                 | Instruction::ExileEventGraveyardCardLinked => {
