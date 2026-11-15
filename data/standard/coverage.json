@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "a9b08d522e6032e7eeae9e07648c17c5a13e46e5d02ea1571d85c6a943c1104c",
+  "catalogue_version": "a12001cdce850474a6a708e1b8f61fc38c2d8c0b301ea1a0869fdac600b2fcba",
   "standard_legal_cards": 5459,
-  "implemented_standard_cards": 5425,
-  "implemented_total": 5445,
+  "implemented_standard_cards": 5426,
+  "implemented_total": 5446,
   "token_definitions": 232,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -167,8 +167,8 @@
     },
     "trk": {
       "total": 296,
-      "complete": 262,
-      "gated": 34
+      "complete": 263,
+      "gated": 33
     },
     "w17": {
       "total": 1,
@@ -43707,8 +43707,8 @@
     {
       "name": "The Inner Light",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/trk/the_inner_light.rs",
       "set": "trk"
     },
