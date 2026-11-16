@@ -4232,7 +4232,7 @@ impl<'g> FundingState<'g> {
             mana_lots::Purpose::Activation(_) | mana_lots::Purpose::Spell(_)
         ) || goal.reserve.is_some()
             || self.continuation.is_some()
-            || !self.only_mana_reveals_and_web_return(goal)
+            || !self.fixed_mana_costs(goal)
             || self.entry_projection.is_some()
             || self.cost_group.is_some()
             || !self.sacrifice_group.is_empty()
@@ -4241,11 +4241,19 @@ impl<'g> FundingState<'g> {
             || self.delve_available()
             || (tap_payment.is_some() && (convoke || needs_web_return))
             || (convoke && self.cast_costs.is_some())
-            || self.game.state.exile_links.iter().any(|link| {
-                tap_payment.is_none()
-                    || self.reference(link.source.card) != link.source
-                    || self.object(link.source.card).zone != Zone::Battlefield
-            })
+            || self
+                .game
+                .state
+                .exile_links
+                .iter()
+                .any(|link| self.fixed_mana_link_can_return(goal, link.source))
+            // Craft can remove an Aura and restore its recipient's colors or
+            // intrinsic mana. Retain exact search for attached cost worlds.
+            || (self
+                .cast_costs
+                .as_deref()
+                .is_some_and(CostContext::crafts_permanents)
+                && !self.attachment_sources().is_empty())
             || self.game.state.borrowed_links.is_some()
             || self.game.state.graveyard_borrowing.is_some()
             || self.game.state.borrowed_slots.is_some()
@@ -4338,9 +4346,13 @@ impl<'g> FundingState<'g> {
                             | StaticAbilityFragment::AttachedChosenColor
                             | StaticAbilityFragment::AttachedAllCreatureTypes
                             | StaticAbilityFragment::AdditionalLandPlays(_)
+                            | StaticAbilityFragment::PlayLandFromGraveyard
+                            | StaticAbilityFragment::StartYourEngines
+                            | StaticAbilityFragment::SourceMaxSpeedActivation(_)
                             | StaticAbilityFragment::StaticModifier(..)
                             | StaticAbilityFragment::ScalingModifier(..)
                             | StaticAbilityFragment::ControlledCreatureScaling { .. }
+                            | StaticAbilityFragment::CannotBeBlockedByCreaturesWithLessPower
                             | StaticAbilityFragment::ControlledSubtypeCannotBeBlockedByKeyword {
                                 ..
                             }
@@ -4415,7 +4427,10 @@ impl<'g> FundingState<'g> {
                     || cost.sacrifice
                     || cost.exile_self
                     || cost.discard
-                    || cost.life != 0
+                    // Ignore ordinary life costs for an upper bound. They can
+                    // only remove tap options; replacement payments may move
+                    // cards and therefore retain the complete search.
+                    || (cost.life != 0 && self.life_replacement_possible)
                     || cost.remove.is_some()
                     || cost.loyalty.is_some()
                     || cost.additional.is_some_and(|spec| {

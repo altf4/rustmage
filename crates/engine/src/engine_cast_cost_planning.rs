@@ -40,6 +40,21 @@ pub(super) struct CostContext {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CostContext {
+    pub(super) fn crafts_permanents(&self) -> bool {
+        self.clauses.iter().any(|row| {
+            !row.paid
+                && (row.clause == CastCostClause::CraftSource
+                    || row.clause == CastCostClause::Additional
+                        && self.additional.is_some_and(|spec| {
+                            matches!(
+                                spec.kind.payment_kind(),
+                                EffectChoiceKind::ExileCraftNonlands(_)
+                                    | EffectChoiceKind::ExileCraftMaterials(_)
+                            )
+                        }))
+        })
+    }
+
     pub(super) fn needs_web_return(&self) -> bool {
         self.clauses
             .iter()
@@ -164,9 +179,10 @@ impl FundingState<'_> {
     pub(super) fn mana_window_open(&self, goal: &FundingGoal) -> bool {
         goal.requires_mana() && self.cast_costs.as_ref().is_none_or(|c| !c.mana_closed)
     }
-    /// Keep a fixed mana requirement when other unpaid rows only reveal a
-    /// witness or return a creature after finding a Web-slinging witness.
-    pub(super) fn only_mana_reveals_and_web_return(&self, goal: &FundingGoal) -> bool {
+    /// Keep a fixed mana requirement for reveals, graveyard exiles, craft and
+    /// witnessed returns. The fixed-world proof separately excludes departures
+    /// that could restore mana sources or change an attached recipient.
+    pub(super) fn fixed_mana_costs(&self, goal: &FundingGoal) -> bool {
         self.cast_costs.as_ref().is_none_or(|c| {
             c.mana
                 == Some(ManaCost {
@@ -182,16 +198,71 @@ impl FundingState<'_> {
                     .all(|row| match row.clause {
                         CastCostClause::Mana
                         | CastCostClause::Behold(_)
+                        | CastCostClause::CraftSource
                         | CastCostClause::WebSlingingReturn(_)
                         | CastCostClause::BeamMeUpReturn(_, _) => true,
                         CastCostClause::Additional => c.additional.is_some_and(|spec| {
                             matches!(
                                 spec.kind.payment_kind(),
-                                EffectChoiceKind::Behold | EffectChoiceKind::BeholdMany(_)
+                                EffectChoiceKind::Behold
+                                    | EffectChoiceKind::BeholdMany(_)
+                                    | EffectChoiceKind::CollectEvidence(_)
+                                    | EffectChoiceKind::ExileGraveyard
+                                    | EffectChoiceKind::ExileGraveyardCards(_)
+                                    | EffectChoiceKind::ExileGraveyardRange { .. }
+                                    | EffectChoiceKind::ExileGraveyardSymbols { .. }
+                                    | EffectChoiceKind::ExileCraftNonlands(_)
+                                    | EffectChoiceKind::ExileCraftMaterials(_)
                             )
                         }),
                         _ => false,
                     })
+        })
+    }
+    /// In the fixed tap-only proof, a live exile link is inert unless one of
+    /// the remaining ordered costs can remove its source. Unknown cost packets
+    /// are rejected separately by `fixed_mana_costs`.
+    pub(super) fn fixed_mana_link_can_return(&self, goal: &FundingGoal, source: ObjectRef) -> bool {
+        if self.reference(source.card) != source
+            || self.object(source.card).zone != Zone::Battlefield
+        {
+            return true;
+        }
+        if goal
+            .source
+            .as_ref()
+            .is_some_and(|(object, index, _, card, _)| {
+                *object == source && {
+                    let cost = card.activation(*index).cost;
+                    cost.sacrifice || cost.exile_self
+                }
+            })
+        {
+            return true;
+        }
+        self.cast_costs.as_ref().is_some_and(|c| {
+            c.clauses
+                .iter()
+                .filter(|row| !row.paid)
+                .any(|row| match row.clause {
+                    CastCostClause::CraftSource => c.source == source,
+                    CastCostClause::Additional => c.additional.is_some_and(|spec| {
+                        !matches!(
+                            spec.kind.payment_kind(),
+                            EffectChoiceKind::Behold | EffectChoiceKind::BeholdMany(_)
+                        ) && self.cost_object(spec, source, c.source)
+                    }),
+                    CastCostClause::WebSlingingReturn(selected) => {
+                        selected.is_none_or(|selected| selected == source)
+                            && self.cost_object(web_slinging::RETURN_COST, source, c.source)
+                    }
+                    CastCostClause::BeamMeUpReturn(selected, provider) => {
+                        Some(source) != provider
+                            && selected.is_none_or(|selected| selected == source)
+                            && self.cost_object(web_slinging::BEAM_RETURN_COST, source, c.source)
+                    }
+                    _ => false,
+                })
         })
     }
     /// Intrinsic land mana cannot repair a counter shortfall. Avoid enumerating
