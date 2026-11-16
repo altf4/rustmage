@@ -1,0 +1,12 @@
+{
+  "name": "@token/trk-romulan",
+  "catalogue_id": 6012,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "fa69ef69d784ff47295f77b9f2f11518fa533d9b772e102cd321f3e9093faadb",
+  "oracle_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/RomulanToken.java",
+  "java_sha256": "7b4dfddf80f9aab92129357e83512d7bcc671c0d7c5d9086f6b09c0af617704c"
+}

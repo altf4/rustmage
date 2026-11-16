@@ -1,0 +1,13 @@
+{
+  "name": "Dathon, His Heart Open",
+  "catalogue_id": 5776,
+  "oracle_id": "8de259a9-99d0-4f07-8dbc-f065e3af352b",
+  "facts_sha256": "f065a9ca655051c2b754f258aa1fd41a910e7ead73c3c825f3a84ee05aae6ba7",
+  "physical_metadata_sha256": "d496994b5abfac2fb3deb55878359166c778e12184a617e19fba9da6586b79e5",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

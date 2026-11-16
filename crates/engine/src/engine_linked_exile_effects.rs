@@ -5,6 +5,7 @@ use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum LinkedExileMode {
     ReturnCreature { plus_one: u64 },
+    AssimilateCreature,
     CopyMutant,
     CopyCreatureUntilEndOfTurn,
     CopyWhileAttached,
@@ -35,6 +36,18 @@ impl Game {
             item.source_ability_origin,
             item.linked_activation_cohort(),
         )
+    }
+
+    /// Check the intersection, not the union or pairwise overlap, of card
+    /// types on exact cards still exiled with this source incarnation. Linked
+    /// chapter packets retain their source after the Saga leaves the battlefield.
+    pub(super) fn linked_exiles_share_card_type(&self, item: &SpellView) -> bool {
+        self.linked_exile_for_item(item)
+            .into_iter()
+            .map(|exiled| self.current_kinds(exiled.card))
+            .reduce(|common, kinds| common & kinds)
+            .unwrap_or(u16::MAX)
+            != 0
     }
 
     pub(super) fn link_exile_to_ability(
@@ -223,6 +236,16 @@ impl Game {
                     card.is_card() && card.card.is_creature()
                 })
                 .collect(),
+            Some(LinkedExileMode::AssimilateCreature) => self
+                .linked_exile_for_item(&resolution.item)
+                .into_iter()
+                .filter(|object| {
+                    let card = &self.state.objects[object.card as usize];
+                    card.is_card()
+                        && self.current_kinds(object.card) & 1 != 0
+                        && !self.exiled_face_down(*object)
+                })
+                .collect(),
             Some(LinkedExileMode::CopyMutant) => self.linked_exile_for_item(&resolution.item),
             Some(
                 LinkedExileMode::CopyCreatureUntilEndOfTurn
@@ -323,6 +346,9 @@ impl Game {
         let resolution = self.state.resolving.as_mut().unwrap();
         let player = resolution.item.controller;
         match mode {
+            LinkedExileMode::AssimilateCreature => {
+                self.stage_assimilated_entry(object, player);
+            }
             LinkedExileMode::ReturnCreature { plus_one } => {
                 self.state
                     .linked_choices

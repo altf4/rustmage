@@ -1,0 +1,14 @@
+{
+  "name": "Phlox, Unorthodox Doctor",
+  "catalogue_id": 5888,
+  "oracle_id": "b04cb333-ca7a-464f-a084-03cf8f468baf",
+  "facts_sha256": "0f7cf265ad2e5474598c116efd035621673f8d314bfebb452daca5434193d03a",
+  "physical_metadata_sha256": "7cef1ca169c9d2f0ed40e369cff4aece9f173c01342c96d2bc902002eb88a4eb",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/p/PhloxUnorthodoxDoctor.java",
+  "java_sha256": "62d9440db03aa4e1acaca96092663014fa160f08b6cc00852099d2a8499a859c",
+  "xmage_class": "mage.cards.p.PhloxUnorthodoxDoctor"
+}

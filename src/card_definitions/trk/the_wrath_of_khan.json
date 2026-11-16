@@ -1,0 +1,13 @@
+{
+  "name": "The Wrath of Khan",
+  "catalogue_id": 5974,
+  "oracle_id": "22249955-0741-470e-bc2b-f32d4510849b",
+  "facts_sha256": "6f9e4a76e3034be3e52a926ac5e6f8387923c5c9e1b451b69f85855847cefceb",
+  "physical_metadata_sha256": "437ba0f57d496ac72d7d6bb75e63f508cc54816e548d98f85b2c232655d5c690",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

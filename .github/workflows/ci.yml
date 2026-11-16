@@ -23,7 +23,9 @@ jobs:
       matrix:
         os: [ubuntu-24.04, macos-15, windows-latest]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 90
+    # Windows serial cold builds need the full phase budgets plus setup, gameplay,
+    # diagnostics and cache upload time. Other platforms retain their limits.
+    timeout-minutes: ${{ matrix.os == 'windows-latest' && 210 || 150 }}
     env:
       PYTHONDONTWRITEBYTECODE: '1'
       PYTHONUTF8: '1'
@@ -67,6 +69,7 @@ jobs:
           } >> "$GITHUB_ENV"
 
       - name: Prepare native build tools and paths
+        id: build_paths
         if: steps.scope.outputs.code == 'true'
         run: |
           python -m venv "$RUNNER_TEMP/rustmage-build-venv"
@@ -81,12 +84,21 @@ jobs:
           python - <<'PY'
           import os
           from pathlib import Path
+          import shutil
           cache = Path.home()/'.cache/rustmage-ci'
           cache.mkdir(parents=True, exist_ok=True)
+          target = (Path(os.environ['RUNNER_TEMP'])/'rustmage-targets/ci'
+                    if os.environ['RUNNER_OS'] == 'Windows'
+                    else cache/'rustmage-targets/ci')
           with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as out:
               print('XDG_CACHE_HOME='+cache.as_posix(), file=out)
-              print('CARGO_TARGET_DIR='+(cache/'rustmage-targets/ci').as_posix(), file=out)
+              print('CARGO_TARGET_DIR='+target.as_posix(), file=out)
               print('RUSTMAGE_XMAGE_SOURCE='+(Path(os.environ['RUNNER_TEMP'])/'mage').as_posix(), file=out)
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as out:
+              print('target='+target.as_posix(), file=out)
+          for label, directory in [('home', Path.home()), ('runner temp', Path(os.environ['RUNNER_TEMP']))]:
+              free = shutil.disk_usage(directory).free
+              print(f'{label} free bytes before build: {free}')
           PY
 
       - name: Cache downloaded Rust dependencies
@@ -107,14 +119,18 @@ jobs:
           revision=$(python -c "import json; print(json.load(open('data/standard/xmage-inventory.json'))['xmage_source_commit'])")
           git init "$RUSTMAGE_XMAGE_SOURCE"
           git -C "$RUSTMAGE_XMAGE_SOURCE" remote add origin https://github.com/magefree/mage.git
-          git -C "$RUSTMAGE_XMAGE_SOURCE" fetch --depth=1 origin "$revision"
-          # Null Summoner is pinned to the immutable head of unmerged XMage PR #16468.
-          git -C "$RUSTMAGE_XMAGE_SOURCE" fetch --depth=1 origin 11d430e97f277fad0fafe604fabbaa97f944d441
+          # Fetch all pinned revisions together so shallow metadata changes once.
+          # Existing authored cards retain pins at the preceding Standard snapshot;
+          # Null Summoner uses the immutable head of unmerged XMage PR #16468.
+          git -C "$RUSTMAGE_XMAGE_SOURCE" fetch --depth=1 origin \
+            "$revision" \
+            492369c7844b8d76479f0393ff9eb6b0b0cf30d7 \
+            11d430e97f277fad0fafe604fabbaa97f944d441
           # check_sources reads immutable blobs with one git cat-file process.
           # No full XMage working tree or Java build is needed.
 
       - name: Cache compiled Rust artifacts
-        if: steps.scope.outputs.code == 'true'
+        if: steps.scope.outputs.code == 'true' && runner.os != 'Windows'
         uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
         with:
           path: ~/.cache/rustmage-ci/rustmage-targets
@@ -122,6 +138,16 @@ jobs:
           restore-keys: |
             rustmage-workspace-v1-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-${{ hashFiles('.cargo/config.toml', 'scripts/rustc_guard.py') }}-
             rustmage-workspace-v1-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-
+
+      - name: Cache compiled Rust artifacts on Windows
+        if: steps.scope.outputs.code == 'true' && runner.os == 'Windows'
+        uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: ${{ steps.build_paths.outputs.target }}
+          key: rustmage-workspace-v2-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-${{ hashFiles('.cargo/config.toml', 'scripts/rustc_guard.py') }}-${{ github.sha }}
+          restore-keys: |
+            rustmage-workspace-v2-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-${{ hashFiles('.cargo/config.toml', 'scripts/rustc_guard.py') }}-
+            rustmage-workspace-v2-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-
 
       - name: Restore timestamps of verified unchanged compile inputs
         if: steps.scope.outputs.code == 'true'
@@ -135,8 +161,13 @@ jobs:
 
       - name: Validate cards, interactions and Python API
         if: steps.scope.outputs.code == 'true'
-        timeout-minutes: 78
-        run: python scripts/validate.py --release --python smoke 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
+        timeout-minutes: ${{ matrix.os == 'windows-latest' && 200 || 130 }}
+        run: |
+          retire=()
+          if [[ "$RUNNER_OS" == "macOS" ]]; then
+            retire=(--retire-native-binaries)
+          fi
+          python scripts/validate.py --release --python smoke "${retire[@]}" 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
 
       - name: Run Standard gameplay through the native guard
         if: steps.scope.outputs.code == 'true'
@@ -152,6 +183,18 @@ jobs:
           if [[ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ]]; then
             systemctl --user stop rustmage-builds.slice
           fi
+
+      - name: Report remaining build disk space
+        if: always() && steps.scope.outputs.code == 'true'
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          import shutil
+          for label, directory in [('home', Path.home()), ('runner temp', Path(os.environ['RUNNER_TEMP']))]:
+              free = shutil.disk_usage(directory).free
+              print(f'{label} free bytes after build: {free}')
+          PY
 
       - name: Preserve diagnostics
         if: always() && steps.scope.outputs.code == 'true'

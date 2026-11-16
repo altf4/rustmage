@@ -1,0 +1,14 @@
+{
+  "name": "MACO Strike Team",
+  "catalogue_id": 5862,
+  "oracle_id": "0d60cfb1-dd77-4013-b862-41e95fdb53ae",
+  "facts_sha256": "179bae7516b71a7829b8967c5dd3a31720912b4604f096634074c5781cd9d187",
+  "physical_metadata_sha256": "1065a0a8a7243541d90c47c6a654e2bcfdb83969389e90e899cbdf27e43c927d",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/m/MACOStrikeTeam.java",
+  "java_sha256": "748c96b14457ba330efa82a44f319b3a6cbfeb525c7cf15ac32399336e3a1e2a",
+  "xmage_class": "mage.cards.m.MACOStrikeTeam"
+}

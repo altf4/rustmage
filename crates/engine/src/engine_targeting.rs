@@ -181,6 +181,7 @@ impl Announcement {
             CastMethod::Foretell => self.item.source?.card.foretell_cost(),
             CastMethod::GrantedFixedFlashback(cost) => Some(cost),
             CastMethod::WebSlinging => self.origin_alternative_cost,
+            CastMethod::BeamMeUp | CastMethod::BeamMeUpGranted(_) => self.origin_alternative_cost,
             CastMethod::LinkedExileWaterbend => self.origin_alternative_cost,
             CastMethod::Warp => Some(self.warp_spec().mana),
             CastMethod::Airbend => Some(ManaCost {
@@ -307,7 +308,9 @@ impl Announcement {
                     | CastMethod::GrantedZeroFlashback
                     | CastMethod::GrantedFixedFlashback(_)
                     | CastMethod::Miracle
-                    | CastMethod::WebSlinging => {
+                    | CastMethod::WebSlinging
+                    | CastMethod::BeamMeUp
+                    | CastMethod::BeamMeUpGranted(_) => {
                         self.fixed_alternative_cost().is_some_and(|base| {
                             self.cost.is_some_and(|cost| {
                                 self.cost_before_exile_play_surcharge(cost) != base
@@ -542,12 +545,16 @@ impl Announcement {
                 self.warp_cost_options()
             }
             StackKind::Spell
-                if self
-                    .item
-                    .cast
-                    .is_some_and(|cast| cast.method == CastMethod::WebSlinging) =>
+                if self.item.cast.is_some_and(|cast| {
+                    matches!(
+                        cast.method,
+                        CastMethod::WebSlinging
+                            | CastMethod::BeamMeUp
+                            | CastMethod::BeamMeUpGranted(_)
+                    )
+                }) =>
             {
-                std::iter::once(self.fixed_alternative_cost().expect("Web-slinging cost"))
+                std::iter::once(self.fixed_alternative_cost().expect("selected return cost"))
                     .chain([].iter().copied())
             }
             StackKind::Spell
@@ -1114,6 +1121,7 @@ impl Announcement {
 struct TargetSourceCharacteristics<'a> {
     reference: ObjectRef,
     snapshot: Option<&'a DamageFacts>,
+    target_lki: Option<SourceTargetLki>,
     attachment: Option<ObjectRef>,
     spell: Option<Card>,
     chosen_creature_type: Option<Option<crate::cards::CreatureType>>,
@@ -1127,6 +1135,7 @@ impl<'a> TargetSourceCharacteristics<'a> {
         Self {
             reference,
             snapshot: None,
+            target_lki: None,
             attachment: None,
             spell: Some(definition),
             chosen_creature_type: None,
@@ -1143,6 +1152,7 @@ impl<'a> TargetSourceCharacteristics<'a> {
         Self {
             reference: source.object,
             snapshot: Some(&source.facts),
+            target_lki: source.target_lki,
             attachment: item.source_attachment,
             spell: (item.kind == StackKind::Spell).then_some(source.card),
             chosen_creature_type: item
@@ -1980,6 +1990,18 @@ impl Game {
 
     pub(super) fn declare_mode(&mut self, mode: u16, plan: TargetPlan) {
         let item = &self.state.announcing.as_ref().unwrap().item;
+        let faces_dilemma = !item.is_copy
+            && match item.kind {
+                StackKind::Spell => item
+                    .source
+                    .and_then(|source| source.card.selected_mode_count(mode))
+                    .is_some_and(|count| count > 0),
+                StackKind::ActivatedAbility { .. } | StackKind::TriggeredAbility { .. } => {
+                    item.bounded_mode_count(usize::from(mode)) != Some(0)
+                }
+                _ => false,
+            };
+        let dilemma_player = item.controller;
         if matches!(item.kind, StackKind::TriggeredAbility { .. })
             && let Some(key) = modal_history::key(item)
         {
@@ -1989,7 +2011,31 @@ impl Game {
         announcement.item.mode = Some(mode);
         announcement.plan = plan;
         announcement.group = 0;
+        if faces_dilemma {
+            self.face_dilemma(dilemma_player);
+        }
         self.continue_announcement_choices(false);
+    }
+
+    /// CR 700.17: one event for the choice, even when the chosen mode packet
+    /// contains several modes. It occurs during announcement, before payment.
+    fn face_dilemma(&mut self, player: Player) {
+        self.state.players[player.index()].dilemmas_faced_this_turn += 1;
+        for (source, grant) in self.indexed_trigger_sources(&self.state.cast_sources) {
+            for (index, ability) in source.trigger_templates_from(grant.as_ref()) {
+                let TriggerCondition::FaceDilemma(relation) = ability.condition.event() else {
+                    continue;
+                };
+                let related = match relation {
+                    CastRelation::You => source.controller == player,
+                    CastRelation::Opponent => source.controller != player,
+                    CastRelation::Any => true,
+                };
+                if related && self.queue_trigger_from(&source, index, grant.map(Box::new)) {
+                    self.state.pending_triggers.last_mut().unwrap().event_player = Some(player);
+                }
+            }
+        }
     }
 
     pub(super) fn continue_announcement_choices(&mut self, needs_mode: bool) {
@@ -2132,6 +2178,59 @@ impl Game {
                 Target::Card(id) | Target::Spell(id) => Some(self.object_ref(id)),
             },
         }
+    }
+
+    fn opposing_artifact_ability_blocks<W: CharacteristicWorld + ?Sized>(
+        &self,
+        world: &W,
+        id: CardId,
+        _controller: Player,
+        source: ObjectRef,
+        qualification: Option<TargetSourceCharacteristics<'_>>,
+    ) -> bool {
+        let object = world.object(id);
+        if object.zone != Zone::Battlefield {
+            return false;
+        }
+        if !object.card.static_ability_groups().iter().any(|group| {
+            group.fragments.iter().any(|fragment| {
+                matches!(fragment,
+                    crate::cards::StaticAbilityFragment::CannotBeTargetedByOpposingArtifactAbilities)
+            })
+        }) {
+            return false;
+        }
+        let query = characteristic_query::CharacteristicQuery::in_world(world);
+        if !query.continuous_fragment_available(id, |fragment| {
+            matches!(
+                fragment,
+                crate::cards::StaticAbilityFragment::CannotBeTargetedByOpposingArtifactAbilities
+            )
+        }) {
+            return false;
+        }
+        let qualification = self.target_source_context(source, qualification);
+        let source_controller = if self.state.objects.get(source.card as usize).is_some()
+            && world.reference(source.card) == source
+        {
+            let current = world.object(source.card);
+            matches!(current.zone, Zone::Battlefield | Zone::Stack).then_some(current.controller)
+        } else {
+            qualification.and_then(|source| {
+                source.target_lki.map(|facts| facts.controller).or_else(|| {
+                    source
+                        .snapshot
+                        .and_then(|facts| facts.battlefield.then_some(facts.controller))
+                })
+            })
+        };
+        if source_controller.is_none_or(|controller| object.controller == controller) {
+            return false;
+        }
+        qualification.is_some_and(|source| source.snapshot.is_some() && source.spell.is_none())
+            && self
+                .target_source_qualities(source, qualification)
+                .is_some_and(|(_, kinds)| kinds & 16 != 0)
     }
 
     /// Only qualified recipients inspect source facts; ordinary targets keep their fast path.
@@ -2356,9 +2455,14 @@ impl Game {
                 self.object_kinds(source.card, current),
             ))
         } else {
-            qualification
-                .and_then(|q| q.snapshot)
-                .map(|snapshot| (snapshot.colors(), snapshot.kinds))
+            qualification.and_then(|q| {
+                q.target_lki
+                    .map(|facts| (facts.colors, facts.kinds))
+                    .or_else(|| {
+                        q.snapshot
+                            .map(|snapshot| (snapshot.colors(), snapshot.kinds))
+                    })
+            })
         }
     }
     fn target_matches_in_world<W: CharacteristicWorld + ?Sized>(
@@ -2757,6 +2861,15 @@ impl Game {
                 let Some(obj) = lookup(id) else {
                     return false;
                 };
+                if self.opposing_artifact_ability_blocks(
+                    world,
+                    id,
+                    controller,
+                    source,
+                    qualification,
+                ) {
+                    return false;
+                }
                 let battlefield_keywords =
                     (obj.zone == Zone::Battlefield).then(|| characteristics().keywords(id));
                 if battlefield_keywords.is_some_and(|keywords| {
@@ -3081,6 +3194,7 @@ impl Game {
                 object,
                 card: self.state.objects[card as usize].card,
                 facts,
+                target_lki: None,
             }),
             source_less_rule: None,
             additional_triggers: 0,
@@ -3119,6 +3233,7 @@ impl Game {
                     || self.resolution_offer_spends_any_mana(actor, card),
                 exile_on_graveyard: self.exile_cast_modifiers(actor, card).1,
                 caster: actor,
+                first_spell_cast_this_game: false,
                 gift: None,
                 physical_card: None,
                 face: CastFace::Normal,
@@ -3158,6 +3273,7 @@ impl Game {
             mana_tap_bonus: None,
             related_stack: None,
             entering_object: None,
+            entering_explorer: None,
             evidence_collected: false,
             damage_event: None,
             damage_received: None,

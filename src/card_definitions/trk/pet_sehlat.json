@@ -1,0 +1,14 @@
+{
+  "name": "Pet Sehlat",
+  "catalogue_id": 5887,
+  "oracle_id": "509f255f-c3ee-4836-a583-d018060d0c4d",
+  "facts_sha256": "9f1e8f1d1842e261053aab3e988b9988e0002b91be97e351f8a19b7f5406a682",
+  "physical_metadata_sha256": "179595468db57b273b116299372845c9568744426cef8a0c2db0e88666cef1e4",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/p/PetSehlat.java",
+  "java_sha256": "6646afc873e0409bcdfbd8746b0a7259ab66e2715fae482e7960ff1313d04c10",
+  "xmage_class": "mage.cards.p.PetSehlat"
+}

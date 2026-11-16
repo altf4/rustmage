@@ -1,0 +1,13 @@
+{
+  "name": "Nog, Ambitious Cadet",
+  "catalogue_id": 5875,
+  "oracle_id": "5a8ae1c0-1935-4d03-aa94-9e9088650821",
+  "facts_sha256": "884b97f3cd2df0bfd6a7ac8b55f0af7bd75ccbc5be274787f601ea25dabee900",
+  "physical_metadata_sha256": "6bf69ed388c71fad20e9fa5d591b39247c1ea99e215297a49f3cf0da3b0b6ffc",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "Temporal Conqueror",
+  "catalogue_id": 5955,
+  "oracle_id": "306002e6-d68d-47ad-879b-e6060efebeff",
+  "facts_sha256": "3aa51d4618e317e40aacb3fb5ed125732a23af6602b08f7324d34ad2db5951bb",
+  "physical_metadata_sha256": "0009a7907c30a02843f5e49fa7dc0851eb2ad0bbf6407d8eb8fc53f6be865b44",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

@@ -10,6 +10,7 @@ impl Game {
                 TriggerCondition::CreatureAbilityActivated
                     | TriggerCondition::AbilityActivatedTargetingCreatureOrPlayer
                     | TriggerCondition::NonmanaAbilityActivated
+                    | TriggerCondition::OpponentCastsOrActivatesChosenName
                     | TriggerCondition::ExhaustAbilityActivated
                     | TriggerCondition::LoyaltyAbilityActivated
                     | TriggerCondition::LoyaltyAbilityActivatedRemoving(_)
@@ -108,6 +109,43 @@ impl Game {
         };
         if item.is_copy {
             return;
+        }
+        if !self
+            .state
+            .cast_rollback
+            .as_ref()
+            .is_some_and(|rollback| rollback.replay.is_some())
+        {
+            let named: Vec<_> = self
+                .state
+                .activation_observers
+                .as_ref()
+                .unwrap()
+                .iter()
+                .filter(|&&id| {
+                    self.on_battlefield(id)
+                        && self.state.objects[id as usize].controller != item.controller
+                })
+                .map(|&id| self.object_view(id))
+                .collect();
+            for source in named {
+                let matches_name = matches!(
+                    source.entry_choice,
+                    Some(EntryChoiceValue::CardName(name)) if name.matches(identity.facts.name)
+                );
+                if !matches_name {
+                    continue;
+                }
+                for (index, ability) in source.trigger_templates() {
+                    if ability.condition.event()
+                        == TriggerCondition::OpponentCastsOrActivatesChosenName
+                        && self.queue_trigger(&source, index)
+                    {
+                        self.state.pending_triggers.last_mut().unwrap().event_player =
+                            Some(item.controller);
+                    }
+                }
+            }
         }
         if identity
             .card

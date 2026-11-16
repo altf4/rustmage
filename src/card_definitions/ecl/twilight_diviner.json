@@ -2,13 +2,13 @@
   "name": "Twilight Diviner",
   "catalogue_id": 4715,
   "oracle_id": "05d7222b-cc08-4f1f-8e35-6058599572ba",
-  "facts_sha256": "1f88dc946f32636fab1c95d418d74c3f3c763005575b92fd36cee7008e03cd49",
+  "facts_sha256": "85da83ce63c5c60c75e9d451a75ee4924cffcee9a6dda3dc92b142d762a994fd",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "182c35feb40b44ca97a5e02d1c22514122c664afdc37a89de5c7d3ce1f01a6d8"
   },
-  "physical_metadata_sha256": "5b186b199e6bfebeb60c86c8443198de89b7fa6782802ce14e7a711942510a7a",
+  "physical_metadata_sha256": "e3974a5d259660af4d9ba58c02aae410fa00948071e5c4b9182e8fa7a4b88e56",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/t/TwilightDiviner.java",
   "java_sha256": "0f750f4c0d928315a2c9839a7b9ec5c4d013c2ef0bb7d8d6decc452f5181eed9",

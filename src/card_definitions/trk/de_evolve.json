@@ -1,0 +1,14 @@
+{
+  "name": "De-evolve",
+  "catalogue_id": 5778,
+  "oracle_id": "663e120a-a74f-47fb-aa0a-9d1a75db626e",
+  "facts_sha256": "ac91e8d66d0068a50551648cbf256dd70630ba9207ad9a2bb716e4fdf11b31e4",
+  "physical_metadata_sha256": "8f3ab9fc19c106868b1ba587b7e4937f3ed68f3a07d942496013f57c87c68e80",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/d/DeEvolve.java",
+  "java_sha256": "318e1904b52e4b889d88eb9fb89a0dd3b62b67da5aba9a35ff766be4a669e574",
+  "xmage_class": "mage.cards.d.DeEvolve"
+}

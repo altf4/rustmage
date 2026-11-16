@@ -48,6 +48,8 @@ pub enum ActivationReductionAmount {
 pub enum AdditionalTriggerScope {
     /// A triggered ability of a permanent this provider's controller controls.
     ControlledPermanent,
+    /// Only a life-gain event by this provider's controller causing a controlled permanent's trigger.
+    ControlledPermanentLifeGain,
     ControlledSubtype(&'static str),
     ControlledCreatureSubtype(&'static str),
     /// Controlled creature sources whose effective power meets the bound.
@@ -101,10 +103,17 @@ pub enum StaticAbilityFragment {
     SpellAlternativeManaCost(ManaCost),
     /// You may collect evidence for the specified amount instead of paying a spell's mana cost.
     SpellAlternativeEvidenceCost(u64),
+    /// During your main phase, owned instant and sorcery cards in your graveyard
+    /// may be cast for their printed mana cost by returning another creature.
+    GrantGraveyardBeamMeUp,
+    /// The permanent enchanted by this Aura cannot pay a Beam Me Up return cost.
+    AttachedCannotBeBeamedUp,
     /// Initiates its controller's persistent speed designation as a state-based action.
     StartYourEngines,
     /// No player can draw cards while this rule ability is active.
     CantDrawCards,
+    /// Phased-out permanents cannot return while this permanent's rule is active.
+    PermanentsCantPhaseIn,
     /// Skip a draw for this source's controller if their library is empty.
     SkipEmptyLibraryDraws,
     LinkedExileFreeCastBySubtypeUnion(&'static [&'static str]),
@@ -158,6 +167,8 @@ pub enum StaticAbilityFragment {
     },
     /// Permanents controlled by this source's controller cannot be sacrificed.
     ControlledPermanentsCannotBeSacrificed,
+    /// Treasure tokens controlled by this source's controller cannot be sacrificed.
+    ControlledTreasureTokensCannotBeSacrificed,
     /// No player may activate abilities of matching battlefield permanent kinds.
     ActivatedPermanentKindsProhibited(u16),
     /// The exact attached permanent's activated abilities cannot be activated.
@@ -228,6 +239,8 @@ pub enum StaticAbilityFragment {
     SourceNegativePowerCombatDamage,
     /// Replace each nonexempt controller draw with two draws.
     DoubleDrawExceptFirst,
+    /// Replace each individual draw with two draws for this controller.
+    DoubleDraw,
     /// Add one scry before each explore by a creature this player controls.
     ScryBeforeControlledCreatureExplores,
     /// Double each controller draw, including their normal draw-step draw, while true.
@@ -289,6 +302,8 @@ pub enum StaticAbilityFragment {
     CastFromLibraryTop(CastFilter),
     /// Each controller may use this exact ability for one library-top spell per turn.
     CastInstantSorceryFromLibraryTopOnceEachTurn,
+    /// One matching spell from the top during each of this source controller's turns.
+    CastFromLibraryTopOnceEachOwnTurn(CastFilter),
     /// Cast a qualifying creature spell from the top once per turn per source.
     CastCreaturePowerAtMostFromLibraryTopOnceEachTurn(i128),
     /// Ordinary land plays and spell casts after this exact source attacked.
@@ -297,6 +312,12 @@ pub enum StaticAbilityFragment {
     PlayLandFromLibraryTop,
     PlayLandFromGraveyard,
     PlayFromGraveyardDuringOwnTurn,
+    /// One artifact creature spell from this source controller's graveyard each own turn;
+    /// the cast permanent enters with a finality counter.
+    CastArtifactCreatureFromGraveyardOnceEachTurnWithFinality,
+    /// One permanent card owned by this source controller may be played from
+    /// their graveyard or outside-game pool each own turn.
+    PlayPermanentFromGraveyardOrOutsideOnceEachTurn,
     /// Eligible nonland faces in your graveyard have Mayhem for their mana cost.
     GrantManaCostMayhem,
     /// Cast a matching spell from your graveyard with an additional life cost.
@@ -405,6 +426,18 @@ pub enum StaticAbilityFragment {
         kinds: u16,
         keywords: Keywords,
     },
+    /// Grant keywords to controlled permanents with all listed types only while
+    /// this exact battlefield source has enough of the specified counter.
+    ControlledPermanentAllKindsKeywordsAtSourceCounters {
+        kinds: u16,
+        kind: CounterKind,
+        minimum: u64,
+        keywords: Keywords,
+    },
+    /// Other controlled creatures with any counter have these keywords.
+    ControlledOtherCounteredCreatureKeywords(Keywords),
+    /// Replace destruction of another controlled creature with a +1/+1 counter.
+    SaveOtherPlusOneCreatureFromDestruction,
     /// Live grant to equipped creatures, independent of the Equipment controller.
     ControlledEquippedCreatureKeywords(Keywords),
     ConditionalEquippedCreatureKeywords {
@@ -428,6 +461,11 @@ pub enum StaticAbilityFragment {
     /// Grant controlled planeswalkers the one-attacker restriction.
     ControlledPlaneswalkerAttackLimit,
     ControlledSubtypeKeywords {
+        subtype: &'static str,
+        keywords: Keywords,
+    },
+    /// Grant to the controller's subtype permanents only during that player's turn.
+    ControlledSubtypeKeywordsOnYourTurn {
         subtype: &'static str,
         keywords: Keywords,
     },
@@ -464,6 +502,10 @@ pub enum StaticAbilityFragment {
     /// The controller does not lose the state-based action for life at or below zero.
     CantLoseFromNonpositiveLife,
     QualifiedHexproof(SourceCharacteristicFilter),
+    /// This permanent cannot be the target of an ability from an artifact source
+    /// controlled by an opponent; this is not hexproof and cannot be disabled as such.
+    CannotBeTargetedByOpposingArtifactAbilities,
+    CannotBeBlockedByArtifactCreatures,
     /// Opponents' creatures can be targeted through hexproof and their ward doesn't trigger.
     OpposingCreatureHexproofAndWardDisabled,
     ControlledSpellsUncounterable(u16),
@@ -625,6 +667,11 @@ pub enum StaticAbilityFragment {
         other: bool,
         nontoken: bool,
     },
+    /// Each controlled permanent with both the artifact and creature types
+    /// owns this indexed trigger in layer six, including artifact tokens.
+    ControlledArtifactCreatureTrigger {
+        ability: u16,
+    },
     /// Each controlled permanent of this subtype owns the indexed cast trigger.
     ControlledSubtypeCastTrigger {
         ability: u16,
@@ -774,6 +821,8 @@ pub enum StaticAbilityFragment {
     CombatRestriction(u16, CombatRestriction),
     /// The source cannot be the sole declared attacker or blocker.
     CantAttackOrBlockAlone,
+    /// The source cannot be the sole declared attacker; blocking is unrestricted.
+    CantAttackAlone,
     /// Source attacks every combat when independently able to attack.
     AttacksEachCombat,
     /// Flying creatures cannot attack this controller or block their creatures.
@@ -808,6 +857,8 @@ pub enum StaticAbilityFragment {
     EntryTriggerSuppression(u16, u16),
     OpponentEntryTapped(u16, u16),
     ControlledEntryUntapped,
+    /// Controlled creatures enter tapped and attacking while you control an attacker.
+    ControlledCreatureEntryTappedAttacking,
     StaticCastRestriction(u16, u8),
 }
 

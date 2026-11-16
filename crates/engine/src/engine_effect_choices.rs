@@ -1759,6 +1759,7 @@ impl Game {
             kind,
             EffectChoiceKind::ReturnToHandCounting
                 | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
+                | EffectChoiceKind::ReturnGraveyardToHandMatching(_)
                 | EffectChoiceKind::TapAnyUntappedPermanents
                 | EffectChoiceKind::SacrificeAsCost
         ) {
@@ -2603,13 +2604,16 @@ impl Game {
         }
         if matches!(
             choice.kind,
-            EffectChoiceKind::ExileControlledLinked | EffectChoiceKind::ExileGraveyardLinked
+            EffectChoiceKind::ExileControlledLinked
+                | EffectChoiceKind::ExileGraveyardLinked
+                | EffectChoiceKind::ExileFromHandLinked
         ) {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
-            let origin = if choice.kind == EffectChoiceKind::ExileControlledLinked {
-                Zone::Battlefield
-            } else {
-                Zone::Graveyard
+            let origin = match choice.kind {
+                EffectChoiceKind::ExileControlledLinked => Zone::Battlefield,
+                EffectChoiceKind::ExileGraveyardLinked => Zone::Graveyard,
+                EffectChoiceKind::ExileFromHandLinked => Zone::Hand,
+                _ => unreachable!(),
             };
             let ids = choice
                 .selected
@@ -2970,6 +2974,21 @@ impl Game {
                     .flat_map(|rows| rows.iter().map(|r| r.card))
                     .collect();
                 let events = self.move_objects_raw(&ids, Zone::Exile);
+                if matches!(
+                    choice.kind,
+                    EffectChoiceKind::ExileFromHand
+                        | EffectChoiceKind::ExileFromHandWithPlaySurcharge(_)
+                ) {
+                    let moved = events
+                        .iter()
+                        .filter(|event| {
+                            event.moved
+                                && event.before.zone == Zone::Hand
+                                && event.destination == Zone::Exile
+                        })
+                        .count();
+                    self.state.resolving.as_mut().unwrap().moved_count = Some(moved as u64);
+                }
                 if choice.kind == EffectChoiceKind::ExileCardFromAnyGraveyardRemember {
                     let mut actual: Vec<_> = events
                         .iter()
@@ -3204,6 +3223,7 @@ impl Game {
                 choice.kind,
                 EffectChoiceKind::ReturnToHandCounting
                     | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
+                    | EffectChoiceKind::ReturnGraveyardToHandMatching(_)
             ) {
                 let count = events
                     .iter()

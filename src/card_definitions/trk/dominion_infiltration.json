@@ -1,0 +1,13 @@
+{
+  "name": "Dominion Infiltration",
+  "catalogue_id": 5784,
+  "oracle_id": "30597aff-ebb6-4927-b350-fe559fb92c8f",
+  "facts_sha256": "e4353b7331ca87da683c9c51caa05fb1a6de20e6a22c31f6a2df2ed9776f9b9e",
+  "physical_metadata_sha256": "860dbb213a02e5c91a493a75898f35e54599fc42593c7ace5f75063bdaf45cfb",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

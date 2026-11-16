@@ -163,7 +163,7 @@ impl Game {
         true
     }
 
-    fn move_object_to_library_position(
+    pub(super) fn move_object_to_library_position(
         &mut self,
         object: ObjectRef,
         destination: LibraryDestination,

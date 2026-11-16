@@ -1,0 +1,14 @@
+{
+  "name": "Andromedan Automatons",
+  "catalogue_id": 5718,
+  "oracle_id": "2da322e6-a8e2-4d7a-bd34-54a3dfa85940",
+  "facts_sha256": "a0de92481cad13742496109aa932c7ca451b8bb43ca37a81bebf71e3d01b55d9",
+  "physical_metadata_sha256": "af6fbbc78fcc343e112c8afc22a17b68c52b4d294e0eb52c093f47714c3a768b",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/a/AndromedanAutomatons.java",
+  "java_sha256": "412d7b0d27867d30629484beda5bd279c02752e58d497a73d7c8d7cf5d476025",
+  "xmage_class": "mage.cards.a.AndromedanAutomatons"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Command Subadjunct",
+  "catalogue_id": 5758,
+  "oracle_id": "85b67121-340f-4cff-a26d-2160aa923ec3",
+  "facts_sha256": "76681276832d9441a9efd30ac2de7c1702d1e4a437567bb39bd4cb40ba2b3903",
+  "physical_metadata_sha256": "92d64dc4646b238eb95f4fa0f68cef1e4ea1b73dbac30113ebb48b3c5583fa49",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/c/CommandSubadjunct.java",
+  "java_sha256": "3363427f68539fbd310cc3f629985ee8e6f476aa371cb857011d83d0e65d8d4c",
+  "xmage_class": "mage.cards.c.CommandSubadjunct"
+}

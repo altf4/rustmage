@@ -1,0 +1,13 @@
+{
+  "name": "Kai Winn, Faithless Leader",
+  "catalogue_id": 5847,
+  "oracle_id": "16a5ed42-ee86-4dcb-b8ea-239ac2b13d67",
+  "facts_sha256": "29deb846a592e6a27d8976724f8bf68b9570a8fd7f10a44d189c5dccfea4b0ed",
+  "physical_metadata_sha256": "129293a912baf7de1c1ace0a9906e5f603f1b43f08995545e19dd7ddda11372b",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

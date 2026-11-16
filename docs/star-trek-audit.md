@@ -1,0 +1,117 @@
+# Star Trek (TRK) set implementation audit
+
+Status: complete card-authoring, set-game, and release-validation checkpoint. The integrated branch admits 311/311 identities: 296 new typed definitions and fifteen existing reprints. Final PR reviews remain pending.
+Tracking issue: [#682](https://github.com/altf4/rustmage/issues/682).
+
+## Frozen inputs and scope
+
+- Base: rustmage `0ddbc78533db881eee69004ee319aa409a84c2df` (fetched `origin/main`, November 14, 2026).
+- Oracle: Scryfall TRK card search, captured November 14, 2026; 311 physical Oracle identities, all Standard legal at capture. The full printed rules and individual fact hashes are in [`data/audits/trk.json`](../data/audits/trk.json). The official [TRK release notes](https://magic.wizards.com/en/news/feature/star-trek-release-notes) establish Standard legality, new mechanics, and card-specific rulings.
+- XMage: `magefree/mage` `688ee53a9a2dc4646bf0588cd900f2ab91ca45e8`; `StarTrek.java` SHA-256 `f0a24d1e88b7f6ed10164f692a67a70931b19c031155de1768dee72befbabc12`. It has 440 printings of 244 Oracle identities. The inventory pins each available class path and hash. The remaining 67 cards have no XMage set-table entry at this revision. The user explicitly authorized Oracle text and official Wizards rulings as the source evidence for those 67 on November 14; their provenance must record that fallback and the absent XMage class.
+- Fifteen identities already have catalogue ownership (five basics and ten shocklands). The complete-game workload includes those reprints in TRK-only decks. Cosmetic printings are counted once. TRC Commander-only new cards and SDS alternate printings are outside TRK's Standard membership.
+
+All 311 Oracle bodies and all 244 available XMage classes were inspected in three disjoint audit ranges. The full source inventory records absent classes explicitly; its facts are audit input, not a rules implementation or admission claim. The Standard snapshot is pinned to November 14, 2026 with all 296 new TRK identities. `data/sets/trk.json` authenticates all 311 identities against the pinned XMage table and has no unresolved names. The refreshed XMage inventory is pinned to `688ee53a9a2dc4646bf0588cd900f2ab91ca45e8`. At the initial audit, the linker admitted the fifteen existing reprints and gated the 296 new cards; the current admission count is above.
+
+## Completed shared engine checkpoint
+
+The engine now covers the audited shared mechanics: November's 367 creature types; Federation's distinct non-Borg type count; no-maximum-hand-size duration; dilemma events; Promotion counters; Treasure-sacrifice restrictions; life-gain-specific trigger multiplication; Holo token substitution; exact first-spell history; Beam Me Up with X and alternate faces; phasing; Assimilate; Kira's tapped attacking entry; begun-extra-turn history; Peace in Our Time's optional draw and attack prohibition; untapped-entry triggers; Infinite Diversity's exile copies and optional free casts; Gwyndala's Equipment-token copying; Lwaxana's tapped trigger multiplication and phase-out expiry; Vulcan Mind-Meld's private top-two look; Nog's lasting stages and granted land permissions; Q, Overflow Submatrix, and The Holodeck's source permissions including copied providers; and Species 8472's blocking and artifact-ability targeting restrictions with exact source last-known information.
+
+Each isolated change passed focused guarded rules/contract tests and independent review. On the integrated set branch, a guarded checkpoint passed 58 scenarios in twelve targets covering the new source permissions, Nog, Vulcan Mind-Meld, Species 8472, Beam Me Up, phasing, Lwaxana, Infinite Diversity, and affected DFT, DSK, MKM, and SPM regressions. Its service runtime was 3 minutes 36 seconds, with a 2.8 GiB memory peak. After Star Trek metadata and linkage were generated, the guarded baseline cache test passed 7 Beam Me Up cases in 6 seconds, peaking at 518 MiB. See the tracking issue for commit and review history.
+
+An independently reviewed followup checkpoint for twelve more card dependencies passed 10/10 guarded scenarios and a 10/10 integration rewarm. Further dependencies discovered during authorship are being handled in isolated engine worktrees. Before dependent card files resume, implement and review each engine change, then rewarm the guarded cache.
+
+Dominion Infiltration's shared copy checkpoint freezes each surviving target's copiable values, adds changeling as a copiable exception, grants lasting haste, and exiles only the exact created tokens at the next end step. Independent review caught and verified fixes for subtype-replacing copies, noncreature entry previews, and haste surviving a missed exile. The guarded isolated and integrated engine scenarios passed 2/2 each; its authored card scenario passed 1/1 in isolation and on the linked integration branch.
+
+Blastoneuron's shared effect copies the printed creature card only after an exact, successful graveyard exile; it grants lasting haste and sacrifices the created token at the next end step. Its isolated and integrated engine scenarios passed 2/2 each after independent review. The authored card scenario passed 1/1 in isolation and integration, including a simultaneous two-card graveyard departure that triggers once.
+
+The reviewed engine checkpoints for All Good Things..., Borg Cube, Brazen Bluff, and Dominion Saboteur are integrated. Their focused staging rewarms passed 3/3, 2/2, 4/4, and 2/2 respectively. Dominion Saboteur's optional nonlegendary copy and exact donor counter snapshot passed 2/2 isolated engine scenarios, the existing entry-copy regression 5/5, and 1/1 actual-card scenario in isolation and integration after independent review. All Good Things..., Brazen Bluff, and Borg Cube passed their actual-card guarded integration scenarios 1/1, 2/2, and 2/2 after independent review.
+
+Brad Boimler's resolved all-kind permanent counter replacement, Surly Surgeon's destruction replacement, and Bones McCoy's exact death watch and next-end-step return passed isolated guarded scenarios 2/2, 4/4, and 4/4. Their combined staging scenarios passed 2/2, 4/4, and 4/4 after independent review. The dependent actual-card scenarios passed 1/1, 1/1, and 2/2 in isolation and on the 311-card integration branch, after independent review. Both copied-Saga lifecycle regressions passed 2/2, including a permanent entering as a Saga copy. Five TRK cross-mechanic interaction scenarios passed 5/5 on the integrated branch: Station power and thresholds, Federation versus Changeling and Assimilate, dilemma observers and private hand look, Beam Me Up and stack-exit exile, and exact linked Saga exiles.
+
+## Reuse and interaction checks
+
+Existing typed foundations cover Station thresholds (17 TRK cards), Spacecraft and Planet subtypes, `StatValue::DistinctNames` for 13 Strange New Worlds cards, modal history, many Saga/ward/surveil/landfall effects, and the fifteen existing reprint identities. Their TRK wiring still requires individual rules scenarios. The core audit must also verify Station versus charge counters, Federation versus Assimilate and Changeling, modal choices versus dilemma observers, Beam Me Up versus stack-exit effects, linked exiles, and private choices.
+
+The shared changes, reviews, linker regeneration, and guarded focused card checks are complete. The integrated complete-game workload passed 20/20 fixed TRK-only games across colors and mechanics, with 10,734 decisions, 551 private-choice checks, deterministic replay, and owned raw/index branch/restore. Its full acceptance throughput was 735 decisions/s and 1.37 games/s over 14.65 seconds; these figures include test harness work. The separate 311-identity support gate also passed. Repository-wide release validation remains open. The final batch needs two independent nonauthor reviews and one completed-set PR.
+
+Native assurance on the assembled set exposed a copied-changeling subtype regression in a Kindred land/animated land boundary. A reviewed engine fix now includes copy keyword overrides in the layer-one changeling check for live and entering copies. Its focused guarded regression passed 1/1 at a 2.9 GiB memory peak. Repository-wide assurance subsequently reran.
+
+The next native pass exposed an existing Edge of Eternities Seedship scenario where an unrelated static source made an ordinary hand creature enter attacking. The Kira attacking-entry scan now checks that the source actually has the named ability before consulting its availability. Independent review found no blocker; a guarded run passed all 13 EOE scenarios and all three Kira scenarios at a 2.9 GiB memory peak. Repository-wide assurance subsequently reran.
+
+The following native pass ran 4,533 cases and then reached Tarkir's fail-closed complete-game input gate. Star Trek's new card crate changed `Cargo.lock`, so the prior Tarkir execution manifest was stale. `scripts/tdm_execution_inputs.py --write` regenerated the manifest over 12,407 current inputs, and `--check` confirmed it. A guarded rerun passed all nine Tarkir target tests, including 52 complete games and the corpus gate, in 85.40 seconds at an 842.9 MiB memory peak. The resulting receipts are under the persistent cache.
+
+With those games admitted, native assurance ran 5,770 cases and found one stale exact layout assertion. `State` measured 5,744 bytes versus the prior 5,552-byte pin after the new sparse source permissions, counter facts, and player history; `Object` remains 160 bytes. Independent review approved the 192-byte (3.46%) increase and found no hot-object enlargement. The exact `State` assertion now pins its expanded inline footprint at 5,744 bytes; populated heap rows are measured separately by `Game::state_bytes()`.
+
+The guarded `python3 scripts/validate.py --release --python smoke` run passed all nine phases on the assembled set, including 6,814 native cases, a release library, ten sampled games, and Python smoke. It verified 5,459/5,459 Standard cards with no input changes and peaked at 4.9 GiB within the 6 GiB guard. The release shared library SHA-256 is `031b05ed5fb8fd0c0a739f04dbc8c7116cbddeb367385e30e669e669ba551f09`. Its native smoke sample completed 4,941 decisions in 0.312 seconds: 15,835 decisions/s and 32.05 games/s, including policy and observation work. The more comprehensive TRK-only acceptance workload measured 735 decisions/s and 1.37 games/s including replay, privacy, branch/restore, and harness checks. The validation report is under `~/.cache/rustmage-validation-397l2xkq/report/result.json`.
+
+## XMage source gaps
+
+The following TRK identities have no XMage set-table entry at the pinned revision. Use the user-authorized official-rules fallback when authoring them; do not infer completion from catalogue metadata:
+
+- All Good Things...
+- Blastoneuron
+- Borg Cube
+- Brad Boimler, Eager Ensign
+- Branching Timeline
+- Brazen Bluff
+- Captain Benjamin Sisko
+- Combadge
+- Dathon, His Heart Open
+- Death Is Irrelevant
+- Dominion Infiltration
+- Dominion Saboteur
+- Dr. Leonard "Bones" McCoy
+- Dr. McCoy, Surly Surgeon
+- Elim Garak, Simple Tailor
+- Ensign Pavel Chekov
+- Erica Ortegas, Plucky Pilot
+- Exploratory Mission
+- First Contact
+- Gabriel Lorca, Mirror Menace
+- Genesis Device
+- Gowron, Eager for Battle
+- Gray and Adira, Forever Joined
+- Gul Dukat, Colonial Prefect
+- Gwyndala, the Progeny
+- H.M.S. Bounty, Unlikely Timeship
+- Holo-Engineer
+- Infinite Diversity
+- Isolinear Processor
+- Jadzia Dax, Living Legacy
+- Jett Reno, Problem Solver
+- Kai Winn, Faithless Leader
+- Khan, Vengeful Heart
+- Lt. Cmdr. Geordi La Forge
+- Lwaxana Troi, Charming Guest
+- Marooned
+- Melkotian Adjudicator
+- Miles O'Brien, Transporter Ops
+- Mirror Universe Intrusion
+- Nog, Ambitious Cadet
+- Nyota Uhura, Communications
+- Obsidian Order Operative
+- Overflow Submatrix
+- Peace in Our Time
+- Q, Stacking the Deck
+- Quark, Humble Proprietor
+- Rules of Acquisition
+- Rutherford, Upgraded Ensign
+- Scotty, Miracle Worker
+- Seven of Nine
+- Species 8472
+- Sulu, Space Swashbuckler
+- Targ Wrangler
+- Tasha Yar, Out of Time
+- Tell Me What You See
+- Temporal Conqueror
+- The Caretaker
+- The Holodeck
+- The Inner Light
+- The Measure of a Man
+- The Needs of the Many
+- The Wrath of Khan
+- Those Old Scientists
+- Vulcan Mind-Meld
+- Will Riker, First in the Field
+- Worf, Intelligence Contractor
+- Zefram Cochrane, Warp Pioneer

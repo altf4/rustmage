@@ -168,6 +168,7 @@ impl SpellView {
     pub(super) fn clear_initiating_event_references(&mut self) {
         self.event_object = None;
         self.entering_object = None;
+        self.entering_explorer = None;
         self.source_move = None;
         self.reflexive_subject = None;
         self.damage_event = None;
@@ -357,9 +358,10 @@ impl Game {
     ) {
         let ordinary = self.event_fact_packets().any(|p| {
             p.event_object.is_some()
-                || p.copy_event
-                    .as_ref()
-                    .is_some_and(|event| event.spell.event_object.is_some())
+                || p.entering_explorer.is_some()
+                || p.copy_event.as_ref().is_some_and(|event| {
+                    event.spell.event_object.is_some() || event.spell.entering_explorer.is_some()
+                })
                 || p.source_quantity_lki
                     .as_ref()
                     .is_some_and(|q| q.creature_comparison.is_some())

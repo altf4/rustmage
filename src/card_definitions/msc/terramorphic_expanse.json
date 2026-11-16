@@ -2,13 +2,13 @@
   "name": "Terramorphic Expanse",
   "catalogue_id": 4390,
   "oracle_id": "1bd3e453-aa21-4ee6-95c2-d6d920ee8e7a",
-  "facts_sha256": "2544a17b2d607ca2b5c5f6a4fced60f01ea8fc9e9c2672750334a01bec368e48",
+  "facts_sha256": "46c31855cf03abc24f9b6701ffb651466faf39b605c80e3127f4d15ae77f2de3",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "54ce173f7520cf9f68dfd8049e5ce72cee8e0482e4be2b84f280a723d4fafd20"
   },
-  "physical_metadata_sha256": "cd930b507e7d8be13eb9b85de9a0319aadb0d422bea28aed0725980921adab70",
+  "physical_metadata_sha256": "93d545f252f5f98ba1279cc212788e24adf66895037c0a8e143771b4ca533e39",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/t/TerramorphicExpanse.java",
   "java_sha256": "c5536a093cf331474d0d2681e6649defd45e318398851362bd0744dcd36025f5",

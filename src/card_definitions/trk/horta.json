@@ -1,0 +1,14 @@
+{
+  "name": "Horta",
+  "catalogue_id": 5835,
+  "oracle_id": "e8ac0742-15f5-4cf0-888f-f1c2c97fc144",
+  "facts_sha256": "34170476c999e741fcded428af80c4f471a5b693af0a9f15a3f1068d489e4d60",
+  "physical_metadata_sha256": "e77a5a2afd57a0d6c840bc5aa4d68edfe78994ea8fbaee56e1d5274afc9e1b7f",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/h/Horta.java",
+  "java_sha256": "f5d57213ce9d53b567df9490dc20618d1fe8f00d08835a08a1756c798249fad1",
+  "xmage_class": "mage.cards.h.Horta"
+}

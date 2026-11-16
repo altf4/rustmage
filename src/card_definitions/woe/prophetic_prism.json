@@ -2,11 +2,11 @@
   "name": "Prophetic Prism",
   "catalogue_id": 3260,
   "oracle_id": "134a9877-5cfb-4a2a-a0f0-930dce45f58b",
-  "facts_sha256": "0b183f5780df582c93a06ceab39e9d8ad8265a77af7fb9de6c06151b08cfd487",
+  "facts_sha256": "e2c7436921f981c48006696644886d78740e41f8cb40fe7fab22750c1d0676bc",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0bf902017175a885307a93c515234b0d789771592a27acda68a87809b52519fe"
   },
-  "physical_metadata_sha256": "38370b6cf08d690b1a1e085b989b028f5c3d18d9a3c8dff05a5c0d10e20d87c6"
+  "physical_metadata_sha256": "ce3c7492464474a6c671e6b1a3b1c91238bffb4f886e91465763bb0168c17171"
 }

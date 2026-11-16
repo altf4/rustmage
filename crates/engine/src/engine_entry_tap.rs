@@ -65,6 +65,59 @@ pub(super) fn external_tap_provider<W: ability_world::CharacteristicWorld + ?Siz
                 })))
 }
 
+/// An entry replacement observes the current attacking creatures and the
+/// prospective entrant; simultaneous entrants do not become providers.
+pub(super) fn controlled_creature_attacking_entry_sources<
+    W: ability_world::CharacteristicWorld + ?Sized,
+>(
+    world: &W,
+    controller: Player,
+    kinds: u16,
+) -> Vec<ObjectRef> {
+    use crate::cards::StaticAbilityFragment;
+    if kinds & 1 == 0
+        || kinds & crate::cards::BATTLE_KIND != 0
+        || !world.game().attacking_return_combat(controller)
+        || !world.game().state.attackers.iter().any(|attacker| {
+            let object = world.object(attacker.card);
+            object.zone == Zone::Battlefield
+                && object.controller == controller
+                && world.kinds(attacker.card) & 1 != 0
+        })
+    {
+        return Vec::new();
+    }
+    world
+        .static_sources()
+        .iter()
+        .copied()
+        .filter(|&id| {
+            let source = world.object(id);
+            source.zone == Zone::Battlefield
+                && source.controller == controller
+                && world
+                    .definition(id)
+                    .static_ability_groups()
+                    .iter()
+                    .any(|group| {
+                        group.fragments.iter().any(|fragment| {
+                            matches!(
+                                fragment,
+                                StaticAbilityFragment::ControlledCreatureEntryTappedAttacking
+                            )
+                        })
+                    })
+                && world.fragment_available(id, |fragment| {
+                    matches!(
+                        fragment,
+                        StaticAbilityFragment::ControlledCreatureEntryTappedAttacking
+                    )
+                })
+        })
+        .map(|id| world.reference(id))
+        .collect()
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn entry_tap_effects(&self, movement: &entries::EntryMove) -> Vec<EntryTapEffect> {
@@ -75,6 +128,14 @@ impl Game {
             movement.entry_kinds()
         };
         let mut effects = Vec::new();
+        for source in controlled_creature_attacking_entry_sources(self, movement.controller, kinds)
+        {
+            effects.push(EntryTapEffect {
+                source,
+                intrinsic: false,
+                kind: EntryTapKind::Tapped,
+            });
+        }
         for &id in &self.state.static_sources {
             let source = &self.state.objects[id as usize];
             if source.zone == Zone::Battlefield

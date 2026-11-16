@@ -1,6 +1,7 @@
 //! Cold, exact-incarnation layer-one copies. A blueprint is frozen and flat:
 //! later changes to the copied source never change an existing layer.
 use super::*;
+use ability_world::CharacteristicWorld;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
@@ -299,6 +300,34 @@ impl Game {
     }
     pub(super) fn copy_target_to_other_controlled_creatures(&mut self, item: &SpellView) {
         self.copy_target_to_controlled_cohort(item, false);
+    }
+    pub(super) fn copy_controlled_equipment_tokens_from_target(&mut self, item: &SpellView) {
+        let Some(blueprint) = item.targets.iter().find_map(|bound| {
+            bound.object.filter(|reference| {
+                self.same_target_object(*bound)
+                    && self.on_battlefield(reference.card)
+                    && self.state.objects[reference.card as usize].controller == item.controller
+                    && self.is_equipment(reference.card)
+            })
+        }) else {
+            return;
+        };
+        let recipe = self.copiable_recipe(blueprint);
+        let recipients = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                let id = id as CardId;
+                (object.zone == Zone::Battlefield
+                    && object.controller == item.controller
+                    && object.is_token()
+                    && self.is_equipment(id))
+                .then_some(self.object_ref(id))
+            })
+            .collect();
+        self.apply_temporary_copy_cohort(recipients, recipe, |_| CopyDeadline::EndOfTurn);
     }
     pub(super) fn copy_target_to_controlled_cohort(&mut self, item: &SpellView, nonlands: bool) {
         let Some(blueprint) = item.targets.iter().find_map(|bound| {

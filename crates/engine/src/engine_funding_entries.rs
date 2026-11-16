@@ -116,6 +116,7 @@ impl Announcement {
                     | CastCostClause::Harmonize(object) => add(object),
                     CastCostClause::SneakReturn(Some(object))
                     | CastCostClause::WebSlingingReturn(Some(object)) => add(object),
+                    CastCostClause::BeamMeUpReturn(Some(object), _) => add(object),
                     _ => (),
                 }
             }
@@ -516,18 +517,34 @@ impl FundingState<'_> {
             StepGuard::SourceDeclaredAttackThisCombat => {
                 self.game.declared_attack_this_combat(source)
             }
+            StepGuard::SourceAttackedThisTurn => {
+                self.game.state.attacked_this_turn.contains(&source)
+            }
             StepGuard::DeclaredAttackSubtypesAll(subtypes) => {
                 self.game.declared_attack_subtypes_all(player, subtypes)
             }
             StepGuard::Always => true,
             StepGuard::FirstCombatPhase => self.game.first_combat_phase(),
+            StepGuard::NoExtraTurnBegunThisGame => !state.has_begun_extra_turn_this_game,
             StepGuard::SecondMainPhase => self.game.second_main_phase(),
             StepGuard::SourceSneakedThisTurn => self.game.source_sneaked_this_turn(source),
             StepGuard::PermanentLeftBattlefieldThisTurn => {
                 self.permanent_left_battlefield[player.index()]
             }
+            StepGuard::PermanentReturnedToYourHandThisTurn => {
+                state.turn_facts.permanent_returned_to_your_hand
+            }
             StepGuard::VoidActive => self.void_active_this_turn,
             StepGuard::ArtifactEnteredThisTurn => state.turn_facts.artifact_entered,
+            StepGuard::EquipmentOrSpacecraftEnteredThisTurn => self
+                .game
+                .state
+                .entered_this_turn
+                .as_ref()
+                .is_some_and(|rows| {
+                    rows.iter()
+                        .any(|entry| entry.controller == player && entry.equipment_or_spacecraft)
+                }),
             StepGuard::HeroEnteredOrAttackedThisTurn => {
                 state.turn_facts.hero_entered || state.turn_facts.hero_attacked
             }
@@ -540,6 +557,11 @@ impl FundingState<'_> {
             }
             StepGuard::AttachedControllerTurn => {
                 steps::attached_controller_turn(self, source, self.active)
+            }
+            StepGuard::OtherControlledCreatureWithAttachedSubtype(subtype) => {
+                steps::other_controlled_creature_with_attached_subtype(
+                    self, source, player, subtype,
+                )
             }
             StepGuard::YourTurn => self.active == player,
             StepGuard::YourMainPhase => {
@@ -787,6 +809,14 @@ impl FundingState<'_> {
                 EntryCounterAmount::ColorsSpent => m
                     .cast_payment
                     .map_or(0, |p| (0..5).filter(|&i| p[i] > 0).count() as u64),
+                EntryCounterAmount::ColorsSpentKind(kind) => {
+                    counters.add(
+                        kind,
+                        m.cast_payment
+                            .map_or(0, |p| (0..5).filter(|&i| p[i] > 0).count() as u64),
+                    );
+                    continue;
+                }
                 EntryCounterAmount::ManaSpent => m
                     .cast_payment
                     .map_or(0, |mana| mana.into_iter().map(u64::from).sum()),
@@ -932,6 +962,19 @@ impl FundingState<'_> {
         } else {
             m.entry_kinds()
         };
+        for source in
+            entry_tap::controlled_creature_attacking_entry_sources(self, m.controller, kinds)
+        {
+            m.attacking_entry_creature = true;
+            if m.attacking.is_none() {
+                m.choose_attacking_defender = true;
+            }
+            effects.push(entry_tap::EntryTapEffect {
+                source,
+                intrinsic: false,
+                kind: entry_tap::EntryTapKind::Tapped,
+            });
+        }
         for &id in self.static_sources() {
             let o = self.object(id);
             if o.zone == Zone::Battlefield
@@ -1860,6 +1903,7 @@ impl FundingState<'_> {
                         object: source,
                         controller: o.controller,
                         zombie: false,
+                        equipment_or_spacecraft: false,
                     });
                 if let Some(protector) = m.battle_protector {
                     next.entry_projection
@@ -1996,6 +2040,7 @@ impl FundingState<'_> {
                         source: origin,
                         types,
                         additional: true,
+                        until_cleanup: false,
                         timestamp,
                     });
                 if keywords != Keywords::NONE {
@@ -2063,6 +2108,7 @@ impl FundingState<'_> {
                         source: origin,
                         types: &["Spirit"],
                         additional: true,
+                        until_cleanup: false,
                         timestamp,
                     });
                 p.roles.base_stats.push(base_stats::BaseStatsEffectView {
@@ -3428,7 +3474,7 @@ impl FundingState<'_> {
     fn visit_entry_copy_choices(
         &self,
         moves: Vec<entries::EntryMove>,
-        seen: &mut Vec<(usize, CopyRecipe)>,
+        seen: &mut Vec<(usize, CopyRecipe, Option<Counters>)>,
         emit: &mut dyn FnMut(Vec<entries::EntryMove>) -> bool,
     ) -> bool {
         let Some(index) = moves
@@ -3473,7 +3519,7 @@ impl FundingState<'_> {
         for (object, choice) in candidates {
             // The deferred exile does not resolve inside funding. Repeated choices
             // with an identical blueprint can share this existential search branch.
-            let key = (index, choice.0);
+            let key = (index, choice.0, choice.2.clone());
             if seen.contains(&key) {
                 continue;
             }

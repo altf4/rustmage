@@ -1,0 +1,14 @@
+{
+  "name": "Artificial Anomaly",
+  "catalogue_id": 5722,
+  "oracle_id": "7e550295-eaf4-4962-bc52-261d7c2d71ae",
+  "facts_sha256": "8f3273d1281acc9743e570c7f081d5ddc49ca1a5f6ffcfaec469ec5d841ff764",
+  "physical_metadata_sha256": "c6d895398e3abdae216dee0523ea3ed50ed0af351d121dd4bd9a16fe3f9f301a",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/a/ArtificialAnomaly.java",
+  "java_sha256": "fe99a87d0154442df5e2f8830a90605428585676d4036549649cb7e24a549232",
+  "xmage_class": "mage.cards.a.ArtificialAnomaly"
+}

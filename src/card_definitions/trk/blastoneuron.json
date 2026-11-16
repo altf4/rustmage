@@ -1,0 +1,13 @@
+{
+  "name": "Blastoneuron",
+  "catalogue_id": 5731,
+  "oracle_id": "87bcc935-e7e7-4e98-a23c-01c5a9b7cfcd",
+  "facts_sha256": "62385125284412dad4fdf4d7e56c32a62aa41203ff87651d508bdf239425e4ca",
+  "physical_metadata_sha256": "601310ad326255c103493ff677b06abc29ab5eb097bb4907f6aebc007e0a002c",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

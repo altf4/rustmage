@@ -1,0 +1,14 @@
+{
+  "name": "Hit It!",
+  "catalogue_id": 5830,
+  "oracle_id": "62361438-3da4-4ce9-95b8-fc361b824f58",
+  "facts_sha256": "333843570ecdf9e8c7064a12d51ecec551fec14da29b859f88757d9b7372d2a1",
+  "physical_metadata_sha256": "29459388e575bb5443e94085e839848c391424a1e103ce8d20689347e976dbba",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/h/HitIt.java",
+  "java_sha256": "7b285b29adf9a2869e9c62093186ea7bac992a0428141ac76b18cca8d95d1f3e",
+  "xmage_class": "mage.cards.h.HitIt"
+}

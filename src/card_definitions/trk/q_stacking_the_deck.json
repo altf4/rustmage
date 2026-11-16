@@ -1,0 +1,13 @@
+{
+  "name": "Q, Stacking the Deck",
+  "catalogue_id": 5897,
+  "oracle_id": "6866f0a4-5fe6-40d9-bbfc-6f116f4e415d",
+  "facts_sha256": "e8cdd4f71ff00d11a91b65ae398e7a2ff833379821f3c47431d8ba0c5bd11db2",
+  "physical_metadata_sha256": "fa137b53e9876b72252eb94962e4a1491a7642c926438df52e07af66e2f709aa",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

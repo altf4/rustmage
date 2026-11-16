@@ -1,0 +1,14 @@
+{
+  "name": "Engineered Explosives",
+  "catalogue_id": 5798,
+  "oracle_id": "95fd897e-9086-42c4-8e0d-61bb02333c5f",
+  "facts_sha256": "6848a6d11ceb350082d60712060263c63070af88bb329207ec5918b9a5594e0c",
+  "physical_metadata_sha256": "6cad8ea748caacd9923050589c909d84245732d0777c62428fb0dd7fe259fa49",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/e/EngineeredExplosives.java",
+  "java_sha256": "7b0f950e25103061c6f5216ca13de30621005bab6ac3dc81339bf3f3e4f15cdf",
+  "xmage_class": "mage.cards.e.EngineeredExplosives"
+}

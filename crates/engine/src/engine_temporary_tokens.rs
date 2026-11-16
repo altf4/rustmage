@@ -6,6 +6,7 @@ use super::*;
 pub(super) struct TokenInstructions {
     pub item: SpellView,
     pub keywords: Keywords,
+    pub permanent_keywords: bool,
     pub attack: TokenAttack,
     pub cleanup: TokenCleanup,
 }

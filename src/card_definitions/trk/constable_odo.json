@@ -1,0 +1,14 @@
+{
+  "name": "Constable Odo",
+  "catalogue_id": 5763,
+  "oracle_id": "74b58f31-7634-4b51-a900-6fbfccfb3cd2",
+  "facts_sha256": "4f5d5695a91f17bd827b7cb1e6cf20dbd86d2eb9459958e4babda48266c448a8",
+  "physical_metadata_sha256": "a8018163a9e8c8e31c2d0d47a16eab9589d2722819862348a657101a755bda6f",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/c/ConstableOdo.java",
+  "java_sha256": "f1d2b37710d653535fbb961bdc0610bcb61601099581582e064f014cf4839293",
+  "xmage_class": "mage.cards.c.ConstableOdo"
+}

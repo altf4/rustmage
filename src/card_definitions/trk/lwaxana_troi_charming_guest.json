@@ -1,0 +1,13 @@
+{
+  "name": "Lwaxana Troi, Charming Guest",
+  "catalogue_id": 5861,
+  "oracle_id": "e56472ec-6ae8-48b2-a4ce-0ed154161c06",
+  "facts_sha256": "b38ffb9a3a0f5ba3f2177912f1549071a3545e16cf9f63ef31aed67e9c121da2",
+  "physical_metadata_sha256": "58c5efe0d091986e6a2fab7c4538e710cb1784138eddf43153c5916442420116",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

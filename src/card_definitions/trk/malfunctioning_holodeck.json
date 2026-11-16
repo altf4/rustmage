@@ -1,0 +1,14 @@
+{
+  "name": "Malfunctioning Holodeck",
+  "catalogue_id": 5864,
+  "oracle_id": "3f04c38b-d6bd-405f-b69c-009df87801dd",
+  "facts_sha256": "b574c0673cea7bf00043f5cb232e1dc447ab64dd4cc0e2701dcb5cb50e08af5b",
+  "physical_metadata_sha256": "1bfd42e1fd07f13f46703516d56d81e39efc9590c876d18dc6820faf6295c93a",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/m/MalfunctioningHolodeck.java",
+  "java_sha256": "1c4236e42ab7d6efb8d613cb1bc85f41a7705e0b4d7124f33bb51056be38df73",
+  "xmage_class": "mage.cards.m.MalfunctioningHolodeck"
+}

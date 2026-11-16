@@ -1,0 +1,14 @@
+{
+  "name": "Warp Core",
+  "catalogue_id": 5996,
+  "oracle_id": "6a2df97a-341d-4bc4-9f5c-661b6ca78fd0",
+  "facts_sha256": "dcaf3043e002dbc20ea36856206ad4681c69ed7a1af8bdb6752e2371e89cbbfe",
+  "physical_metadata_sha256": "c2e504f5a85fa954c31cc49c3f4e5895c8aafc34809e0dea0d903ec3aebbf018",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/w/WarpCore.java",
+  "java_sha256": "b72e545079aca83487841f65ef51d089c65f4a6ddd2a1399580ff3bfe11586d6",
+  "xmage_class": "mage.cards.w.WarpCore"
+}

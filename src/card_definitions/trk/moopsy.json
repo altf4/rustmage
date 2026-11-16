@@ -1,0 +1,14 @@
+{
+  "name": "Moopsy",
+  "catalogue_id": 5869,
+  "oracle_id": "89b9efc8-d1cd-4b2a-acf3-4f0dd1629167",
+  "facts_sha256": "dd0fc8b3d9a5f80e327c1ef319102708843c8374a7afa549d5a3c2fac1948b3b",
+  "physical_metadata_sha256": "bd16f6facd8435972437c295f33c63d39398faae3a134f81c2d800098cc4d7a8",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/m/Moopsy.java",
+  "java_sha256": "9b9219f6e9ee4744412d429f7fc5d2093117ff2b73e3c93e5697b0e9ba7070b2",
+  "xmage_class": "mage.cards.m.Moopsy"
+}

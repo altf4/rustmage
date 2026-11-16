@@ -1,0 +1,14 @@
+{
+  "name": "Romulus",
+  "catalogue_id": 5911,
+  "oracle_id": "14c4ad24-7f38-409b-8ef0-341f233982da",
+  "facts_sha256": "e81ddd4518a7805344e621f968ddb24b9084ba2ed1ed8069a688b79ec2e29ff5",
+  "physical_metadata_sha256": "03f8abbfb49a81d0d4497ea923573657319e54595504f45639f50cd7e338658c",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/r/Romulus.java",
+  "java_sha256": "f8b3afe9ac35c3860c0fa569b1c18df94edab486c16e85e9668600f137e08110",
+  "xmage_class": "mage.cards.r.Romulus"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Kirk, Commanding Officer",
+  "catalogue_id": 5852,
+  "oracle_id": "e85ad29a-ebd6-4f81-af99-556deaedbfe0",
+  "facts_sha256": "e76b328ae74fd094c4440e5d76b6ee0646cbe87999340b611d6ca6f094834ddd",
+  "physical_metadata_sha256": "c83fa914eaa8973561c5050e44dc698c00a9642256843e97351d86192d4a9c37",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/k/KirkCommandingOfficer.java",
+  "java_sha256": "97fa8461b6f8f1a7c7817b6f93661e5e5811d639fc9e74dd6d76317afb3807be",
+  "xmage_class": "mage.cards.k.KirkCommandingOfficer"
+}

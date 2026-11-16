@@ -34,6 +34,7 @@ pub(super) enum LibrarySelectionCompletion {
     MayTransform,
     ReflexiveEquipment(u16),
     RememberExile,
+    SacrificeEnteredAtNextOwnEndStep,
     BattlefieldFallbackToHand {
         keywords: Keywords,
         follow_public_redirect: bool,
@@ -140,6 +141,12 @@ impl Game {
             }
             LibrarySelectionFilter::HasX => c.x_symbols() > 0,
             LibrarySelectionFilter::Any => true,
+            LibrarySelectionFilter::NonlandPermanent => {
+                crate::cards::CastFilter::Permanent.matches(c)
+            }
+            LibrarySelectionFilter::ManaValueAtMost(maximum) => {
+                self.object_mana_value(id) <= maximum
+            }
             LibrarySelectionFilter::Kinds(mask) => self.current_kinds(id) & mask != 0,
             LibrarySelectionFilter::ExcludingKinds(mask) => self.current_kinds(id) & mask == 0,
             LibrarySelectionFilter::Subtype(subtype) => self.has_subtype(id, subtype),
@@ -326,6 +333,10 @@ impl Game {
             LibrarySelectionCompletion::MayTransform
             | LibrarySelectionCompletion::ReflexiveEquipment(_) => {
                 assert_eq!(effect.destination, LibraryPickDestination::Battlefield);
+            }
+            LibrarySelectionCompletion::SacrificeEnteredAtNextOwnEndStep => {
+                assert_eq!(effect.destination, LibraryPickDestination::Battlefield);
+                assert_eq!(effect.spec.filter, LibrarySelectionFilter::Kinds(2));
             }
         }
         assert!(
@@ -1295,6 +1306,7 @@ impl Game {
                             frame.completion,
                             LibrarySelectionCompletion::MayTransform
                                 | LibrarySelectionCompletion::ReflexiveEquipment(_)
+                                | LibrarySelectionCompletion::SacrificeEnteredAtNextOwnEndStep
                         ))
             })
         else {
@@ -1331,9 +1343,12 @@ impl Game {
             })
             .map(|event| event.after)
             .filter(|object| {
-                frame.completion == LibrarySelectionCompletion::MayTransform
-                    || (self.current_kinds(object.card) & 16 != 0
-                        && self.has_subtype(object.card, "Equipment"))
+                matches!(
+                    frame.completion,
+                    LibrarySelectionCompletion::MayTransform
+                        | LibrarySelectionCompletion::SacrificeEnteredAtNextOwnEndStep
+                ) || (self.current_kinds(object.card) & 16 != 0
+                    && self.has_subtype(object.card, "Equipment"))
             })
             .collect();
         self.state
@@ -1447,6 +1462,15 @@ impl Game {
             {
                 let item = self.state.resolving.as_ref().unwrap().item.clone();
                 self.queue_reflexive_objects(&item, ability, entered);
+            } else if completion == LibrarySelectionCompletion::SacrificeEnteredAtNextOwnEndStep
+                && !entered.is_empty()
+            {
+                let item = self.state.resolving.as_ref().unwrap().item.clone();
+                self.register_delayed_token_cleanup(
+                    &item,
+                    entered,
+                    temporary_tokens::TokenCleanup::OwnEndStepSacrifice,
+                );
             }
         }
         false

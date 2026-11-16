@@ -1,0 +1,14 @@
+{
+  "name": "La'An Noonien-Singh, Security",
+  "catalogue_id": 5855,
+  "oracle_id": "ed3b80eb-8915-4428-89b8-90f4278f2733",
+  "facts_sha256": "c449b99e4a3487695dc63d0abf3cab74197347b795618d326e1fc6bd650fdada",
+  "physical_metadata_sha256": "cab42959798af89f088c1bc94f3ec7964b5dcc6f0b839e5ac83f62f23a358740",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/l/LaAnNoonienSinghSecurity.java",
+  "java_sha256": "266f231cba91dd557169195e73df975849ad0e9ade2ee6b3b04a1f60d80569bd",
+  "xmage_class": "mage.cards.l.LaAnNoonienSinghSecurity"
+}

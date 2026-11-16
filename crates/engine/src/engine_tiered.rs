@@ -222,6 +222,42 @@ impl Game {
         self.shuffle_cards_into_library(player, &ids);
     }
 
+    pub(super) fn shuffle_graveyard_targets_into_owners_libraries(
+        &mut self,
+        item: &SpellView,
+        cards_group: u16,
+    ) {
+        let mut ids = Vec::new();
+        let mut owners = [false; 2];
+        for bound in item
+            .targets
+            .iter()
+            .filter(|bound| bound.group == cards_group)
+        {
+            let Some(reference) = bound.object else {
+                continue;
+            };
+            if !self.same_target_object(*bound) {
+                continue;
+            }
+            let object = &self.state.objects[reference.card as usize];
+            if object.zone != Zone::Graveyard || !object.is_card() || ids.contains(&reference.card)
+            {
+                continue;
+            }
+            owners[object.owner.index()] = true;
+            ids.push(reference.card);
+        }
+        let events = self.move_objects_raw(&ids, Zone::Library);
+        self.finish_zone_events(&events, &[]);
+        for player in [Player::P0, Player::P1] {
+            if owners[player.index()] {
+                self.forget_library_top(player);
+                self.shuffle_library_cards(player);
+            }
+        }
+    }
+
     pub(super) fn shuffle_graveyard_into_library_count(
         &mut self,
         player: Player,

@@ -1,0 +1,14 @@
+{
+  "name": "Command Decision",
+  "catalogue_id": 5757,
+  "oracle_id": "1c4afb0d-6d6e-4d21-9fe0-5621cd2fd27c",
+  "facts_sha256": "4bb7fdb70487ed016e3ae7c00b7c728ca0433b59fe09264f03b7584e4a1f3ad1",
+  "physical_metadata_sha256": "297e08392b4cf129a10d08daa7066db2ecb81b9a75aeaccc4707412687999bad",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/c/CommandDecision.java",
+  "java_sha256": "ec7142b2e42368036d7149c54ae42654264a59acb0f5270ae32e4a721efc25ea",
+  "xmage_class": "mage.cards.c.CommandDecision"
+}

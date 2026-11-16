@@ -1,0 +1,14 @@
+{
+  "name": "Common Goal",
+  "catalogue_id": 5760,
+  "oracle_id": "d4030d30-4c24-458c-87a9-c2f80bb68d27",
+  "facts_sha256": "7c68b240903133aacdf980b071dc3a6368f58bc01ee7627620521c61b1a89550",
+  "physical_metadata_sha256": "adc9dbd78d166aca507754bafa514d284e53ec62ae7f35b3609d5808474d0b50",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/c/CommonGoal.java",
+  "java_sha256": "2218d1483dee0194bff966e12b26e557f011dbe7a1743fde5bc4ef3f8e9a86ac",
+  "xmage_class": "mage.cards.c.CommonGoal"
+}

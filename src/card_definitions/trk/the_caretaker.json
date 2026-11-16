@@ -1,0 +1,13 @@
+{
+  "name": "The Caretaker",
+  "catalogue_id": 5962,
+  "oracle_id": "f77ea393-4142-4c06-8bb3-589ca74a7338",
+  "facts_sha256": "61c670b7ca6809f57aaeb926a441a13e81534a5a1de49b27403d1572e435a9f4",
+  "physical_metadata_sha256": "944cd028b5484d6c9a828070d09ee3cfa8b79afbc6b65e0c3a92b5c5855f2af7",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

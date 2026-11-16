@@ -1,0 +1,11 @@
+{
+  "name": "@token/trk-human-no-phase-in",
+  "catalogue_id": 6017,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "4def1a34778dcf5e2d905b604a3137ed2bc5aad9569e18f5647a830504a95efe",
+  "oracle_source": "data/audits/trk.json",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

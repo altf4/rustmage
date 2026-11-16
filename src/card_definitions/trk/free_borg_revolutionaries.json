@@ -1,0 +1,14 @@
+{
+  "name": "Free Borg Revolutionaries",
+  "catalogue_id": 5811,
+  "oracle_id": "28914782-92f4-407f-beb6-5e290a49000c",
+  "facts_sha256": "9b57499b4b11e1b6bc2279fcafe04e6674c5bfd837fbe92bab6f55597c3c119f",
+  "physical_metadata_sha256": "69d887a3c669ef8ce52c7910164492671d52689044df14e6b5ee1cad5378bda5",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/f/FreeBorgRevolutionaries.java",
+  "java_sha256": "ba64a8f22d90fb80679cf9519faed89753a6f72532c6c4663d721a719fdf41af",
+  "xmage_class": "mage.cards.f.FreeBorgRevolutionaries"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Dahar Master",
+  "catalogue_id": 5771,
+  "oracle_id": "c9bc1a28-8d3c-4d9f-a67d-b044cfe9d6c1",
+  "facts_sha256": "dc9cc12cfe42f3bf14f19631bb87a4daeb408a6500f0afa4d97bae112a024622",
+  "physical_metadata_sha256": "9d0266b32aa8713f10eb70e745aff82522c5d17710a6a67797894643932f66f4",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/d/DaharMaster.java",
+  "java_sha256": "8cdcc5f878ca6f8e3cb44b5b6c516f3700534b7811cdf45f3a7279a9a1a132b4",
+  "xmage_class": "mage.cards.d.DaharMaster"
+}

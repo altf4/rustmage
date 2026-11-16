@@ -2,13 +2,13 @@
   "name": "Mountain",
   "catalogue_id": 3,
   "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
-  "facts_sha256": "dc8fd7c2b9340114200a1478f7e78bc91e28a0949ef1353a3bb0b2e39e65f366",
+  "facts_sha256": "834b3f6ee6e8a2b60fa2515857725a0105572c82d8285ad7c247ac103ceebdfe",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fd1e155f914490ff75e8cb6008ce167cbbfba1c763dced1a14bbe93f60fe47f9"
   },
-  "physical_metadata_sha256": "ad9c46c3b402cd3a9c3d8059be77457669ecb3de1da05ec1460842eb4b74ef68",
+  "physical_metadata_sha256": "01f9cf6f9ad806d5047c0a466d931e4066cc0b1f5f2be1cd03b0683584822b9d",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage/src/main/java/mage/cards/basiclands/Mountain.java",
   "java_sha256": "be959d0f5a3db621a31d32104ae445a033cd10907a237a4f8630b3457df13a73",

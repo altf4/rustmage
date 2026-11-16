@@ -1,0 +1,14 @@
+{
+  "name": "Bat'leth",
+  "catalogue_id": 5728,
+  "oracle_id": "1000d26e-7a29-48df-806f-9eb7d4e1082d",
+  "facts_sha256": "16b3f7f76aa380d36aeccc67848023cd8fe6c5f7fe7a51780881615c7eb7c539",
+  "physical_metadata_sha256": "33f561018f0b567e70b997a727e2b88ceba5c25b925317378f878ae6b934083f",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/b/Batleth.java",
+  "java_sha256": "92584107a1afa9105464927ae9878a449bb47503db4a148c98804c5094e61d4f",
+  "xmage_class": "mage.cards.b.Batleth"
+}

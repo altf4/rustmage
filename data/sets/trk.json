@@ -1,0 +1,2565 @@
+{
+  "schema": 1,
+  "set": "TRK",
+  "xmage_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "table": {
+    "source": "Mage.Sets/src/mage/sets/StarTrek.java",
+    "sha256": "f0a24d1e88b7f6ed10164f692a67a70931b19c031155de1768dee72befbabc12",
+    "printing_count": 440
+  },
+  "scope": "All physical set card identities, including reprints and starter products; cosmetic printings counted once",
+  "card_count": 311,
+  "cards": [
+    {
+      "name": "70,000 Light-Years from Home",
+      "oracle_id": "9356aee1-3d2b-4d17-8863-663e1ddf56f3",
+      "facts_sha256": "580e63ca7047b61fdbb38360f99773f97f0b49a2c6cdf4cf7b6efa8fb4556cbb",
+      "printings": [
+        "1"
+      ]
+    },
+    {
+      "name": "A Good Day to Die",
+      "oracle_id": "4c4559a5-a7a4-4a40-8a8f-e7375c741748",
+      "facts_sha256": "8e54bf0a58d5b539a17f6887220b8fe82a6bfd3739ccbb37f5feeafbae9a828f",
+      "printings": [
+        "111",
+        "428",
+        "438"
+      ]
+    },
+    {
+      "name": "Academy Instructor",
+      "oracle_id": "8802b7f0-1ed1-4872-9939-182afb8441ca",
+      "facts_sha256": "2d588a5140e2d75805d53eb913848de4c75b95eb901659ebf8caee3ca7fc0fae",
+      "printings": [
+        "137"
+      ]
+    },
+    {
+      "name": "Adversary by Algorithm",
+      "oracle_id": "37f3eda9-3242-4d62-846f-935543d8f4fd",
+      "facts_sha256": "70d6726c89a61c0ed6fa4a40f4d48794ffa709ad7706395c91a68b8c325b56b1",
+      "printings": [
+        "182"
+      ]
+    },
+    {
+      "name": "All Good Things...",
+      "oracle_id": "61dc9770-1e29-49fa-a31b-b63b5f0496fb",
+      "facts_sha256": "bd89ef1483c9cacc9d8d9386b5818c256559e4c6a18d3a1c859a6798fd06b5ca",
+      "printings": []
+    },
+    {
+      "name": "Amok Time",
+      "oracle_id": "98a752ff-f041-4032-9f3f-c6c4007f10f1",
+      "facts_sha256": "28687ab311287bae39412f125f67ef9d08617c0f44cbae704acde3b343dd597b",
+      "printings": [
+        "183"
+      ]
+    },
+    {
+      "name": "Andoria",
+      "oracle_id": "79134f5e-94db-4a40-ba75-2569b839cf35",
+      "facts_sha256": "2a237d6445e9c05f7d38892f2ac4a91775509c3f89278c3b4e69005019bfa3a5",
+      "printings": [
+        "275"
+      ]
+    },
+    {
+      "name": "Andromedan Automatons",
+      "oracle_id": "2da322e6-a8e2-4d7a-bd34-54a3dfa85940",
+      "facts_sha256": "a0de92481cad13742496109aa932c7ca451b8bb43ca37a81bebf71e3d01b55d9",
+      "printings": [
+        "2"
+      ]
+    },
+    {
+      "name": "Antagonist Incorporator",
+      "oracle_id": "6f0b814b-94e6-48f2-9ccf-c376ca03bba3",
+      "facts_sha256": "4c5654e94f1c6bc5fb217fa8211cfab06b5f5f5e341476e9db5dd169751d1782",
+      "printings": [
+        "3",
+        "446"
+      ]
+    },
+    {
+      "name": "Anthropological Mission",
+      "oracle_id": "535c0280-fdb5-4ff8-8608-c2f98b8a7ffc",
+      "facts_sha256": "8013d86e30c3dbc1327c1315fee0cd29d7749e8e9ffd50fd26715a4646671147",
+      "printings": [
+        "46"
+      ]
+    },
+    {
+      "name": "Armus, Skin of Evil",
+      "oracle_id": "42c77c4d-90bb-45d6-a9e0-36704b5a2b11",
+      "facts_sha256": "db9a08f036ad199c54ae3b65ac89d31f557f32e4f9d4124bfaa69a5fce429d93",
+      "printings": [
+        "91",
+        "454"
+      ]
+    },
+    {
+      "name": "Artificial Anomaly",
+      "oracle_id": "7e550295-eaf4-4962-bc52-261d7c2d71ae",
+      "facts_sha256": "8f3273d1281acc9743e570c7f081d5ddc49ca1a5f6ffcfaec469ec5d841ff764",
+      "printings": [
+        "276"
+      ]
+    },
+    {
+      "name": "Assault Drone",
+      "oracle_id": "18832d7a-9a1f-45f1-a0f9-8e768a36af07",
+      "facts_sha256": "ece565f2e12bfd90897b8e932cf37626f20b5b611ba31bdc9889c6b658bba36a",
+      "printings": [
+        "92"
+      ]
+    },
+    {
+      "name": "Assembly Specialist",
+      "oracle_id": "deb26a1b-2b83-4da2-a2e5-31c17a57eb1e",
+      "facts_sha256": "1da615e0272c87b1feba366a8963a15e421c4f94f2efd7b4685967afd1e2dd59",
+      "printings": [
+        "4"
+      ]
+    },
+    {
+      "name": "Astute Terraformer",
+      "oracle_id": "c5a7a82e-3c13-4fa1-8bf5-bb85b2890f75",
+      "facts_sha256": "0bc7315dd13560fe50d875f0bfcba274785e28e1cb612c59645d0944b1d5b9b0",
+      "printings": [
+        "184"
+      ]
+    },
+    {
+      "name": "Automated Warfare System",
+      "oracle_id": "b28b4fe9-1a35-48c1-8818-f6f786b04e3e",
+      "facts_sha256": "5c4c0a01fcd7f06516530c5f453524abefc2bd6192aebbaf5073848eacd0f6ff",
+      "printings": [
+        "93"
+      ]
+    },
+    {
+      "name": "Bajor",
+      "oracle_id": "93d7f6e7-b6b0-48f3-891a-73970826af3b",
+      "facts_sha256": "a98c1042ed631105d12332056a4bd9d55af40a541a7b2fbca0249f03340ea7c2",
+      "printings": [
+        "277"
+      ]
+    },
+    {
+      "name": "Bat'leth",
+      "oracle_id": "1000d26e-7a29-48df-806f-9eb7d4e1082d",
+      "facts_sha256": "16b3f7f76aa380d36aeccc67848023cd8fe6c5f7fe7a51780881615c7eb7c539",
+      "printings": [
+        "426",
+        "436",
+        "94"
+      ]
+    },
+    {
+      "name": "Battle-Scarred Survivalist",
+      "oracle_id": "0e0e15d9-bd29-495a-9975-d1bd2ebb4bff",
+      "facts_sha256": "c4b924395c4baba4befc7f536d009e7f8c23e625b28ea7557d42011fceb2188c",
+      "printings": [
+        "95"
+      ]
+    },
+    {
+      "name": "Beckett Mariner, Impetuous Ensign",
+      "oracle_id": "1033a0cb-1a00-46c4-83d5-68a6eac85feb",
+      "facts_sha256": "ad276d3b4fde6c5f4bd071c2643961350a28f25cbb1586b08bcdc90a3ff01960",
+      "printings": [
+        "138"
+      ]
+    },
+    {
+      "name": "Blastoneuron",
+      "oracle_id": "87bcc935-e7e7-4e98-a23c-01c5a9b7cfcd",
+      "facts_sha256": "62385125284412dad4fdf4d7e56c32a62aa41203ff87651d508bdf239425e4ca",
+      "printings": []
+    },
+    {
+      "name": "Blood Crypt",
+      "oracle_id": "43985bbc-a0f6-4812-984e-392bc8562633",
+      "facts_sha256": "9bc720b59173eb4ed5237f9bce3b66a382dce3c255c5d58a6acb20b2a126b761",
+      "printings": [
+        "278",
+        "394",
+        "489"
+      ]
+    },
+    {
+      "name": "Boarding Action",
+      "oracle_id": "f9f70fb6-953e-40e8-a15d-ea3ee62d09e3",
+      "facts_sha256": "cbccc20b74775982f5d8391bd820e43a7e61a3fc983799a9a66fc392f040ef5b",
+      "printings": [
+        "139"
+      ]
+    },
+    {
+      "name": "Borg Cube",
+      "oracle_id": "a59b854c-0e04-4581-b9d3-1516263d7ace",
+      "facts_sha256": "20741d42e78020f49f1ea3d85e80840b0cac7bf3f8dd1ec281e1cfc92a292bbd",
+      "printings": []
+    },
+    {
+      "name": "Brad Boimler, Eager Ensign",
+      "oracle_id": "10af9cd9-1700-48f9-97e1-61e239536fef",
+      "facts_sha256": "2c749ed0534f8c12ccb4085189c125a067a9f00b859d4fd8e1394f81dc8fceaa",
+      "printings": []
+    },
+    {
+      "name": "Branching Timeline",
+      "oracle_id": "6e13c619-706d-4c77-bc7d-187df0fd054a",
+      "facts_sha256": "e479f86f0930d9db6ee5e758e8021b5dae8a42e5768124cdbc75b24ec01e0040",
+      "printings": []
+    },
+    {
+      "name": "Brazen Bluff",
+      "oracle_id": "9ac20f38-adc4-40a9-95c9-bbdc689b928b",
+      "facts_sha256": "2b94c533e7b6664e94a5336b95ec500e83ad3433d7f6819db3894036ab51db94",
+      "printings": []
+    },
+    {
+      "name": "Breeding Pool",
+      "oracle_id": "20283c4a-f1f0-42f0-bc08-6da87474426b",
+      "facts_sha256": "9afdc1acbe5d7a149a36aea70c7f51d883d016203b64670d9a6c228e283c3764",
+      "printings": [
+        "279",
+        "401",
+        "496"
+      ]
+    },
+    {
+      "name": "Cantankerous Captain",
+      "oracle_id": "2375e6e4-bea2-4fa2-b0d5-467e3076962c",
+      "facts_sha256": "fef44059fbf5c4ad208075e52661fdaaa795c2e57f0fa3ab0aa64f4f084daa1c",
+      "printings": [
+        "141"
+      ]
+    },
+    {
+      "name": "Captain Benjamin Sisko",
+      "oracle_id": "f997ad8a-6903-47b1-83af-837b3b55a3d4",
+      "facts_sha256": "45deaf42ea7835c52ea67c545569ae1b2bc24d04c58b7596c4f09c9432a1f9cc",
+      "printings": []
+    },
+    {
+      "name": "Captain James T. Kirk",
+      "oracle_id": "19edde54-153f-46b8-8a8d-a20fdef0667f",
+      "facts_sha256": "e374fa50fd59e7208c2e9139f0b3496aa89e378d8403ed3232380c42a8030d33",
+      "printings": [
+        "142",
+        "1701",
+        "418",
+        "542"
+      ]
+    },
+    {
+      "name": "Captain Jean-Luc Picard",
+      "oracle_id": "04624f75-5981-4607-aa8f-706554f826e1",
+      "facts_sha256": "e15f32739c36d99433e2e21d60008e67d289ae6c8c9afe3fa1943df443b85760",
+      "printings": [
+        "1701D",
+        "363",
+        "497",
+        "7"
+      ]
+    },
+    {
+      "name": "Captain Jonathan Archer",
+      "oracle_id": "85df3564-5134-4dc2-9021-40ec84ee6d08",
+      "facts_sha256": "6ddd23c96545bef9db03cb33045217341d840f2ac61965cd87ccddb8b7191f60",
+      "printings": [
+        "186",
+        "467"
+      ]
+    },
+    {
+      "name": "Captain Kathryn Janeway",
+      "oracle_id": "d77d1895-ce02-4302-87c9-649e852fd0ea",
+      "facts_sha256": "2ccdc66877a30c04a18c66261367ea6b14f8f5bbda841b0ff93505face220d5a",
+      "printings": [
+        "1704",
+        "187",
+        "340",
+        "386",
+        "520"
+      ]
+    },
+    {
+      "name": "Captain Michael Burnham",
+      "oracle_id": "9a71aa6c-2d5f-468d-b588-252fae37ccbb",
+      "facts_sha256": "fad9ffee115c8926ed5c1b58549edcc8dec6c1e0a84a3039d74f0240b4e5191d",
+      "printings": [
+        "143"
+      ]
+    },
+    {
+      "name": "Captain Pike, Fullness of Time",
+      "oracle_id": "745633e6-8635-4d99-8a4e-edc5d500bb3d",
+      "facts_sha256": "b48de0d6515c35809258b450ec5b83abac26bce7484ed091614d1005984dc0b7",
+      "printings": [
+        "188",
+        "468"
+      ]
+    },
+    {
+      "name": "Captain's Tutelage",
+      "oracle_id": "1d41aacf-e15d-4457-b12a-c71bcdb7b5de",
+      "facts_sha256": "485b459ff22e0687947b3a5873fce4ebe6acc9ecf530d3a0d8b90da7e3f88bba",
+      "printings": [
+        "144"
+      ]
+    },
+    {
+      "name": "Cardassia Prime",
+      "oracle_id": "aff720b4-b8ef-46ea-9a3d-e101999e6526",
+      "facts_sha256": "2a9115d5ed296606efce7968a436b39f393cd3079f38d702cb7e0c758c40f8ea",
+      "printings": [
+        "280"
+      ]
+    },
+    {
+      "name": "Cetacean Ops",
+      "oracle_id": "64e39ec9-358a-4aa0-a7e9-164e8aa0b236",
+      "facts_sha256": "48f1816756bd2ffcfb346a43e840ff27bff5ddfaafcaf8bc4e57044afe8c7665",
+      "printings": [
+        "48"
+      ]
+    },
+    {
+      "name": "Cha'DIch Investigator",
+      "oracle_id": "cfdef803-6f7a-4055-8d51-8e8c60953928",
+      "facts_sha256": "2c958bb46dd6f38e3a53bc3ec88d2d0c79018e89ff8f61b9cfb9aad5ff2d91b6",
+      "printings": [
+        "572",
+        "97"
+      ]
+    },
+    {
+      "name": "Class-F Shuttlecraft",
+      "oracle_id": "4ccc91f2-4d6e-4d64-b438-3d8b4361040a",
+      "facts_sha256": "e3ad5c94c4a34c07f7f758fe58dccba0274278b504b0a2ea7411ee587f862584",
+      "printings": [
+        "259"
+      ]
+    },
+    {
+      "name": "Cleveland Booker, Empath",
+      "oracle_id": "b80879d3-5abd-47e5-8b8c-61db120854e4",
+      "facts_sha256": "9591fd676411b1a2ae9f96a8e76dfe73b28c9e3cefa6f51119e207e3f126f414",
+      "printings": [
+        "229"
+      ]
+    },
+    {
+      "name": "Cloak and Phaser",
+      "oracle_id": "668a9b6b-731c-4127-9c88-1c6112ffd590",
+      "facts_sha256": "d578f8ecc7000dbc815765d25a047bd5bf92818b36323ed0f305695e53e51f92",
+      "printings": [
+        "49"
+      ]
+    },
+    {
+      "name": "Cloistered Telepath",
+      "oracle_id": "8656291d-8de7-4341-b1ee-0fcd65d629a4",
+      "facts_sha256": "7454ba5df1d54c41d28f04f254e904425297e4fe6db77065f1c39c7222282243",
+      "printings": [
+        "50"
+      ]
+    },
+    {
+      "name": "Cold-Blooded Crew",
+      "oracle_id": "d5e9b04f-4a97-4da1-bf86-3715fc75ab23",
+      "facts_sha256": "032d71f84153a3f4bf7199e83029e24d738ea2032ce14529ff2b6bf8946f4cbf",
+      "printings": [
+        "189",
+        "574"
+      ]
+    },
+    {
+      "name": "Collation Trimatrix",
+      "oracle_id": "4042ab14-c579-4d82-a642-576b88508ec7",
+      "facts_sha256": "327d7f2b877520ea20841396b35a6aadad2adb1e9bd7bec588d0660780a24908",
+      "printings": [
+        "98",
+        "455"
+      ]
+    },
+    {
+      "name": "Collective Drone",
+      "oracle_id": "d9806ba7-8af4-4e8e-9238-7bc40c6bee0b",
+      "facts_sha256": "f851d628a1ee98f81ef1fb48facc93d851a952c0fcb22cabf6f2bbc8762c88e9",
+      "printings": [
+        "99"
+      ]
+    },
+    {
+      "name": "Combadge",
+      "oracle_id": "ccd0e613-17c1-4a97-b519-de0376d596f0",
+      "facts_sha256": "1c81edafc9fd3d14ee7c1ef4cfe06c413fe40440d8ed6459f84c94d1f0979740",
+      "printings": []
+    },
+    {
+      "name": "Command Decision",
+      "oracle_id": "1c4afb0d-6d6e-4d21-9fe0-5621cd2fd27c",
+      "facts_sha256": "4bb7fdb70487ed016e3ae7c00b7c728ca0433b59fe09264f03b7584e4a1f3ad1",
+      "printings": [
+        "8"
+      ]
+    },
+    {
+      "name": "Command Subadjunct",
+      "oracle_id": "85b67121-340f-4cff-a26d-2160aa923ec3",
+      "facts_sha256": "76681276832d9441a9efd30ac2de7c1702d1e4a437567bb39bd4cb40ba2b3903",
+      "printings": [
+        "341",
+        "364",
+        "498",
+        "569",
+        "9"
+      ]
+    },
+    {
+      "name": "Commander Raffi Musiker",
+      "oracle_id": "4f8a70cb-2487-4e6d-9a3f-c6c5313b8e82",
+      "facts_sha256": "195bb4a3b0c8ce91fb7c9b4785fe06142301bc3be7457ca755a05de03d4d5c92",
+      "printings": [
+        "100"
+      ]
+    },
+    {
+      "name": "Common Goal",
+      "oracle_id": "d4030d30-4c24-458c-87a9-c2f80bb68d27",
+      "facts_sha256": "7c68b240903133aacdf980b071dc3a6368f58bc01ee7627620521c61b1a89550",
+      "printings": [
+        "190"
+      ]
+    },
+    {
+      "name": "Conquest Mission",
+      "oracle_id": "35906166-71d1-4089-bbe4-4055edb81fb0",
+      "facts_sha256": "c2d0a42faa4fd2a278c4d7d3cc171441266a3cc4e5d057710ddfc7824234651e",
+      "printings": [
+        "10",
+        "342",
+        "570"
+      ]
+    },
+    {
+      "name": "Consider the Prime Directive",
+      "oracle_id": "9f1d416c-60de-4796-a513-097d1d9a2305",
+      "facts_sha256": "faa5e94dd491879c32565449502375a5472f1e7a207de7c90c99ffc47bcf9b90",
+      "printings": [
+        "51"
+      ]
+    },
+    {
+      "name": "Constable Odo",
+      "oracle_id": "74b58f31-7634-4b51-a900-6fbfccfb3cd2",
+      "facts_sha256": "4f5d5695a91f17bd827b7cb1e6cf20dbd86d2eb9459958e4babda48266c448a8",
+      "printings": [
+        "230",
+        "348"
+      ]
+    },
+    {
+      "name": "Crystalline Entity",
+      "oracle_id": "ca6f43d8-1498-4a13-b1cc-2d135b24a8b6",
+      "facts_sha256": "2a96f2080c0c4d503b367474654c7a150cf7e6fa3d1f4435bd7da59984c5fac5",
+      "printings": [
+        "261",
+        "478"
+      ]
+    },
+    {
+      "name": "Culber and Stamets, Star-Crossed",
+      "oracle_id": "5b8e8ef2-2f04-4485-ae12-08f52dac81a2",
+      "facts_sha256": "df5d01c17ecc19702e62b8bb9b085c522ba6521fad67ec9926a975598b8b136d",
+      "printings": [
+        "191"
+      ]
+    },
+    {
+      "name": "Cybernetic Specialist",
+      "oracle_id": "9fc49a69-f80c-478f-b237-66f155c0c09a",
+      "facts_sha256": "03d42b76b3ba59070bee8d53791c87a2e73eb7409263b5babfb0d92cbf7e6266",
+      "printings": [
+        "262"
+      ]
+    },
+    {
+      "name": "D'Ghor Bloodletter",
+      "oracle_id": "ae5ee92a-5915-49ce-aa4c-611ab711b2ef",
+      "facts_sha256": "c5fa60e867d21e647752985ba7ac20fc3226a1dd45599dc2323c6c6f47312556",
+      "printings": [
+        "101"
+      ]
+    },
+    {
+      "name": "D'Vana Tendi, Optimistic Ensign",
+      "oracle_id": "6bb42689-b169-43cb-b787-f0e348063cd6",
+      "facts_sha256": "b69da3bc919f251ce430e4749f034bc39852b1f3d01f6f23cbfa428c75b84003",
+      "printings": [
+        "236"
+      ]
+    },
+    {
+      "name": "D-7 Battle Cruiser",
+      "oracle_id": "5e696f9a-425c-470a-870e-10d2ba3bb27d",
+      "facts_sha256": "e66e2ed7b4e63444555c74be5a0989c09b9022c38770125476587c91b872389e",
+      "printings": [
+        "145",
+        "463",
+        "553"
+      ]
+    },
+    {
+      "name": "DOT-7 Repair Squad",
+      "oracle_id": "b860f64c-e830-49ea-a478-5dc87e8a3be1",
+      "facts_sha256": "f8edb1c4dd17774ff174f1b1bc25cb8b5d3596b3eb55ee04a00dee7ba0a73a9c",
+      "printings": [
+        "12"
+      ]
+    },
+    {
+      "name": "Dahar Master",
+      "oracle_id": "c9bc1a28-8d3c-4d9f-a67d-b044cfe9d6c1",
+      "facts_sha256": "dc9cc12cfe42f3bf14f19631bb87a4daeb408a6500f0afa4d97bae112a024622",
+      "printings": [
+        "146"
+      ]
+    },
+    {
+      "name": "Dal R'El, Augment Orphan",
+      "oracle_id": "7cecf129-3df9-4ebf-b194-28d1b34faaab",
+      "facts_sha256": "2c193b544d75251dc65d683f6da3d5eabcda8735032fafd867ea14a543734139",
+      "printings": [
+        "231"
+      ]
+    },
+    {
+      "name": "Daniels, Temporal Agent",
+      "oracle_id": "2e44a02f-af94-4696-b979-cdf68285c87a",
+      "facts_sha256": "3a7223f7fb162e338f4fcf7dc171d94066a00578670c189d82f6a4d2aded0f54",
+      "printings": [
+        "232"
+      ]
+    },
+    {
+      "name": "Data, New Life",
+      "oracle_id": "010630c6-5d7b-43e0-90a9-3e3cef9a4e6b",
+      "facts_sha256": "1ca9e1a1df0df7e21bdd463d4a1e7ec411af22cb21957c129f26ddf2741c6c8e",
+      "printings": [
+        "52"
+      ]
+    },
+    {
+      "name": "Dathon and Picard at El-Adrel",
+      "oracle_id": "76b7e1ee-43f0-4b56-822a-71b064c9201b",
+      "facts_sha256": "9ed7165092602a5dfcd1fe33d4630fc974890607bea0d7ddd788ff5d69eb199d",
+      "printings": [
+        "192"
+      ]
+    },
+    {
+      "name": "Dathon, His Heart Open",
+      "oracle_id": "8de259a9-99d0-4f07-8dbc-f065e3af352b",
+      "facts_sha256": "f065a9ca655051c2b754f258aa1fd41a910e7ead73c3c825f3a84ee05aae6ba7",
+      "printings": []
+    },
+    {
+      "name": "David and Carol Marcus, Creators",
+      "oracle_id": "15885e58-76a9-49fa-ae67-a0482aacd81c",
+      "facts_sha256": "0c8048fa84eab8229c78d89f914e4b3e0505d4144e81268437da369f82a9ebf9",
+      "printings": [
+        "193",
+        "420",
+        "544"
+      ]
+    },
+    {
+      "name": "De-evolve",
+      "oracle_id": "663e120a-a74f-47fb-aa0a-9d1a75db626e",
+      "facts_sha256": "ac91e8d66d0068a50551648cbf256dd70630ba9207ad9a2bb716e4fdf11b31e4",
+      "printings": [
+        "104"
+      ]
+    },
+    {
+      "name": "Deanna Troi, Psychic Counsel",
+      "oracle_id": "cf612cbe-7af8-48fd-875e-a669e05cfb49",
+      "facts_sha256": "d719e321057e594a058455964d461db749f996f19630cefedf8ddc16370fffd2",
+      "printings": [
+        "11",
+        "365",
+        "499"
+      ]
+    },
+    {
+      "name": "Death Is Irrelevant",
+      "oracle_id": "aeec05f1-43ea-4012-82d8-cded5494535d",
+      "facts_sha256": "85aee15ec253ad57f81d031ce022d645513521f22f8f2522e8b1adc1aaea7531",
+      "printings": []
+    },
+    {
+      "name": "Deep Space 9",
+      "oracle_id": "14442f5b-0bad-4c58-b268-d775787571d8",
+      "facts_sha256": "d0db9c9727a13f3ec7b5633c185a578ed9047bbfea1fd17251e7d16f624cb8f2",
+      "printings": [
+        "263",
+        "479",
+        "556"
+      ]
+    },
+    {
+      "name": "Deep Space Scan",
+      "oracle_id": "5dabb7c1-8937-42b0-87c6-1cc7af46aaae",
+      "facts_sha256": "851cbcdb59311176e576c6c51e418311bea9a7c86e6f08207e750083788df22c",
+      "printings": [
+        "370",
+        "504",
+        "53"
+      ]
+    },
+    {
+      "name": "Dominion Assault Force",
+      "oracle_id": "b093916c-cc0a-4b3b-9de6-8a2db53cdfe0",
+      "facts_sha256": "6a915e279d4d9b5cf20012cf9a54b4395a87e909cac5a08a26345fc9d26888a3",
+      "printings": [
+        "194"
+      ]
+    },
+    {
+      "name": "Dominion Infiltration",
+      "oracle_id": "30597aff-ebb6-4927-b350-fe559fb92c8f",
+      "facts_sha256": "e4353b7331ca87da683c9c51caa05fb1a6de20e6a22c31f6a2df2ed9776f9b9e",
+      "printings": []
+    },
+    {
+      "name": "Dominion Saboteur",
+      "oracle_id": "af03149b-9307-443c-aefa-69bda52607ba",
+      "facts_sha256": "bc45ba7c9b93692cb0515533070aece8a1605cde8921159648547fe49681f7f7",
+      "printings": []
+    },
+    {
+      "name": "Dominion Supervisor",
+      "oracle_id": "d151c8ed-58bf-4b82-a993-1d81f789aa0e",
+      "facts_sha256": "c0d7d8d75bdb30815fbb1bd1a0564cb94d31a43feb5825ff1fe42be0d9c6c27a",
+      "printings": [
+        "195"
+      ]
+    },
+    {
+      "name": "Dr. Beverly Crusher",
+      "oracle_id": "5fe6f4ae-3fb1-4df6-8760-88c8666068df",
+      "facts_sha256": "5d8da7104bb1b86385463da4e66bcdf1ca5dbe8bd440933f0ec430df15d94644",
+      "printings": [
+        "13",
+        "366",
+        "500"
+      ]
+    },
+    {
+      "name": "Dr. Joseph M'Benga",
+      "oracle_id": "046c4052-4c3c-4207-b44e-e9a98a8c017f",
+      "facts_sha256": "a7b864118225820c7e2021049f885e0f4a5218810663330fde42383ecff7b253",
+      "printings": [
+        "196",
+        "469"
+      ]
+    },
+    {
+      "name": "Dr. Leonard \"Bones\" McCoy",
+      "oracle_id": "0157faee-f307-43c0-b308-bbf36ce02e32",
+      "facts_sha256": "00a62019b86691cb4936ea8553c308e868f1e06dc460fe593399d8eca5ed4c83",
+      "printings": []
+    },
+    {
+      "name": "Dr. McCoy, Surly Surgeon",
+      "oracle_id": "df8a0737-5841-4c17-b567-e9296541c3c9",
+      "facts_sha256": "42a070fdfb966d0a5e3421b32140b329bb5985c67c2146ad503820580f8d0893",
+      "printings": []
+    },
+    {
+      "name": "Earth, Sector 001",
+      "oracle_id": "c75d87b0-7de9-4c50-b781-9749d67c1e07",
+      "facts_sha256": "882afaee011b82ad72323d64069c2c997891d3c70c9201074cf9cf44a8ec3d33",
+      "printings": [
+        "281",
+        "577"
+      ]
+    },
+    {
+      "name": "Eject the Warp Core",
+      "oracle_id": "c06c17c2-203c-4b4a-8564-f29bc41c9eb5",
+      "facts_sha256": "4265dd44fc8b2ad9f0a35e704dccfaf863320d75582b376b2fc0276709bed701",
+      "printings": [
+        "105"
+      ]
+    },
+    {
+      "name": "Elim Garak, Simple Tailor",
+      "oracle_id": "c83465bd-f95f-4c57-b9ce-925a85b45276",
+      "facts_sha256": "ec88ff67fbfffc59b90c136277fd224f80aae9ee81a4dcfd00e5b7ee5dcb4a69",
+      "printings": []
+    },
+    {
+      "name": "Emergency Holographic Crew",
+      "oracle_id": "0b74d7de-8b9e-4a75-870e-230536fa8d79",
+      "facts_sha256": "c8267e12e1f523899283a3f15fcf1a50592c4d8295f883c89d9469bc1b1acd70",
+      "printings": [
+        "55"
+      ]
+    },
+    {
+      "name": "Emergency Medical Hologram",
+      "oracle_id": "8170dcbb-9879-414c-819d-ea2658ff770c",
+      "facts_sha256": "32a10bf243bd5e05c0d06855bf9bf8babad002c95ce01c77a6de25ea4ec6b5a0",
+      "printings": [
+        "15"
+      ]
+    },
+    {
+      "name": "Encounter the Unknown",
+      "oracle_id": "78c423ad-1f8b-4262-b64f-a98899da9372",
+      "facts_sha256": "d293be77c01cbdf406a7a1d7702798f62c2f6717ecb41a24bb0649e1e84d5841",
+      "printings": [
+        "148",
+        "381",
+        "515"
+      ]
+    },
+    {
+      "name": "Energize",
+      "oracle_id": "275257ea-3c72-4ca9-b2fc-e50efa071bdb",
+      "facts_sha256": "b874bf4993b9b2d28cf544d3807699277cf856d90a14ec7929e778a8995f809e",
+      "printings": [
+        "56"
+      ]
+    },
+    {
+      "name": "Engineered Explosives",
+      "oracle_id": "95fd897e-9086-42c4-8e0d-61bb02333c5f",
+      "facts_sha256": "6848a6d11ceb350082d60712060263c63070af88bb329207ec5918b9a5594e0c",
+      "printings": [
+        "264",
+        "480"
+      ]
+    },
+    {
+      "name": "Ensign Pavel Chekov",
+      "oracle_id": "7d7e232f-e4f9-41db-a2d9-cfe88721b7a9",
+      "facts_sha256": "fe139365f92299949e9633ee8b24c6e829d068f01376183daebb647210667145",
+      "printings": []
+    },
+    {
+      "name": "Enterprise NX-01",
+      "oracle_id": "947729a8-f8b0-4e08-9a87-6602af0e3c0a",
+      "facts_sha256": "c440c443a0b634e7bf5fe711e0556af996a078bfaae0faa021bac606b89f7973",
+      "printings": [
+        "58"
+      ]
+    },
+    {
+      "name": "Erica Ortegas, Plucky Pilot",
+      "oracle_id": "8b2514e5-4124-4f6c-b6b7-24c0ab3d3971",
+      "facts_sha256": "a531fa9bcb82a657564a7c8cad1b7686679296a8ff4e5a639936546bd272db0a",
+      "printings": []
+    },
+    {
+      "name": "Excalbian Gamemaster",
+      "oracle_id": "f409e869-ea1a-4e08-b19e-949436d01cc1",
+      "facts_sha256": "7039c577f81cdd7fecdad99dd3959cc9231d5063b1dfb312d6eb99f89d035553",
+      "printings": [
+        "16",
+        "403",
+        "527"
+      ]
+    },
+    {
+      "name": "Exploratory Mission",
+      "oracle_id": "3fdba8ee-6dfe-480d-b84a-43922229d9b4",
+      "facts_sha256": "f5518557141c6e8285446c6c924921053373b8b76eff2aca9e934b4415270ead",
+      "printings": []
+    },
+    {
+      "name": "Federation Field Medic",
+      "oracle_id": "3759f1de-eda1-4f09-b12b-ea5f5fc731d7",
+      "facts_sha256": "19aee1cc9fadcd1851cafdbe1dde190141f4ad2546ab1325d599a45e5570ed72",
+      "printings": [
+        "17"
+      ]
+    },
+    {
+      "name": "Federation Outpost",
+      "oracle_id": "a8bcc930-3efe-4595-b164-f5985e1dc289",
+      "facts_sha256": "f1089ce3afeef1e1ae7bea95c01b7135487335937ea80261c43689b80b8eef4d",
+      "printings": [
+        "282",
+        "332"
+      ]
+    },
+    {
+      "name": "Federation Probe",
+      "oracle_id": "6fc7401f-66fe-4d17-be2f-afcf892be740",
+      "facts_sha256": "1fabab7430edf5d872f1f91a473b7841ec9fc13f73bf85c59c48193569e4e367",
+      "printings": [
+        "59"
+      ]
+    },
+    {
+      "name": "Federation Resupply",
+      "oracle_id": "4450d4e0-2825-4536-bb0f-f3a36f1f682c",
+      "facts_sha256": "861b58b75aaef6fcb2b7d94cc546c8330c8d72593678c7f23476659b260abe12",
+      "printings": [
+        "18",
+        "404",
+        "528"
+      ]
+    },
+    {
+      "name": "Ferenginar",
+      "oracle_id": "2e0753ad-7f76-4d26-8e87-6f201378f333",
+      "facts_sha256": "5ccc024de715638b1bba057ae0fb71a981d04789c5b8c15f4371c215f3609449",
+      "printings": [
+        "283"
+      ]
+    },
+    {
+      "name": "Final Frontier",
+      "oracle_id": "26f7e903-2a00-4878-b8b7-d5abe35c9526",
+      "facts_sha256": "1b99cdf2b7a63143f783b48c4e6b3d5260fc33c95807e9430ead3a5eccb5cc1c",
+      "printings": [
+        "198"
+      ]
+    },
+    {
+      "name": "First Contact",
+      "oracle_id": "81229e0a-8413-40cf-8087-9d580cbb21c3",
+      "facts_sha256": "e4fff77adc062008caa3891c5016ae6736a765516e9ff41ebc722739f776acc1",
+      "printings": []
+    },
+    {
+      "name": "Forest",
+      "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+      "facts_sha256": "f65360bc3e5db44a8b5b5ac3d8c8555351a8463afa951c4988e0ffbcfe654fed",
+      "printings": [
+        "311",
+        "316",
+        "486",
+        "325",
+        "326",
+        "567",
+        "568"
+      ]
+    },
+    {
+      "name": "Free Borg Revolutionaries",
+      "oracle_id": "28914782-92f4-407f-beb6-5e290a49000c",
+      "facts_sha256": "9b57499b4b11e1b6bc2279fcafe04e6674c5bfd837fbe92bab6f55597c3c119f",
+      "printings": [
+        "19"
+      ]
+    },
+    {
+      "name": "Fugitive Listener",
+      "oracle_id": "e6939d1e-6ff8-4559-8526-0e4d0e749e20",
+      "facts_sha256": "5e4159364b7bba1897f6b6dad013b1f97a614cec5120977640aae6d251ab3b30",
+      "printings": [
+        "107"
+      ]
+    },
+    {
+      "name": "Gabriel Lorca, Mirror Menace",
+      "oracle_id": "6349eecb-dabd-4dcb-a8fb-c8ee66f61461",
+      "facts_sha256": "9bba978dfeff77f9277159b6c60c914801b4c9011032ce6618846ee447056f8d",
+      "printings": []
+    },
+    {
+      "name": "Gaseous Anomaly",
+      "oracle_id": "1fb736bf-c9bd-45ab-86ce-7f138f1724b2",
+      "facts_sha256": "8240ca965aadb6cba6d53671dc4e0dc7dca1a09bfc5693e0bed9c55a8f81d41d",
+      "printings": [
+        "284"
+      ]
+    },
+    {
+      "name": "General Chang, Cold Warrior",
+      "oracle_id": "72217c2e-4f6b-41da-8de1-bb6892d3c452",
+      "facts_sha256": "374cf45a19eee97363769014b6fb1fa59f5fc785b562cda47537e5bf3cccc0d5",
+      "printings": [
+        "109",
+        "415",
+        "427",
+        "437",
+        "539"
+      ]
+    },
+    {
+      "name": "Genesis Device",
+      "oracle_id": "bb86849c-fdec-4ca5-a8c0-ed682d921759",
+      "facts_sha256": "098867ba38b48fa1d3f496e39076092f63ef139c197d98af45cb8e49a4dac9d6",
+      "printings": []
+    },
+    {
+      "name": "Genesis Effect",
+      "oracle_id": "ec763f36-3504-4bfe-8481-1a7d0bff8d8e",
+      "facts_sha256": "ae52bb90c4335ccb97814601fdde9ed57f8df9011036690f4c1598e3947665ea",
+      "printings": [
+        "151"
+      ]
+    },
+    {
+      "name": "Georgiou, Terran Emperor",
+      "oracle_id": "31932df4-0be8-45c4-8b22-84119d9c20ba",
+      "facts_sha256": "7e7de05038f9cf7a8b38763ac345c7428614b46adf51f86cc0133c20f17d25af",
+      "printings": [
+        "110",
+        "457"
+      ]
+    },
+    {
+      "name": "Ghost of Illyria",
+      "oracle_id": "e705b055-14b3-4de0-b4a7-39626839dea8",
+      "facts_sha256": "5e0995b06f2f3f4e4985281cb0d1a35d8c454ad3aa6b1e7503127cbaf93e0a03",
+      "printings": [
+        "20"
+      ]
+    },
+    {
+      "name": "Godless Shrine",
+      "oracle_id": "73864fcc-1bde-4bc0-831e-2b93e546e417",
+      "facts_sha256": "86395918e940f55ad095ea6dc4de5be67f61e48c619e81d10e3c3f5bb7ca4fa9",
+      "printings": [
+        "285",
+        "397",
+        "492"
+      ]
+    },
+    {
+      "name": "Gowron, Eager for Battle",
+      "oracle_id": "40616029-e1a8-4e7c-bc7b-e381779c57cc",
+      "facts_sha256": "e35a316fc71c95f23d3caf6342c085c04fbbda368d6f2524cd00e7874c71d675",
+      "printings": []
+    },
+    {
+      "name": "Grand Nagus Zek",
+      "oracle_id": "654ce8c5-b329-4046-9728-7fa276bc8695",
+      "facts_sha256": "86d3f79d6713e6c3d9eb956fb03b7fc3c2b895363c1bfdc0ea60c6f63a2a280e",
+      "printings": [
+        "112",
+        "458"
+      ]
+    },
+    {
+      "name": "Gray and Adira, Forever Joined",
+      "oracle_id": "34a39862-c18b-4c1b-8920-207627c40934",
+      "facts_sha256": "29f596eae1ea83190c5b0e1982440735cf616a0b63564dd5c687abcba0c26ffc",
+      "printings": []
+    },
+    {
+      "name": "Guidance Failure",
+      "oracle_id": "6c18f853-684b-42f6-8bc6-e86596131ab1",
+      "facts_sha256": "3679b44e22236cb1eb904b002d13be5dc4c00372c09c41644aaac27aa45d89fe",
+      "printings": [
+        "60"
+      ]
+    },
+    {
+      "name": "Gul Dukat, Colonial Prefect",
+      "oracle_id": "f41f0290-0f9d-4c51-935e-f69d2120e4a7",
+      "facts_sha256": "7c827d849b0050bba899bd064064769e102c7bb42421f8e36c18aa75ddb03e47",
+      "printings": []
+    },
+    {
+      "name": "Gwyndala, the Progeny",
+      "oracle_id": "852c38fe-8bfa-420b-b961-7b91af9b38d1",
+      "facts_sha256": "c03921d12d9d649fcf697f22d87ee5285bc5fc37333bfb7eff336296e6ab9dea",
+      "printings": []
+    },
+    {
+      "name": "H.M.S. Bounty, Unlikely Timeship",
+      "oracle_id": "eaa47a9b-79ad-4f42-a98b-dcf76138207c",
+      "facts_sha256": "437dc841695920d0ba96d89129950b242de6dd78eccb4dfa016629135b18e574",
+      "printings": []
+    },
+    {
+      "name": "Hallowed Fountain",
+      "oracle_id": "f1750962-a87c-49f6-b731-02ae971ac6ea",
+      "facts_sha256": "3cb974f29ac06981f72b9108c7a3be843968ae0b5c37ef336feb87ef2c76ae03",
+      "printings": [
+        "286",
+        "392",
+        "487"
+      ]
+    },
+    {
+      "name": "He's Dead, Jim",
+      "oracle_id": "ee7150d1-8b38-4387-9b9c-a40180430170",
+      "facts_sha256": "a02279b40bc24c8694fcb61e519029eecc44afc1972137ddc6d545910e4d9a36",
+      "printings": [
+        "114"
+      ]
+    },
+    {
+      "name": "Hemmer, Fixing What Is Broken",
+      "oracle_id": "83d8e98d-ab97-40b1-820a-2d193a5ed261",
+      "facts_sha256": "816730de72d76c6176548c98fa76610099ddadd36a4afc6c2a76bca7e9158672",
+      "printings": [
+        "239"
+      ]
+    },
+    {
+      "name": "Highly Illogical",
+      "oracle_id": "38c43f30-0e01-4dcd-88fc-f1de318a5e29",
+      "facts_sha256": "0318a6d5c60be70ba6410266489f9ad6a4ae2c46f8c819fe05bef11a0930d8ac",
+      "printings": [
+        "62"
+      ]
+    },
+    {
+      "name": "Hit It!",
+      "oracle_id": "62361438-3da4-4ce9-95b8-fc361b824f58",
+      "facts_sha256": "333843570ecdf9e8c7064a12d51ecec551fec14da29b859f88757d9b7372d2a1",
+      "printings": [
+        "240",
+        "476"
+      ]
+    },
+    {
+      "name": "Hive Mind Coprocessor",
+      "oracle_id": "8e6ae6ed-065c-47bd-a3c6-69b2608e7ddc",
+      "facts_sha256": "ebffc21f1aced9e0c06bafe9508dbfc531002c65dbcb9176f8e43e4b507cd726",
+      "printings": [
+        "115",
+        "573"
+      ]
+    },
+    {
+      "name": "Holo-Engineer",
+      "oracle_id": "0d830d0c-3339-49cc-8527-4f4edf787925",
+      "facts_sha256": "ba913e14a0b6d211c848effc09fc7a06244c5fc9610e72c17672f59c8d9ec1bd",
+      "printings": []
+    },
+    {
+      "name": "Hologram Janeway",
+      "oracle_id": "b572be16-ad13-4f9f-bcf6-085f81e5292c",
+      "facts_sha256": "71f2bde1f1f38df570a61680d119c00284f16ac57a20c07763db23c048de1f19",
+      "printings": [
+        "21"
+      ]
+    },
+    {
+      "name": "Hologram Stalker",
+      "oracle_id": "8f91e7aa-a2d4-42ed-a959-3acd621679a5",
+      "facts_sha256": "c22667ac84dd326701eb327afd5c9b3f9c095f436e06e69778cf25393e769816",
+      "printings": [
+        "202"
+      ]
+    },
+    {
+      "name": "Horta",
+      "oracle_id": "e8ac0742-15f5-4cf0-888f-f1c2c97fc144",
+      "facts_sha256": "34170476c999e741fcded428af80c4f471a5b693af0a9f15a3f1068d489e4d60",
+      "printings": [
+        "152"
+      ]
+    },
+    {
+      "name": "Hoshi Sato, Exolinguist",
+      "oracle_id": "39426cd1-8c0d-4ec6-8747-f0693080f8f2",
+      "facts_sha256": "0abb008c9f9b701f8400bf18a5baaaa818aa8778511801a31409bf09a83dfc60",
+      "printings": [
+        "64"
+      ]
+    },
+    {
+      "name": "Humpback Whales",
+      "oracle_id": "a7285536-6cc1-448e-839a-606d585fbd9d",
+      "facts_sha256": "6412130a3126c5d35101ef51cef15a017e46effb694f0703b9fdeb8e97b3e9da",
+      "printings": [
+        "65"
+      ]
+    },
+    {
+      "name": "I'm a Doctor, Not a . . .",
+      "oracle_id": "ad1d8eca-e3bf-479f-a442-bcd8c31bfe7f",
+      "facts_sha256": "3fb958b80632e4e30507b5655aee6a0d3dc071f0f254cdb1dd52609685f0413a",
+      "printings": [
+        "203"
+      ]
+    },
+    {
+      "name": "Impossible Choice",
+      "oracle_id": "e277ed07-2113-4465-a45c-a64490814c1d",
+      "facts_sha256": "a2b344001f010e841ea8c5ebf48b0ed230d3588f5855c7a28b2f3c8c4fcdf062",
+      "printings": [
+        "116"
+      ]
+    },
+    {
+      "name": "In the Pale Moonlight",
+      "oracle_id": "90c78f79-982f-4acd-a8ba-0c6ce115a248",
+      "facts_sha256": "2aa690f032aa5e94848f60435f1d255a91e1dae58790582cb90f9ba89b1c2e89",
+      "printings": [
+        "117"
+      ]
+    },
+    {
+      "name": "Infinite Diversity",
+      "oracle_id": "c7d8ed66-d66e-42fd-9c3e-8c2d8194e009",
+      "facts_sha256": "aab5b4fd1f455bff6ef24535701ec60fba9000c45dee3a10a09f1af1decf6d02",
+      "printings": []
+    },
+    {
+      "name": "Interstellar Effigy",
+      "oracle_id": "76f52fad-8db2-42f0-8e12-f4341e4c8680",
+      "facts_sha256": "f7301eca70903050962dab34afbb3e668bf6946017a5a88e5461ed341177a2bb",
+      "printings": [
+        "66"
+      ]
+    },
+    {
+      "name": "Island",
+      "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+      "facts_sha256": "dd1d6714f58878019da5f2a523574ce0b3c93260cd9a574f03879c3b8898a1d3",
+      "printings": [
+        "308",
+        "313",
+        "483",
+        "319",
+        "320",
+        "561",
+        "562"
+      ]
+    },
+    {
+      "name": "Isolinear Processor",
+      "oracle_id": "ef5d7b38-b782-4fb0-b6cd-3da36995ab39",
+      "facts_sha256": "84f60614461c7361cc62920a39d99ff0d29799d95b908ad057febb318ff4be2c",
+      "printings": []
+    },
+    {
+      "name": "Jadzia Dax, Living Legacy",
+      "oracle_id": "67601646-f906-4824-9269-3cf89766d25f",
+      "facts_sha256": "b9f5dfb6efc40e091c0b2305ca8852219b16cad60c9e2e6a1c8d92586ba9f6d8",
+      "printings": []
+    },
+    {
+      "name": "Jake Sisko, War Correspondent",
+      "oracle_id": "f0c1c97f-b8e1-49ec-b369-3d2694c33f29",
+      "facts_sha256": "8b17beb43bd5a6002f01d4cd67f68f305f11fc421d97753f63310fe4fe68c9cf",
+      "printings": [
+        "205"
+      ]
+    },
+    {
+      "name": "Jett Reno, Problem Solver",
+      "oracle_id": "492ba01e-c0fa-414c-95fd-df5b59212d2a",
+      "facts_sha256": "82bc785d9cb6ca520237b19f2d87b8c2b4711a9f7ded6ae43aab0fb373456d00",
+      "printings": []
+    },
+    {
+      "name": "Kai Winn, Faithless Leader",
+      "oracle_id": "16a5ed42-ee86-4dcb-b8ea-239ac2b13d67",
+      "facts_sha256": "29deb846a592e6a27d8976724f8bf68b9570a8fd7f10a44d189c5dccfea4b0ed",
+      "printings": []
+    },
+    {
+      "name": "Khaaaaaaaaaaaannn!",
+      "oracle_id": "45b1a19b-6a0c-4534-9106-99c2e5fc30d6",
+      "facts_sha256": "4e21326705f3a9ad0498dee4c176ba6e4f14ea9b4870b0276a0a36301297a720",
+      "printings": [
+        "154"
+      ]
+    },
+    {
+      "name": "Khan, Despot by Design",
+      "oracle_id": "b7ea2089-abcd-4e60-8201-93801eae5084",
+      "facts_sha256": "ad49647963f4ffaea27dd07aff7c1c9452e948ba35e823c2f4728908fde852de",
+      "printings": [
+        "155",
+        "419",
+        "543"
+      ]
+    },
+    {
+      "name": "Khan, Vengeful Heart",
+      "oracle_id": "d2a86d0c-a4fe-434c-a45c-812cdec9169f",
+      "facts_sha256": "e67877e307b8f011d8fc0927c396dd2d223cb274a4c58ac0cd669aef7c02b73d",
+      "printings": []
+    },
+    {
+      "name": "Kira Nerys, Firebrand",
+      "oracle_id": "ff9f5bbb-43c4-481e-9bd7-db9f246355ae",
+      "facts_sha256": "793ea3b0d7a4f5cb1406478f782eb88c4134ddc6bfb27757b5cded589e324221",
+      "printings": [
+        "242",
+        "477"
+      ]
+    },
+    {
+      "name": "Kirk, Commanding Officer",
+      "oracle_id": "e85ad29a-ebd6-4f81-af99-556deaedbfe0",
+      "facts_sha256": "e76b328ae74fd094c4440e5d76b6ee0646cbe87999340b611d6ca6f094834ddd",
+      "printings": [
+        "243",
+        "355"
+      ]
+    },
+    {
+      "name": "Kobayashi Maru Scenario",
+      "oracle_id": "2b7ac3e8-0a7d-4b8a-a6a6-4cacc9b4f9de",
+      "facts_sha256": "de0e0f2bccd522668884131c48573f98a3f2ad38c7770492715c84fe57e0f23f",
+      "printings": [
+        "410",
+        "534",
+        "68"
+      ]
+    },
+    {
+      "name": "L'Rell, Fierce Visionary",
+      "oracle_id": "ea684e78-483c-4b89-b184-b2aeede83cc7",
+      "facts_sha256": "e8f77a8c14bbddc2402c25f0340e805f1205f8b7b77d37be3ae3c7b6aba6cef9",
+      "printings": [
+        "247",
+        "434",
+        "444"
+      ]
+    },
+    {
+      "name": "La'An Noonien-Singh, Security",
+      "oracle_id": "ed3b80eb-8915-4428-89b8-90f4278f2733",
+      "facts_sha256": "c449b99e4a3487695dc63d0abf3cab74197347b795618d326e1fc6bd650fdada",
+      "printings": [
+        "156"
+      ]
+    },
+    {
+      "name": "Lieutenant Commander Data",
+      "oracle_id": "ebe988c1-96e0-4a99-86b5-d948837545de",
+      "facts_sha256": "c93cf716efb2df691024879e6db326e876c3bc340da88f7b3c0f2cf935b2425e",
+      "printings": [
+        "1703",
+        "359",
+        "371",
+        "505",
+        "69"
+      ]
+    },
+    {
+      "name": "Live Long and Prosper",
+      "oracle_id": "ff6bc9f5-5a83-42d9-b1a4-f0979aed28ad",
+      "facts_sha256": "fbafb456c6acde702dbad6c125abce296993893ff995a00c7831781283b141e5",
+      "printings": [
+        "244",
+        "423",
+        "547"
+      ]
+    },
+    {
+      "name": "Locutus, the One Who Speaks",
+      "oracle_id": "46ba09a7-42e4-42cd-911c-71d0ade01180",
+      "facts_sha256": "2787b3d6cd8650eec7816820c53aa8ffcc178c5b4736cdaf4c3435dc03fb4add",
+      "printings": [
+        "245",
+        "360",
+        "389",
+        "523",
+        "576"
+      ]
+    },
+    {
+      "name": "Lore, Positronic Provocateur",
+      "oracle_id": "ee712451-01de-4486-9048-fafb5aa5a584",
+      "facts_sha256": "7e97fad060ad6d1505be9e46a9303c4b10666d65ac6f083e825d56b3494088f8",
+      "printings": [
+        "246"
+      ]
+    },
+    {
+      "name": "Lt. Cmdr. Geordi La Forge",
+      "oracle_id": "cb3b4cfe-fd8d-4a26-905e-8ccd30f033a3",
+      "facts_sha256": "5e71c19a5cb71d53f25a03b51ebbe6aa9ee2b583a58ae2372303b6bac2bd9993",
+      "printings": []
+    },
+    {
+      "name": "Lwaxana Troi, Charming Guest",
+      "oracle_id": "e56472ec-6ae8-48b2-a4ce-0ed154161c06",
+      "facts_sha256": "b38ffb9a3a0f5ba3f2177912f1549071a3545e16cf9f63ef31aed67e9c121da2",
+      "printings": []
+    },
+    {
+      "name": "MACO Strike Team",
+      "oracle_id": "0d60cfb1-dd77-4013-b862-41e95fdb53ae",
+      "facts_sha256": "179bae7516b71a7829b8967c5dd3a31720912b4604f096634074c5781cd9d187",
+      "printings": [
+        "206",
+        "471"
+      ]
+    },
+    {
+      "name": "Make It So",
+      "oracle_id": "a9368972-4697-4a10-97e3-324149a26fba",
+      "facts_sha256": "0d0f80a68eac5351cddf4c4fe53203a031524c05708eeab1c4873a89ffdfe8fc",
+      "printings": [
+        "71"
+      ]
+    },
+    {
+      "name": "Malfunctioning Holodeck",
+      "oracle_id": "3f04c38b-d6bd-405f-b69c-009df87801dd",
+      "facts_sha256": "b574c0673cea7bf00043f5cb232e1dc447ab64dd4cc0e2701dcb5cb50e08af5b",
+      "printings": [
+        "22",
+        "571"
+      ]
+    },
+    {
+      "name": "Marooned",
+      "oracle_id": "74e02bdf-a074-4356-9d06-0df01dd2df66",
+      "facts_sha256": "4e1066a9a48c6a72f66b2f4159f194f23c125d3662494f481d3ab163b895b7a5",
+      "printings": []
+    },
+    {
+      "name": "Melkotian Adjudicator",
+      "oracle_id": "1fdcdb1c-a140-40ee-b711-5ea539eb1084",
+      "facts_sha256": "cdd8354636bee368ed3c6da0f4da07bd557ecc41ef89d33073145f8fe7b841d8",
+      "printings": []
+    },
+    {
+      "name": "Miles O'Brien, Transporter Ops",
+      "oracle_id": "31e3f39f-8b18-4316-984f-4d57d2d480ca",
+      "facts_sha256": "56daf1154bb72fced4eec53814d9fadcb62968f022d54d4149b36b95e1b70164",
+      "printings": []
+    },
+    {
+      "name": "Mirror Universe Intrusion",
+      "oracle_id": "007d08e8-4db2-47d1-ba39-8bb8efa491a1",
+      "facts_sha256": "859aa7a7855e4f0f273ec705629b5d54e46112481c9d75bc117e8082cc8f7354",
+      "printings": []
+    },
+    {
+      "name": "Moopsy",
+      "oracle_id": "89b9efc8-d1cd-4b2a-acf3-4f0dd1629167",
+      "facts_sha256": "dd0fc8b3d9a5f80e327c1ef319102708843c8374a7afa549d5a3c2fac1948b3b",
+      "printings": [
+        "207"
+      ]
+    },
+    {
+      "name": "Mountain",
+      "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+      "facts_sha256": "834b3f6ee6e8a2b60fa2515857725a0105572c82d8285ad7c247ac103ceebdfe",
+      "printings": [
+        "310",
+        "315",
+        "485",
+        "323",
+        "324",
+        "565",
+        "566"
+      ]
+    },
+    {
+      "name": "Mr. Spock, Science Officer",
+      "oracle_id": "869bde03-8813-43a9-9df5-a21c62511b4b",
+      "facts_sha256": "cc4a8515c4f018a204815529b9c9409b30139e85547066a0227bff173c97c884",
+      "printings": [
+        "1702",
+        "353",
+        "411",
+        "535",
+        "74"
+      ]
+    },
+    {
+      "name": "Mugato",
+      "oracle_id": "eb9a3b52-62ad-467f-b62a-0273ceee48e5",
+      "facts_sha256": "5192e724557b77e52765c7bb90fb87e45c09c0d21b53d65d00d1c717701279e6",
+      "printings": [
+        "208"
+      ]
+    },
+    {
+      "name": "Munitions Enthusiast",
+      "oracle_id": "0013f005-2b49-48a4-8a74-9bbdadc88c9f",
+      "facts_sha256": "47f9c520b103d79d9db18e475c097116d1b1f8f013ae791a84b16c857f88a934",
+      "printings": [
+        "158"
+      ]
+    },
+    {
+      "name": "Neelix, Moral Support",
+      "oracle_id": "7fba522b-a292-4d1f-9999-f787ba2d5fd1",
+      "facts_sha256": "5bb35520bfb0fd241d87d1727085fbaa451f7b746c64a1a92ca79c984dbd2db0",
+      "printings": [
+        "209"
+      ]
+    },
+    {
+      "name": "Ni'Var Science Academy",
+      "oracle_id": "45bf09bb-4141-4166-bdae-6dac39e7f316",
+      "facts_sha256": "8bc8b2c20174a0ff5b4895eb18be27157a17e5a44917f048461e38ba7d4280a8",
+      "printings": [
+        "287",
+        "333"
+      ]
+    },
+    {
+      "name": "Nog, Ambitious Cadet",
+      "oracle_id": "5a8ae1c0-1935-4d03-aa94-9e9088650821",
+      "facts_sha256": "884b97f3cd2df0bfd6a7ac8b55f0af7bd75ccbc5be274787f601ea25dabee900",
+      "printings": []
+    },
+    {
+      "name": "Nyota Uhura, Communications",
+      "oracle_id": "d89f34e4-8628-4faf-89e6-c9c16023ae8b",
+      "facts_sha256": "b676a1e46bafa0b4e1011c678f07d2b469d43a1da036c16ea83faca2d958fa59",
+      "printings": []
+    },
+    {
+      "name": "Oberth-Class Starship",
+      "oracle_id": "fb5e53cf-e12e-469b-b9ea-9debc967e77e",
+      "facts_sha256": "128baa5a93e9be7e5230ba25e65137840f54a020e3b0ab51c31f67911989afd9",
+      "printings": [
+        "26"
+      ]
+    },
+    {
+      "name": "Obsidian Order Operative",
+      "oracle_id": "7145e1b7-b991-4651-b21d-0620cb017090",
+      "facts_sha256": "3784223cf021c6f80c8b033210b8e2587d3d5bfae1b54ba72f91ea0a9cda3246",
+      "printings": []
+    },
+    {
+      "name": "Open Communications",
+      "oracle_id": "b08c5b86-4f84-46a3-877f-bbf71ec17adb",
+      "facts_sha256": "a0268ba833a8b3ae3bef79a711755b3d83d4879589afcb7fec3d7444355655cc",
+      "printings": [
+        "76"
+      ]
+    },
+    {
+      "name": "Organic Avulsion Unit",
+      "oracle_id": "f1e28022-b06b-4efb-9f85-c36d8302ef99",
+      "facts_sha256": "a10fe0f4e549b6af61f4d97b73cba015cd694c510bbe2602578d98b2e879ab8d",
+      "printings": [
+        "121",
+        "376",
+        "510"
+      ]
+    },
+    {
+      "name": "Orion",
+      "oracle_id": "47e3aa22-8806-408f-b93e-0d0b800866f6",
+      "facts_sha256": "9087b4b0d5762c6f646f6a9feeff7873ab5767e73e4a7495bed7c0c1fa5c9a6b",
+      "printings": [
+        "288"
+      ]
+    },
+    {
+      "name": "Overflow Submatrix",
+      "oracle_id": "523c244b-7292-40c7-8b12-27106fffe63f",
+      "facts_sha256": "5f7ebfa0e455e7425f4771f3ab5f2cd2c36f52c28c1a36dfdaccdb8d343e1519",
+      "printings": []
+    },
+    {
+      "name": "Overgrown Tomb",
+      "oracle_id": "975ec9a3-6f20-4177-8211-82526e092538",
+      "facts_sha256": "f84065d35d35b01d9e6a7d659b0ff6c5a610fdf173e897eebaebbd80d207b77c",
+      "printings": [
+        "289",
+        "399",
+        "494"
+      ]
+    },
+    {
+      "name": "Pah-Wraith",
+      "oracle_id": "e47c340d-b20b-4103-955b-3f76424c43f8",
+      "facts_sha256": "cd6e2591c7148cbb3bca47e0d8945680985bbaa967b955ae22d12b2be31fa1fe",
+      "printings": [
+        "160",
+        "465"
+      ]
+    },
+    {
+      "name": "Pattern Buffer Preservation",
+      "oracle_id": "690d0d8f-48b9-40a6-b881-6f17ac19bf3b",
+      "facts_sha256": "28f9886a0af1a21aaa37d8d26527d79b09024a8afd05ef36dd61c573a7c2be9d",
+      "printings": [
+        "123"
+      ]
+    },
+    {
+      "name": "Peace in Our Time",
+      "oracle_id": "b19ce6f2-7778-4779-8173-973eb7ee0b02",
+      "facts_sha256": "ad487d4425dd2a041d31fecfb163c673c831db046ec16bf26dc0756e984927f2",
+      "printings": []
+    },
+    {
+      "name": "Perils of the Past",
+      "oracle_id": "f1f77fb4-2c83-4cbf-894e-624abe6cd95f",
+      "facts_sha256": "ec0a689357f113d96478e384071d5c1601a227e44721eec4292bc5290102f771",
+      "printings": [
+        "161"
+      ]
+    },
+    {
+      "name": "Pet Sehlat",
+      "oracle_id": "509f255f-c3ee-4836-a583-d018060d0c4d",
+      "facts_sha256": "9f1e8f1d1842e261053aab3e988b9988e0002b91be97e351f8a19b7f5406a682",
+      "printings": [
+        "28"
+      ]
+    },
+    {
+      "name": "Phlox, Unorthodox Doctor",
+      "oracle_id": "b04cb333-ca7a-464f-a084-03cf8f468baf",
+      "facts_sha256": "0f7cf265ad2e5474598c116efd035621673f8d314bfebb452daca5434193d03a",
+      "printings": [
+        "250"
+      ]
+    },
+    {
+      "name": "Photosynthetic Physician",
+      "oracle_id": "08787942-456f-4c71-a821-1c90b5639ca1",
+      "facts_sha256": "657dfae9637191a7e4b36f4b13990a33ee3ab7a730b03caef8c4836f7421eeeb",
+      "printings": [
+        "210"
+      ]
+    },
+    {
+      "name": "Picard, Leading by Example",
+      "oracle_id": "4b36f8e2-ba7d-4bc7-890f-dd6ab73eef17",
+      "facts_sha256": "8d9e008a00ff4b8994e4bb5d6abc66e5dd64f32bdadecb32d265ba4eabab1758",
+      "printings": [
+        "29"
+      ]
+    },
+    {
+      "name": "Plains",
+      "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+      "facts_sha256": "ae235a451d8f50a608307ba9498c9f09089c7c3bf54571679b87f2deafe2c5e3",
+      "printings": [
+        "307",
+        "312",
+        "482",
+        "317",
+        "318",
+        "559",
+        "560"
+      ]
+    },
+    {
+      "name": "Planetary Bombardment",
+      "oracle_id": "2c2fdeff-a0c6-44cb-9603-4a9865f62985",
+      "facts_sha256": "229ba26e6eb7854a1f911541b042bb3749b5b52f5767cef0e109e99ef1809c3f",
+      "printings": [
+        "162"
+      ]
+    },
+    {
+      "name": "Planetary Patrol",
+      "oracle_id": "fba54c2d-a664-4e4c-b9d4-e24cf2523ab9",
+      "facts_sha256": "43d8bddd1f0b8588a4cb820d6ae88f7b0e4e64d42cec50febc0fcd4eeab1b739",
+      "printings": [
+        "163"
+      ]
+    },
+    {
+      "name": "Plasma Cascade",
+      "oracle_id": "46ce40e9-b7fb-4f40-a7ab-f8a2234d1d63",
+      "facts_sha256": "e62927efb16f368d252f8c4db16c4ab5a473334479eb788dcadaaec7eae9fbcc",
+      "printings": [
+        "164"
+      ]
+    },
+    {
+      "name": "Primary Unimatrix Adjunct",
+      "oracle_id": "be3dd0c8-32c2-4a56-9290-1fc9e366bae2",
+      "facts_sha256": "211c94598d8e657a5654acfffb5451fb57e3a0f329c1885b83af68432c32b024",
+      "printings": [
+        "30",
+        "368",
+        "502"
+      ]
+    },
+    {
+      "name": "Pure Energy",
+      "oracle_id": "f4831eee-fef6-4fef-a174-400a25d0837d",
+      "facts_sha256": "3b4c47d015a1d9549117d4e926b89dda9a3fb55a612bb502d11d5cea9d520727",
+      "printings": [
+        "31"
+      ]
+    },
+    {
+      "name": "Q Continuum",
+      "oracle_id": "457cf958-8129-4bf6-b4d5-211eb8c58763",
+      "facts_sha256": "cf93f75a7a8bd948f6b9d37d9de704cfe9e7799d0c90883fb5b174b59f1fa4d1",
+      "printings": [
+        "290",
+        "334"
+      ]
+    },
+    {
+      "name": "Q, Stacking the Deck",
+      "oracle_id": "6866f0a4-5fe6-40d9-bbfc-6f116f4e415d",
+      "facts_sha256": "e8cdd4f71ff00d11a91b65ae398e7a2ff833379821f3c47431d8ba0c5bd11db2",
+      "printings": []
+    },
+    {
+      "name": "Qo'noS",
+      "oracle_id": "cab718af-8e6f-4766-856e-3a61ba98f94d",
+      "facts_sha256": "549c9e325361fb9505be79ac8fa89b89994252ada7c3f16953a3052fd7a032a9",
+      "printings": [
+        "291"
+      ]
+    },
+    {
+      "name": "Quark's Bar",
+      "oracle_id": "800d0f33-31c9-43da-a649-8860646eca1f",
+      "facts_sha256": "d74e0abfcde6020ca72671218f823ad962cbb7195cb0e73a7856b4391ab1c2fd",
+      "printings": [
+        "292",
+        "335",
+        "350"
+      ]
+    },
+    {
+      "name": "Quark, Humble Proprietor",
+      "oracle_id": "61703e94-cb57-44d8-b37b-7b14b3cfd86d",
+      "facts_sha256": "15e01dae2ce7274faa49c5927e870cebb40ccadd611b931dde0d392b75fb8e4f",
+      "printings": []
+    },
+    {
+      "name": "Ravenous Cosmozoan",
+      "oracle_id": "5cbe6066-07f8-45de-b3b4-b8590d111b0d",
+      "facts_sha256": "46128559461a6459cff0d9bf6aec16f1667cd991d8261340c7a059fc828335dd",
+      "printings": [
+        "167"
+      ]
+    },
+    {
+      "name": "Reckless Impulse",
+      "oracle_id": "584cf0fd-112a-4ca6-9c0e-1f3228a7d325",
+      "facts_sha256": "f6ef7bdf94d5b50262dafed5988ebf5b1fd534b6051ef523a0074ebb06e89aa7",
+      "printings": [
+        "168"
+      ]
+    },
+    {
+      "name": "Red Alert!",
+      "oracle_id": "4636afb5-453a-4f27-8916-1cbc32459ba6",
+      "facts_sha256": "78fc75c43cd7fb893ff2cf6d9e7469db9ddb837e28ce9347d97f86c20902b60d",
+      "printings": [
+        "169"
+      ]
+    },
+    {
+      "name": "Relentless Drednok",
+      "oracle_id": "98cbac1d-7896-4c63-a265-03bc5d670fa6",
+      "facts_sha256": "b53e0b44f96244c115ff56711261e9b77b53d48634aab05c52e23181af4dc6cc",
+      "printings": [
+        "124"
+      ]
+    },
+    {
+      "name": "Replicator",
+      "oracle_id": "a91b8eb4-d4f7-4e24-ae49-1f51e610c7ca",
+      "facts_sha256": "fef83628ed7756519961edd4fd032bd24ce4f928e3e7e17ffcfb2c4b47aa377e",
+      "printings": [
+        "267",
+        "391",
+        "525"
+      ]
+    },
+    {
+      "name": "Resistance Is Futile",
+      "oracle_id": "49975689-85f8-4221-bb11-3d3f68a1a7ac",
+      "facts_sha256": "e22281ac6c11ff6f73b915aecfbe47a02c2fe11a1ff3ac3a11f4bc18adb42829",
+      "printings": [
+        "125",
+        "338",
+        "378",
+        "512"
+      ]
+    },
+    {
+      "name": "Risa",
+      "oracle_id": "365a4644-74f4-4af9-81ab-0d328ca5edce",
+      "facts_sha256": "be2c18b25354c8e2be1bfd651150c276584d59ed014a463b1219dbdd74f29b16",
+      "printings": [
+        "293",
+        "578"
+      ]
+    },
+    {
+      "name": "Rogue Artificial Intelligence",
+      "oracle_id": "4849f2f8-0c0e-470d-a4f5-76547a9570a0",
+      "facts_sha256": "305f842dbfad87aa19c739cfc5c617322de8eff7b47f55780b4e5f4196d357a2",
+      "printings": [
+        "126"
+      ]
+    },
+    {
+      "name": "Rok-Tahk, Budding Scientist",
+      "oracle_id": "ef919269-043f-45ab-a5da-403cdaa4da23",
+      "facts_sha256": "dcfa05ad85eaecf57322b580190739c947d91fbfe830b3ddab2aad16199fdd1d",
+      "printings": [
+        "211",
+        "472"
+      ]
+    },
+    {
+      "name": "Romulan Bird-of-Prey",
+      "oracle_id": "e614f97b-da8e-4569-9bdd-f76371c66836",
+      "facts_sha256": "7dd4e3f83d09377ac734d9248720b12fb3e276921090db0d8d55ac860ec7e061",
+      "printings": [
+        "452",
+        "77"
+      ]
+    },
+    {
+      "name": "Romulus",
+      "oracle_id": "14c4ad24-7f38-409b-8ef0-341f233982da",
+      "facts_sha256": "e81ddd4518a7805344e621f968ddb24b9084ba2ed1ed8069a688b79ec2e29ff5",
+      "printings": [
+        "294"
+      ]
+    },
+    {
+      "name": "Rules of Acquisition",
+      "oracle_id": "5068eba6-ccf0-45f2-b0db-40f787ee3308",
+      "facts_sha256": "9a83bfb1737def5d071f1df78b6a02922b78c64f43d69e17625586724c966b34",
+      "printings": []
+    },
+    {
+      "name": "Rutherford, Upgraded Ensign",
+      "oracle_id": "42258216-fe2b-42d0-a6ce-76ecf8104c10",
+      "facts_sha256": "1fce52c3f07b8e1c9f15f9a34684f1a12b60754b0cab36027cfb0b1646c0ece5",
+      "printings": []
+    },
+    {
+      "name": "Saavik, Stoic Student",
+      "oracle_id": "53aaa919-d08f-4b76-8583-bc2d4635f991",
+      "facts_sha256": "54408a809b31d282bc062f44622feb1ae4f73d9b4a4ee0cf2a5f9d6e090cdb92",
+      "printings": [
+        "33",
+        "406",
+        "530"
+      ]
+    },
+    {
+      "name": "Sacred Foundry",
+      "oracle_id": "45181cb8-2090-4471-ba90-e5a8f04d525f",
+      "facts_sha256": "a5b539e4a34f9ce20e9a3a0910a2bc795be81be852f6c8d3e28b319475ed44c5",
+      "printings": [
+        "295",
+        "400",
+        "495"
+      ]
+    },
+    {
+      "name": "Salt Vampire",
+      "oracle_id": "31c7453e-33b8-4eb6-abac-28cdb35fb993",
+      "facts_sha256": "ea55179767d87e23b7dd611251340916804617b87199542ef65e2065622a3faa",
+      "printings": [
+        "127",
+        "417",
+        "541"
+      ]
+    },
+    {
+      "name": "Sarcophagus, Ship of the Dead",
+      "oracle_id": "22b86863-c992-405b-949a-bdf8859884ef",
+      "facts_sha256": "d4c56f692563199b49d1bd23e348cb142c1f847a5c719d3c726a66472c8bec49",
+      "printings": [
+        "170"
+      ]
+    },
+    {
+      "name": "Sarek, Federation Ambassador",
+      "oracle_id": "72c51539-5f15-4636-8cb8-b688cf53f431",
+      "facts_sha256": "42cc0e633135f8e268d2c214ffb600c6990ddadfa11696c61833973b2259de30",
+      "printings": [
+        "251",
+        "425"
+      ]
+    },
+    {
+      "name": "Saru, Unthreatened",
+      "oracle_id": "b6a21e53-6f62-4874-b9cc-84ae177a0da6",
+      "facts_sha256": "661446acf79eab57e5344b66666829d87a85922f6f081a9e4626640f9f722f78",
+      "printings": [
+        "212"
+      ]
+    },
+    {
+      "name": "Saurian Explorer",
+      "oracle_id": "00f4cab8-b135-4118-8e3a-92097178abb6",
+      "facts_sha256": "cb82c6ca995674c30afcdffae8f18b639ba6d4c1a50d590c8c8960b969da5095",
+      "printings": [
+        "213"
+      ]
+    },
+    {
+      "name": "Savvy Profiteer",
+      "oracle_id": "e96a9f9a-9326-4f0b-98ad-23210c97299f",
+      "facts_sha256": "9f0c30825d9354972897b5f9714d1e5da4826d0d5ebcf129eaebf87782368fa4",
+      "printings": [
+        "171"
+      ]
+    },
+    {
+      "name": "Scotty, Miracle Worker",
+      "oracle_id": "8e5057ae-165c-4fe4-b712-a638b7eea038",
+      "facts_sha256": "90993549fe9342d2df22a26fc012160d3af50ec05cf3d986d397dc01fc4f950a",
+      "printings": []
+    },
+    {
+      "name": "Sela, Tal Shiar Paradox",
+      "oracle_id": "0cbf0f7a-7f5e-4819-9a9f-f655f92fd5f1",
+      "facts_sha256": "6fab4b36324e17e553e28560020128e008557c0cfea3d1e7f30136c946086c2b",
+      "printings": [
+        "128",
+        "379",
+        "513"
+      ]
+    },
+    {
+      "name": "Set Phasers to . . .",
+      "oracle_id": "4da9b548-898d-431b-8aa5-9cb7bf579219",
+      "facts_sha256": "11627bb00bb349fbf9ede1e6232576d4db805c18d958ca957a290934e9a585ce",
+      "printings": [
+        "34"
+      ]
+    },
+    {
+      "name": "Seven of Nine",
+      "oracle_id": "3c037865-d38c-48da-aee9-308975e12638",
+      "facts_sha256": "61dee02c96395b2bd54d2f67778691415cfdc0b79758033bbda51cf1f93a6324",
+      "printings": []
+    },
+    {
+      "name": "Seven of Nine, Unassimilated",
+      "oracle_id": "af9c9b8a-0713-4904-8e86-2b3331ec5495",
+      "facts_sha256": "b2776c938d6fea59b8e9b4208d66b11b26f64aad5e856e7a3fd0779ffd8b2a11",
+      "printings": [
+        "1705",
+        "373",
+        "507",
+        "80"
+      ]
+    },
+    {
+      "name": "Shields Up!",
+      "oracle_id": "0e14940b-87e1-4139-8f30-3629b3ad3a59",
+      "facts_sha256": "c1101775f6c04b9824023f51d7f62757fbf8b605abc12f726dbf9e42d4648f2c",
+      "printings": [
+        "35"
+      ]
+    },
+    {
+      "name": "Shuttle Ace",
+      "oracle_id": "4b5b0864-7ddd-497d-a7d6-a31c49bb9c7b",
+      "facts_sha256": "b0671e97040bf22b2725719ee05f9b1ba46ab3c62f84d73e4730d00c131c54dd",
+      "printings": [
+        "36"
+      ]
+    },
+    {
+      "name": "Sickbay",
+      "oracle_id": "1d4163d9-ca02-4f25-9f53-01f6d7cc4b70",
+      "facts_sha256": "b0db43ab03365326444a0c4bb440727a9e0db561ab0f1860adffc6fe884a7d5c",
+      "printings": [
+        "268"
+      ]
+    },
+    {
+      "name": "Silicate Surveyor",
+      "oracle_id": "1b248ef5-ec57-481d-b47a-357d3867054f",
+      "facts_sha256": "078a7a238a7fb234d81147da4ff5a687ace8ceff86fa0b00929a63d2d3e2f969",
+      "printings": [
+        "172"
+      ]
+    },
+    {
+      "name": "Spatial Anomaly",
+      "oracle_id": "a4f31512-a91c-42e0-9929-5069386c3c71",
+      "facts_sha256": "87223e9086da368f223ccaf60bc0c2c5871a28efbfbda7bfed118f4d9d07d565",
+      "printings": [
+        "296"
+      ]
+    },
+    {
+      "name": "Species 8472",
+      "oracle_id": "645a5619-d0b2-4153-aae0-ca2adc6f5e3d",
+      "facts_sha256": "9ea604d4e064f128cd6bcba807b8025f9c465199ce74c6c985e973d54d474108",
+      "printings": []
+    },
+    {
+      "name": "Spock, Always Your Friend",
+      "oracle_id": "bdfe5809-17d4-4239-a9ee-6accdef99035",
+      "facts_sha256": "60572a38b53e7443b8f65acc90bee975b26c885647d0ed422376a798cdbc128e",
+      "printings": [
+        "253"
+      ]
+    },
+    {
+      "name": "Stable Wormhole",
+      "oracle_id": "dba55309-cb21-42db-8968-8da07227a1be",
+      "facts_sha256": "ba83c6f7b14d4dd4c82803ece4eaae33a62cdb95fca61e33be14061bb0a663d0",
+      "printings": [
+        "215",
+        "473"
+      ]
+    },
+    {
+      "name": "Starfleet Academy",
+      "oracle_id": "de8ebef9-fa0e-42df-a1bc-5c4b86d1bdd1",
+      "facts_sha256": "8807fcc4255cea12fc9e034d8b1204d5a20083c1a08a33760915a7acd3973de0",
+      "printings": [
+        "297",
+        "336"
+      ]
+    },
+    {
+      "name": "Starfleet Security",
+      "oracle_id": "896077f9-b26e-4964-9279-03ee284a3e89",
+      "facts_sha256": "0fdd0245b180030ffa4ae0da73125b82a4c29a806f26da02a6271c3d88134731",
+      "printings": [
+        "173"
+      ]
+    },
+    {
+      "name": "Starfleet Spanner Jockey",
+      "oracle_id": "d41ff489-7d74-4b06-b3a1-638f3e3303d1",
+      "facts_sha256": "26befcf91da125461652cf9a7b37d299d5eaa1b1a10a561de8e58cf97eaa501a",
+      "printings": [
+        "81"
+      ]
+    },
+    {
+      "name": "Steam Vents",
+      "oracle_id": "17039058-822d-409f-938c-b727a366ba63",
+      "facts_sha256": "a7f5cacaa6da42f7b3af35e96bd19c475ca0befa918f069c68035ffb131c69ed",
+      "printings": [
+        "298",
+        "398",
+        "493"
+      ]
+    },
+    {
+      "name": "Stomping Ground",
+      "oracle_id": "16052b52-ade1-406f-a06b-ce7ea607fb63",
+      "facts_sha256": "4f87749afec0148ae48a17e14764458c4158d6f543208e483e85a5c5804b5f26",
+      "printings": [
+        "299",
+        "395",
+        "490"
+      ]
+    },
+    {
+      "name": "Storied Veteran",
+      "oracle_id": "b1012ac3-77f8-4384-b947-84c094d6b59e",
+      "facts_sha256": "b8e672db33a36c55d82d0163a51f98518e5ea4e3ed9b83582be13f02102f28da",
+      "printings": [
+        "129",
+        "429",
+        "439"
+      ]
+    },
+    {
+      "name": "Stray from History",
+      "oracle_id": "adbbb968-5721-427c-a15a-320d49ab4c3e",
+      "facts_sha256": "2564bb67198d798f41c6103ca26dc05e3fe0b13ea99eb2387be10659295d220c",
+      "printings": [
+        "130"
+      ]
+    },
+    {
+      "name": "Subcommander T'Pol",
+      "oracle_id": "e6973668-4ea7-4920-82a5-73abfc1c9fd5",
+      "facts_sha256": "681f335cabf2c770d6ade741b4f6061506c03e9f9ee40ee11f61cdc3336c7979",
+      "printings": [
+        "82",
+        "453"
+      ]
+    },
+    {
+      "name": "Subspace Anomaly",
+      "oracle_id": "1a28a83a-de27-4aaa-b35f-1e7075fc1e43",
+      "facts_sha256": "7f1c151bf4f26be4775466d7119662eeed63697a8000e544763c3360ccc1b3a6",
+      "printings": [
+        "300"
+      ]
+    },
+    {
+      "name": "Sulu, Space Swashbuckler",
+      "oracle_id": "d090131d-428c-4a98-afc5-595b9bc7adce",
+      "facts_sha256": "c7992fdebdc61745a40fdabc81726920d852d73cebc7e9f007cc3bcecd05f5f8",
+      "printings": []
+    },
+    {
+      "name": "Support Mission",
+      "oracle_id": "59a4c4cf-07b4-4009-bbea-7da7b31f09a1",
+      "facts_sha256": "a3e0b9a4b6beab1c3e51615677d2a5de750e34b80878e3d37ce97ece5726fc4f",
+      "printings": [
+        "216"
+      ]
+    },
+    {
+      "name": "Suurok-Class Science Vessel",
+      "oracle_id": "5d2016ed-3ea0-4938-b95e-ee582307e475",
+      "facts_sha256": "966477580f2660429b2037fd13b18bd390ac783405b492013bf924bbc368aacf",
+      "printings": [
+        "83"
+      ]
+    },
+    {
+      "name": "Suus Mahna Practitioner",
+      "oracle_id": "e7d22ef6-a926-4964-bfd6-f7345b20e74e",
+      "facts_sha256": "6658f8b6499404672100fa8c53d3bf6297bebf53f652345f359a815ce9597f99",
+      "printings": [
+        "84"
+      ]
+    },
+    {
+      "name": "Swamp",
+      "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+      "facts_sha256": "b0e96308e2dfc5d8f9386dd86d1f8d8cbca8a9c220f09d2e3146b30c6aa72cf6",
+      "printings": [
+        "309",
+        "314",
+        "484",
+        "321",
+        "322",
+        "563",
+        "564"
+      ]
+    },
+    {
+      "name": "Sylvia Tilly, Joy of Discovery",
+      "oracle_id": "d4c1dbc8-23d8-49e0-bc2d-d005e9215172",
+      "facts_sha256": "9b0990092bdf36db325701dc1ed7ff4b133b20de54bf02a91b9eed3050d671ca",
+      "printings": [
+        "217"
+      ]
+    },
+    {
+      "name": "Syndicate Liquidators",
+      "oracle_id": "2f32de5c-4d85-42bc-b1bf-f762a46e5efc",
+      "facts_sha256": "03ba386277123a5e2fd2b2c5723aafea273bba5de4ecfa339051b6f12fd177c9",
+      "printings": [
+        "218",
+        "575"
+      ]
+    },
+    {
+      "name": "Tactical Officer",
+      "oracle_id": "1397e7d5-4aa4-4c8d-8957-845579b775f7",
+      "facts_sha256": "114c761cd486594673cda8793ed896bd0914651580b9c4c12f5bc2d0cf435363",
+      "printings": [
+        "38"
+      ]
+    },
+    {
+      "name": "Tal Shiar Analyst",
+      "oracle_id": "bca4d45d-cae4-46f3-b5ac-22fbac59fe56",
+      "facts_sha256": "fbab8cc109d9b1fd5c5593ac77bb8b5f5e57dfe35345e75164a6d882581160b9",
+      "printings": [
+        "174"
+      ]
+    },
+    {
+      "name": "Tal Shiar Operative",
+      "oracle_id": "53641cda-7093-4fed-97f1-380f771e00b0",
+      "facts_sha256": "438367a38472f7a935c5f21fe0a4df2cfeb6a1a5ec03f3f414bbd88165f7894c",
+      "printings": [
+        "131"
+      ]
+    },
+    {
+      "name": "Targ Wrangler",
+      "oracle_id": "a066eeb1-61fc-448b-bbab-650d672652ad",
+      "facts_sha256": "02299f6618efcce3731ed52f32241b915b9d0eaa91eed191d0ac31ed30e5dca6",
+      "printings": []
+    },
+    {
+      "name": "Tasha Yar, Out of Time",
+      "oracle_id": "1a9607a2-58cb-4bb8-b454-4813528221f8",
+      "facts_sha256": "011d900843fdf5ff7b1991ac13af13eab582ee639d725d7a392bce32a40ed360",
+      "printings": []
+    },
+    {
+      "name": "Tea, Earl Grey, Hot",
+      "oracle_id": "6f2e8083-29af-4cdb-a2cb-216b2f3f5616",
+      "facts_sha256": "5f6a7f1abe4931b8500635df0d157e3d5a76665c12c1c55f909451ec5f73ba15",
+      "printings": [
+        "269"
+      ]
+    },
+    {
+      "name": "Tell Me What You See",
+      "oracle_id": "abfdfae5-61aa-42d6-9c8e-83fda59de233",
+      "facts_sha256": "e905b3b0628323842473bc7342d2a6b76b671434eb0f3ffa48a6ef06616904c2",
+      "printings": []
+    },
+    {
+      "name": "Temple Garden",
+      "oracle_id": "f413a83d-a40d-434c-b20a-4c707c0527fa",
+      "facts_sha256": "5fd94a5702ceb372f43848e8704fa234b260de6977af781c0f58268f0e05cf16",
+      "printings": [
+        "301",
+        "396",
+        "491"
+      ]
+    },
+    {
+      "name": "Temporal Anomaly",
+      "oracle_id": "cf0d1859-699e-47d4-bc91-7c5ff61fabe9",
+      "facts_sha256": "aa77b349d00f7de4234ecb50289cfe6f07e74a632eb8be81be3428fdffe2fa1b",
+      "printings": [
+        "302"
+      ]
+    },
+    {
+      "name": "Temporal Conqueror",
+      "oracle_id": "306002e6-d68d-47ad-879b-e6060efebeff",
+      "facts_sha256": "3aa51d4618e317e40aacb3fb5ed125732a23af6602b08f7324d34ad2db5951bb",
+      "printings": []
+    },
+    {
+      "name": "Tenacious Drone",
+      "oracle_id": "af6351a9-ac01-4fed-9ea9-a352d21a8312",
+      "facts_sha256": "5188f9456018f85857124410bf82206a365f7c938c7088ee2fa84352769fb511",
+      "printings": [
+        "133"
+      ]
+    },
+    {
+      "name": "Test of Conviction",
+      "oracle_id": "beffaea5-beeb-4d4e-aca3-82c698caf6f8",
+      "facts_sha256": "710ce11280504ee0bd2b264d1fa65d0589bfa79c224d14e7370f4cd5846b469b",
+      "printings": [
+        "39"
+      ]
+    },
+    {
+      "name": "Test of Courage",
+      "oracle_id": "101b2387-58a1-4ef9-8395-0024713e217b",
+      "facts_sha256": "60f4cc1d4974dcc974cf8438a321e87844f8d40ed57dab5756db456f2d639b5d",
+      "printings": [
+        "220",
+        "339"
+      ]
+    },
+    {
+      "name": "Test of Identity",
+      "oracle_id": "8cb700bb-daa5-4a26-bb84-e22bc11bdaff",
+      "facts_sha256": "bfff5df0aec6283d9e6a8b250a97c23137607e42830d3e7ab8e20704e8262ed9",
+      "printings": [
+        "177"
+      ]
+    },
+    {
+      "name": "Test of Loyalty",
+      "oracle_id": "6cb1c3fb-033a-4de5-ad07-69d9ad0ca5ae",
+      "facts_sha256": "94ca56ac838023a158631917a02c588a383050af183105d9906db464b6d7cc89",
+      "printings": [
+        "134"
+      ]
+    },
+    {
+      "name": "Test of Priorities",
+      "oracle_id": "cd24de4f-ce88-4fbb-9e8d-93ea7c260b4c",
+      "facts_sha256": "8e719efd1cef91ca07916caa08ddf4fb6cc941911afc35135c65e06983574be0",
+      "printings": [
+        "85"
+      ]
+    },
+    {
+      "name": "The Caretaker",
+      "oracle_id": "f77ea393-4142-4c06-8bb3-589ca74a7338",
+      "facts_sha256": "61c670b7ca6809f57aaeb926a441a13e81534a5a1de49b27403d1572e435a9f4",
+      "printings": []
+    },
+    {
+      "name": "The City on the Edge of Forever",
+      "oracle_id": "47c9ef8c-7ba7-4702-bd8c-5fedc59c8166",
+      "facts_sha256": "1debb402d778a5921e68114ffbffd4466cf18b4176d77fade5735c61d7870f94",
+      "printings": [
+        "228"
+      ]
+    },
+    {
+      "name": "The Destruction of Praxis",
+      "oracle_id": "028d6812-55db-40df-9288-89c2e478c76c",
+      "facts_sha256": "222e5b69c79d52616a32b60b2b7f4f164049d5fdd6c76f5da02157faf8f667c4",
+      "printings": [
+        "103",
+        "414",
+        "538"
+      ]
+    },
+    {
+      "name": "The Doctor, EMH",
+      "oracle_id": "3b04f5b9-40d9-49aa-a38d-0f946401263c",
+      "facts_sha256": "19f3e49f6580ad887ff8aebc2e0b1a6665bcba78cff2f786f3a601b8c4150435",
+      "printings": [
+        "234"
+      ]
+    },
+    {
+      "name": "The Duras Sisters",
+      "oracle_id": "03973bad-1b3c-4488-a23e-232b192c95cc",
+      "facts_sha256": "c26759a460ca103ed6ddcb709511c0e0e9698d689ee07dcdc38c4d88b2bd726c",
+      "printings": [
+        "235",
+        "432",
+        "442"
+      ]
+    },
+    {
+      "name": "The Holodeck",
+      "oracle_id": "ecf28b5d-a719-47d4-8ad9-d24b6297ebde",
+      "facts_sha256": "1fb978d9bf25741a78311282841ac8b6e3d0a1094fe18503a375b0a60ef4f0ec",
+      "printings": []
+    },
+    {
+      "name": "The Inner Light",
+      "oracle_id": "0de3aad2-5f4c-4437-b0b3-4b867309528d",
+      "facts_sha256": "46705c08c95a270c2c10eb0ea5672020e99197e1ae0c022f4d64dee3816eb4aa",
+      "printings": []
+    },
+    {
+      "name": "The Measure of a Man",
+      "oracle_id": "727e98cc-b295-47f9-9d3d-bcf38c9f56d2",
+      "facts_sha256": "f1feb8e2909613dc70fcfa1c872149143d9784eeb3ae2cf06a23f49b73307d3b",
+      "printings": []
+    },
+    {
+      "name": "The Naked Time",
+      "oracle_id": "2cf79dd0-c9db-403e-969d-6c09e7aaa575",
+      "facts_sha256": "2ec9df9cb1131776da08e232107e42c9fb87c33022cadd548c3bdf2190ebd8bf",
+      "printings": [
+        "159"
+      ]
+    },
+    {
+      "name": "The Needs of the Many",
+      "oracle_id": "984e0426-10ba-4c17-b26e-ce21100ec398",
+      "facts_sha256": "49170ca0e198dd563016a57e109f1f618521e1f129ec797e339b30b6fd53cca5",
+      "printings": []
+    },
+    {
+      "name": "The Traveler",
+      "oracle_id": "b61718eb-dc6a-4199-b7c7-42eccf4158e8",
+      "facts_sha256": "bac7dae62349c55069b8254696b49a1aad3a23d7ecc9dcdfdaf637c966211b39",
+      "printings": [
+        "254"
+      ]
+    },
+    {
+      "name": "The Unicomplex",
+      "oracle_id": "b38fcf9a-464a-432a-b13c-9a206d52dcd9",
+      "facts_sha256": "2f5b31b7a597cddd019f9786b174daf740a24c3d5d6c6f49eaeabab0406f3574",
+      "printings": [
+        "304",
+        "337"
+      ]
+    },
+    {
+      "name": "The Wrath of Khan",
+      "oracle_id": "22249955-0741-470e-bc2b-f32d4510849b",
+      "facts_sha256": "6f9e4a76e3034be3e52a926ac5e6f8387923c5c9e1b451b69f85855847cefceb",
+      "printings": []
+    },
+    {
+      "name": "There's Coffee in that Nebula",
+      "oracle_id": "887614f9-f12f-47bc-ae56-1438cd7cad10",
+      "facts_sha256": "4c50b947189ce87876a4e4a458ff54754981da3e2660a49e823bd4f0df9714a7",
+      "printings": [
+        "40",
+        "369",
+        "503"
+      ]
+    },
+    {
+      "name": "Those Old Scientists",
+      "oracle_id": "5ca4e8c4-8358-49be-bafb-85849bf9bd01",
+      "facts_sha256": "73872cad98c02066788d8cbec406c74c656ef6c3eacc3f3c358bb4c9068d556e",
+      "printings": []
+    },
+    {
+      "name": "Transporter Malfunction",
+      "oracle_id": "6eb9865e-513c-43c6-81e1-6ad000e9c48e",
+      "facts_sha256": "46d9b81147f9e0f65a10bb08f8602f2fdb8aa59d8b922edc9bd83e8b4c7a89ae",
+      "printings": [
+        "178",
+        "357"
+      ]
+    },
+    {
+      "name": "Tricorder",
+      "oracle_id": "1385679f-bdcd-4d7e-8266-1df0e36cc2da",
+      "facts_sha256": "7929b581c262ebd21477d20e7db10bd81d73d3a51435e294ed76dc8206d2f35e",
+      "printings": [
+        "270"
+      ]
+    },
+    {
+      "name": "Troubling Tribbles",
+      "oracle_id": "fc76eddd-8f2a-45e3-95d2-3074d971effb",
+      "facts_sha256": "d1b1a56c741cec36cb0ac5d464927ead9d871494571baf59f9279f1c7a786cd3",
+      "printings": [
+        "408",
+        "41",
+        "532"
+      ]
+    },
+    {
+      "name": "Type-2 Phaser",
+      "oracle_id": "9d4d3682-e904-412d-b8ae-734962865dfb",
+      "facts_sha256": "fbc2c2fb9f226fbc8ba34cb096a6a77b3ff7c4326558e28d4b3884c39487f9cb",
+      "printings": [
+        "271"
+      ]
+    },
+    {
+      "name": "U.S.S. Cerritos, Following Up",
+      "oracle_id": "472eac8f-2b82-4fa9-a40c-af11ec40f19e",
+      "facts_sha256": "4ce97e8d36d82608f97c468fc85c3da3af1ccbfe430074afae80acfff1f326bb",
+      "printings": [
+        "272"
+      ]
+    },
+    {
+      "name": "U.S.S. Discovery, at Black Alert",
+      "oracle_id": "13dbfe3f-1e04-4c4f-953c-7c949dba9d33",
+      "facts_sha256": "17ba42b36598d3bb4c951505e30c30cc78cbc804fce37ef0f858ea1fcea79e71",
+      "printings": [
+        "221",
+        "474",
+        "554"
+      ]
+    },
+    {
+      "name": "U.S.S. Enterprise-A, Free Spirit",
+      "oracle_id": "5e2958fd-ede6-4563-babc-4924d3e95754",
+      "facts_sha256": "fa99ba918512943f403ae1f771e64d349706c349499eb9ffcb0d117f70ac7cda",
+      "printings": [
+        "43",
+        "448",
+        "550"
+      ]
+    },
+    {
+      "name": "U.S.S. Enterprise-D, Galaxy-Class",
+      "oracle_id": "d95af032-3efd-40c7-8229-ade9d974934f",
+      "facts_sha256": "0c8a590671a67c4c076d0f493b68c283a55cb1f2d7244a2060001736bb4c7853",
+      "printings": [
+        "273",
+        "481",
+        "557"
+      ]
+    },
+    {
+      "name": "U.S.S. Excelsior, Cutting Edge",
+      "oracle_id": "9f4ae54b-f77d-43df-87d5-792ac0905058",
+      "facts_sha256": "a03115f8515b5a4a46a40d546494b9a52dd955b1e2310592dac5ecc47b75a3d1",
+      "printings": [
+        "44"
+      ]
+    },
+    {
+      "name": "U.S.S. Reliant, From Hell's Heart",
+      "oracle_id": "edaa05ba-8b15-4156-b725-1e0c418a9ae5",
+      "facts_sha256": "46b3b0bd61a926e7a1e61a0d10244c75ee317f5eff960d704a8ba5f2299365db",
+      "printings": [
+        "135",
+        "461",
+        "552"
+      ]
+    },
+    {
+      "name": "U.S.S. Voyager, Lone Wanderer",
+      "oracle_id": "33e8904a-9285-4031-900c-0a5c8f0bf6c0",
+      "facts_sha256": "18989018a13cb340099df8e3b142b84259179f3e7c5b65d8477ed65d5c527799",
+      "printings": [
+        "222"
+      ]
+    },
+    {
+      "name": "Una Chin-Riley, Number One",
+      "oracle_id": "0529c6fa-a35f-4d33-b274-93446ce68419",
+      "facts_sha256": "ae6bf1e5ef442a3c2c4a2f6db5601ceae57d4942a352eae633e6784dc0bef1a8",
+      "printings": [
+        "42"
+      ]
+    },
+    {
+      "name": "Unexplored Territory",
+      "oracle_id": "6e5d4bbd-4999-4acd-8775-25e02d901035",
+      "facts_sha256": "a456b79b82b0b13b07a8b8b105a30a1f3591cb3279d4fada06bfbb74a985de80",
+      "printings": [
+        "303"
+      ]
+    },
+    {
+      "name": "V'Ger, the Intruder",
+      "oracle_id": "f50ec16b-13f5-4e20-ae09-9c7dee9d223b",
+      "facts_sha256": "54632e44900459d095f019a72841330defd8a10219216ee2cd020e7cdf036ff1",
+      "printings": [
+        "87"
+      ]
+    },
+    {
+      "name": "Vash, Freelance Archaeologist",
+      "oracle_id": "ec5a9dde-b89d-4c54-8563-4a7170f5cefd",
+      "facts_sha256": "40a52b6d9699d518ae452b3a11c8ddac0041a6402ce2d27aa0cceb321011e1f7",
+      "printings": [
+        "255"
+      ]
+    },
+    {
+      "name": "Vengeance Mission",
+      "oracle_id": "eae07535-487b-48ac-b99e-b4b62286254c",
+      "facts_sha256": "0c5635a4c15fceb78c63b5e56a3ab773f5917e024016542add08ce278a9c9dd2",
+      "printings": [
+        "136",
+        "430",
+        "440"
+      ]
+    },
+    {
+      "name": "Vexing Drone",
+      "oracle_id": "8e90e417-65ca-48bc-a32d-b93976519fe9",
+      "facts_sha256": "262e1cfc8dcaa9f4d6a81a73c301a0172a35b77e964beef976a20309f9641fc0",
+      "printings": [
+        "45"
+      ]
+    },
+    {
+      "name": "Vulcan",
+      "oracle_id": "c7b6bc1f-9161-415e-a097-d9c8cd81d4ae",
+      "facts_sha256": "fd6bfc45ef4e5c2e2f72b69e6def9acbe27ef0b2dc81bcc827e8b6edc28eb5ab",
+      "printings": [
+        "305",
+        "579"
+      ]
+    },
+    {
+      "name": "Vulcan Mind-Meld",
+      "oracle_id": "a6aa204a-0be9-4a38-b54c-82538adfe7f1",
+      "facts_sha256": "67ada1f9f3b7a47d36b42737313ed35a69d67f1b2df579e459f1524977b5baca",
+      "printings": []
+    },
+    {
+      "name": "Warp Core",
+      "oracle_id": "6a2df97a-341d-4bc4-9f5c-661b6ca78fd0",
+      "facts_sha256": "dcaf3043e002dbc20ea36856206ad4681c69ed7a1af8bdb6752e2371e89cbbfe",
+      "printings": [
+        "274"
+      ]
+    },
+    {
+      "name": "Warp Speed",
+      "oracle_id": "5a824931-2b65-42b1-8653-d4313a6693d2",
+      "facts_sha256": "cd508391220bfe6651cea019fc07f14b82ea5cdefda5d9788470587f5b0e8582",
+      "printings": [
+        "223",
+        "387",
+        "521"
+      ]
+    },
+    {
+      "name": "Watery Grave",
+      "oracle_id": "fc9ec820-4245-4a96-b009-5308a818ca58",
+      "facts_sha256": "9ab008cdd1ffb8be60633966ea286e917462154a22aa7b742a09bae9ae8f128c",
+      "printings": [
+        "306",
+        "393",
+        "488"
+      ]
+    },
+    {
+      "name": "Wesley Crusher, Starfleet Cadet",
+      "oracle_id": "5c3cbb08-cbe1-42f5-9ac7-e558b85648bb",
+      "facts_sha256": "bd3dac519d6612a89df1435bbed4884bbf81cb59f8da69602f43dcef7889816d",
+      "printings": [
+        "89",
+        "374",
+        "508"
+      ]
+    },
+    {
+      "name": "Will Riker, First in the Field",
+      "oracle_id": "7c1fd7c6-2f3d-496f-9f09-660a13ef923f",
+      "facts_sha256": "7e35c96606796f8e9084f7366121c84ff6eee6a636d451c82844495ef61947a0",
+      "printings": []
+    },
+    {
+      "name": "Worf, Honor-Bound Warrior",
+      "oracle_id": "2ecda53d-ac24-4b28-aed8-2a5fb1449f85",
+      "facts_sha256": "162bc539c617e0d52826bb2c262ea4f52ad97f0046ab1c4ed430a88b1e697699",
+      "printings": [
+        "256",
+        "390",
+        "435",
+        "445",
+        "524"
+      ]
+    },
+    {
+      "name": "Worf, Intelligence Contractor",
+      "oracle_id": "dfff6f8f-b038-4619-8190-7a6918afab1e",
+      "facts_sha256": "d7ea4eda97b0d0914cc9e465332fbb27920e90b3ecd2e1f0c0ecd8fb8e54614c",
+      "printings": []
+    },
+    {
+      "name": "Xenobotanist",
+      "oracle_id": "a9df60bf-f327-4d50-ab4d-99324fc2dcfe",
+      "facts_sha256": "78a1999a036efe9b84c38cda46a5ea44b0ae7defed72ac9284b7de1cc6145dd3",
+      "printings": [
+        "224"
+      ]
+    },
+    {
+      "name": "Xindi Surveyors",
+      "oracle_id": "5fdff691-686d-4ce0-bd12-eea676a648b4",
+      "facts_sha256": "04ab160899268b15ade4ea225a68671c8c6f735150e94a77c3e2d4e46917472f",
+      "printings": [
+        "225"
+      ]
+    },
+    {
+      "name": "Year of Hell",
+      "oracle_id": "83f426db-3b25-4407-afd0-0465e3900c24",
+      "facts_sha256": "4695c4260116ebc90ee78fd325485d4d9cce2c8bfb6080c6984d20fd7866ba50",
+      "printings": [
+        "257"
+      ]
+    },
+    {
+      "name": "Zefram Cochrane, Warp Pioneer",
+      "oracle_id": "fea67446-f413-4a8c-b79a-49172e798fff",
+      "facts_sha256": "f392528fb90a6f5f776ab238f3dc0cd07cab89768cd35092c76cd526f16c8b68",
+      "printings": []
+    },
+    {
+      "name": "Zero, Incorporeal Sensate",
+      "oracle_id": "746e494e-fdc4-415e-8a82-d35e11ebeccb",
+      "facts_sha256": "dc6fc2463e4bb341548ee39fb30cba9ca5d5f84bbe5fde3ff44b0991ed07d6f8",
+      "printings": [
+        "258"
+      ]
+    }
+  ],
+  "unresolved": []
+}

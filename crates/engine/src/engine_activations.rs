@@ -43,7 +43,9 @@ impl ActivatedAbility {
         match self.origin {
             ActivationOrigin::Battlefield => Zone::Battlefield,
             ActivationOrigin::Hand => Zone::Hand,
-            ActivationOrigin::Graveyard => Zone::Graveyard,
+            ActivationOrigin::Graveyard | ActivationOrigin::GraveyardBottomLibrary => {
+                Zone::Graveyard
+            }
         }
     }
 }
@@ -446,6 +448,12 @@ impl Game {
         let readiness = self.activation_readiness(actor, ability);
         !pure_loyalty_placement_prohibited(self, self.object_ref(card), &readiness)
             && !ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
+            && (ability.origin != ActivationOrigin::GraveyardBottomLibrary
+                || !ability_world::CharacteristicWorld::zone_move_prevented(
+                    self,
+                    self.object_ref(card),
+                    Zone::Library,
+                ))
             && (!ability.cost.sacrifice
                 || !ability_world::CharacteristicWorld::sacrifice_prohibited(self, card))
             && if self.state.objects[card as usize]
@@ -787,24 +795,14 @@ impl Game {
                             })
                     };
                     let modes = ability.modes();
+                    let packet = self.activation_packet(actor, card, index as u16);
                     let targets_available = ability.declares_target_value_x()
                         || modes.map_or_else(
-                            || {
-                                self.targets_available(
-                                    ability.targets,
-                                    actor,
-                                    self.object_ref(card),
-                                )
-                            },
+                            || self.item_targets_available(&packet, ability.targets),
                             |modes| {
-                                let packet = self.activation_packet(actor, card, index as u16);
                                 modes.iter().enumerate().any(|(mode_index, mode)| {
                                     self.modal_choice_unused(&packet, mode_index)
-                                        && self.targets_available(
-                                            mode.targets,
-                                            actor,
-                                            self.object_ref(card),
-                                        )
+                                        && self.item_targets_available(&packet, mode.targets)
                                 })
                             },
                         );
@@ -922,8 +920,9 @@ impl Game {
                                     return;
                                 }
                                 let plan = ability.targets;
+                                let packet = self.activation_packet(actor, card, index as u16);
                                 let Some(spec) = plan.single() else {
-                                    if self.targets_available(plan, actor, self.object_ref(card)) {
+                                    if self.item_targets_available(&packet, plan) {
                                         done = emit(Action::BeginActivate {
                                             card,
                                             ability: index as u16,
@@ -935,15 +934,10 @@ impl Game {
                                 };
                                 if spec.max > 1 || (spec.max > 0 && ability.cost.remove.is_some()) {
                                     let mut count = 0;
-                                    self.visit_targets(
-                                        spec.rule,
-                                        actor,
-                                        self.object_ref(card),
-                                        |_| {
-                                            count += 1;
-                                            false
-                                        },
-                                    );
+                                    self.visit_item_targets(&packet, spec.rule, |_| {
+                                        count += 1;
+                                        false
+                                    });
                                     if count >= usize::from(spec.min) {
                                         done = emit(Action::BeginActivate {
                                             card,
@@ -963,11 +957,8 @@ impl Game {
                                         });
                                     }
                                     if !done && spec.max > 0 {
-                                        done = self.visit_targets(
-                                            spec.rule,
-                                            actor,
-                                            self.object_ref(card),
-                                            |target| {
+                                        done =
+                                            self.visit_item_targets(&packet, spec.rule, |target| {
                                                 emit(Action::Activate {
                                                     card,
                                                     ability: index as u16,
@@ -975,8 +966,7 @@ impl Game {
                                                     payment,
                                                     counter_payment: counter_payment.clone(),
                                                 })
-                                            },
-                                        );
+                                            });
                                     }
                                 }
                             },
@@ -1014,6 +1004,7 @@ impl Game {
                 object: self.object_ref(card),
                 card: self.state.objects[card as usize].card,
                 facts: self.damage_facts(card),
+                target_lki: None,
             }),
             source_less_rule: None,
             additional_triggers: 0,
@@ -1079,6 +1070,7 @@ impl Game {
             mana_tap_bonus: None,
             related_stack: None,
             entering_object: None,
+            entering_explorer: None,
             evidence_collected: false,
             damage_event: None,
             damage_received: None,
@@ -1221,6 +1213,7 @@ impl Game {
                     && !cost.sacrifice
                     && !cost.discard
                     && !cost.exile_self
+                    && definition.origin != ActivationOrigin::GraveyardBottomLibrary
                     && cost.remove.is_none()
                     && cost.loyalty.is_none()
                     && !definition.exerts(),
@@ -1379,7 +1372,11 @@ impl Game {
         // Costs and real mana activations may briefly reach the threshold before
         // the same payment sacrifices its source. Speculative planning never does.
         self.refresh_enduring_stories();
-        if cost.exile_self || cost.discard || cost.sacrifice {
+        if cost.exile_self
+            || definition.origin == ActivationOrigin::GraveyardBottomLibrary
+            || cost.discard
+            || cost.sacrifice
+        {
             // The local announcement is temporarily outside State while costs
             // commit. Freeze its post-payment source facts before departure too.
             let source = self.object_view(source.id);
@@ -1391,7 +1388,10 @@ impl Game {
             item.source_tapped = source.tapped;
             item.source_attachment = source.attached_to;
         }
-        if cost.exile_self {
+        if definition.origin == ActivationOrigin::GraveyardBottomLibrary {
+            self.move_object_to_library_position(source.object, LibraryDestination::Bottom)
+                .expect("legal graveyard-to-library source cost must move its exact card");
+        } else if cost.exile_self {
             let event = self.move_object(source.id, Zone::Exile);
             if definition.program.iter().any(|instruction| {
                 matches!(

@@ -1,0 +1,12 @@
+{
+  "name": "@token/trk-klingon-warrior",
+  "catalogue_id": 6010,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "71cbace753a8b7e53656e2d23c22dd9a81b302aa8532d82618e421016e821b19",
+  "oracle_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/KlingonWarriorToken.java",
+  "java_sha256": "77d95b4e30314372ce37a25955d30ff6caf4e999529221a63dcd67a5cd59b0d3"
+}

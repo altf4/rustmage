@@ -25,7 +25,9 @@ impl Game {
                     ability.condition.event(),
                     TriggerCondition::SpellCast { .. }
                         | TriggerCondition::SpellCastOrLandPlayed
+                        | TriggerCondition::OpponentCastsOrActivatesChosenName
                         | TriggerCondition::ModalSpellCastByYou
+                        | TriggerCondition::FaceDilemma(_)
                         | TriggerCondition::FirstSpellKindOrOtherCreatureType { .. }
                 )
         }) {
@@ -112,6 +114,7 @@ impl Game {
                 object,
                 controller: self.state.objects[id as usize].controller,
                 zombie: false,
+                equipment_or_spacecraft: false,
             });
         }
         self.register_battlefield_providers(id);
@@ -363,7 +366,9 @@ impl Game {
                     TriggerCondition::SpellCast { .. }
                         | TriggerCondition::SpellCastUsingSourceMana(_)
                         | TriggerCondition::SpellCastOrLandPlayed
+                        | TriggerCondition::OpponentCastsOrActivatesChosenName
                         | TriggerCondition::ModalSpellCastByYou
+                        | TriggerCondition::FaceDilemma(_)
                         | TriggerCondition::FirstSpellKindOrOtherCreatureType { .. }
                 )
         }) {
@@ -381,6 +386,7 @@ impl Game {
                     matches!(
                         fragment,
                         crate::cards::StaticAbilityFragment::ControlledInstantSorcerySplitSecond
+                            | crate::cards::StaticAbilityFragment::PermanentsCantPhaseIn
                             | crate::cards::StaticAbilityFragment::ControlledInstantSorceryKeywords(_)
                             | crate::cards::StaticAbilityFragment::ControlledInstantSorcerySubtypeKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ReplaceLifePaymentWithLibraryExile
@@ -394,6 +400,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledActivationReduction { .. }
                             | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_)
                             | crate::cards::StaticAbilityFragment::ControlledCreatureTapManaBonus(_)
+                            | crate::cards::StaticAbilityFragment::ControlledCreatureEntryTappedAttacking
                             | crate::cards::StaticAbilityFragment::GrantChosenLinkedCreatureAbilities
                             | crate::cards::StaticAbilityFragment::ControlledLandColorlessTapManaBonus
                             | crate::cards::StaticAbilityFragment::ControlledArtifactTokenTapManaBonus
@@ -401,6 +408,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_)
                             | crate::cards::StaticAbilityFragment::ControlledBasicLandManaMultiplier(_)
                             | crate::cards::StaticAbilityFragment::DoubleDrawExceptFirst
+                            | crate::cards::StaticAbilityFragment::DoubleDraw
                             | crate::cards::StaticAbilityFragment::ScryBeforeControlledCreatureExplores
                             | crate::cards::StaticAbilityFragment::ConditionalDoubleDraw(_)
                             | crate::cards::StaticAbilityFragment::AdditionalDrawWithAtMostOneCard
@@ -415,6 +423,8 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ExileCastForZeroOncePerTurn
                             | crate::cards::StaticAbilityFragment::SpellAlternativeManaCost(_)
                             | crate::cards::StaticAbilityFragment::SpellAlternativeEvidenceCost(_)
+                            | crate::cards::StaticAbilityFragment::GrantGraveyardBeamMeUp
+                            | crate::cards::StaticAbilityFragment::AttachedCannotBeBeamedUp
                             | crate::cards::StaticAbilityFragment::SpellCastLimit(_)
                             | crate::cards::StaticAbilityFragment::OpponentSpellsTargetingSourceLifeCost(_)
                             | crate::cards::StaticAbilityFragment::ChosenCardTypeSpellTax(_)
@@ -455,6 +465,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::OtherControlledCreatureEntryCountersByStat { .. }
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::CantAttackOrBlockAlone
+                            | crate::cards::StaticAbilityFragment::CantAttackAlone
                             | crate::cards::StaticAbilityFragment::FlyingCombatRestriction
                             | crate::cards::StaticAbilityFragment::AuraEnchantedCantAttackController
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)
@@ -470,6 +481,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CounterBearingPermanentWard { .. }
                             | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                             | crate::cards::StaticAbilityFragment::ControlledCreatureTrigger { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledArtifactCreatureTrigger { .. }
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeCastTrigger { .. }
                             | crate::cards::StaticAbilityFragment::HarnessedTrigger(..)
                             | crate::cards::StaticAbilityFragment::SourceConditionalAttackTrigger { .. }
@@ -529,12 +541,16 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
                             | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ControlledPermanentAllKindsKeywords { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledPermanentAllKindsKeywordsAtSourceCounters { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledOtherCounteredCreatureKeywords(..)
+                            | crate::cards::StaticAbilityFragment::SaveOtherPlusOneCreatureFromDestruction
                             | crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
                             | crate::cards::StaticAbilityFragment::ConditionalEquippedCreatureKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ControlledOtherTappedLegendaryCreatureKeywords { .. }
                             | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywordsOnYourTurn { .. }
                             | crate::cards::StaticAbilityFragment::ControlledKindAndSubtypeKeywords { .. }
                             | crate::cards::StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
                             | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }

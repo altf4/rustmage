@@ -2215,9 +2215,86 @@ use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_blb_wall.rs"));
 const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
+pub(super) mod card_6007 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_trk_borg.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_6008 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_trk_officer.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_6009 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_trk_new_planet.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_6010 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_trk_klingon_warrior.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_6011 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_trk_illusion_artifact.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_6012 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_trk_romulan.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_6013 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_trk_porthos.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_6014 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_trk_worm_cant_block.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_6015 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_trk_neuroflux_heirloom.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_6016 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_trk_murf.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_6017 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_trk_human_no_phase_in.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
 }
 #[rustfmt::skip]
-pub static ENTRIES: [CatalogueEntry; 315] = [
+pub static ENTRIES: [CatalogueEntry; 326] = [
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Meager Meal", oracle_id: Some("0296d57e-e5b9-456f-bb21-eb584adefb4c"), mana_cost: "{B}", type_line: "Sorcery — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5183::RULES.keywords, deck_limit: authored::card_5183::RULES.deck_limit }, effect: authored::card_5183::RULES.checked_effect(), triggers: authored::card_5183::RULES.triggers, activated: authored::card_5183::RULES.activated, enters: authored::card_5183::RULES.enters, entry: authored::card_5183::RULES.entry, kind: 4, basic: false, mana_color: None, colored: [0, 0, 1, 0, 0, 0], generic: 0 }, rules: &authored::card_5183::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Seek Thrills", oracle_id: Some("06374e6d-62fa-4833-81cd-b4d0a35e7365"), mana_cost: "{2}{G}{U}{R}", type_line: "Instant — Adventure", oracle_keywords: &["Mill"], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5184::RULES.keywords, deck_limit: authored::card_5184::RULES.deck_limit }, effect: authored::card_5184::RULES.checked_effect(), triggers: authored::card_5184::RULES.triggers, activated: authored::card_5184::RULES.activated, enters: authored::card_5184::RULES.enters, entry: authored::card_5184::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [0, 1, 0, 1, 1, 0], generic: 2 }, rules: &authored::card_5184::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Twice the Rage", oracle_id: Some("0f222f3d-f02b-42b9-aedf-fb7ed92d4889"), mana_cost: "{1}{R}", type_line: "Instant — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5185::RULES.keywords, deck_limit: authored::card_5185::RULES.deck_limit }, effect: authored::card_5185::RULES.checked_effect(), triggers: authored::card_5185::RULES.triggers, activated: authored::card_5185::RULES.activated, enters: authored::card_5185::RULES.enters, entry: authored::card_5185::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [0, 0, 0, 1, 0, 0], generic: 1 }, rules: &authored::card_5185::RULES },
@@ -2533,6 +2610,17 @@ CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/blb-cra
 CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/blb-sword", oracle_id: None, mana_cost: "", type_line: "Artifact — Equipment", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5620::RULES.keywords, deck_limit: authored::card_5620::RULES.deck_limit }, effect: authored::card_5620::RULES.checked_effect(), triggers: authored::card_5620::RULES.triggers, activated: authored::card_5620::RULES.activated, enters: authored::card_5620::RULES.enters, entry: authored::card_5620::RULES.entry, kind: 16, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5620::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/blb-snail", oracle_id: None, mana_cost: "", type_line: "Creature — Snail", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5621::RULES.keywords, deck_limit: authored::card_5621::RULES.deck_limit }, effect: authored::card_5621::RULES.checked_effect(), triggers: authored::card_5621::RULES.triggers, activated: authored::card_5621::RULES.activated, enters: authored::card_5621::RULES.enters, entry: authored::card_5621::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5621::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/blb-wall", oracle_id: None, mana_cost: "", type_line: "Creature — Wall", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5622::RULES.keywords, deck_limit: authored::card_5622::RULES.deck_limit }, effect: authored::card_5622::RULES.checked_effect(), triggers: authored::card_5622::RULES.triggers, activated: authored::card_5622::RULES.activated, enters: authored::card_5622::RULES.enters, entry: authored::card_5622::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5622::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/trk-borg", oracle_id: None, mana_cost: "", type_line: "Artifact Creature — Borg", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_6007::RULES.keywords, deck_limit: authored::card_6007::RULES.deck_limit }, effect: authored::card_6007::RULES.checked_effect(), triggers: authored::card_6007::RULES.triggers, activated: authored::card_6007::RULES.activated, enters: authored::card_6007::RULES.enters, entry: authored::card_6007::RULES.entry, kind: 17, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_6007::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/trk-officer", oracle_id: None, mana_cost: "", type_line: "Creature — Officer", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_6008::RULES.keywords, deck_limit: authored::card_6008::RULES.deck_limit }, effect: authored::card_6008::RULES.checked_effect(), triggers: authored::card_6008::RULES.triggers, activated: authored::card_6008::RULES.activated, enters: authored::card_6008::RULES.enters, entry: authored::card_6008::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_6008::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/trk-new-planet", oracle_id: None, mana_cost: "", type_line: "Land — Planet", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_6009::RULES.keywords, deck_limit: authored::card_6009::RULES.deck_limit }, effect: authored::card_6009::RULES.checked_effect(), triggers: authored::card_6009::RULES.triggers, activated: authored::card_6009::RULES.activated, enters: authored::card_6009::RULES.enters, entry: authored::card_6009::RULES.entry, kind: 2, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_6009::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/trk-klingon-warrior", oracle_id: None, mana_cost: "", type_line: "Creature — Klingon Warrior", oracle_keywords: &["Haste"], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_6010::RULES.keywords, deck_limit: authored::card_6010::RULES.deck_limit }, effect: authored::card_6010::RULES.checked_effect(), triggers: authored::card_6010::RULES.triggers, activated: authored::card_6010::RULES.activated, enters: authored::card_6010::RULES.enters, entry: authored::card_6010::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_6010::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/trk-illusion-artifact", oracle_id: None, mana_cost: "", type_line: "Artifact Creature — Illusion", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_6011::RULES.keywords, deck_limit: authored::card_6011::RULES.deck_limit }, effect: authored::card_6011::RULES.checked_effect(), triggers: authored::card_6011::RULES.triggers, activated: authored::card_6011::RULES.activated, enters: authored::card_6011::RULES.enters, entry: authored::card_6011::RULES.entry, kind: 17, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_6011::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/trk-romulan", oracle_id: None, mana_cost: "", type_line: "Creature — Romulan", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_6012::RULES.keywords, deck_limit: authored::card_6012::RULES.deck_limit }, effect: authored::card_6012::RULES.checked_effect(), triggers: authored::card_6012::RULES.triggers, activated: authored::card_6012::RULES.activated, enters: authored::card_6012::RULES.enters, entry: authored::card_6012::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_6012::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/trk-porthos", oracle_id: None, mana_cost: "", type_line: "Legendary Creature — Dog", oracle_keywords: &[], standard_legal: false, legendary: true, implemented: true, keywords: authored::card_6013::RULES.keywords, deck_limit: authored::card_6013::RULES.deck_limit }, effect: authored::card_6013::RULES.checked_effect(), triggers: authored::card_6013::RULES.triggers, activated: authored::card_6013::RULES.activated, enters: authored::card_6013::RULES.enters, entry: authored::card_6013::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_6013::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/trk-worm-cant-block", oracle_id: None, mana_cost: "", type_line: "Creature — Worm", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_6014::RULES.keywords, deck_limit: authored::card_6014::RULES.deck_limit }, effect: authored::card_6014::RULES.checked_effect(), triggers: authored::card_6014::RULES.triggers, activated: authored::card_6014::RULES.activated, enters: authored::card_6014::RULES.enters, entry: authored::card_6014::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_6014::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/trk-neuroflux-heirloom", oracle_id: None, mana_cost: "", type_line: "Artifact — Equipment", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_6015::RULES.keywords, deck_limit: authored::card_6015::RULES.deck_limit }, effect: authored::card_6015::RULES.checked_effect(), triggers: authored::card_6015::RULES.triggers, activated: authored::card_6015::RULES.activated, enters: authored::card_6015::RULES.enters, entry: authored::card_6015::RULES.entry, kind: 16, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_6015::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/trk-murf", oracle_id: None, mana_cost: "", type_line: "Legendary Creature — Ooze Slug", oracle_keywords: &["Indestructible"], standard_legal: false, legendary: true, implemented: true, keywords: authored::card_6016::RULES.keywords, deck_limit: authored::card_6016::RULES.deck_limit }, effect: authored::card_6016::RULES.checked_effect(), triggers: authored::card_6016::RULES.triggers, activated: authored::card_6016::RULES.activated, enters: authored::card_6016::RULES.enters, entry: authored::card_6016::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_6016::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/trk-human-no-phase-in", oracle_id: None, mana_cost: "", type_line: "Creature — Human", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_6017::RULES.keywords, deck_limit: authored::card_6017::RULES.deck_limit }, effect: authored::card_6017::RULES.checked_effect(), triggers: authored::card_6017::RULES.triggers, activated: authored::card_6017::RULES.activated, enters: authored::card_6017::RULES.enters, entry: authored::card_6017::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_6017::RULES },
 ];
 }
 pub use cards::ENTRIES;

@@ -144,6 +144,13 @@ impl Game {
         self.finish_zone_events(&events, &[]);
     }
 
+    pub(super) fn take_delayed_battlefield_objects_until_end_turn(&mut self, item: &SpellView) {
+        let ids = self
+            .delayed_objects_in_zone(item, Zone::Battlefield)
+            .collect::<Vec<_>>();
+        self.take_and_ready_until_end_turn(item, &ids);
+    }
+
     pub(super) fn capture_delayed_return_target(&mut self, item: &SpellView) {
         let Some(id) = item.targets.iter().find_map(|bound| match bound.target {
             Target::Card(id) if self.same_target_object(*bound) && self.on_battlefield(id) => {

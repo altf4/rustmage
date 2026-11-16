@@ -2,11 +2,11 @@
   "name": "Temple of Plenty",
   "catalogue_id": 4369,
   "oracle_id": "e521322b-0e83-458c-8936-7021a80ee279",
-  "facts_sha256": "f6f09377adb4b3329d7a0fcc2ed94e0e6bdebd856ff166d6df350f5bf738585a",
+  "facts_sha256": "caad44f18c0b2f493506280d8884ebab2a12c12b96ca8f297d56aa8d65d84f17",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5fd814b89f3fc8d56b29df177daf7a516b6f0bc00af748f37c460cb0aaf931ea"
   },
-  "physical_metadata_sha256": "646a400704d81956af8a69b7ac00d78053198735dcf6c23801ff308dedffa846"
+  "physical_metadata_sha256": "0b4c4b23aea19ececd039d759c8cbf080f5cb1f1e959b48118a4b03cd4be6402"
 }

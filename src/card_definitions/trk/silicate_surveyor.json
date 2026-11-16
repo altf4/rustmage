@@ -1,0 +1,14 @@
+{
+  "name": "Silicate Surveyor",
+  "catalogue_id": 5929,
+  "oracle_id": "1b248ef5-ec57-481d-b47a-357d3867054f",
+  "facts_sha256": "078a7a238a7fb234d81147da4ff5a687ace8ceff86fa0b00929a63d2d3e2f969",
+  "physical_metadata_sha256": "6d0359fdd9e82741372938a0d545ddf67c601ba74b521f6d2233a36856f2b666",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/SilicateSurveyor.java",
+  "java_sha256": "42acc53591e278e1a285cf5011961c47c0e5b3f2ecf90beeee3d48e8044802d6",
+  "xmage_class": "mage.cards.s.SilicateSurveyor"
+}

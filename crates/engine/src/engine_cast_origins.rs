@@ -28,6 +28,7 @@ impl Card {
                         | StaticAbilityFragment::CastCreatureFromLibraryTop
                         | StaticAbilityFragment::CastFromLibraryTop(_)
                         | StaticAbilityFragment::CastInstantSorceryFromLibraryTopOnceEachTurn
+                        | StaticAbilityFragment::CastFromLibraryTopOnceEachOwnTurn(_)
                         | StaticAbilityFragment::CastCreaturePowerAtMostFromLibraryTopOnceEachTurn(
                             _
                         )
@@ -36,6 +37,8 @@ impl Card {
                         | StaticAbilityFragment::PlayLandFromLibraryTop
                         | StaticAbilityFragment::PlayLandFromGraveyard
                         | StaticAbilityFragment::PlayFromGraveyardDuringOwnTurn
+                        | StaticAbilityFragment::CastArtifactCreatureFromGraveyardOnceEachTurnWithFinality
+                        | StaticAbilityFragment::PlayPermanentFromGraveyardOrOutsideOnceEachTurn
                         | StaticAbilityFragment::OwnTurnGraveyardFlashbackExceptSubtype(_)
                         | StaticAbilityFragment::OwnTurnGraveyardSubtypeFlashback { .. }
                         | StaticAbilityFragment::LinkedExilePaidCastOnOwnTurnWithFlash
@@ -102,6 +105,26 @@ pub(super) fn land_origin_available<W: ability_world::CharacteristicWorld + ?Siz
     let state = &world.game().state.players[player.index()];
     if origin == Zone::Library && (state.library_top_life_play || state.library_top_play) {
         return true;
+    }
+    if origin == Zone::Graveyard
+        && let Some(rows) = world.game().state.self_granted_abilities.as_deref()
+        && rows
+            .iter()
+            .any(|row| row.kind == SelfGrantedAbilityKind::PlayLandFromGraveyard)
+    {
+        let query = characteristic_query::CharacteristicQuery::in_world(world);
+        if rows.iter().any(|row| {
+            row.kind == SelfGrantedAbilityKind::PlayLandFromGraveyard
+                && world.object(row.recipient.card).zone == Zone::Battlefield
+                && world.reference(row.recipient.card) == row.recipient
+                && world.object(row.recipient.card).controller == player
+                && row
+                    .expires_turn
+                    .is_none_or(|turn| turn == world.game().state.turn)
+                && query.self_grant_available(row.recipient, row.timestamp)
+        }) {
+            return true;
+        }
     }
     has_fragment_from(world, Some(player), |id, fragment| {
         match (origin, fragment) {
@@ -422,6 +445,27 @@ impl Game {
             || state.library_top_play
             || has_fragment(self, player, |f| {
                 matches!(f, StaticAbilityFragment::LookAtLibraryTop)
+            })
+            || self.state.copy_recipes.as_ref().is_some_and(|rows| {
+                rows.iter().any(|row| {
+                    let id = row.object.card;
+                    let object = &self.state.objects[id as usize];
+                    object.zone == Zone::Battlefield
+                        && object.controller == player
+                        && self.object_ref(id) == row.object
+                        && !self.is_face_down(row.object)
+                        && self.printed_abilities_available(id)
+                        && row
+                            .recipe
+                            .definition
+                            .static_ability_groups()
+                            .iter()
+                            .any(|group| {
+                                group.fragments.iter().any(|fragment| {
+                                    matches!(fragment, StaticAbilityFragment::LookAtLibraryTop)
+                                }) && entry_modes::group_enabled(self, row.object, group)
+                            })
+                })
             })
             || self.attached_library_top_permission(player)
     }
@@ -826,7 +870,7 @@ impl Game {
         true
     }
 
-    fn exile_until_first_nonland(&mut self, player: Player) -> Option<ObjectRef> {
+    pub(super) fn exile_until_first_nonland(&mut self, player: Player) -> Option<ObjectRef> {
         let cards = exile::top_library_cards(self, player, u128::MAX);
         for id in cards {
             if self.state.objects[id as usize].zone != Zone::Library {
@@ -980,6 +1024,22 @@ impl Game {
         remaining_mana_value: Option<u64>,
     ) {
         self.offer_exact_free_casts(player, vec![object], origin, remaining_mana_value, false);
+    }
+
+    pub(super) fn offer_repeated_exact_free_casts(
+        &mut self,
+        player: Player,
+        remaining: Vec<ObjectRef>,
+        origin: Zone,
+    ) {
+        let count = u16::try_from(remaining.len()).capacity("free card-copy cast count exhausted");
+        assert!(count > 0);
+        self.offer_exact_free_casts(player, remaining, origin, None, false);
+        self.state
+            .resolution_free_casts
+            .as_mut()
+            .unwrap()
+            .casts_remaining = Some(count);
     }
 
     fn offer_exact_free_casts(
@@ -1259,6 +1319,20 @@ impl Game {
             return false;
         }
         let instruction = self.resolution_cast_instruction();
+        // The offer may outlive several completed casts. Re-evaluate a live
+        // characteristic ceiling before each choice, after their additional costs.
+        let live_mana_value_limit = match instruction {
+            Some(Instruction::CastRememberedExileFreeUpTo(value)) => self
+                .state
+                .resolving
+                .as_ref()
+                .and_then(|resolution| resolution.item.source)
+                .map(|source| {
+                    u64::try_from(self.stat_value(value, source.object, player).max(0))
+                        .unwrap_or(u64::MAX)
+                }),
+            _ => None,
+        };
         let exact_paid_resolution_offer =
             matches!(instruction, Some(Instruction::CastOneOwnedLinkedPaid(_)));
         let filter = match instruction {
@@ -1361,6 +1435,8 @@ impl Game {
                         && free
                             .maximum_mana_value
                             .is_none_or(|maximum| card.fixed_mana_value() < maximum)
+                        && live_mana_value_limit
+                            .is_none_or(|maximum| card.fixed_mana_value() <= maximum)
                         && free
                             .remaining_mana_value
                             .is_none_or(|left| card.fixed_mana_value() <= left)

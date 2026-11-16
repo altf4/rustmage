@@ -1,0 +1,14 @@
+{
+  "name": "Lieutenant Commander Data",
+  "catalogue_id": 5856,
+  "oracle_id": "ebe988c1-96e0-4a99-86b5-d948837545de",
+  "facts_sha256": "c93cf716efb2df691024879e6db326e876c3bc340da88f7b3c0f2cf935b2425e",
+  "physical_metadata_sha256": "90b1b873293bc0fd3a0f97f287635dddef335f385ca6c1ca7f6f634a32b8a610",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/l/LieutenantCommanderData.java",
+  "java_sha256": "28b5c635e32487d20edb7017e28d65f27169b2b3441457cd1b37fcd4d9132bbc",
+  "xmage_class": "mage.cards.l.LieutenantCommanderData"
+}

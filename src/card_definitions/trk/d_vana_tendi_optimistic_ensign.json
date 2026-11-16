@@ -1,0 +1,14 @@
+{
+  "name": "D'Vana Tendi, Optimistic Ensign",
+  "catalogue_id": 5768,
+  "oracle_id": "6bb42689-b169-43cb-b787-f0e348063cd6",
+  "facts_sha256": "b69da3bc919f251ce430e4749f034bc39852b1f3d01f6f23cbfa428c75b84003",
+  "physical_metadata_sha256": "a00bf078589b3bcfb2fe3d2a49e5ed30ccb4added5277fdd4f6f4f09d3146aa7",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/d/DVanaTendiOptimisticEnsign.java",
+  "java_sha256": "8f09adbbb6fcc40187bc42f2e692da17b6d6da866b3fe69f65fc2bdbb108dfed",
+  "xmage_class": "mage.cards.d.DVanaTendiOptimisticEnsign"
+}

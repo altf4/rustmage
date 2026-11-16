@@ -124,6 +124,8 @@ pub mod library_entry_counter;
 #[path = "engine_meld.rs"]
 pub mod meld;
 pub use meld::{MeldDepartureOrder, MeldOrderingChoice, MeldedPermanentView};
+#[path = "engine_assimilate.rs"]
+pub mod assimilate;
 #[doc(hidden)]
 #[path = "engine_life_gain.rs"]
 pub mod life_gain;
@@ -238,7 +240,11 @@ pub use linked_source_casts::{LinkedFreeCastApprovalView, LinkedFreeCastUseView}
 #[path = "engine_dream_exile.rs"]
 pub mod dream_exile;
 pub use cast_origins::{GraveyardTypeUse, ResolutionFreeCasts, ResolutionPaidCast};
+#[doc(hidden)]
+#[path = "engine_source_permissions.rs"]
+pub mod source_permissions;
 pub use dream_exile::DreamExileView;
+pub use source_permissions::{ExiledCopyGrant, SourcePlayKind, SourcePlayUse};
 #[doc(hidden)]
 #[path = "engine_cast_permissions.rs"]
 pub mod cast_permissions;
@@ -354,8 +360,8 @@ pub use replacements::{
     CopiedSagaLoreView, CreatedTokenChoiceView, CreatureCounterIncreaseView,
     CreatureDamageShieldScope, CreatureDamageShieldView, DamageDoublerView, DamageEventOrderView,
     DamagePreventionKind, DamagePreventionView, NoncombatDamageIncreaseView,
-    PlayerCounterPlacementView, ProliferateReplacementView, ReplacementChoiceView,
-    ReplacementEffectView, SelfPlayerCounterReplacement, TokenGroupView,
+    PermanentCounterIncreaseView, PlayerCounterPlacementView, ProliferateReplacementView,
+    ReplacementChoiceView, ReplacementEffectView, SelfPlayerCounterReplacement, TokenGroupView,
 };
 
 use crate::shared_vec::SharedVec;
@@ -615,6 +621,8 @@ pub mod characteristic_query;
 #[doc(hidden)]
 #[path = "engine_growth_cost.rs"]
 pub mod growth_cost;
+#[path = "engine_phasing.rs"]
+pub mod phasing;
 #[doc(hidden)]
 #[path = "engine_source_counter_cost.rs"]
 pub mod source_counter_cost;
@@ -737,6 +745,7 @@ pub(super) struct EntryTurnFact {
     pub object: ObjectRef,
     pub controller: Player,
     pub zombie: bool,
+    pub equipment_or_spacecraft: bool,
 }
 
 #[doc(hidden)]
@@ -792,6 +801,9 @@ pub enum Zone {
     Library,
     Hand,
     Battlefield,
+    /// Internal status for a permanent still on the battlefield under CR 702.26.
+    /// Phasing never uses the zone-change machinery or changes object identity.
+    PhasedOut,
     Stack,
     Graveyard,
     Exile,
@@ -923,6 +935,7 @@ define_actions! {
     ChooseToken { token: Card },
     ChooseKeyword { index: u16 },
     ChooseSourceCounterKind { counter: CounterKind },
+    ChooseTargetExistingCounterKindToPut { counter: CounterKind },
     ChooseResolutionColor { color: crate::cards::ChoiceColor },
     ChoosePermanentType { permanent_type: PermanentType },
     ChoosePowerThreshold { value: u16 },
@@ -952,6 +965,7 @@ define_actions! {
     Blight { object: ObjectRef },
     PaySneakReturn { object: ObjectRef },
     PayWebSlingingReturn { object: ObjectRef },
+    PayBeamMeUpReturn { object: ObjectRef },
     ChooseTeamwork { pay: bool },
     ChooseTeammate { object: ObjectRef },
     FinishTeamwork,
@@ -970,6 +984,13 @@ define_actions! {
     AnnounceCounterGraveyard { card: CardId },
     AnnounceGraveyardAdditionalCosts { card: CardId },
     AnnounceGraveyardFinality { card: CardId, sneak: bool },
+    AnnounceSourceGraveyard { card: CardId, source: ObjectRef, play_kind: SourcePlayKind, face: CastFace, flash_surcharge: bool },
+    PlaySourceGraveyardLand { card: CardId, source: ObjectRef, play_kind: SourcePlayKind },
+    SelectOutsideSourcePlay { source: ObjectRef, selection: outside_choices::Selection },
+    CancelOutsideSourcePlay,
+    AnnounceSelectedOutsidePermanent { face: CastFace, flash_surcharge: bool },
+    PlaySelectedOutsideLand,
+    AnnounceExiledCopyGrant { source: ObjectRef },
     AnnounceGraveyardPaid { object: ObjectRef, permission: u64, face: CastFace, method: CastMethod, flash_surcharge: bool },
     AnnounceGraveyardWithLife {
         object: ObjectRef,
@@ -1180,6 +1201,13 @@ define_actions! {
         cost: ManaCost,
         flash_surcharge: bool,
         origin: WebSlingingOrigin,
+    },
+    AnnounceBeamMeUp {
+        card: CardId,
+        face: CastFace,
+        cost: ManaCost,
+        flash_surcharge: bool,
+        provider: Option<ObjectRef>,
     },
     AnnounceOmen { card: CardId },
     AnnounceRoom { card: CardId, door: RoomDoor, flash_surcharge: bool },
@@ -1468,6 +1496,10 @@ struct Object {
     controller: Player,
     zone: Zone,
     generation: u64,
+    /// Controller at the direct phasing event; determines the untap step for return.
+    phased_out_under: Option<Player>,
+    /// An attachment phased out with its host and returns only with that host.
+    phased_out_indirectly: bool,
     tapped: bool,
     // True until this creature's controller begins their next turn.
     summoning_sick: bool,
@@ -1533,6 +1565,8 @@ impl Object {
 struct PlayerState {
     /// Actual begun turns, capped after the first three; skipped turns do not count.
     turns_started: u8,
+    /// Scheduled or skipped extra turns do not satisfy this public history fact.
+    has_begun_extra_turn_this_game: bool,
     /// Persistent public designation; never reset by turn or zone changes.
     enduring_story: bool,
     cannot_gain_life_for_game: bool,
@@ -1554,6 +1588,9 @@ struct PlayerState {
     lands_entered_this_turn: u64,
     mount_or_vehicle_entries_this_turn: u64,
     spells_cast_this_turn: u64,
+    dilemmas_faced_this_turn: u64,
+    /// Persistent across turns; failed announcements and spell copies do not set it.
+    has_cast_spell_this_game: bool,
     spell_mana_spent_this_turn: u64,
     instant_sorcery_cast_this_turn: u64,
     creature_spells_cast_this_turn: u64,
@@ -1655,6 +1692,8 @@ pub enum CastMethod {
     Sneak,
     GrantedMayhem,
     WebSlinging,
+    BeamMeUp,
+    BeamMeUpGranted(ObjectRef),
     LibraryLife,
 }
 impl CastMethod {
@@ -1679,6 +1718,8 @@ impl CastMethod {
         matches!(
             self,
             Self::Normal
+                | Self::BeamMeUp
+                | Self::BeamMeUpGranted(_)
                 | Self::GraveyardCounterCost
                 | Self::LinkedExileCounterCost
                 | Self::GraveyardAdditionalCosts
@@ -1761,6 +1802,9 @@ pub struct CastInfo {
     pub exile_on_graveyard: bool,
     /// Player who cast this exact spell; stack control changes do not alter history.
     pub caster: Player,
+    /// Historical cast fact retained by this packet; copies are never cast.
+    #[serde(skip)]
+    pub first_spell_cast_this_game: bool,
     /// A non-targeted promise, declared before targets; absent until chosen.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gift: Option<GiftDeclaration>,
@@ -1928,6 +1972,16 @@ pub(crate) struct TargetTypeLki {
     creature_types: subtypes::CreatureTypeSet,
 }
 
+/// Last controlled characteristics of an ability source when it leaves the
+/// battlefield. The packet's event-time DamageFacts remain unchanged.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct SourceTargetLki {
+    controller: Player,
+    kinds: u16,
+    colors: u8,
+}
+
 /// Object-backed stack source, absent for inherent game-rule abilities.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -1936,6 +1990,8 @@ pub struct StackSourceView {
     pub object: ObjectRef,
     pub card: Card,
     pub facts: DamageFacts,
+    #[serde(skip)]
+    pub(crate) target_lki: Option<SourceTargetLki>,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -2044,6 +2100,9 @@ pub struct SpellView {
     pub cast: Option<CastInfo>,
     /// The exact event object; this is a non-targeted reference, never rebound.
     pub entering_object: Option<ObjectRef>,
+    /// Private latest battlefield facts for an exact entrant instructed to explore.
+    #[serde(skip)]
+    pub(crate) entering_explorer: Option<Box<ExplorerView>>,
     /// Historical qualification of an entry trigger; never inherited by reincarnations.
     pub evidence_collected: bool,
     pub id: u64,
@@ -2130,6 +2189,19 @@ impl SpellView {
         }
     }
 
+    pub(super) fn remember_source_target_lki_at_departure(&mut self, before: &ObjectView) {
+        if let Some(source) = &mut self.source
+            && source.object == before.reference
+            && self.kind != StackKind::Spell
+        {
+            source.target_lki = Some(SourceTargetLki {
+                controller: before.controller,
+                kinds: before.kinds,
+                colors: before.colors,
+            });
+        }
+    }
+
     /// Keep uncommitted targets and cost reveals private in viewer projections.
     pub(super) fn redact_uncommitted_targets(&mut self) {
         self.targets.clear();
@@ -2180,6 +2252,9 @@ impl SpellView {
                         subject: Subject::Source,
                         ..
                     } | Instruction::CreateCopyToken {
+                        subject: Subject::Source,
+                        ..
+                    } | Instruction::CreateTappedCopyToken {
                         subject: Subject::Source,
                         ..
                     } | Instruction::CreateCopyTokensScaled {
@@ -2850,6 +2925,9 @@ struct DamageChoice {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 pub struct DamageFacts {
+    /// Effective rules name at the event, retained when its source pays a
+    /// sacrifice cost before committed activation observers run.
+    pub name: &'static str,
     pub token: bool,
     pub controller: Player,
     pub kinds: u16,
@@ -2880,6 +2958,7 @@ impl DamageFacts {
     }
     fn from_view(view: &ObjectView) -> Self {
         Self {
+            name: view.name,
             controller: view.controller,
             kinds: view.kinds,
             colors: view.colors,
@@ -2942,6 +3021,9 @@ pub struct LifeTriggerView {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    OutsideSourcePlay {
+        player: Player,
+    },
     UntapStepChoice(Box<untap_rules::UntapStepChoice>),
     Proliferate {
         player: Player,
@@ -3062,6 +3144,9 @@ enum Pending {
         player: Player,
     },
     WebSlingingReturnCost {
+        player: Player,
+    },
+    BeamMeUpReturnCost {
         player: Player,
     },
     TeamworkIntent {
@@ -3306,6 +3391,10 @@ enum Pending {
         source: ObjectRef,
         choices: &'static [CounterKind],
     },
+    TargetExistingCounterKindToPut {
+        player: Player,
+        target: ObjectRef,
+    },
     EffectChoice {
         player: Player,
     },
@@ -3410,6 +3499,8 @@ struct State {
     turn_event_history: Option<std::sync::Arc<turn_facts::TurnEventHistory>>,
     tap_history: tap_history::Rows,
     counter_placement_history: counter_placement_history::Rows,
+    /// Sparse exact-object, counter-kind facts independent of whether a trigger existed.
+    first_counter_kind_events: Option<SharedVec<(ObjectRef, CounterKind)>>,
     cast_entry_counters: cast_entry_counters::Rows,
     entry_values: entry_choices::Rows,
     entered_this_turn: Option<SharedVec<EntryTurnFact>>,
@@ -3503,6 +3594,9 @@ struct State {
     #[allow(clippy::box_collection)]
     uncounterable_spell_ids: Option<Box<Vec<u64>>>,
     graveyard_type_uses: Option<SharedVec<GraveyardTypeUse>>,
+    source_play_uses: Option<SharedVec<SourcePlayUse>>,
+    outside_play: Option<source_permissions::OutsidePlay>,
+    exiled_copy_grants: Option<SharedVec<ExiledCopyGrant>>,
     resolution_free_casts: Option<Box<ResolutionFreeCasts>>,
     suspend: Option<Box<suspend::SuspendState>>,
     miracle: Option<Box<miracle::MiracleState>>,
@@ -3620,6 +3714,9 @@ pub struct ObjectView {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub battle_protector: Option<Player>,
     pub zone: Zone,
+    /// Public battlefield status. Phasing does not change a permanent's game zone.
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub phased_out: bool,
     pub tapped: bool,
     pub summoning_sick: bool,
     pub cast_for_warp: bool,
@@ -3833,6 +3930,9 @@ pub struct PlayerView {
     pub turns_to_skip: u64,
     /// Actual turns begun, capped at four (four means four or more).
     pub turns_started: u8,
+    /// True after this player actually begins an extra turn, including a later skipped turn.
+    #[serde(skip_serializing_if = "is_false")]
+    pub has_begun_extra_turn_this_game: bool,
     /// Additional land plays granted until the current turn ends.
     pub extra_land_plays_remaining: u64,
     pub no_maximum_hand_size: bool,
@@ -3843,6 +3943,9 @@ pub struct PlayerView {
     #[serde(skip_serializing_if = "is_zero_u64")]
     pub mount_or_vehicle_entries_this_turn: u64,
     pub spells_cast_this_turn: u64,
+    /// Public count of actual positive modal choices during this turn.
+    #[serde(skip_serializing_if = "is_zero_u64")]
+    pub dilemmas_faced_this_turn: u64,
     pub cards_drawn_this_turn: u64,
     /// Whether this player completed a positive scry or surveil this turn.
     pub scried_or_surveilled_this_turn: bool,
@@ -3875,6 +3978,8 @@ pub struct PlayerView {
     pub life_gained_this_turn: u128,
     pub life_lost_this_turn: u128,
     pub attacked_this_turn: bool,
+    #[serde(skip_serializing_if = "is_false")]
+    pub cannot_attack_this_turn: bool,
     pub life: i128,
     pub poison_counters: u64,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -4396,6 +4501,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub embalm_abilities: Option<Vec<EmbalmAbilityView>>,
     pub graveyard_type_uses: Vec<GraveyardTypeUse>,
+    pub source_play_uses: Vec<SourcePlayUse>,
+    pub exiled_copy_grants: Vec<ExiledCopyGrant>,
     pub resolution_free_casts: Option<ResolutionFreeCasts>,
     /// Exact public exile cards that have gained suspend, including cards with no time counters.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4456,6 +4563,8 @@ pub struct Observation {
     pub noncombat_damage_increases: Vec<NoncombatDamageIncreaseView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub creature_counter_increases: Vec<CreatureCounterIncreaseView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub permanent_counter_increases: Vec<PermanentCounterIncreaseView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub resolved_ability_modifications: Option<Vec<ResolvedAbilityModificationView>>,
     pub legend_choices: Vec<LegendGroupView>,
@@ -4707,6 +4816,7 @@ impl Game {
         let mut objects = Vec::with_capacity(config.decks.iter().map(Vec::len).sum());
         let mut players = std::array::from_fn(|_| PlayerState {
             turns_started: 0,
+            has_begun_extra_turn_this_game: false,
             enduring_story: false,
             cannot_gain_life_for_game: false,
             speed: 0,
@@ -4726,6 +4836,8 @@ impl Game {
             lands_entered_this_turn: 0,
             mount_or_vehicle_entries_this_turn: 0,
             spells_cast_this_turn: 0,
+            dilemmas_faced_this_turn: 0,
+            has_cast_spell_this_game: false,
             spell_mana_spent_this_turn: 0,
             instant_sorcery_cast_this_turn: 0,
             creature_spells_cast_this_turn: 0,
@@ -4775,6 +4887,8 @@ impl Game {
                     controller: p,
                     zone: Zone::Library,
                     generation: 0,
+                    phased_out_under: None,
+                    phased_out_indirectly: false,
                     tapped: false,
                     summoning_sick: false,
                     flashback: false,
@@ -4840,6 +4954,7 @@ impl Game {
                 turn_event_history: None,
                 tap_history: None,
                 counter_placement_history: None,
+                first_counter_kind_events: None,
                 cast_entry_counters: None,
                 entry_values: None,
                 entered_this_turn: None,
@@ -4905,6 +5020,9 @@ impl Game {
                 turn_cast_grants: None,
                 uncounterable_spell_ids: None,
                 graveyard_type_uses: None,
+                source_play_uses: None,
+                outside_play: None,
+                exiled_copy_grants: None,
                 resolution_free_casts: None,
                 suspend: None,
                 miracle: None,
@@ -5039,6 +5157,7 @@ impl Game {
             | Pending::BlightPayment { player }
             | Pending::SneakReturnCost { player }
             | Pending::WebSlingingReturnCost { player }
+            | Pending::BeamMeUpReturnCost { player }
             | Pending::TeamworkIntent { player }
             | Pending::TeamworkPayment { player }
             | Pending::Saddle { player }
@@ -5091,6 +5210,7 @@ impl Game {
             | Pending::TokenChoice { player, .. }
             | Pending::KeywordChoice { player, .. }
             | Pending::SourceCounterKind { player, .. }
+            | Pending::TargetExistingCounterKindToPut { player, .. }
             | Pending::ResolutionColor { player }
             | Pending::ResolutionPermanentType { player }
             | Pending::PowerThreshold { player, .. }
@@ -5125,6 +5245,7 @@ impl Game {
             | Pending::EffectOptional { player, .. }
             | Pending::EffectDiscard { player, .. }
             | Pending::OutsideGameChoice { player }
+            | Pending::OutsideSourcePlay { player }
             | Pending::LegendarySplitSearch { player }
             | Pending::OutsideEntryReplacement { player } => Some(player),
             Pending::UntapStepChoice(_)
@@ -5213,8 +5334,9 @@ impl Game {
             self.semantic_actor().unwrap_or(actor)
         };
         let deferred_action = self.state.mana_lots.is_some().then(|| action.clone());
-        // Cold mechanic presence avoids an extra action clone in ordinary games.
-        let zone_action = self.state.zone_rules.is_some().then(|| action.clone());
+        // A live static replacement can request a choice during an action even
+        // before any zone-rule state exists (including during the SBA pass).
+        let zone_action = Some(action.clone());
         let checkpoint = self.state.clone();
         let revision = self.revision;
         let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
@@ -5562,6 +5684,10 @@ impl Game {
                     return true;
                 }
             }
+            Pending::OutsideSourcePlay { .. } => {
+                let cast_alternatives = self.source_cast_alternatives(actor);
+                return self.visit_selected_outside_source_play(&cast_alternatives, &mut emit);
+            }
             Pending::EntryBatchCopy { .. } => {
                 return self
                     .entry_batch_copy_options()
@@ -5699,6 +5825,9 @@ impl Game {
             Pending::SneakReturnCost { .. } => return self.visit_sneak_return_cost(&mut emit),
             Pending::WebSlingingReturnCost { .. } => {
                 return self.visit_web_slinging_return_cost(&mut emit);
+            }
+            Pending::BeamMeUpReturnCost { .. } => {
+                return self.visit_beam_me_up_return_cost(&mut emit);
             }
             Pending::TeamworkIntent { .. } => {
                 let a = s.announcing.as_ref().unwrap();
@@ -5981,6 +6110,19 @@ impl Game {
                 for &counter in choices {
                     if emit(Action::ChooseSourceCounterKind { counter }) {
                         return true;
+                    }
+                }
+            }
+            Pending::TargetExistingCounterKindToPut { target, .. } => {
+                if self.object_ref(target.card) == target
+                    && self.object_view(target.card).zone == Zone::Battlefield
+                {
+                    for counter in CounterKind::ALL {
+                        if self.counter_count(target.card, counter) > 0
+                            && emit(Action::ChooseTargetExistingCounterKindToPut { counter })
+                        {
+                            return true;
+                        }
                     }
                 }
             }
@@ -6444,6 +6586,26 @@ impl Game {
                     &cast_alternatives,
                     &mut emit,
                 ) {
+                    return true;
+                }
+                if self.visit_source_graveyard_plays(
+                    actor,
+                    sorcery,
+                    casting_prohibited || self.nonhand_cast_prohibited(actor),
+                    &cast_alternatives,
+                    &mut emit,
+                ) {
+                    return true;
+                }
+                if self.visit_source_outside_plays(
+                    actor,
+                    sorcery,
+                    casting_prohibited || self.nonhand_cast_prohibited(actor),
+                    &mut emit,
+                ) {
+                    return true;
+                }
+                if self.visit_exiled_copy_grants(actor, &mut emit) {
                     return true;
                 }
                 if !casting_prohibited
@@ -8010,6 +8172,15 @@ impl Game {
     }
 
     fn apply_legal(&mut self, actor: Player, action: Action) {
+        if let Action::AnnounceSourceGraveyard {
+            source, play_kind, ..
+        }
+        | Action::PlaySourceGraveyardLand {
+            source, play_kind, ..
+        } = &action
+        {
+            self.use_source_play(*source, *play_kind);
+        }
         if let Action::PlayGraveyardPermanent {
             permission,
             permanent_type,
@@ -8039,6 +8210,23 @@ impl Game {
             self.consume_graveyard_type(*permission, *permanent_type);
         }
         match action {
+            Action::SelectOutsideSourcePlay { source, selection } => {
+                self.select_outside_source_play(actor, source, selection);
+            }
+            Action::CancelOutsideSourcePlay => self.cancel_outside_source_play(),
+            Action::AnnounceExiledCopyGrant { source } => {
+                self.announce_exiled_copy_grant(actor, source);
+            }
+            Action::AnnounceSelectedOutsidePermanent {
+                face,
+                flash_surcharge,
+            } => {
+                let card = self.commit_outside_source_play();
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                self.set_cast_face(&mut item, face);
+                item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
             Action::ChooseLegendarySearchZones { library, outside } => {
                 self.choose_legendary_search_zones(library, outside);
             }
@@ -8380,15 +8568,18 @@ impl Game {
                 self.start_taxed_exile_cast(actor, object, face, method, flash_surcharge, surcharge)
             }
             Action::PlayLand { .. }
+            | Action::PlaySourceGraveyardLand { .. }
+            | Action::PlaySelectedOutsideLand
             | Action::PlayTaxedExileLand { .. }
             | Action::PlayGraveyardPermanent {
                 permanent_type: PermanentType::Land,
                 ..
             } => {
                 let (card, tapped) = match action {
-                    Action::PlayLand { card } | Action::PlayGraveyardPermanent { card, .. } => {
-                        (card, false)
-                    }
+                    Action::PlayLand { card }
+                    | Action::PlaySourceGraveyardLand { card, .. }
+                    | Action::PlayGraveyardPermanent { card, .. } => (card, false),
+                    Action::PlaySelectedOutsideLand => (self.commit_outside_source_play(), false),
                     Action::PlayTaxedExileLand { object } => (object.card, true),
                     _ => unreachable!("land play action"),
                 };
@@ -8888,6 +9079,25 @@ impl Game {
                 );
                 self.open_payment_announcement(item, Counters::default(), None);
             }
+            Action::AnnounceSourceGraveyard {
+                card,
+                play_kind,
+                face,
+                flash_surcharge,
+                ..
+            } => {
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                self.set_cast_face(&mut item, face);
+                item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
+                if play_kind == SourcePlayKind::GraveyardArtifactCreatureFinality {
+                    self.record_cast_entry_counters(
+                        item.source.unwrap().object,
+                        CounterKind::Finality,
+                        1,
+                    );
+                }
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
             Action::AnnounceWebSlinging {
                 card,
                 face,
@@ -8901,6 +9111,20 @@ impl Game {
                 PaidCastAlternative::WebSlinging(cost),
                 flash_surcharge,
                 origin,
+            ),
+            Action::AnnounceBeamMeUp {
+                card,
+                face,
+                cost,
+                flash_surcharge,
+                provider,
+            } => self.start_paid_cast_alternative(
+                actor,
+                card,
+                face,
+                PaidCastAlternative::BeamMeUp(cost),
+                flash_surcharge,
+                provider.map_or(PaidCastOrigin::BeamMeUp, PaidCastOrigin::BeamMeUpGranted),
             ),
             Action::AnnounceSneak { card, permission } => {
                 if let Some((source, kind)) = permission {
@@ -9443,6 +9667,7 @@ impl Game {
             Action::Blight { object } => self.choose_effect_object(actor, object),
             Action::PaySneakReturn { object } => self.pay_sneak_return(object),
             Action::PayWebSlingingReturn { object } => self.pay_web_slinging_return(object),
+            Action::PayBeamMeUpReturn { object } => self.pay_beam_me_up_return(object),
             Action::ChooseTeamwork { pay } => self.choose_teamwork(pay),
             Action::ChooseTeammate { object } => self.choose_teammate(object),
             Action::FinishTeamwork => self.finish_teamwork(),
@@ -9796,6 +10021,22 @@ impl Game {
                 );
                 self.run_program();
             }
+            Action::ChooseTargetExistingCounterKindToPut { counter } => {
+                let Pending::TargetExistingCounterKindToPut { target, .. } = self.state.pending
+                else {
+                    unreachable!()
+                };
+                if self.object_ref(target.card) == target
+                    && self.on_battlefield(target.card)
+                    && self.counter_count(target.card, counter) > 0
+                {
+                    self.effect_counters(
+                        vec![(target, Counters::of(counter, 1))],
+                        replacements::ResumeMode::Program,
+                    );
+                }
+                self.run_program();
+            }
             Action::ChooseToken { token } => {
                 self.create_tokens(actor, token, 1, false);
                 self.run_program();
@@ -10091,6 +10332,9 @@ impl Game {
                 self.choose_optional_search(actor, accept);
             }
             Action::ChooseOptional { accept } => {
+                if self.complete_target_spell_controller_exile(accept) {
+                    return;
+                }
                 if self.complete_optional_spell_copy(accept) {
                     return;
                 }
@@ -10556,6 +10800,11 @@ impl Game {
             sacrificed_vehicle: events
                 .iter()
                 .any(|event| event.sacrificed_by.is_some() && event.before.has_subtype("Vehicle")),
+            sacrificed_klingon: events.iter().any(|event| {
+                event.sacrificed_by.is_some()
+                    && event.before.is_creature()
+                    && event.before.has_subtype("Klingon")
+            }),
             discarded_kinds: None,
             sacrificed_suspected: events.iter().any(|event| {
                 event.sacrificed_by.is_some() && suspected.contains(&event.before.reference)
@@ -10922,9 +11171,29 @@ impl Game {
     }
 
     /// Waiting abilities may reach the stack after their exact sources leave.
-    /// Preserve their event facts while retaining the source types used in targeting.
+    /// Preserve event facts while retaining source targeting LKI.
     fn capture_waiting_source_types(&mut self, before: &ObjectView) {
         let state = &mut self.state;
+        for item in state
+            .stack
+            .iter_mut()
+            .chain(&mut state.pending_triggers)
+            .chain(&mut state.ordering_triggers)
+            .chain(state.resolving.iter_mut().map(|r| &mut r.item))
+            .chain(state.announcing.iter_mut().map(|a| &mut a.item))
+            .chain(state.activation_payment.iter_mut().map(|p| &mut p.item))
+            .chain(
+                state
+                    .mana_announcement_stack
+                    .iter_mut()
+                    .flat_map(|frames| frames.iter_mut())
+                    .map(|frame| &mut frame.announcement.item),
+            )
+        {
+            item.visit_with_captured_copies_mut(|packet| {
+                packet.remember_source_target_lki_at_departure(before);
+            });
+        }
         for item in [
             state.delayed_artifact_copies.as_deref_mut(),
             state.delayed_attack_this_turn.as_deref_mut(),
@@ -10941,6 +11210,7 @@ impl Game {
         .flatten()
         {
             item.remember_source_types_at_departure(before);
+            item.remember_source_target_lki_at_departure(before);
         }
         for item in state
             .delayed_target_events
@@ -10973,6 +11243,7 @@ impl Game {
             )
         {
             item.remember_source_types_at_departure(before);
+            item.remember_source_target_lki_at_departure(before);
         }
         if let Some(batches) = &mut state.delayed_sacrifices {
             for batch in batches.iter_mut() {
@@ -11325,6 +11596,11 @@ impl Game {
             self.state.non_zombie_creature_died_this_turn |= !before.has_subtype("Zombie");
         }
         if before.zone == Zone::Battlefield {
+            if destination == Zone::Hand {
+                self.state.players[before.owner.index()]
+                    .turn_facts
+                    .permanent_returned_to_your_hand = true;
+            }
             let controller = &mut self.state.players[before.controller.index()];
             controller.turn_facts.permanent_left_battlefield = true;
             if before.is_creature() {
@@ -11387,6 +11663,7 @@ impl Game {
                 .retain(|link| link.exiled != before.reference);
         }
         if before.zone == Zone::Stack {
+            self.capture_waiting_source_types(&before);
             self.state.stack.retain(|spell| {
                 spell.kind != StackKind::Spell
                     || !spell
@@ -11591,6 +11868,8 @@ impl Game {
             obj.card
         };
         obj.zone = destination;
+        obj.phased_out_under = None;
+        obj.phased_out_indirectly = false;
         // Only stack and battlefield objects have independent control.
         obj.controller = if matches!(destination, Zone::Battlefield | Zone::Stack) {
             entry_controller.unwrap_or(before.controller)
@@ -11893,6 +12172,14 @@ impl Game {
     }
 
     fn begin_turn(&mut self) {
+        if self
+            .state
+            .turn_schedule
+            .as_ref()
+            .is_some_and(|schedule| schedule.current.is_some())
+        {
+            self.state.players[self.state.active.index()].has_begun_extra_turn_this_game = true;
+        }
         // This-turn delayed abilities still observe cleanup SBAs and any
         // priority cycles those actions create (CR 514.3a).
         self.expire_turn_delayed_target_events();
@@ -11912,6 +12199,7 @@ impl Game {
         self.expire_next_turn_source_effects(self.state.active);
         self.expire_next_turn_stats(self.state.active);
         self.expire_next_turn_keywords(self.state.active);
+        self.expire_next_turn_hand_size(self.state.active);
         let active = self.state.active.index();
         self.state.players[active].turns_started = self.state.players[active]
             .turns_started
@@ -11978,6 +12266,7 @@ impl Game {
         self.state.turn_event_history = None;
         self.state.tap_history = None;
         self.state.counter_placement_history = None;
+        self.state.first_counter_kind_events = None;
         self.state.cast_entry_counters = None;
         self.state.attacked_this_turn.clear();
         self.state.declared_attack_history = None;
@@ -11994,6 +12283,7 @@ impl Game {
             player.lands_entered_this_turn = 0;
             player.mount_or_vehicle_entries_this_turn = 0;
             player.spells_cast_this_turn = 0;
+            player.dilemmas_faced_this_turn = 0;
             player.spell_mana_spent_this_turn = 0;
             player.token_creation_attempted_this_turn = false;
             player.instant_sorcery_cast_this_turn = 0;
@@ -12049,6 +12339,7 @@ impl Game {
             }
         }
         self.state.step = Step::Untap;
+        self.phase_in_for_untap(self.state.active);
         if !self.untap_active_player() {
             self.begin_step(Step::Upkeep);
             self.give_priority();
@@ -12193,6 +12484,7 @@ impl Game {
             rules.clear_phase_schedule();
             rules.attack_without_defender.clear();
             rules.player_attack_prohibitions = [0; 2];
+            rules.cannot_attack_this_turn = [false; 2];
         }
         self.state.casting_prohibited = false;
         self.state.damage_prevention_prohibited = false;
@@ -12204,6 +12496,10 @@ impl Game {
         if let Some(roles) = &mut self.state.roles {
             roles.noncombat_damage_increases.clear();
             roles.creature_counter_increases.clear();
+            roles.permanent_counter_increases.clear();
+            roles
+                .player_damage_shields
+                .retain(|shield| shield.expires_turn != Some(self.state.turn));
         }
         for player in &mut self.state.players {
             player.hexproof_until_end_turn = false;
@@ -12232,6 +12528,7 @@ impl Game {
         self.expire_base_stats();
         let expired_animations = self.expire_animations();
         let expired_basic_land_types = self.expire_basic_land_types();
+        let expired_creature_types = self.expire_temporary_creature_types();
         self.expire_graveyard_cast_permissions();
         self.expire_paid_graveyard_permissions();
         self.expire_embalm();
@@ -12277,6 +12574,7 @@ impl Game {
                 || expired_vehicles
                 || expired_animations
                 || expired_basic_land_types
+                || expired_creature_types
                 || expired_copies
                 || expired_legend_rule
                 || !retained_damage.is_empty())
@@ -12301,6 +12599,7 @@ impl Game {
         // Per-turn permissions persist through repeated cleanup priority, then reset
         // only when the turn actually advances (including an effect ending it).
         self.state.graveyard_type_uses = None;
+        self.state.source_play_uses = None;
         self.begin_turn();
     }
 
@@ -12785,7 +13084,13 @@ impl Game {
                         || self.shares_information(viewer, o.owner)
                         || s.known_hand.contains(&self.object_ref(*i as CardId)))
             })
-            .map(|(i, _)| query.object_view(i as CardId))
+            .map(|(i, _)| {
+                let mut object = query.object_view(i as CardId);
+                if object.phased_out {
+                    object.zone = Zone::Battlefield;
+                }
+                object
+            })
             .collect();
         let attack_payment = s
             .combat_payment
@@ -13311,6 +13616,7 @@ impl Game {
                 Pending::BlightPayment { .. } => "blight_payment",
                 Pending::SneakReturnCost { .. } => "sneak_return_cost",
                 Pending::WebSlingingReturnCost { .. } => "web_slinging_return_cost",
+                Pending::BeamMeUpReturnCost { .. } => "beam_me_up_return_cost",
                 Pending::TeamworkIntent { .. } => "teamwork_intent",
                 Pending::TeamworkPayment { .. } => "teamwork_payment",
                 Pending::Saddle { .. } => "saddle",
@@ -13361,12 +13667,16 @@ impl Game {
                 }
                 Pending::EffectDiscard { .. } => "effect_discard",
                 Pending::OutsideGameChoice { .. } => "outside_game_choice",
+                Pending::OutsideSourcePlay { .. } => "outside_source_play",
                 Pending::LegendarySplitSearch { .. } => "legendary_split_search",
                 Pending::OutsideEntryReplacement { .. } => "outside_entry_replacement",
                 Pending::HandDefender { .. } => "hand_defender",
                 Pending::TokenChoice { .. } => "token_choice",
                 Pending::KeywordChoice { .. } => "keyword_choice",
                 Pending::SourceCounterKind { .. } => "source_counter_kind",
+                Pending::TargetExistingCounterKindToPut { .. } => {
+                    "target_existing_counter_kind_to_put"
+                }
                 Pending::ResolutionColor { .. } => "resolution_color",
                 Pending::ResolutionPermanentType { .. } => "resolution_permanent_type",
                 Pending::PowerThreshold { .. } => "power_threshold",
@@ -13404,6 +13714,7 @@ impl Game {
                 colored_spell_reductions: self.colored_spell_reductions_view(i),
                 turns_to_skip: s.turn_skips.as_ref().map_or(0, |v| v[i]),
                 turns_started: s.players[i].turns_started,
+                has_begun_extra_turn_this_game: s.players[i].has_begun_extra_turn_this_game,
                 hexproof_until_end_turn: s.players[i].hexproof_until_end_turn,
                 token_creation_attempted_this_turn: s.players[i].token_creation_attempted_this_turn,
                 mountain_mana_bonus: (s.players[i].mountain_mana_bonus > 0)
@@ -13420,6 +13731,7 @@ impl Game {
                 lands_entered_this_turn: s.players[i].lands_entered_this_turn,
                 mount_or_vehicle_entries_this_turn: s.players[i].mount_or_vehicle_entries_this_turn,
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
+                dilemmas_faced_this_turn: s.players[i].dilemmas_faced_this_turn,
                 cards_drawn_this_turn: s.players[i].cards_drawn_this_turn,
                 scried_or_surveilled_this_turn: s.players[i].scried_or_surveilled_this_turn,
                 committed_crime_this_turn: s.players[i].committed_crime_this_turn,
@@ -13447,6 +13759,10 @@ impl Game {
                 life_gained_this_turn: s.players[i].life_gained_this_turn,
                 life_lost_this_turn: s.players[i].life_lost_this_turn,
                 attacked_this_turn: s.players[i].attacked_this_turn,
+                cannot_attack_this_turn: s
+                    .combat_rules
+                    .as_ref()
+                    .is_some_and(|rules| rules.cannot_attack_this_turn[i]),
                 life: s.players[i].life,
                 poison_counters: s.players[i].poison_counters,
                 other_counters: crate::cards::PlayerCounterKind::ALL
@@ -13562,6 +13878,20 @@ impl Game {
                 .graveyard_type_uses
                 .as_ref()
                 .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
+            source_play_uses: s
+                .source_play_uses
+                .as_ref()
+                .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
+            exiled_copy_grants: s.exiled_copy_grants.as_ref().map_or_else(Vec::new, |rows| {
+                rows.iter()
+                    .copied()
+                    .filter(|row| {
+                        self.object_ref(row.recipient.card) == row.recipient
+                            && self.state.objects[row.recipient.card as usize].zone == Zone::Exile
+                            && self.can_view_hideaway(viewer, row.recipient)
+                    })
+                    .collect()
+            }),
             embalm_abilities: self.embalm_views(),
             paid_graveyard_cast_permissions: s
                 .linked_choices
@@ -13663,6 +13993,10 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |roles| roles.creature_counter_increases.clone()),
+            permanent_counter_increases: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |roles| roles.permanent_counter_increases.clone()),
             resolved_ability_modifications: self.resolved_ability_modification_views(),
             role_timestamps: s
                 .roles
@@ -14139,6 +14473,10 @@ impl Game {
             + s.linked_choices.as_ref().map_or(0, |c| c.bytes())
             + cast_entry_counters::owned_bytes(&s.cast_entry_counters)
             + counter_placement_history::owned_bytes(&s.counter_placement_history)
+            + s.first_counter_kind_events.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<(ObjectRef, CounterKind)>>()
+                    + rows.len() * std::mem::size_of::<(ObjectRef, CounterKind)>()
+            })
             + live_counters::owned_bytes(&s.named_counters)
             + entry_choices::owned_bytes(&s.entry_values)
             + power_up::owned_bytes(&s.power_up_uses)
@@ -14230,6 +14568,17 @@ impl Game {
             + s.graveyard_type_uses.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<GraveyardTypeUse>>()
                     + rows.len() * std::mem::size_of::<GraveyardTypeUse>()
+            })
+            + s.source_play_uses.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<SourcePlayUse>>()
+                    + rows.len() * std::mem::size_of::<SourcePlayUse>()
+            })
+            + s.outside_play.as_ref().map_or(0, |_| {
+                std::mem::size_of::<source_permissions::OutsidePlay>()
+            })
+            + s.exiled_copy_grants.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<ExiledCopyGrant>>()
+                    + rows.len() * std::mem::size_of::<ExiledCopyGrant>()
             })
             + s.announcing
                 .as_ref()
@@ -14566,7 +14915,7 @@ impl Game {
         self.maximum_hand_size(player).is_none()
     }
     fn continuous_land_plays(&self, player: Player) -> u64 {
-        self.state
+        let printed: u64 = self.state
             .static_sources
             .iter()
             .filter(|&&id| self.state.objects[id as usize].controller == player)
@@ -14605,7 +14954,38 @@ impl Game {
                     })
                     .sum::<u64>()
             })
-            .sum()
+            .sum();
+        let Some(rows) = self.state.self_granted_abilities.as_deref() else {
+            return printed;
+        };
+        if !rows.iter().any(|row| {
+            matches!(
+                row.kind,
+                self_granted::SelfGrantedAbilityKind::AdditionalLandPlays(_)
+            )
+        }) {
+            return printed;
+        }
+        let query = self.characteristic_query();
+        let granted: u64 = rows
+            .iter()
+            .filter_map(|row| {
+                let self_granted::SelfGrantedAbilityKind::AdditionalLandPlays(amount) = row.kind
+                else {
+                    return None;
+                };
+                let object = &self.state.objects[row.recipient.card as usize];
+                (object.zone == Zone::Battlefield
+                    && self.object_ref(row.recipient.card) == row.recipient
+                    && object.controller == player
+                    && row.expires_turn.is_none_or(|turn| turn == self.state.turn)
+                    && query.self_grant_available(row.recipient, row.timestamp))
+                .then_some(u64::from(amount))
+            })
+            .sum();
+        printed
+            .checked_add(granted)
+            .capacity("land play allowance exhausted")
     }
 }
 

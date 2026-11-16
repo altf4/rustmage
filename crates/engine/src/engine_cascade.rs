@@ -13,6 +13,9 @@ pub struct CascadeView {
     /// A Breaching-style instruction leaves the rest of its exiles in exile.
     #[serde(skip_serializing_if = "is_false")]
     pub keep_exiled: bool,
+    /// The found nonland remains exiled when the controller declines to cast it.
+    #[serde(skip_serializing_if = "is_false")]
+    pub leave_discovered_exiled: bool,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -192,6 +195,7 @@ impl Game {
                 exiled,
                 discovered: discover.and(eligible),
                 keep_exiled: false,
+                leave_discovered_exiled: false,
             },
             discover: discover.map(|amount| DiscoverResult {
                 amount,
@@ -230,9 +234,19 @@ impl Game {
         item: &SpellView,
         maximum_mana_value: impl FnOnce(&Self) -> Option<u64>,
     ) -> bool {
+        self.start_exile_until_nonland_cast(item, item.controller, maximum_mana_value, true)
+    }
+
+    pub(super) fn start_exile_until_nonland_cast(
+        &mut self,
+        item: &SpellView,
+        library: Player,
+        maximum_mana_value: impl FnOnce(&Self) -> Option<u64>,
+        uncast_to_hand: bool,
+    ) -> bool {
         let mut exiled = Vec::new();
         let mut found = None;
-        while let Some(card) = self.top_library_card(item.controller) {
+        while let Some(card) = self.top_library_card(library) {
             let events = self.move_objects_raw(&[card], Zone::Exile);
             let moved = events
                 .iter()
@@ -245,7 +259,7 @@ impl Game {
                     found = Some(object);
                     break;
                 }
-            } else if self.top_library_card(item.controller) == Some(card) {
+            } else if self.top_library_card(library) == Some(card) {
                 break;
             }
         }
@@ -261,6 +275,7 @@ impl Game {
                 exiled,
                 discovered: Some(object),
                 keep_exiled: true,
+                leave_discovered_exiled: !uncast_to_hand,
             },
             discover: None,
         }));
@@ -305,7 +320,8 @@ impl Game {
         let CascadeState::Active { view, discover } = *state else {
             unreachable!("only active cascades finish")
         };
-        if let Some(object) = view.discovered
+        if !view.leave_discovered_exiled
+            && let Some(object) = view.discovered
             && self.object_ref(object.card) == object
             && self.state.objects[object.card as usize].zone == Zone::Exile
         {

@@ -2,11 +2,11 @@
   "name": "Temple Garden",
   "catalogue_id": 4361,
   "oracle_id": "f413a83d-a40d-434c-b20a-4c707c0527fa",
-  "facts_sha256": "dc888f17289741ce755b634865350a769cebfaa545de867f0ad7e30d0961682a",
+  "facts_sha256": "5fd94a5702ceb372f43848e8704fa234b260de6977af781c0f58268f0e05cf16",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "851a11b5d7db07a05a42d0ce102cb05c3fd4b94dc789dacbaa0f4ef3119a63f9"
   },
-  "physical_metadata_sha256": "200ad218804709fff62780b5359d361d2b474ec3ded03a0abdc384cd8895c5d5"
+  "physical_metadata_sha256": "8febada8827087753e714b17a2c851a7fb5a43710926f21dbbe5bca6cd5fa2c4"
 }

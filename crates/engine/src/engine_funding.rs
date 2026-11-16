@@ -258,6 +258,9 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
         let index = rows.binary_search_by_key(&id, |row| row.object.card).ok()?;
         (rows[index].object == reference).then_some(rows[index].recipe)
     }
+    fn copy_rows_state(&self) -> &copies::Rows {
+        &self.copy_recipes
+    }
     fn static_sources(&self) -> &[CardId] {
         self.entry_projection
             .as_ref()
@@ -723,8 +726,11 @@ fn source_exile_payable<W: ability_world::CharacteristicWorld + ?Sized>(
     goal.source
         .as_ref()
         .is_none_or(|(source, index, _, definition, _)| {
-            !definition.activation(*index).cost.exile_self
-                || !world.graveyard_exile_prohibited(source.card)
+            (!definition.activation(*index).cost.exile_self
+                || !world.graveyard_exile_prohibited(source.card))
+                && (definition.activation(*index).origin
+                    != ActivationOrigin::GraveyardBottomLibrary
+                    || !world.zone_move_prevented(*source, Zone::Library))
         })
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -771,6 +777,7 @@ fn source_obligations(
         || ability.cost.sacrifice
         || ability.cost.discard
         || ability.cost.exile_self
+        || ability.origin == ActivationOrigin::GraveyardBottomLibrary
         || ability.cost.remove.is_some()
         || ability.source_counter_cost().is_some()
         || ability.cost.loyalty.is_some();
@@ -1304,7 +1311,10 @@ impl<'g> FundingState<'g> {
                         && (inheritance_possible || shared_linked_activations || retain_permanent_counter_bearers || color_count_sensitive || life_replacement_possible || loyalty_threshold_sensitive || sacrifice_mana_cost || tap_mana_cost || game.sacrifice_prohibition_source(*id as CardId) || zone_replacements::card_provides_prevention(object.card) || {
                                 #[cfg(feature = "test-support")] { zone_replacements::TEST_PREVENT_PROVIDER.with(|p| p.get() == Some(game.object_ref(*id as CardId))) }
                                 #[cfg(not(feature = "test-support"))] { false }
-                            } || game.state.controls.is_some() || object.card.has_cast_origin_abilities() || object.card.borrows_activations() || object.card.has_activation_mana_flexibility()
+                            } || game.state.controls.is_some()
+                            || game.state.copy_recipes.as_ref().is_some_and(|rows| rows.iter().any(|row|
+                                row.object.card == *id as CardId && row.object == game.object_ref(*id as CardId)))
+                            || object.card.has_cast_origin_abilities() || object.card.borrows_activations() || object.card.has_activation_mana_flexibility()
                             || object.card.is_attachment_source()
                             || characteristic_layers::has_equipment_form(game, *id as CardId)
                             || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
@@ -1331,7 +1341,7 @@ impl<'g> FundingState<'g> {
                                         | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
                                 ))
                             })
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_) | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_) | crate::cards::StaticAbilityFragment::AttachedActivationsProhibited | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_) | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_) | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledCreatureTapManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledLandColorlessTapManaBonus | crate::cards::StaticAbilityFragment::ControlledArtifactTokenTapManaBonus | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::AttachmentManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledPermanentAllKindsKeywords { .. } | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. } | crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(_) | crate::cards::StaticAbilityFragment::ConditionalEquippedCreatureKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureScaling { .. } | crate::cards::StaticAbilityFragment::AttachedAllCreatureTypes | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..) | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_) | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. } | crate::cards::StaticAbilityFragment::ControlledSubtypeTapMana { .. } | StaticAbilityFragment::ControlledKindOrSubtypeTapMana { .. } | crate::cards::StaticAbilityFragment::ControlledArtifactFood(_) | crate::cards::StaticAbilityFragment::OtherCreaturesFood(_) | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. } | crate::cards::StaticAbilityFragment::ControlledForeignOwnedCreatureSubtype(_) | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureEntryCountersForLandsEntered | crate::cards::StaticAbilityFragment::SourceOffTurnCreature | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. } | crate::cards::StaticAbilityFragment::CreatureGroupScaling { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureBonusPerSubtype { .. } | crate::cards::StaticAbilityFragment::ControlledLegendaryCreatureBonus(_) | crate::cards::StaticAbilityFragment::ChosenBasicLandType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterCreature { .. } | crate::cards::StaticAbilityFragment::SourceAdditionalCreature { .. } | crate::cards::StaticAbilityFragment::SourceCelebrationCreatureForm { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..) | crate::cards::StaticAbilityFragment::CounterKeywordOther(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_) | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_) | crate::cards::StaticAbilityFragment::AttachedActivationsProhibited | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_) | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_) | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledCreatureTapManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledLandColorlessTapManaBonus | crate::cards::StaticAbilityFragment::ControlledArtifactTokenTapManaBonus | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::AttachmentManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledPermanentAllKindsKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledPermanentAllKindsKeywordsAtSourceCounters { .. } | crate::cards::StaticAbilityFragment::ControlledOtherCounteredCreatureKeywords(..) | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. } | crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(_) | crate::cards::StaticAbilityFragment::ConditionalEquippedCreatureKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureScaling { .. } | crate::cards::StaticAbilityFragment::AttachedAllCreatureTypes | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..) | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_) | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. } | crate::cards::StaticAbilityFragment::ControlledSubtypeTapMana { .. } | StaticAbilityFragment::ControlledKindOrSubtypeTapMana { .. } | crate::cards::StaticAbilityFragment::ControlledArtifactFood(_) | crate::cards::StaticAbilityFragment::OtherCreaturesFood(_) | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. } | crate::cards::StaticAbilityFragment::ControlledForeignOwnedCreatureSubtype(_) | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureEntryCountersForLandsEntered | crate::cards::StaticAbilityFragment::SourceOffTurnCreature | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. } | crate::cards::StaticAbilityFragment::CreatureGroupScaling { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureBonusPerSubtype { .. } | crate::cards::StaticAbilityFragment::ControlledLegendaryCreatureBonus(_) | crate::cards::StaticAbilityFragment::ChosenBasicLandType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterCreature { .. } | crate::cards::StaticAbilityFragment::SourceAdditionalCreature { .. } | crate::cards::StaticAbilityFragment::SourceCelebrationCreatureForm { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..) | crate::cards::StaticAbilityFragment::CounterKeywordOther(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -1743,7 +1753,10 @@ impl<'g> FundingState<'g> {
                         }
                     }
                 }
-                for group in source.object.card.static_ability_groups() {
+                for group in ability_world::CharacteristicWorld::recipe(self, source.id)
+                    .definition
+                    .static_ability_groups()
+                {
                     if !entry_modes::group_enabled(self, self.reference(source.id), group) {
                         continue;
                     }
@@ -1767,7 +1780,27 @@ impl<'g> FundingState<'g> {
                             {
                                 keywords = keywords.union(grant)
                             }
+                            StaticAbilityFragment::ControlledPermanentAllKindsKeywordsAtSourceCounters {
+                                kinds,
+                                kind,
+                                minimum,
+                                keywords: grant,
+                            } if target.object.controller == source.object.controller
+                                && self.kinds(target) & kinds == kinds
+                                && ability_world::CharacteristicWorld::counter_count(self, source.id, kind) >= minimum =>
+                            {
+                                keywords = keywords.union(grant)
+                            }
+                            StaticAbilityFragment::ControlledOtherCounteredCreatureKeywords(grant)
+                                if target.object.controller == source.object.controller
+                                    && target.id != source.id
+                                    && self.kinds(target) & 1 != 0
+                                    && ability_world::CharacteristicWorld::counter_amounts(self, target.id).has_any() =>
+                            {
+                                keywords = keywords.union(grant)
+                            }
                             StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                            | StaticAbilityFragment::ControlledSubtypeKeywordsOnYourTurn { .. }
                             | StaticAbilityFragment::ControlledKindAndSubtypeKeywords { .. } => {
                                 if let Some(grant) = ability_evaluation::controlled_subtype_keywords(
                                     self, *fragment, self.reference(source.id), target.id,
@@ -6376,8 +6409,13 @@ impl Game {
             );
         }
         if a.item.cast.is_some_and(|c| {
-            matches!(c.method, CastMethod::Sneak | CastMethod::WebSlinging)
-                || c.method.pays_life_for_mana_value()
+            matches!(
+                c.method,
+                CastMethod::Sneak
+                    | CastMethod::WebSlinging
+                    | CastMethod::BeamMeUp
+                    | CastMethod::BeamMeUpGranted(_)
+            ) || c.method.pays_life_for_mana_value()
         }) {
             let mut proposal = a.clone();
             proposal.cost = Some(cost);
@@ -7158,10 +7196,12 @@ impl Game {
                 .additional_cost()
                 .is_some_and(|s| matches!(s.kind.payment_kind(), EffectChoiceKind::BlightCost(_)))
             || announcement.has_compound_sneak_cost()
-            || announcement
-                .item
-                .cast
-                .is_some_and(|cast| cast.method == CastMethod::WebSlinging)
+            || announcement.item.cast.is_some_and(|cast| {
+                matches!(
+                    cast.method,
+                    CastMethod::WebSlinging | CastMethod::BeamMeUp | CastMethod::BeamMeUpGranted(_)
+                )
+            })
             || announcement.additional_cost().is_some_and(|cost| {
                 cost.kind == EffectChoiceKind::ReturnTappedCreature
                     || cost.kind.uses_target_mana_value()

@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "scope": "Pinned non-Standard-legal Oracle facts for complete physical-set membership and Freeform behavior. Does not extend the frozen legal Standard inventory.",
-  "oracle_cards_sha256": "88584cc4a79fc5ade4f879348e3dcfb0c91f77ea0648573cec8a54eb4eb2be06",
+  "oracle_cards_sha256": "8ec8f5bfe381d96fbea5cf233f1d208b0ee5f8042baf611ac35eec9fc684eac6",
   "target": {
-    "path": "data/targets/standard-2026-10-15.json",
-    "sha256": "9ce06f9b15c53a7076d6db96b872c99cf5a1382ff335f999522da50d46d1dc38"
+    "path": "data/targets/standard-2026-11-14.json",
+    "sha256": "7bbc54962e681c41a22550c807b2ebfb7805b47e00deb6851eac36cc7de1bd39"
   },
   "cards": [
     {

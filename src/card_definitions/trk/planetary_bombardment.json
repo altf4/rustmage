@@ -1,0 +1,14 @@
+{
+  "name": "Planetary Bombardment",
+  "catalogue_id": 5891,
+  "oracle_id": "2c2fdeff-a0c6-44cb-9603-4a9865f62985",
+  "facts_sha256": "229ba26e6eb7854a1f911541b042bb3749b5b52f5767cef0e109e99ef1809c3f",
+  "physical_metadata_sha256": "5b47e017b98f0222b82973f374f0db2d7a2af6c535731da19058aef39e071c96",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/p/PlanetaryBombardment.java",
+  "java_sha256": "956d41deaa670fe07158657d6c0cf5e9824c1620c8dddad02f6f278936609d9e",
+  "xmage_class": "mage.cards.p.PlanetaryBombardment"
+}

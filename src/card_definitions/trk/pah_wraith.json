@@ -1,0 +1,14 @@
+{
+  "name": "Pah-Wraith",
+  "catalogue_id": 5883,
+  "oracle_id": "e47c340d-b20b-4103-955b-3f76424c43f8",
+  "facts_sha256": "cd6e2591c7148cbb3bca47e0d8945680985bbaa967b955ae22d12b2be31fa1fe",
+  "physical_metadata_sha256": "cdc4e92d2430c944748399591656b6b6cf19acf92c0217e28d90f97c349fc7f1",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/p/PahWraith.java",
+  "java_sha256": "182d5f1635d90b72485d35ca6b4e60e456b143778c21b906316422687b931d8b",
+  "xmage_class": "mage.cards.p.PahWraith"
+}

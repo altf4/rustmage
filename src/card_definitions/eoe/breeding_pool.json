@@ -2,13 +2,13 @@
   "name": "Breeding Pool",
   "catalogue_id": 543,
   "oracle_id": "20283c4a-f1f0-42f0-bc08-6da87474426b",
-  "facts_sha256": "753394be5f8c6dafbf99efd606caafafc04a420276f0b264ad17ff217ba9cbba",
+  "facts_sha256": "9afdc1acbe5d7a149a36aea70c7f51d883d016203b64670d9a6c228e283c3764",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f31b2fbb9bb128d43dc0658dc0a098e631943c0bc38678ce9fe030e08b73b9c1"
   },
-  "physical_metadata_sha256": "b0fd6354973ba611159e26d0bcada5abf9703362bce285db87603b38ea7f91f0",
+  "physical_metadata_sha256": "922293fa9af25aa47b8bfb86b6469ec7f373f266e4e828197959b9f48fef631a",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/b/BreedingPool.java",
   "java_sha256": "ff1d8e4874638630c7dd284b7dae40fdf28351fdf92b0482c231e96f3ef4a160",

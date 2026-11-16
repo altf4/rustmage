@@ -112,6 +112,8 @@ impl Card {
                             | StaticAbilityFragment::KeywordGrant(..)
                             | StaticAbilityFragment::ControlledPermanentKeywords { .. }
                             | StaticAbilityFragment::ControlledPermanentAllKindsKeywords { .. }
+                            | StaticAbilityFragment::ControlledPermanentAllKindsKeywordsAtSourceCounters { .. }
+                            | StaticAbilityFragment::ControlledOtherCounteredCreatureKeywords(..)
                             | StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
                             | StaticAbilityFragment::ConditionalEquippedCreatureKeywords { .. }
                             | StaticAbilityFragment::ControlledTappedKeywords { .. }
@@ -145,6 +147,7 @@ impl Card {
                             | StaticAbilityFragment::CounterBearingPermanentWard { .. }
                             | StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                             | StaticAbilityFragment::ControlledCreatureTrigger { .. }
+                            | StaticAbilityFragment::ControlledArtifactCreatureTrigger { .. }
                             | StaticAbilityFragment::ControlledSubtypeCastTrigger { .. }
                             | StaticAbilityFragment::AttachmentTrigger(..)
                             | StaticAbilityFragment::AttachmentLookAtLibraryTop

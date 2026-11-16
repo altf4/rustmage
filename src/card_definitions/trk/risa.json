@@ -1,0 +1,14 @@
+{
+  "name": "Risa",
+  "catalogue_id": 5907,
+  "oracle_id": "365a4644-74f4-4af9-81ab-0d328ca5edce",
+  "facts_sha256": "be2c18b25354c8e2be1bfd651150c276584d59ed014a463b1219dbdd74f29b16",
+  "physical_metadata_sha256": "033fadec56a557859619aee120495af4d8e21f1550749fac3ed8f42bd67e8e4b",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/r/Risa.java",
+  "java_sha256": "d69437fdbe9878d4cb66ac13c1e3c5e7ecf173ea0fdfbbd0728b5b97dd4ed630",
+  "xmage_class": "mage.cards.r.Risa"
+}

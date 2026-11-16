@@ -2,13 +2,13 @@
   "name": "Season of Weaving",
   "catalogue_id": 3751,
   "oracle_id": "4b473a42-a0c5-43d5-93f9-c599e963a06b",
-  "facts_sha256": "4ed1885b4c5cf43f9f48ecfea7b8498402c9ac63904a296111ffa5770fbb1065",
+  "facts_sha256": "415efbaae4355d8511d15eda878237d7dfee5594cd539a2093cc414a2326c379",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "03f8aab9d43a46be413414a49d7d9fd8986796ef6e7f44e8144926438cef04ba"
   },
-  "physical_metadata_sha256": "0adeda1a13c2e7d775b486804bb8eed32a409fa4291294ab5a3f0ac0621ef62b",
+  "physical_metadata_sha256": "0fb25899dabbbb993db9aa945a22c02da83a94ce854dafe2286711cd060c5fa8",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/s/SeasonOfWeaving.java",
   "java_sha256": "88c03fb61cf97890bc1206eb4722f1fb54345abd8c6c67d3119e5440f83dd4ef",

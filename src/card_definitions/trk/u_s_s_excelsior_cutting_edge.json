@@ -1,0 +1,14 @@
+{
+  "name": "U.S.S. Excelsior, Cutting Edge",
+  "catalogue_id": 5985,
+  "oracle_id": "9f4ae54b-f77d-43df-87d5-792ac0905058",
+  "facts_sha256": "a03115f8515b5a4a46a40d546494b9a52dd955b1e2310592dac5ecc47b75a3d1",
+  "physical_metadata_sha256": "4901252b5ae12ac7ea0c0bd5ffbe6b29aab64581561d0fdd38af81ff5bf4c56a",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/u/USSExcelsiorCuttingEdge.java",
+  "java_sha256": "a54d3cae39e332aa97157b8571125d3e9d886d1be0815ae41259c4d1acfc5c9c",
+  "xmage_class": "mage.cards.u.USSExcelsiorCuttingEdge"
+}

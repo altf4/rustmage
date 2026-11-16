@@ -201,6 +201,11 @@ impl Game {
                 .first()
                 .and_then(|bound| bound.object)
                 .and_then(|object| self.live_explorer(object)),
+            Subject::Entering => item
+                .entering_explorer
+                .as_deref()
+                .copied()
+                .map(|saved| self.live_explorer(saved.object).unwrap_or(saved)),
             _ => unreachable!("unsupported explore subject"),
         };
         if let Some(explorer) = explorer {

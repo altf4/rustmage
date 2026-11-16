@@ -1,0 +1,14 @@
+{
+  "name": "D'Ghor Bloodletter",
+  "catalogue_id": 5767,
+  "oracle_id": "ae5ee92a-5915-49ce-aa4c-611ab711b2ef",
+  "facts_sha256": "c5fa60e867d21e647752985ba7ac20fc3226a1dd45599dc2323c6c6f47312556",
+  "physical_metadata_sha256": "64dbd946e63d3579206abbd270e9dc9093810a7a3b7c79ab3676cdbaf3fbca41",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/d/DGhorBloodletter.java",
+  "java_sha256": "3e19709d48eb9453099f0cfc303fd24658e7e0b8642e99a151a4330b0e321002",
+  "xmage_class": "mage.cards.d.DGhorBloodletter"
+}

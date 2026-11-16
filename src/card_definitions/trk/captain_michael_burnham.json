@@ -1,0 +1,14 @@
+{
+  "name": "Captain Michael Burnham",
+  "catalogue_id": 5743,
+  "oracle_id": "9a71aa6c-2d5f-468d-b588-252fae37ccbb",
+  "facts_sha256": "fad9ffee115c8926ed5c1b58549edcc8dec6c1e0a84a3039d74f0240b4e5191d",
+  "physical_metadata_sha256": "5cd92be262ab75423f9e8a45a96e6d21ea2ff2ae0206ed9235ab4cfb4d3dd2cb",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/c/CaptainMichaelBurnham.java",
+  "java_sha256": "094a57206f757390f58bbf738ffab54b86695de4cfd02493741aacf0277ecdfc",
+  "xmage_class": "mage.cards.c.CaptainMichaelBurnham"
+}

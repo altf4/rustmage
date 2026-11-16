@@ -1,0 +1,14 @@
+{
+  "name": "Cold-Blooded Crew",
+  "catalogue_id": 5753,
+  "oracle_id": "d5e9b04f-4a97-4da1-bf86-3715fc75ab23",
+  "facts_sha256": "032d71f84153a3f4bf7199e83029e24d738ea2032ce14529ff2b6bf8946f4cbf",
+  "physical_metadata_sha256": "1647dc82fff2d2de765835ca6e62b7f025a737868ee38c1367e52d042a30cd17",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/c/ColdBloodedCrew.java",
+  "java_sha256": "de8f17a30e09e99e7dfd3916377efeadfcf1b4b25baa79f71222e12421147db3",
+  "xmage_class": "mage.cards.c.ColdBloodedCrew"
+}

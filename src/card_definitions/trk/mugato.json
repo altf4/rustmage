@@ -1,0 +1,14 @@
+{
+  "name": "Mugato",
+  "catalogue_id": 5871,
+  "oracle_id": "eb9a3b52-62ad-467f-b62a-0273ceee48e5",
+  "facts_sha256": "5192e724557b77e52765c7bb90fb87e45c09c0d21b53d65d00d1c717701279e6",
+  "physical_metadata_sha256": "c261a9eb0586228d2c942993283c4df321b85a09fe23dd1578e08b2d4ad6e5a8",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/m/Mugato.java",
+  "java_sha256": "a8e9d6680b692fdbf7b90beafc3094f4f47881c772910889c48bd40943875517",
+  "xmage_class": "mage.cards.m.Mugato"
+}

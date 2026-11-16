@@ -747,7 +747,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         }
         let reference = self.object_ref(id);
         let attacking = self.state.attackers.iter().any(|a| a.card == id);
-        for &source in self.static_sources() {
+        for source in CharacteristicWorld::static_source_candidates(self) {
             let object = self.object(source);
             if object.zone != Zone::Battlefield {
                 continue;
@@ -759,7 +759,10 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                     }
                 }
             }
-            for group in object.card.static_ability_groups() {
+            for group in CharacteristicWorld::recipe(self, source)
+                .definition
+                .static_ability_groups()
+            {
                 if !entry_modes::group_enabled(self, self.object_ref(source), group) {
                     continue;
                 }
@@ -795,7 +798,27 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         {
                             keywords = keywords.union(grant)
                         }
+                        StaticAbilityFragment::ControlledPermanentAllKindsKeywordsAtSourceCounters {
+                            kinds,
+                            kind,
+                            minimum,
+                            keywords: grant,
+                        } if target.controller == object.controller
+                            && CharacteristicWorld::kinds(self, id) & kinds == kinds
+                            && CharacteristicWorld::counter_count(self, source, kind) >= minimum =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
+                        StaticAbilityFragment::ControlledOtherCounteredCreatureKeywords(grant)
+                            if target.controller == object.controller
+                                && id != source
+                                && CharacteristicWorld::kinds(self, id) & 1 != 0
+                                && self.counter_amounts(id).has_any() =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
                         StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                        | StaticAbilityFragment::ControlledSubtypeKeywordsOnYourTurn { .. }
                         | StaticAbilityFragment::ControlledKindAndSubtypeKeywords { .. } => {
                             if let Some(grant) = ability_evaluation::controlled_subtype_keywords(
                                 self,
@@ -1161,7 +1184,8 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         index: usize,
         group: &crate::cards::StaticAbilityGroup,
     ) -> bool {
-        entry_modes::group_enabled(self, source, group)
+        self.object(source.card).zone != Zone::PhasedOut
+            && entry_modes::group_enabled(self, source, group)
             && self
                 .evaluation
                 .as_ref()
@@ -1172,20 +1196,26 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         source: CardId,
         matches: impl Fn(&StaticAbilityFragment) -> bool,
     ) -> bool {
+        if self.object(source).zone == Zone::PhasedOut {
+            return false;
+        }
         if !self.on_battlefield(source) {
             return true;
         }
         let evaluation = self.evaluation.as_ref();
         // Ordinary static groups retain the no-removal fast path.
-        if evaluation.is_none() && !self.object(source).card.has_conditional_static_groups() {
+        if evaluation.is_none()
+            && !CharacteristicWorld::recipe(self, source)
+                .definition
+                .has_conditional_static_groups()
+        {
             return true;
         }
         let reference = self.object_ref(source);
         let mut bound = false;
         let mut available = false;
-        for (index, group) in self
-            .object(source)
-            .card
+        for (index, group) in CharacteristicWorld::recipe(self, source)
+            .definition
             .static_ability_groups()
             .iter()
             .enumerate()
@@ -1245,6 +1275,13 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         } if self.world.controlled_creature_trigger_applies(
                             source, recipient, other, nontoken,
                         ) =>
+                        {
+                            Some(ability)
+                        }
+                        StaticAbilityFragment::ControlledArtifactCreatureTrigger { ability }
+                            if self.world.controlled_creature_trigger_applies(
+                                source, recipient, false, false,
+                            ) && self.world.kinds(recipient) & 16 != 0 =>
                         {
                             Some(ability)
                         }
@@ -1418,6 +1455,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             controller: obj.controller,
             battle_protector: self.world.battle_protector(self.object_ref(id)),
             zone: obj.zone,
+            phased_out: obj.zone == Zone::PhasedOut,
             tapped: obj.tapped,
             summoning_sick: obj.summoning_sick,
             cast_for_warp: obj.cast_for_warp,
@@ -1510,6 +1548,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     }
     fn stored_recipe(&self, id: CardId) -> Option<CopyRecipe> {
         self.world.stored_recipe(id)
+    }
+    fn copy_rows_state(&self) -> &copies::Rows {
+        self.world.copy_rows_state()
     }
     fn provided_origin(&self, object: ObjectRef) -> Option<u64> {
         self.world.provided_origin(object)

@@ -2,13 +2,13 @@
   "name": "Stomping Ground",
   "catalogue_id": 4161,
   "oracle_id": "16052b52-ade1-406f-a06b-ce7ea607fb63",
-  "facts_sha256": "ef8e1d2c5412f60d153cf55da3428f46c291c0dbc4456260d9cba86e6bc55451",
+  "facts_sha256": "4f87749afec0148ae48a17e14764458c4158d6f543208e483e85a5c5804b5f26",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c19733403edabb8e329922d5dae4041a4435eb438b0d45e6aa681c8faa934f1e"
   },
-  "physical_metadata_sha256": "2f1fbdf7a46b470b15057684b526a5b87c2e577549fa7ca44fe35b623f5ab892",
+  "physical_metadata_sha256": "0eebbad84f540bf2741477d4dd7d50cb85aa8baa8d3076ef4f9f1f3a1e7f3b15",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/s/StompingGround.java",
   "java_sha256": "ca22dab2e8d3e6ce9dc4f5785124bc40f051875bd0333203dffbc02ffd46eb99",

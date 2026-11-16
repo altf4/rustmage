@@ -1,0 +1,13 @@
+{
+  "name": "Rutherford, Upgraded Ensign",
+  "catalogue_id": 5913,
+  "oracle_id": "42258216-fe2b-42d0-a6ce-76ecf8104c10",
+  "facts_sha256": "1fce52c3f07b8e1c9f15f9a34684f1a12b60754b0cab36027cfb0b1646c0ece5",
+  "physical_metadata_sha256": "2f9e95257f3a24ab3601e9d360f2cbce0715c953e79b6790566b22771fab33b1",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

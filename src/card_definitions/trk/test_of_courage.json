@@ -1,0 +1,14 @@
+{
+  "name": "Test of Courage",
+  "catalogue_id": 5958,
+  "oracle_id": "101b2387-58a1-4ef9-8395-0024713e217b",
+  "facts_sha256": "60f4cc1d4974dcc974cf8438a321e87844f8d40ed57dab5756db456f2d639b5d",
+  "physical_metadata_sha256": "df53db37e79d806594eba0d1b82e5b75aaf6932de6fd9b349494e92eb01ecc55",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/t/TestOfCourage.java",
+  "java_sha256": "d30437472b597419c872c8de7fab437e9d35a34d664adcfda92834c0a7d3b8b7",
+  "xmage_class": "mage.cards.t.TestOfCourage"
+}

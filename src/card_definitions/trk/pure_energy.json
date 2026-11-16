@@ -1,0 +1,14 @@
+{
+  "name": "Pure Energy",
+  "catalogue_id": 5895,
+  "oracle_id": "f4831eee-fef6-4fef-a174-400a25d0837d",
+  "facts_sha256": "3b4c47d015a1d9549117d4e926b89dda9a3fb55a612bb502d11d5cea9d520727",
+  "physical_metadata_sha256": "db8ebdd1ea341d1ed90a117676da04bc9e411c25393aa6bbd64d2bb793d2f9e1",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/p/PureEnergy.java",
+  "java_sha256": "d5bb0106f0c5f4c355714ecdeacb6f7cd57946679f9f2252be1a542afa5ca60b",
+  "xmage_class": "mage.cards.p.PureEnergy"
+}

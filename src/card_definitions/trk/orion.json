@@ -1,0 +1,14 @@
+{
+  "name": "Orion",
+  "catalogue_id": 5881,
+  "oracle_id": "47e3aa22-8806-408f-b93e-0d0b800866f6",
+  "facts_sha256": "9087b4b0d5762c6f646f6a9feeff7873ab5767e73e4a7495bed7c0c1fa5c9a6b",
+  "physical_metadata_sha256": "41548b429714875549b24fe6fe1928bbc8e971e6920069b4cb2324c27b277711",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/o/Orion.java",
+  "java_sha256": "b8a673362ef948cf1734e73dd11f5ff708145c965dd66ad653d68b347d6f8f1c",
+  "xmage_class": "mage.cards.o.Orion"
+}

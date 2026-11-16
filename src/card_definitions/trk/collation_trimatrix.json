@@ -1,0 +1,14 @@
+{
+  "name": "Collation Trimatrix",
+  "catalogue_id": 5754,
+  "oracle_id": "4042ab14-c579-4d82-a642-576b88508ec7",
+  "facts_sha256": "327d7f2b877520ea20841396b35a6aadad2adb1e9bd7bec588d0660780a24908",
+  "physical_metadata_sha256": "0528df23e7764f8b85216a75ea2523785849be6fc1adf6c5057931019ffcb49d",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/c/CollationTrimatrix.java",
+  "java_sha256": "51a4b9e7b753445addb20c4c70f6ad340c6f50407a577ce672bee1c581c548d4",
+  "xmage_class": "mage.cards.c.CollationTrimatrix"
+}

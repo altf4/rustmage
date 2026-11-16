@@ -328,6 +328,7 @@ impl Game {
                                     | crate::cards::StaticAbilityFragment::CounterBearingPermanentWard { .. }
                                         | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                                         | crate::cards::StaticAbilityFragment::ControlledCreatureTrigger { .. }
+                                        | crate::cards::StaticAbilityFragment::ControlledArtifactCreatureTrigger { .. }
                                 )
                             })
                         })

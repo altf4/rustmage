@@ -1,0 +1,14 @@
+{
+  "name": "Replicator",
+  "catalogue_id": 5905,
+  "oracle_id": "a91b8eb4-d4f7-4e24-ae49-1f51e610c7ca",
+  "facts_sha256": "fef83628ed7756519961edd4fd032bd24ce4f928e3e7e17ffcfb2c4b47aa377e",
+  "physical_metadata_sha256": "494ce8c93b2fc0dabf7fa7573942a6bfed32b034a416faa817aeac0d75b3b082",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/r/Replicator.java",
+  "java_sha256": "63ec69da157fa582a2b883e0820a70fda1ef4aa0b9000b5e64b4517765a01612",
+  "xmage_class": "mage.cards.r.Replicator"
+}

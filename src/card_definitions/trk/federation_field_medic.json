@@ -1,0 +1,14 @@
+{
+  "name": "Federation Field Medic",
+  "catalogue_id": 5804,
+  "oracle_id": "3759f1de-eda1-4f09-b12b-ea5f5fc731d7",
+  "facts_sha256": "19aee1cc9fadcd1851cafdbe1dde190141f4ad2546ab1325d599a45e5570ed72",
+  "physical_metadata_sha256": "8227543401076d830e404f7b5e8f3a87e2a15464e9de3db62360e0ed574d9621",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/f/FederationFieldMedic.java",
+  "java_sha256": "6ef69863bfb5559fa2684ba05baf7e38ea010e159a2bd204b58ae05f86da08ab",
+  "xmage_class": "mage.cards.f.FederationFieldMedic"
+}

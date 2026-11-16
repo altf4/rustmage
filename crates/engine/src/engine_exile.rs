@@ -109,10 +109,20 @@ impl Game {
             || self.linked_exile_play(player, card).is_some()
     }
     pub(super) fn can_cast_exiled_independently(&self, player: Player, card: CardId) -> bool {
-        self.can_cast_threshold_linked_exile(player, card)
+        self.can_cast_self_from_exile(player, card)
+            || self.can_cast_threshold_linked_exile(player, card)
             || self.can_play_foreign_stash(player, card)
             || self.can_cast_warped(player, card)
             || self.has_printed_cost_exile_permission(player, card)
+    }
+    fn can_cast_self_from_exile(&self, player: Player, card: CardId) -> bool {
+        self.state.objects.get(card as usize).is_some_and(|object| {
+            object.zone == Zone::Exile
+                && object.is_card()
+                && object.owner == player
+                && !self.exiled_face_down(self.object_ref(card))
+                && object.card.self_exile_cast()
+        })
     }
     pub(super) fn has_printed_cost_exile_permission(&self, player: Player, card: CardId) -> bool {
         let object = self.object_ref(card);
@@ -562,7 +572,7 @@ impl Game {
         self.finish_zone_events(&events, &[]);
     }
 
-    pub(super) fn exile_until_nonland_cast_this_turn(&mut self, player: Player) {
+    pub(super) fn exile_until_nonland_this_turn(&mut self, player: Player, cast_only: bool) {
         while let Some(top) = self.top_library_card(player) {
             let events = self.move_objects_raw(&[top], Zone::Exile);
             let nonland = events.iter().find(|event| {
@@ -576,7 +586,7 @@ impl Game {
                     ExilePlayExpiry::Turn(self.state.turn),
                 )
             {
-                permission.cast_only = true;
+                permission.cast_only = cast_only;
             }
             self.finish_zone_events(&events, &[]);
             if nonland.is_some() || !events.iter().any(|event| event.moved) {
@@ -809,6 +819,34 @@ impl Game {
             },
             destination: MilledDestination::PlayPermission { next_turn },
         })
+    }
+
+    pub(super) fn exile_opponent_top_choose_land_play_while_exiled(
+        &mut self,
+        chooser: Player,
+        amount: u128,
+    ) -> bool {
+        let owner = chooser.other();
+        let ids = top_library_cards(self, owner, amount);
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        self.state.resolving.as_mut().unwrap().milled = events
+            .iter()
+            .filter(|event| event.moved && event.destination == Zone::Exile)
+            .map(|event| event.after)
+            .collect();
+        self.finish_zone_events(&events, &[]);
+        self.start_milled_selection_for_chooser(
+            owner,
+            chooser,
+            MilledSelectionSpec {
+                filter: MilledFilter::Kinds(2),
+                count: MilledCount::Range {
+                    minimum: 1,
+                    maximum: 1,
+                },
+                destination: MilledDestination::PlayPermissionWhileExiled,
+            },
+        )
     }
 
     pub(super) fn exile_until_source_leaves(&mut self, item: &SpellView) -> Vec<ZoneChange> {

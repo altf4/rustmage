@@ -1,0 +1,14 @@
+{
+  "name": "Unexplored Territory",
+  "catalogue_id": 5989,
+  "oracle_id": "6e5d4bbd-4999-4acd-8775-25e02d901035",
+  "facts_sha256": "a456b79b82b0b13b07a8b8b105a30a1f3591cb3279d4fada06bfbb74a985de80",
+  "physical_metadata_sha256": "5884377388ea2bcba8c5c80aa42aabff9fe6ee135551251cfcdabe759779e0d7",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnexploredTerritory.java",
+  "java_sha256": "c2d3840537b217de7083b238582c95714e59ebdc0f78b275a63c505a083f724a",
+  "xmage_class": "mage.cards.u.UnexploredTerritory"
+}

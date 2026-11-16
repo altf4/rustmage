@@ -2,13 +2,13 @@
   "name": "Godless Shrine",
   "catalogue_id": 1815,
   "oracle_id": "73864fcc-1bde-4bc0-831e-2b93e546e417",
-  "facts_sha256": "e2637147a893145fa7fb89dd44c7f130db4bc3bd325bfd05c10a9da700822266",
+  "facts_sha256": "86395918e940f55ad095ea6dc4de5be67f61e48c619e81d10e3c3f5bb7ca4fa9",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cd13dffc00d47f77fcae933624846cb64a44626fbfa2e29dc3a3c695c96a5859"
   },
-  "physical_metadata_sha256": "c4100f82bd87dbe8233a306cda2abaf5e4c370ecece0d7b3c0d3fbe54bb60bcd",
+  "physical_metadata_sha256": "f5deae31b0d9617ad96741a1372a0295b34c08d9ebc31b85afbbcab4632ab7d2",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/g/GodlessShrine.java",
   "java_sha256": "a9516f67c60b8f9b0420f0f0513e2851eba3996e644fa0f4fbd2d8e9f2f49433",

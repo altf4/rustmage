@@ -1,0 +1,14 @@
+{
+  "name": "Starfleet Spanner Jockey",
+  "catalogue_id": 5936,
+  "oracle_id": "d41ff489-7d74-4b06-b3a1-638f3e3303d1",
+  "facts_sha256": "26befcf91da125461652cf9a7b37d299d5eaa1b1a10a561de8e58cf97eaa501a",
+  "physical_metadata_sha256": "b1514aa455551961a825f7cebebec2786c9280dbc4b7dd6c5f99d4209ebfcec3",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/StarfleetSpannerJockey.java",
+  "java_sha256": "15c1e3c78fa761d7f5d6b4afd0198c46dd963c90516d5f1d9b28ea99c849176b",
+  "xmage_class": "mage.cards.s.StarfleetSpannerJockey"
+}

@@ -90,16 +90,16 @@ impl Game {
         true
     }
 
-    pub(super) fn exile_target_copy_offer_free_cast(&mut self, item: &SpellView) -> bool {
+    fn exile_exact_target_for_free_copy(&mut self, item: &SpellView) -> Option<(ObjectRef, Zone)> {
         let [bound] = item.targets.as_slice() else {
-            return false;
+            return None;
         };
         let Target::Card(id) = bound.target else {
-            return false;
+            return None;
         };
         let target = &self.state.objects[id as usize];
         if !self.same_target_object(*bound) || target.zone != Zone::Graveyard || !target.is_card() {
-            return false;
+            return None;
         }
         let event = self.move_object_raw(id, Zone::Exile);
         self.finish_zone_events(std::slice::from_ref(&event), &[]);
@@ -109,14 +109,54 @@ impl Game {
             || !matches!(origin, Zone::Graveyard | Zone::Exile | Zone::Command)
             || self.exiled_face_down(original)
         {
-            return false;
+            return None;
         }
+        Some((original, origin))
+    }
+
+    pub(super) fn exile_target_copy_offer_free_cast(&mut self, item: &SpellView) -> bool {
+        let Some((original, origin)) = self.exile_exact_target_for_free_copy(item) else {
+            return false;
+        };
         // CR707.12: copy the tracked object in its actual zone. The copy
         // instruction is independent of whether the preceding exile succeeded.
         let recipe = self.copiable_recipe(original);
         let copy = self.allocate_card_copy_in_zone(recipe.definition, item.controller, origin);
         self.set_copy_recipe(copy, recipe);
         self.offer_exact_free_cast(item.controller, copy, origin, None);
+        true
+    }
+
+    pub(super) fn exile_target_copy_offer_repeated_free_cast(
+        &mut self,
+        item: &SpellView,
+        value: crate::cards::StatValue,
+    ) -> bool {
+        let count = u16::try_from(
+            self.stat_value(
+                value,
+                item.source.expect("resolving spell source").object,
+                item.controller,
+            )
+            .max(0),
+        )
+        .capacity("repeated card-copy count exhausted");
+        let Some((original, origin)) = self.exile_exact_target_for_free_copy(item) else {
+            return false;
+        };
+        if count == 0 {
+            return false;
+        }
+        let recipe = self.copiable_recipe(original);
+        let remaining = (0..count)
+            .map(|_| {
+                let copy =
+                    self.allocate_card_copy_in_zone(recipe.definition, item.controller, origin);
+                self.set_copy_recipe(copy, recipe);
+                copy
+            })
+            .collect();
+        self.offer_repeated_exact_free_casts(item.controller, remaining, origin);
         true
     }
 

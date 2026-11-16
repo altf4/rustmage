@@ -1,0 +1,13 @@
+{
+  "name": "Genesis Device",
+  "catalogue_id": 5816,
+  "oracle_id": "bb86849c-fdec-4ca5-a8c0-ed682d921759",
+  "facts_sha256": "098867ba38b48fa1d3f496e39076092f63ef139c197d98af45cb8e49a4dac9d6",
+  "physical_metadata_sha256": "7d3eb0796040b6cc6adaf3ee8d1983e582d009455ea620dc3b9a31bc979beadd",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

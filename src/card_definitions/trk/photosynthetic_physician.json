@@ -1,0 +1,14 @@
+{
+  "name": "Photosynthetic Physician",
+  "catalogue_id": 5889,
+  "oracle_id": "08787942-456f-4c71-a821-1c90b5639ca1",
+  "facts_sha256": "657dfae9637191a7e4b36f4b13990a33ee3ab7a730b03caef8c4836f7421eeeb",
+  "physical_metadata_sha256": "ce08e76265315dfaa7484005cccf71d8e8c25607958e7f9007ac109995c70c77",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/p/PhotosyntheticPhysician.java",
+  "java_sha256": "2eed6991c6a7fc2ddb778471da80fc361674b2dd1a628394a15a318f3a1c1de4",
+  "xmage_class": "mage.cards.p.PhotosyntheticPhysician"
+}

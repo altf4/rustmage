@@ -1,0 +1,13 @@
+{
+  "name": "Lt. Cmdr. Geordi La Forge",
+  "catalogue_id": 5860,
+  "oracle_id": "cb3b4cfe-fd8d-4a26-905e-8ccd30f033a3",
+  "facts_sha256": "5e71c19a5cb71d53f25a03b51ebbe6aa9ee2b583a58ae2372303b6bac2bd9993",
+  "physical_metadata_sha256": "181ba7dd51fc430f97b6edd1e76caba639b8576de80f58063255e6e76611c614",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

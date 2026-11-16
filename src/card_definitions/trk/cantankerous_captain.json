@@ -1,0 +1,14 @@
+{
+  "name": "Cantankerous Captain",
+  "catalogue_id": 5737,
+  "oracle_id": "2375e6e4-bea2-4fa2-b0d5-467e3076962c",
+  "facts_sha256": "fef44059fbf5c4ad208075e52661fdaaa795c2e57f0fa3ab0aa64f4f084daa1c",
+  "physical_metadata_sha256": "7f39ebfa6463030e1b158caae40a997ae4c98898b4201ba80351901cb8c5318c",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/c/CantankerousCaptain.java",
+  "java_sha256": "da9527d7b5c3fc92d48e76cfa97a3311604d99d5478d954e6c0aaf538b075945",
+  "xmage_class": "mage.cards.c.CantankerousCaptain"
+}

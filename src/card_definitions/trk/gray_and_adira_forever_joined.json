@@ -1,0 +1,13 @@
+{
+  "name": "Gray and Adira, Forever Joined",
+  "catalogue_id": 5822,
+  "oracle_id": "34a39862-c18b-4c1b-8920-207627c40934",
+  "facts_sha256": "29f596eae1ea83190c5b0e1982440735cf616a0b63564dd5c687abcba0c26ffc",
+  "physical_metadata_sha256": "40c7bf0a25d3b1f536aabe16972b9e2b4c9ccb24e924698ea7bd2e5ae242c846",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

@@ -90,6 +90,22 @@ impl Game {
             .collect();
         self.stage_entries(moves, None);
     }
+
+    pub(super) fn put_remembered_exiled_permanents_onto_battlefield(&mut self) {
+        let objects = std::mem::take(&mut self.state.resolving.as_mut().unwrap().milled);
+        let moves = objects
+            .into_iter()
+            .filter(|r| {
+                self.object_ref(r.card) == *r
+                    && self.state.objects[r.card as usize].zone == Zone::Exile
+                    && self.state.objects[r.card as usize].is_card()
+                    && crate::cards::RecoveryFilter::Permanent
+                        .matches(self.state.objects[r.card as usize].card)
+            })
+            .map(|r| self.entry_move(r.card, Zone::Battlefield, false))
+            .collect();
+        self.stage_entries(moves, None);
+    }
     pub(super) fn hand_deployment(&self) -> Option<&HandDeployment> {
         self.state.linked_choices.as_ref()?.deployment.as_deref()
     }

@@ -1,0 +1,14 @@
+{
+  "name": "U.S.S. Enterprise-D, Galaxy-Class",
+  "catalogue_id": 5984,
+  "oracle_id": "d95af032-3efd-40c7-8229-ade9d974934f",
+  "facts_sha256": "0c8a590671a67c4c076d0f493b68c283a55cb1f2d7244a2060001736bb4c7853",
+  "physical_metadata_sha256": "c15a61b40befdce37df66a81fd65622f54e20b6cb959c924acfc67ca32c719ff",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/u/USSEnterpriseDGalaxyClass.java",
+  "java_sha256": "61c5da8a2be2b5a961a77983916e24e053e52ac4e7a4fc44e849719870c29a47",
+  "xmage_class": "mage.cards.u.USSEnterpriseDGalaxyClass"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Culber and Stamets, Star-Crossed",
+  "catalogue_id": 5765,
+  "oracle_id": "5b8e8ef2-2f04-4485-ae12-08f52dac81a2",
+  "facts_sha256": "df5d01c17ecc19702e62b8bb9b085c522ba6521fad67ec9926a975598b8b136d",
+  "physical_metadata_sha256": "ec04c89de8be347cbe6577307ac034d2fb44921facfcc2b9bbce338ddfc0abfd",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/c/CulberAndStametsStarCrossed.java",
+  "java_sha256": "2b0d72682ad02cf5fa30431ed848f074abe81ce1412881259b96ee7eb0484881",
+  "xmage_class": "mage.cards.c.CulberAndStametsStarCrossed"
+}

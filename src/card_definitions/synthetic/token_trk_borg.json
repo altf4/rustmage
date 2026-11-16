@@ -1,0 +1,12 @@
+{
+  "name": "@token/trk-borg",
+  "catalogue_id": 6007,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "ac44ff8f0da558275464c0bafb47414466e736a9e45b22088b0d5b15dc766385",
+  "oracle_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/BorgToken.java",
+  "java_sha256": "d9350bac2705d16422b0b097b2b78f1d4dda4c9af50aadf788f4242a154c222d"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Captain Jean-Luc Picard",
+  "catalogue_id": 5740,
+  "oracle_id": "04624f75-5981-4607-aa8f-706554f826e1",
+  "facts_sha256": "e15f32739c36d99433e2e21d60008e67d289ae6c8c9afe3fa1943df443b85760",
+  "physical_metadata_sha256": "65093482cf97a4de5ebe49f692698b40a8ddb26637ae9799d373d50b14fc6cbd",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/c/CaptainJeanLucPicard.java",
+  "java_sha256": "fcc58356ccf9f9651430ce0553e0fd49997e219f450f90e439c64c75a40bbfca",
+  "xmage_class": "mage.cards.c.CaptainJeanLucPicard"
+}

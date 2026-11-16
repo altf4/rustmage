@@ -1,0 +1,14 @@
+{
+  "name": "Xenobotanist",
+  "catalogue_id": 6002,
+  "oracle_id": "a9df60bf-f327-4d50-ab4d-99324fc2dcfe",
+  "facts_sha256": "78a1999a036efe9b84c38cda46a5ea44b0ae7defed72ac9284b7de1cc6145dd3",
+  "physical_metadata_sha256": "5be209838299230493cb192f9839aebfe7127fcbd81e5467771fd99376f48a3a",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/x/Xenobotanist.java",
+  "java_sha256": "9cb6ef1f117ef7d43983e3b3c3888a97f8e542df0571ebdf9228f90b1d312e97",
+  "xmage_class": "mage.cards.x.Xenobotanist"
+}

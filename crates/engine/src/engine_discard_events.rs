@@ -138,6 +138,7 @@ impl Game {
             sacrificed_vehicle: false,
             sacrificed_outlaw: false,
             sacrificed_suspected: false,
+            sacrificed_klingon: false,
             discarded_kinds: self.discarded_card_kinds(&event),
         })
     }
@@ -149,7 +150,7 @@ impl Game {
             || match event.destination {
                 Zone::Battlefield | Zone::Stack | Zone::Graveyard | Zone::Command => true,
                 Zone::Exile => !self.exiled_face_down(event.after),
-                Zone::Library | Zone::Hand | Zone::Outside => false,
+                Zone::Library | Zone::Hand | Zone::PhasedOut | Zone::Outside => false,
             };
         (event.moved && known).then_some(event.before.kinds)
     }

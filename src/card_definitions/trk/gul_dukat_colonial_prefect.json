@@ -1,0 +1,13 @@
+{
+  "name": "Gul Dukat, Colonial Prefect",
+  "catalogue_id": 5824,
+  "oracle_id": "f41f0290-0f9d-4c51-935e-f69d2120e4a7",
+  "facts_sha256": "7c827d849b0050bba899bd064064769e102c7bb42421f8e36c18aa75ddb03e47",
+  "physical_metadata_sha256": "3228bb6030b125036adf6dc4713897fdaec64dd3d75ec9ddeb97d5416a1ca5fd",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

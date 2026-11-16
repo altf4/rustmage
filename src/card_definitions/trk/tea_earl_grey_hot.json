@@ -1,0 +1,14 @@
+{
+  "name": "Tea, Earl Grey, Hot",
+  "catalogue_id": 5952,
+  "oracle_id": "6f2e8083-29af-4cdb-a2cb-216b2f3f5616",
+  "facts_sha256": "5f6a7f1abe4931b8500635df0d157e3d5a76665c12c1c55f909451ec5f73ba15",
+  "physical_metadata_sha256": "6bbdad1434161f1eb3d2caed3027a82d9d5427ec735997ea2b182a31a7f2003c",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/t/TeaEarlGreyHot.java",
+  "java_sha256": "0f177a745086732c9cd2db2ea2078626e80344c333e601c8789e92a8c9f72f7c",
+  "xmage_class": "mage.cards.t.TeaEarlGreyHot"
+}

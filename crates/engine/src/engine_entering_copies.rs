@@ -61,6 +61,7 @@ impl Game {
                 temporary_tokens::TokenInstructions {
                     item: item.clone(),
                     keywords: Keywords::NONE,
+                    permanent_keywords: false,
                     attack: temporary_tokens::TokenAttack::None,
                     cleanup: temporary_tokens::TokenCleanup::NextUpkeepSacrifice,
                 },

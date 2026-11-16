@@ -1,0 +1,13 @@
+{
+  "name": "Targ Wrangler",
+  "catalogue_id": 5950,
+  "oracle_id": "a066eeb1-61fc-448b-bbab-650d672652ad",
+  "facts_sha256": "02299f6618efcce3731ed52f32241b915b9d0eaa91eed191d0ac31ed30e5dca6",
+  "physical_metadata_sha256": "85022e45b7662159b9c39ffca117218e78996a05c1e98ad80c85897b4399d2dc",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

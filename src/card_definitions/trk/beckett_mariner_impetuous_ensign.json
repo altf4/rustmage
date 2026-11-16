@@ -1,0 +1,14 @@
+{
+  "name": "Beckett Mariner, Impetuous Ensign",
+  "catalogue_id": 5730,
+  "oracle_id": "1033a0cb-1a00-46c4-83d5-68a6eac85feb",
+  "facts_sha256": "ad276d3b4fde6c5f4bd071c2643961350a28f25cbb1586b08bcdc90a3ff01960",
+  "physical_metadata_sha256": "faa0d1f5fa729cff218707d56ffcb6b5483ddde698346438593e2e99aa6c13a5",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/b/BeckettMarinerImpetuousEnsign.java",
+  "java_sha256": "288f9c857637f1bd8f315eff4c0d599b8d0d262e9b8ba911c34afaa2b6ee0819",
+  "xmage_class": "mage.cards.b.BeckettMarinerImpetuousEnsign"
+}

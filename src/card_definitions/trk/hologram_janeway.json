@@ -1,0 +1,14 @@
+{
+  "name": "Hologram Janeway",
+  "catalogue_id": 5833,
+  "oracle_id": "b572be16-ad13-4f9f-bcf6-085f81e5292c",
+  "facts_sha256": "71f2bde1f1f38df570a61680d119c00284f16ac57a20c07763db23c048de1f19",
+  "physical_metadata_sha256": "08fb39195f81d7ac7915e0ad541cb0d2a3da337d3979790d4f104aeae177b2b6",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/h/HologramJaneway.java",
+  "java_sha256": "64747878366ec8eb598a8e7b750edb6293ef4b8664d95773bb1e6e68f734098c",
+  "xmage_class": "mage.cards.h.HologramJaneway"
+}

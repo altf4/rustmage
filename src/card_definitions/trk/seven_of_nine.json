@@ -1,0 +1,13 @@
+{
+  "name": "Seven of Nine",
+  "catalogue_id": 5924,
+  "oracle_id": "3c037865-d38c-48da-aee9-308975e12638",
+  "facts_sha256": "61dee02c96395b2bd54d2f67778691415cfdc0b79758033bbda51cf1f93a6324",
+  "physical_metadata_sha256": "6e7e083ea61c325b4dd877053183279b962df5a4fbaf72ffab55b76c7e93efea",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

@@ -2,13 +2,13 @@
   "name": "Gruff Triplets",
   "catalogue_id": 1894,
   "oracle_id": "32de1b70-f993-4423-b0ef-0762c2b4d1b1",
-  "facts_sha256": "3ee68902afd384f2482b54359d87b9249fe30bb8c35ec4ae84b419269fb6cb69",
+  "facts_sha256": "e449fb3b6918e7880da7481c5c49d3462d75731ad34004477a855014e6984d22",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "824e02b5fff6c7f1a70f7d66371c38474f0196fc27ac83300298797f9301b05e"
   },
-  "physical_metadata_sha256": "848f4e13f03aa915fec48b9c2617f8430298192b52f7b56b765b77bb0847e960",
+  "physical_metadata_sha256": "6bfcc42b93f2741a9ec7caaa0d528d3b59d7d14fbed07e8dad7ea7ddd044d454",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/g/GruffTriplets.java",
   "java_sha256": "6a312ab7d18ee9cdbdbfa3b10def840b794c09449ebae6b151e6b056107269a0",

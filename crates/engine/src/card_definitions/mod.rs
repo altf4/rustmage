@@ -124,6 +124,10 @@ impl CardRules {
                                 | StaticAbilityFragment::StaticModifier(..)
                                 | StaticAbilityFragment::KeywordGrant(..)
                                 | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                                | StaticAbilityFragment::ControlledOtherCounteredCreatureKeywords(
+                                    ..
+                                )
+                                | StaticAbilityFragment::SaveOtherPlusOneCreatureFromDestruction
                                 | StaticAbilityFragment::PlayLandFromGraveyard
                                 | StaticAbilityFragment::AdditionalTriggers { .. }
                         ),
@@ -337,6 +341,15 @@ impl CardRules {
         let mut index = 0;
         while index < self.activated.len() {
             let cost = &self.activated[index].cost;
+            if matches!(
+                self.activated[index].origin,
+                ActivationOrigin::GraveyardBottomLibrary
+            ) {
+                assert!(
+                    !cost.sacrifice && !cost.exile_self && !cost.discard,
+                    "library-bottom source cost cannot have another source departure"
+                );
+            }
             if !cost.mana_component {
                 assert!(
                     cost.generic == 0,
@@ -522,6 +535,10 @@ pub struct CardExtras {
     pub sneak_cost: Option<ManaCost>,
     pub sneak_costs: &'static [ManaCost],
     pub web_slinging_cost: Option<ManaCost>,
+    /// Graveyard alternative paid by returning a creature you control.
+    pub beam_me_up_cost: Option<ManaCost>,
+    /// This physical card's owner may cast it from exile for its normal cost.
+    pub self_exile_cast: bool,
     /// Graveyard alternative with an optional power-based creature tap.
     pub harmonize_cost: Option<ManaCost>,
     /// Variable symbols in the printed harmonize alternative (independent of the mana cost).
@@ -679,6 +696,8 @@ impl CardExtras {
         sneak_cost: None,
         sneak_costs: &[],
         web_slinging_cost: None,
+        beam_me_up_cost: None,
+        self_exile_cast: false,
         harmonize_cost: None,
         harmonize_x_symbols: 0,
         mayhem_cost: None,

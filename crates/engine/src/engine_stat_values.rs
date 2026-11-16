@@ -179,14 +179,16 @@ impl Game {
                         && colors(*id).count_ones() >= 2
                 })
                 .count() as i128,
-            StatValue::CounterBearingCreatures => objects()
+            StatValue::CounterBearingCreatures | StatValue::CounterBearingPermanents => objects()
                 .filter(|(id, object)| {
                     object.zone == Zone::Battlefield
                         && object.controller == owner
-                        && kinds(*id, object) & 1 != 0
+                        && (value == StatValue::CounterBearingPermanents
+                            || kinds(*id, object) & 1 != 0)
                         && has_counters(*id)
                 })
-                .count() as i128,
+                .count()
+                as i128,
             StatValue::ControlledCreaturesWithCounter(kind)
             | StatValue::ControlledLandsWithCounter(kind) => {
                 let required = if matches!(value, StatValue::ControlledLandsWithCounter(_)) {
@@ -542,6 +544,12 @@ impl Game {
                             && o.zone == Zone::Battlefield
                     }),
             ),
+            StatValue::SourceNoncreature => i128::from(objects().any(|(id, object)| {
+                id == source.card
+                    && object.generation == source.generation
+                    && object.zone == Zone::Battlefield
+                    && kinds(id, object) & 1 == 0
+            })),
             StatValue::SourceUntapped => i128::from(objects().any(|(id, object)| {
                 id == source.card
                     && object.generation == source.generation
@@ -635,6 +643,9 @@ impl Game {
             }
             StatValue::SpellsCastThisTurn => {
                 i128::from(self.state.players[owner.index()].spells_cast_this_turn)
+            }
+            StatValue::DilemmasFacedThisTurn => {
+                i128::from(self.state.players[owner.index()].dilemmas_faced_this_turn)
             }
             StatValue::CommittedCrimeThisTurn => {
                 i128::from(self.state.players[owner.index()].committed_crime_this_turn)
@@ -794,6 +805,20 @@ impl Game {
                     }
                 }
                 counts.into_iter().max().unwrap_or(0) as i128
+            }
+            StatValue::DistinctControlledCreatureTypesExcept(excluded) => {
+                let mut seen = [false; crate::cards::CREATURE_TYPES.len()];
+                for (id, object) in objects().filter(|&(id, object)| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == owner
+                        && kinds(id, object) & 1 != 0
+                        && !subtypes(id).has(object.card, excluded)
+                }) {
+                    for index in subtypes(id).creature_type_set(object.card).indices() {
+                        seen[index] = true;
+                    }
+                }
+                seen.into_iter().filter(|present| *present).count() as i128
             }
             StatValue::CreaturesOfChosenType => {
                 let Some(EntryChoiceValue::CreatureType(typ)) = world.entry_value(source) else {
@@ -990,6 +1015,22 @@ impl Game {
                     ..=i128::from(maximum),
                 ) as u128
             }
+            AmountValue::ControlledTotalCreaturePower => {
+                let query = self.characteristic_query();
+                self.state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(id, object)| {
+                        object.zone == Zone::Battlefield
+                            && object.controller == owner
+                            && ability_world::CharacteristicWorld::kinds(&query, *id as CardId) & 1
+                                != 0
+                    })
+                    .map(|(id, _)| query.stats(id as CardId).power)
+                    .fold(0i128, i128::saturating_add)
+                    .max(0) as u128
+            }
             AmountValue::EquippedCreaturesYouControl => self.equipped_creature_count(owner),
             AmountValue::TokensYouControl => self.controlled_token_ids(owner).count() as u128,
             AmountValue::NonbasicLandsYouControl => self.nonbasic_land_count(owner) as u128,
@@ -1080,6 +1121,7 @@ impl Game {
             | AmountValue::MilledCreatures
             | AmountValue::MilledSubtypeCount(_)
             | AmountValue::MovedCount
+            | AmountValue::CapturedEntryResultCount
             | AmountValue::RememberedCount
             | AmountValue::PaidAdditionalCostCount
             | AmountValue::PaidAdditionalCostSelectionCount
@@ -1135,6 +1177,9 @@ impl Game {
                 self.state.players[owner.index()].life_gained_this_turn
             }
             AmountValue::LifeLostThisTurn => self.state.players[owner.index()].life_lost_this_turn,
+            AmountValue::OpponentLifeLostThisTurn => {
+                self.state.players[owner.other().index()].life_lost_this_turn
+            }
             AmountValue::Divided { value, divisor } => {
                 self.amount_value(*value, source, owner) / u128::from(divisor.get())
             }

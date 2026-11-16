@@ -1,0 +1,14 @@
+{
+  "name": "Syndicate Liquidators",
+  "catalogue_id": 5946,
+  "oracle_id": "2f32de5c-4d85-42bc-b1bf-f762a46e5efc",
+  "facts_sha256": "03ba386277123a5e2fd2b2c5723aafea273bba5de4ecfa339051b6f12fd177c9",
+  "physical_metadata_sha256": "41850609337657a3b2fed6adfe769f61532a09890622f72e3951edfd48d5e0b6",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/SyndicateLiquidators.java",
+  "java_sha256": "9859ac93bb5f67ed9fe89684605059ff6512917801b525a8dff0e8a1f26ad38b",
+  "xmage_class": "mage.cards.s.SyndicateLiquidators"
+}

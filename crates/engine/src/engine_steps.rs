@@ -20,6 +20,41 @@ pub(super) fn attached_controller_turn<W: ability_world::CharacteristicWorld + ?
         && world.reference(recipient.card) == recipient
         && object.controller == active
 }
+/// Use the attacker's controller and exact attachment recipients. A grantor's
+/// controller need not be the controller of the creature it equips.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn other_controlled_creature_with_attached_subtype<
+    W: ability_world::CharacteristicWorld + ?Sized,
+>(
+    world: &W,
+    source: ObjectRef,
+    controller: Player,
+    subtype: &str,
+) -> bool {
+    if world.object(source.card).zone != Zone::Battlefield
+        || world.reference(source.card) != source
+        || world.kinds(source.card) & 1 == 0
+    {
+        return false;
+    }
+    world.attachment_sources().iter().copied().any(|id| {
+        let attachment = world.object(id);
+        if attachment.zone != Zone::Battlefield {
+            return false;
+        }
+        let Some(recipient) = attachment.attached_to else {
+            return false;
+        };
+        if recipient == source || world.reference(recipient.card) != recipient {
+            return false;
+        }
+        let creature = world.object(recipient.card);
+        creature.zone == Zone::Battlefield
+            && creature.controller == controller
+            && world.kinds(recipient.card) & 1 != 0
+            && world.subtypes(id).has(attachment.card, subtype)
+    })
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn second_main_phase(&self) -> bool {
@@ -189,6 +224,7 @@ impl Game {
             attachment_trigger: None,
             cast: None,
             entering_object: None,
+            entering_explorer: None,
             evidence_collected: false,
             id,
             kind: StackKind::InherentRule {
@@ -486,18 +522,33 @@ impl Game {
             StepGuard::SourceDeclaredAttackThisCombat => {
                 return self.declared_attack_this_combat(source);
             }
+            StepGuard::SourceAttackedThisTurn => {
+                return self.state.attacked_this_turn.contains(&source);
+            }
             StepGuard::DeclaredAttackSubtypesAll(subtypes) => {
                 return self.declared_attack_subtypes_all(player, subtypes);
             }
             StepGuard::Always => return true,
             StepGuard::FirstCombatPhase => return self.first_combat_phase(),
+            StepGuard::NoExtraTurnBegunThisGame => {
+                return !p.has_begun_extra_turn_this_game;
+            }
             StepGuard::SecondMainPhase => return self.second_main_phase(),
             StepGuard::SourceSneakedThisTurn => return self.source_sneaked_this_turn(source),
             StepGuard::PermanentLeftBattlefieldThisTurn => {
                 return p.turn_facts.permanent_left_battlefield;
             }
+            StepGuard::PermanentReturnedToYourHandThisTurn => {
+                return p.turn_facts.permanent_returned_to_your_hand;
+            }
             StepGuard::VoidActive => return world.void_active_this_turn(),
             StepGuard::ArtifactEnteredThisTurn => return p.turn_facts.artifact_entered,
+            StepGuard::EquipmentOrSpacecraftEnteredThisTurn => {
+                return self.state.entered_this_turn.as_ref().is_some_and(|rows| {
+                    rows.iter()
+                        .any(|entry| entry.controller == player && entry.equipment_or_spacecraft)
+                });
+            }
             StepGuard::HeroEnteredOrAttackedThisTurn => {
                 return p.turn_facts.hero_entered || p.turn_facts.hero_attacked;
             }
@@ -512,6 +563,11 @@ impl Game {
             }
             StepGuard::AttachedControllerTurn => {
                 return attached_controller_turn(world, source, self.state.active);
+            }
+            StepGuard::OtherControlledCreatureWithAttachedSubtype(subtype) => {
+                return other_controlled_creature_with_attached_subtype(
+                    world, source, player, subtype,
+                );
             }
             StepGuard::CardExiledThisTurn => return self.state.cards_exiled_this_turn,
             StepGuard::FaceDownCreatureEnteredThisTurn => {

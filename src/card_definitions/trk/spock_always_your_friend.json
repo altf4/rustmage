@@ -1,0 +1,14 @@
+{
+  "name": "Spock, Always Your Friend",
+  "catalogue_id": 5932,
+  "oracle_id": "bdfe5809-17d4-4239-a9ee-6accdef99035",
+  "facts_sha256": "60572a38b53e7443b8f65acc90bee975b26c885647d0ed422376a798cdbc128e",
+  "physical_metadata_sha256": "e2ed363f128e5181b9beb6d882bb4005bcd2e01fa2b48b2f4b9bb5fef0c1fcab",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpockAlwaysYourFriend.java",
+  "java_sha256": "fa7a0157936499b166083a5e7d6d3c72703257010566a79a38dcc5c8a9a60c69",
+  "xmage_class": "mage.cards.s.SpockAlwaysYourFriend"
+}

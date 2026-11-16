@@ -1,0 +1,12 @@
+{
+  "name": "@token/trk-new-planet",
+  "catalogue_id": 6009,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "b3c2aded74b76565adebc2d6263a832993b027b224f2485e195acfdf045e10bb",
+  "oracle_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/NewPlanetToken.java",
+  "java_sha256": "5f1b17be6e84eae089c827e74ccd2dfffe56c46e4d3d921f9136c907ae16a9bd"
+}

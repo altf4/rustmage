@@ -247,10 +247,15 @@ impl Game {
             if a.item.cast.is_some_and(|cast| cast.method.is_mayhem()) {
                 return a.mayhem_cost_options().next().expect("Mayhem cost");
             }
-            if a.item
-                .cast
-                .is_some_and(|c| matches!(c.method, CastMethod::Miracle | CastMethod::WebSlinging))
-            {
+            if a.item.cast.is_some_and(|c| {
+                matches!(
+                    c.method,
+                    CastMethod::Miracle
+                        | CastMethod::WebSlinging
+                        | CastMethod::BeamMeUp
+                        | CastMethod::BeamMeUpGranted(_)
+                )
+            }) {
                 return a
                     .origin_alternative_cost
                     .expect("selected alternative cost");

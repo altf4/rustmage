@@ -1,0 +1,13 @@
+{
+  "name": "Gabriel Lorca, Mirror Menace",
+  "catalogue_id": 5813,
+  "oracle_id": "6349eecb-dabd-4dcb-a8fb-c8ee66f61461",
+  "facts_sha256": "9bba978dfeff77f9277159b6c60c914801b4c9011032ce6618846ee447056f8d",
+  "physical_metadata_sha256": "8b328e9c2b47170caec47842849569de6fa301d2d6c322c1891b9784fc492578",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

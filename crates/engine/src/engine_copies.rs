@@ -130,15 +130,20 @@ impl CopyRecipe {
     /// CR707.9d: a replacement subtype set excludes the copied subtype CDA.
     /// Later copied exceptions and external keyword grants are separate effects.
     pub(super) fn intrinsic_keywords(self) -> Keywords {
-        let keywords = self
-            .definition
-            .keywords()
-            .union(self.exceptions.add_keywords);
-        if self.copy_types().replace {
-            keywords.without(Keywords::CHANGELING)
+        let copied = self.definition.keywords();
+        let copied = if self.copy_types().replace {
+            copied.without(Keywords::CHANGELING)
         } else {
-            keywords
-        }
+            copied
+        };
+        copied.union(self.exceptions.add_keywords)
+    }
+    /// Changeling copied as an exception is also a layer-one characteristic.
+    pub(super) fn has_copied_changeling(self) -> bool {
+        self.intrinsic_keywords().contains(Keywords::CHANGELING)
+            || self
+                .overrides
+                .is_some_and(|overrides| overrides.keywords.contains(Keywords::CHANGELING))
     }
     pub(super) fn kinds(self) -> u16 {
         let mut kinds = self.definition.kind_mask() | self.exceptions.add_card_types;
@@ -419,6 +424,8 @@ impl Game {
                     controller: player,
                     zone: Zone::Outside,
                     generation,
+                    phased_out_under: None,
+                    phased_out_indirectly: false,
                     tapped: false,
                     summoning_sick: false,
                     flashback: false,
@@ -476,6 +483,7 @@ impl Game {
                             .item
                             .source
                             .map(|source| (source.object, context.keywords));
+                        movement.keywords_after_permanent = context.permanent_keywords;
                     }
                 }
                 moves.push(movement);

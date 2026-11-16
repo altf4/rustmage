@@ -1,0 +1,14 @@
+{
+  "name": "Automated Warfare System",
+  "catalogue_id": 5726,
+  "oracle_id": "b28b4fe9-1a35-48c1-8818-f6f786b04e3e",
+  "facts_sha256": "5c4c0a01fcd7f06516530c5f453524abefc2bd6192aebbaf5073848eacd0f6ff",
+  "physical_metadata_sha256": "6e48bccbaff9013654f33ce18bc66a4404a360a7eef4c69547a8eaf47678cbd4",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/a/AutomatedWarfareSystem.java",
+  "java_sha256": "9beed73dbbc17853d5e6a741e5f51ded210660d9dca4c04f6021b08209d397ae",
+  "xmage_class": "mage.cards.a.AutomatedWarfareSystem"
+}

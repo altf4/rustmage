@@ -1,0 +1,14 @@
+{
+  "name": "Set Phasers to . . .",
+  "catalogue_id": 5923,
+  "oracle_id": "4da9b548-898d-431b-8aa5-9cb7bf579219",
+  "facts_sha256": "11627bb00bb349fbf9ede1e6232576d4db805c18d958ca957a290934e9a585ce",
+  "physical_metadata_sha256": "47749b7182395c4eb4cc69af22d0bfa5f265adf08b8334735e75e0df02c74ff7",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/SetPhasersTo.java",
+  "java_sha256": "8efc246d6253cbe06a14d044ff92e91cf45247e7d83c93ddf19dd01a440c8ba1",
+  "xmage_class": "mage.cards.s.SetPhasersTo"
+}

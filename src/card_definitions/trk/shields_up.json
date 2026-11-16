@@ -1,0 +1,14 @@
+{
+  "name": "Shields Up!",
+  "catalogue_id": 5926,
+  "oracle_id": "0e14940b-87e1-4139-8f30-3629b3ad3a59",
+  "facts_sha256": "c1101775f6c04b9824023f51d7f62757fbf8b605abc12f726dbf9e42d4648f2c",
+  "physical_metadata_sha256": "46d05b7c3b55ca5c1fbed9c4caca60cb932a57d31bcfbbcbbab7f35020e68243",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/ShieldsUp.java",
+  "java_sha256": "3fa16925ca41e6d589737b57b429d83af28a46fc777663565fa23013731114c0",
+  "xmage_class": "mage.cards.s.ShieldsUp"
+}

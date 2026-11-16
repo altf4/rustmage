@@ -2,13 +2,13 @@
   "name": "Ashling's Command",
   "catalogue_id": 242,
   "oracle_id": "9651d197-a408-4665-a292-58d5471f4ffc",
-  "facts_sha256": "fc6708195a0442492d6bbc9255cd3c22246745e21b2ae02f0e6ba29f275350bf",
+  "facts_sha256": "a30dfa6662a8fc89c61c87a7a621f2f1f3abc6f539b55baf2203100d0cc70d17",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4ab1adfe2f8d7dfd92998961c0fec08f7b0af225a8f5df8a57792caa84cb342b"
   },
-  "physical_metadata_sha256": "59a8832cda97c704d5d95bd72bc12eb183bcdcfac05b762f40bae1081e5a2220",
+  "physical_metadata_sha256": "35befd3bfd8860badd5b13ef642b9175636ab4a54c2547a6cfa40e9613db7f41",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/a/AshlingsCommand.java",
   "java_sha256": "983a7a57166af1429a0032a1645446a51c2e5d7274cb6a605a66b35fd99567d0",

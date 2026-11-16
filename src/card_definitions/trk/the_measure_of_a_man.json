@@ -1,0 +1,13 @@
+{
+  "name": "The Measure of a Man",
+  "catalogue_id": 5969,
+  "oracle_id": "727e98cc-b295-47f9-9d3d-bcf38c9f56d2",
+  "facts_sha256": "f1feb8e2909613dc70fcfa1c872149143d9784eeb3ae2cf06a23f49b73307d3b",
+  "physical_metadata_sha256": "7b6e130ed5938459ccd2754b1fc14040e7e170b02276d8455246323386314b49",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

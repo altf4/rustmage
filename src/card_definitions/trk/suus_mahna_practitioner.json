@@ -1,0 +1,14 @@
+{
+  "name": "Suus Mahna Practitioner",
+  "catalogue_id": 5944,
+  "oracle_id": "e7d22ef6-a926-4964-bfd6-f7345b20e74e",
+  "facts_sha256": "6658f8b6499404672100fa8c53d3bf6297bebf53f652345f359a815ce9597f99",
+  "physical_metadata_sha256": "15154a77a3c54d0e77a0cef8965d3a4d35522136a5a447b398f0cb8dbf7086ec",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/SuusMahnaPractitioner.java",
+  "java_sha256": "a3c4469d8123e7a1b99d98372121e39d3d9f7dcfa4f4de59da858a16c7994210",
+  "xmage_class": "mage.cards.s.SuusMahnaPractitioner"
+}

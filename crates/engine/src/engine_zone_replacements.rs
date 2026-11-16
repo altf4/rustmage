@@ -45,6 +45,10 @@ pub enum ZoneReplacementKind {
     LibraryBottom,
     /// The event is prevented; the object remains in its original zone.
     Prevent,
+    /// Consume a shield counter instead of destroying a permanent.
+    DestructionShield,
+    /// Remove +1/+1 counters and heal damage instead of destruction.
+    DestructionHeal,
     Exile,
     /// Distinct replacement identity; only the selected source creates a reflexive packet.
     ExileReflexive {
@@ -552,6 +556,38 @@ impl Game {
         replay.next += 1;
         Some(pick)
     }
+    pub(super) fn choose_destruction_replacement(&mut self, id: CardId) -> bool {
+        let object = self.object_ref(id);
+        if let Some(pick) = self.next_ordered_pick() {
+            let Pick::Zone(pick) = pick else {
+                unreachable!("exact destruction replay prefix");
+            };
+            assert_eq!((pick.object, pick.requested), (object, Zone::Graveyard));
+            assert!(matches!(
+                pick.effect,
+                ZoneReplacementKind::DestructionShield | ZoneReplacementKind::DestructionHeal
+            ));
+            return pick.effect == ZoneReplacementKind::DestructionHeal;
+        }
+        let before = &self.state.objects[id as usize];
+        let request = Request::Zone(ZoneRequest {
+            object,
+            requested: Zone::Graveyard,
+            affected: before.controller,
+            public: true,
+            view: ZoneReplacementChoiceView {
+                card: Some(before.card),
+                owner: before.owner,
+                from: Zone::Battlefield,
+                choices: vec![
+                    ZoneReplacementKind::DestructionShield,
+                    ZoneReplacementKind::DestructionHeal,
+                ],
+                prior_public_choices: Vec::new(),
+            },
+        });
+        std::panic::resume_unwind(Box::new(request));
+    }
     pub(super) fn select_life_gain_replacement(
         &mut self,
         player: Player,
@@ -1043,6 +1079,9 @@ impl Game {
                 | ZoneReplacementKind::ExileReflexive { .. }
                 | ZoneReplacementKind::ExileLinked { .. } => Zone::Exile,
                 ZoneReplacementKind::Battlefield => Zone::Battlefield,
+                ZoneReplacementKind::DestructionShield | ZoneReplacementKind::DestructionHeal => {
+                    unreachable!("destruction replacement is not a zone-move plan")
+                }
             },
             prevented: effect == ZoneReplacementKind::Prevent,
             shuffle,

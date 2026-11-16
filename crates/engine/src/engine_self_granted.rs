@@ -17,6 +17,11 @@ pub enum SelfGrantedAbilityKind {
     OwnTurnFirstStrike,
     /// Other creatures controlled by the current controller of this exact permanent.
     OtherControlledCreatureKeywords(Keywords),
+    /// A resolved static ability allowing the current controller to play lands
+    /// from their graveyard while this exact permanent retains the grant.
+    PlayLandFromGraveyard,
+    /// Each acquired instance increases the current controller's land allowance.
+    AdditionalLandPlays(u16),
     /// A static ability granting controlled permanents one of these tap mana colors.
     ControlledPermanentTapMana { kinds: u16, colors: u8 },
     /// A real immutable activated template, independently acquired per grant.

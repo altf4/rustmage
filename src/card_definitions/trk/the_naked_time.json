@@ -1,0 +1,14 @@
+{
+  "name": "The Naked Time",
+  "catalogue_id": 5970,
+  "oracle_id": "2cf79dd0-c9db-403e-969d-6c09e7aaa575",
+  "facts_sha256": "2ec9df9cb1131776da08e232107e42c9fb87c33022cadd548c3bdf2190ebd8bf",
+  "physical_metadata_sha256": "9eac94db0a3fcd06e11521e6c8d285585111ad6d140691a1cc8969fe200f501a",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheNakedTime.java",
+  "java_sha256": "a7415c94566cbfdaea7c36c1a760774abbcd3f63b036e3ee0daf0932c6e2dd5d",
+  "xmage_class": "mage.cards.t.TheNakedTime"
+}

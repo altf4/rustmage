@@ -1,0 +1,12 @@
+{
+  "name": "@token/trk-murf",
+  "catalogue_id": 6016,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "ec12908de6445e8459b7836dfbb05726664462f4b3e8b7c12b4e1c79af786a2d",
+  "oracle_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/MurfToken.java",
+  "java_sha256": "6c46a8d0455da9e3f35edc6ff3cb9ffd186ca3dbbde27643e23223f38b7cc3d9"
+}

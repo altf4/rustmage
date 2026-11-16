@@ -526,6 +526,21 @@ pub(super) trait CharacteristicWorld {
     fn stored_recipe(&self, id: CardId) -> Option<CopyRecipe> {
         self.game().copy_recipe(self.reference(id))
     }
+    fn copy_rows_state(&self) -> &copies::Rows {
+        &self.game().state.copy_recipes
+    }
+    fn static_source_candidates(&self) -> Vec<CardId> {
+        let mut sources = self.static_sources().to_vec();
+        if let Some(rows) = self.copy_rows_state() {
+            for row in rows.iter() {
+                let id = row.object.card;
+                if self.reference(id) == row.object && !sources.contains(&id) {
+                    sources.push(id);
+                }
+            }
+        }
+        sources
+    }
     fn is_aura(&self, id: CardId) -> bool {
         self.kinds(id) & 32 != 0 && self.subtypes(id).has(self.definition(id), "Aura")
     }
@@ -870,6 +885,7 @@ pub(super) trait CharacteristicWorld {
                 matches!(
                     f,
                     crate::cards::StaticAbilityFragment::ControlledPermanentsCannotBeSacrificed
+                        | crate::cards::StaticAbilityFragment::ControlledTreasureTokensCannotBeSacrificed
                 ) || matches!(f, crate::cards::StaticAbilityFragment::KeywordGrant(_, grant)
                     if grant.keywords.contains(Keywords::CANT_BE_SACRIFICED))
             })
@@ -896,6 +912,9 @@ pub(super) trait CharacteristicWorld {
         if query.keywords(id).contains(Keywords::CANT_BE_SACRIFICED) {
             return true;
         }
+        let treasure_token = self.is_token(id)
+            && self.kinds(id) & 16 != 0
+            && self.subtypes(id).has(target.card, "Treasure");
         (0..self.game().state.objects.len()).any(|index| {
             let source = index as CardId;
             let provider = self.object(source);
@@ -906,7 +925,11 @@ pub(super) trait CharacteristicWorld {
                 matches!(
                     f,
                     crate::cards::StaticAbilityFragment::ControlledPermanentsCannotBeSacrificed
-                )
+                ) || treasure_token
+                    && matches!(
+                        f,
+                        crate::cards::StaticAbilityFragment::ControlledTreasureTokensCannotBeSacrificed
+                    )
             };
             let printed = provider
                 .card
@@ -1158,6 +1181,11 @@ pub(super) trait CharacteristicWorld {
             } => self
                 .controlled_creature_trigger_applies(source, id, other, nontoken)
                 .then_some(ability),
+            StaticAbilityFragment::ControlledArtifactCreatureTrigger { ability } => self
+                .controlled_creature_trigger_applies(source, id, false, false)
+                .then_some(())
+                .filter(|_| self.kinds(id) & 16 != 0)
+                .map(|_| ability),
             StaticAbilityFragment::ControlledSubtypeCastTrigger {
                 ability,
                 other,
@@ -2289,6 +2317,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     }
     fn stored_recipe(&self, id: CardId) -> Option<CopyRecipe> {
         self.parent.stored_recipe(id)
+    }
+    fn copy_rows_state(&self) -> &copies::Rows {
+        self.parent.copy_rows_state()
     }
     fn ability_origin(&self, id: CardId) -> Option<u64> {
         self.parent.ability_origin(id)

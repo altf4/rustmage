@@ -2,6 +2,49 @@
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn exile_graveyard_target_copy_next_end_step(
+        &mut self,
+        item: &SpellView,
+        keywords: Keywords,
+    ) {
+        let Some((id, card)) = item.targets.iter().find_map(|bound| {
+            let Target::Card(id) = bound.target else {
+                return None;
+            };
+            let object = self.state.objects.get(id as usize)?;
+            (self.same_target_object(*bound)
+                && object.zone == Zone::Graveyard
+                && object.is_card()
+                && object.card.is_creature())
+            .then_some((id, object.card.front_face()))
+        }) else {
+            return;
+        };
+        let event = self.move_object(id, Zone::Exile);
+        let exiled = event.moved
+            && event.was_card
+            && event.destination == Zone::Exile
+            && self.object_ref(id) == event.after;
+        if !exiled {
+            return;
+        }
+        self.stage_copy_recipes_with_completion(
+            item.controller,
+            vec![CopyRecipe::new(card)],
+            1,
+            false,
+            replacements::TokenCompletion::TemporaryTokens(Box::new(
+                temporary_tokens::TokenInstructions {
+                    item: item.clone(),
+                    keywords,
+                    permanent_keywords: true,
+                    attack: temporary_tokens::TokenAttack::None,
+                    cleanup: temporary_tokens::TokenCleanup::NextEndStepSacrifice,
+                },
+            )),
+        );
+    }
+
     pub(super) fn exile_graveyard_targets_copy_until_own_end_step(&mut self, item: &SpellView) {
         let targets: Vec<_> = item
             .targets
@@ -55,6 +98,44 @@ impl Game {
         self.stage_copy_recipes(item.controller, recipes, amount, false);
     }
 
+    pub(super) fn copy_each_target_temporary(
+        &mut self,
+        item: &SpellView,
+        exceptions: CopyExceptions,
+        keywords: Keywords,
+        exile_ability: u16,
+    ) {
+        let recipes = item
+            .targets
+            .iter()
+            .filter_map(|bound| {
+                let Target::Card(id) = bound.target else {
+                    return None;
+                };
+                let object = bound.object?;
+                (self.on_battlefield(id) && self.object_ref(id) == object)
+                    .then(|| self.copiable_recipe(object).with_exceptions(exceptions))
+            })
+            .collect();
+        self.stage_copy_recipes_with_completion(
+            item.controller,
+            recipes,
+            1,
+            false,
+            replacements::TokenCompletion::TemporaryTokens(Box::new(
+                temporary_tokens::TokenInstructions {
+                    item: item.clone(),
+                    keywords,
+                    permanent_keywords: true,
+                    attack: temporary_tokens::TokenAttack::None,
+                    cleanup: temporary_tokens::TokenCleanup::NextEndStepExile {
+                        ability: exile_ability,
+                    },
+                },
+            )),
+        );
+    }
+
     pub(super) fn copy_other_controlled_nonlands(&mut self, item: &SpellView) {
         let source = item.source.map(|source| source.object);
         let recipes = self
@@ -79,33 +160,44 @@ impl Game {
         &mut self,
         item: &SpellView,
     ) {
+        self.copy_target_players_creatures_with_exceptions(
+            item,
+            CopyExceptions {
+                conditional_sacrifice_abilities: 1,
+                ..CopyExceptions::NONE
+            },
+        );
+    }
+    pub(super) fn copy_target_players_creatures_with_exceptions(
+        &mut self,
+        item: &SpellView,
+        exceptions: CopyExceptions,
+    ) {
         let Some(player) = item.targets.iter().find_map(|bound| match bound.target {
             Target::Player(player) => Some(player),
             _ => None,
         }) else {
             return;
         };
-        let recipes =
-            self.state
-                .objects
-                .iter()
-                .enumerate()
-                .filter_map(|(id, object)| {
-                    let id = id as CardId;
-                    if object.zone != Zone::Battlefield
-                        || object.controller != player
-                        || !self.is_creature(id)
-                    {
-                        return None;
-                    }
-                    Some(self.copiable_recipe(self.object_ref(id)).with_exceptions(
-                        CopyExceptions {
-                            conditional_sacrifice_abilities: 1,
-                            ..CopyExceptions::NONE
-                        },
-                    ))
-                })
-                .collect();
+        let recipes = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                let id = id as CardId;
+                if object.zone != Zone::Battlefield
+                    || object.controller != player
+                    || !self.is_creature(id)
+                {
+                    return None;
+                }
+                Some(
+                    self.copiable_recipe(self.object_ref(id))
+                        .with_exceptions(exceptions),
+                )
+            })
+            .collect();
         self.stage_copy_recipes(item.controller, recipes, 1, false);
     }
     pub(super) fn copy_controlled_nontoken_creatures_nonlegendary(&mut self, player: Player) {

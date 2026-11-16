@@ -173,6 +173,23 @@ impl Game {
                     _ => unreachable!(),
                 }]
                 .program;
+                if dies
+                    && let Some(counter) =
+                        program.iter().find_map(|instruction| match instruction {
+                            Instruction::ScheduleDelayedDeathReturnWithCounter(counter) => {
+                                Some(*counter)
+                            }
+                            _ => None,
+                        })
+                {
+                    packet.return_link = Some(Box::new(return_links::ReturnLinkView::from_event(
+                        event,
+                        event.before.owner,
+                        Some((counter, 1)),
+                        false,
+                        false,
+                    )));
+                }
                 self.state.pending_triggers.push(packet);
                 self.capture_battlefield_departure_facts(event, program);
             } else {
@@ -220,7 +237,7 @@ impl Game {
         let watch_any = rows
             .iter()
             .any(|row| row.event == DelayedTargetEvent::CombatDamage);
-        let mut player_hits = std::collections::BTreeSet::new();
+        let mut player_hits = std::collections::BTreeMap::<(ObjectRef, Player), u128>::new();
         let mut amounts = std::collections::BTreeMap::<ObjectRef, u128>::new();
         for event in events
             .iter()
@@ -228,7 +245,10 @@ impl Game {
         {
             let dealer = event.source.reference;
             if let Target::Player(player) = event.target {
-                player_hits.insert((dealer, player));
+                let amount = player_hits.entry((dealer, player)).or_default();
+                *amount = amount
+                    .checked_add(event.amount as u128)
+                    .capacity("combat damage amount exhausted");
             }
             if watch_any {
                 let amount = amounts.entry(dealer).or_default();
@@ -247,8 +267,18 @@ impl Game {
                     packets.extend(
                         player_hits
                             .iter()
-                            .filter(|(dealer, _)| *dealer == row.subject)
-                            .map(|_| row.packet.clone()),
+                            .filter(|((dealer, _), _)| *dealer == row.subject)
+                            .map(|((dealer, player), amount)| {
+                                let mut packet = row.packet.clone();
+                                packet.damage_event = Some(DamageTriggerView {
+                                    dealer: Some(*dealer),
+                                    player: *player,
+                                    amount: *amount,
+                                    combat: true,
+                                });
+                                packet.event_player = Some(*player);
+                                packet
+                            }),
                     );
                 }
                 DelayedTargetEvent::CombatDamage => {

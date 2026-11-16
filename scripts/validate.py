@@ -58,6 +58,20 @@ def snapshot_library(target, report_dir):
     return library, digest
 
 
+def native_retirement(native_report):
+    """Record reclamation from the terminal native runner."""
+    native = json.loads(native_report.read_text())
+    if not native.get('success') or not native.get('terminal') or native.get('active_processes'):
+        raise RuntimeError('native assurance is not terminal and successful; preserve outputs')
+    count = native.get('retired_native_test_binaries')
+    reclaimed = native.get('retired_native_test_bytes')
+    if not isinstance(count, int) or count <= 0 or not isinstance(reclaimed, int) or reclaimed < 0:
+        raise RuntimeError('native assurance did not retire its test binaries')
+    if active_peers():
+        raise RuntimeError('native test processes remain active; preserve outputs')
+    return count, reclaimed
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     windows = sys.platform == 'win32'
@@ -67,7 +81,10 @@ def main(argv=None):
                         help='run binding assurance against this run\'s release library')
     parser.add_argument('--games', type=int, default=10,
                         help='native benchmark games, only with --release (default: 10)')
-    parser.add_argument('--timeout', type=float, default=4500 if windows else 3600,
+    parser.add_argument('--retire-native-binaries', action='store_true',
+                        help='build/run/remove native test executables in bounded batches')
+    parser.add_argument('--timeout', type=float,
+                        default=11700 if windows else 6600 if sys.platform == 'darwin' else 5100,
                         help='total wall-clock budget after acquiring the build slot (default: %(default)s seconds)')
     targets = parser.add_mutually_exclusive_group()
     targets.add_argument('--target-dir', type=Path,
@@ -78,6 +95,8 @@ def main(argv=None):
     args = parser.parse_args(arguments)
     if args.games < 1 or (not math.isfinite(args.timeout) or args.timeout <= 0):
         parser.error('--games and --timeout must be positive')
+    if args.retire_native_binaries and not (args.release or args.python != 'none'):
+        parser.error('--retire-native-binaries requires a subsequent release build')
     os.chdir(ROOT)
     if managed_context() is None:
         exec_process([sys.executable, str(ROOT/'scripts/resource_guard.py'), '--',
@@ -111,10 +130,14 @@ def main(argv=None):
     env.setdefault('RUSTMAGE_TDM_EVIDENCE_DIR', str(report_dir/'tdm-games'))
     files = source_files()
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
-    # Cold Windows runners link hundreds of integration targets serially.
-    native_compile_timeout = 2700 if windows else 1800
+    # Cold hosted runners link hundreds of integration targets serially.
+    # Windows CI run 43775947252 took 4828s to link 872 targets and 1131s
+    # for clippy. Allow runner variation while keeping every phase bounded.
+    native_compile_timeout = 6000 if windows else 3300 if sys.platform == 'darwin' else 2100
     # Hosted macOS and Windows runners also pay process startup for each target.
-    native_suite_timeout = 720 if windows or sys.platform == 'darwin' else 480
+    # Windows exhausted 1200s after 775/872 binaries, with no failed case.
+    # This aggregate allowance does not relax the 180s per-case deadline.
+    native_suite_timeout = 1800 if windows else 1200 if sys.platform == 'darwin' else 900
     commands = [
         ('source pins', [sys.executable, 'scripts/check_sources.py'], 45),
         ('format', [sys.executable, 'scripts/format_workspace.py', '--check'], 45),
@@ -123,15 +146,19 @@ def main(argv=None):
         # Cold native toolchains on hosted Windows/macOS need time to populate
         # the per-set cache; compilation budgets are separate from game limits.
         ('clippy', ['cargo', 'clippy', '--workspace', '--all-targets', '--', '-D', 'warnings'],
-         750 if windows else 600),
+         1500 if windows else 600),
         ('native assurance', [sys.executable, 'scripts/run_native_tests.py',
                               '--target-dir', str(target), '--report', str(report_dir/'native.json'),
-                              '--test-timeout', '90', '--suite-timeout', str(native_suite_timeout),
-                              '--compile-timeout', str(native_compile_timeout)],
+                              '--test-timeout', '180', '--suite-timeout', str(native_suite_timeout),
+                              '--compile-timeout', str(native_compile_timeout)]
+                             + (['--retire-binaries'] if args.retire_native_binaries else []),
          native_compile_timeout + native_suite_timeout + 20),
     ]
     if args.release or args.python != 'none':
-        commands.append(('release build', ['cargo', 'build', '--release', '--lib', '--bin', 'benchmark'], 900))
+        # A cold Windows release still compiles the whole pool independently of
+        # the test profile. Reserve time for it after the complete native suite.
+        commands.append(('release build', ['cargo', 'build', '--release', '--lib', '--bin', 'benchmark'],
+                         1800 if windows else 900))
     if args.release:
         commands.append(('simulation sample', [str(target/'release'/executable_name('benchmark')), str(args.games)], 15))
     if args.python != 'none':
@@ -141,7 +168,8 @@ def main(argv=None):
     report = dict(head=head, terminal=False, target=str(target), phases=[], timeout_seconds=args.timeout,
                   fresh_target=args.fresh, target_preexisting=target_preexisting, shared_libraries={},
                   game_evidence_directory=env['RUSTMAGE_TDM_EVIDENCE_DIR'],
-                  input_sha256=hashlib.sha256(json.dumps(files, sort_keys=True).encode()).hexdigest())
+                  input_sha256=hashlib.sha256(json.dumps(files, sort_keys=True).encode()).hexdigest(),
+                  retired_native_test_binaries=0, retired_native_test_bytes=0)
     started = time.monotonic()
     ok = False
     print(f'Validation report: {report_dir/"result.json"}', flush=True)
@@ -159,6 +187,12 @@ def main(argv=None):
             if phase['exit']:
                 print(Path(phase['log']).read_text()[-12000:], flush=True)
                 break
+            if name == 'native assurance' and args.retire_native_binaries:
+                count, reclaimed = native_retirement(report_dir/'native.json')
+                report['retired_native_test_binaries'] = count
+                report['retired_native_test_bytes'] = reclaimed
+                print(f'Retired {count} completed native test executables ({reclaimed} allocated bytes)',
+                      flush=True)
             if name == 'release build':
                 if active_peers():
                     raise RuntimeError('release build left active processes; preserve outputs')

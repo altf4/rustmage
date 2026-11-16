@@ -5,6 +5,7 @@ use super::*;
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct MilledSelection {
     player: Player,
+    owner: Player,
     spec: MilledSelectionSpec,
     minimum: u16,
     maximum: usize,
@@ -88,7 +89,7 @@ impl Game {
                 .unwrap()
                 .milled
                 .contains(&object)
-            && self.milled_matches(choice.player, choice.spec.filter, object)
+            && self.milled_matches(choice.owner, choice.spec.filter, object)
     }
     pub(super) fn can_finish_milled_selection(&self) -> bool {
         let Some(choice) = self.milled_selection() else {
@@ -147,6 +148,14 @@ impl Game {
         player: Player,
         spec: MilledSelectionSpec,
     ) -> bool {
+        self.start_milled_selection_for_chooser(player, player, spec)
+    }
+    pub(super) fn start_milled_selection_for_chooser(
+        &mut self,
+        owner: Player,
+        player: Player,
+        spec: MilledSelectionSpec,
+    ) -> bool {
         if matches!(
             spec.destination,
             MilledDestination::HandAndCount | MilledDestination::HandAndCountSubtype(_)
@@ -158,7 +167,7 @@ impl Game {
             .milled
             .iter()
             .copied()
-            .filter(|&object| self.milled_matches(player, spec.filter, object))
+            .filter(|&object| self.milled_matches(owner, spec.filter, object))
             .collect();
         if eligible.is_empty()
             && !matches!(
@@ -182,6 +191,7 @@ impl Game {
         };
         self.state.resolving.as_mut().unwrap().milled_selection = Some(Box::new(MilledSelection {
             player,
+            owner,
             spec,
             minimum,
             maximum,
@@ -218,7 +228,7 @@ impl Game {
         let selected: Vec<_> = choice
             .selected
             .into_iter()
-            .filter(|&object| self.milled_matches(choice.player, choice.spec.filter, object))
+            .filter(|&object| self.milled_matches(choice.owner, choice.spec.filter, object))
             .collect();
         self.move_milled_selection(choice.player, &selected, choice.spec.destination);
         self.run_program();
@@ -232,6 +242,17 @@ impl Game {
         if let MilledDestination::PlayPermission { next_turn } = destination {
             for &object in selected {
                 self.grant_exile_play_permission(player, object, next_turn);
+            }
+            return;
+        }
+        if destination == MilledDestination::PlayPermissionWhileExiled {
+            for &object in selected {
+                self.grant_exile_play_permission_with_expiry(
+                    player,
+                    object,
+                    None,
+                    ExilePlayExpiry::WhileExiled,
+                );
             }
             return;
         }
@@ -257,7 +278,8 @@ impl Game {
             _ => None,
         };
         let destination = match destination {
-            MilledDestination::PlayPermission { .. } => {
+            MilledDestination::PlayPermission { .. }
+            | MilledDestination::PlayPermissionWhileExiled => {
                 unreachable!("handled permission without movement")
             }
             MilledDestination::Hand

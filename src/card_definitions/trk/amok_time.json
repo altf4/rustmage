@@ -1,0 +1,14 @@
+{
+  "name": "Amok Time",
+  "catalogue_id": 5716,
+  "oracle_id": "98a752ff-f041-4032-9f3f-c6c4007f10f1",
+  "facts_sha256": "28687ab311287bae39412f125f67ef9d08617c0f44cbae704acde3b343dd597b",
+  "physical_metadata_sha256": "21ab21ae53651b763b62f9e4f9b32a3bf92da9c64fb38904d8050337cda55fb7",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/a/AmokTime.java",
+  "java_sha256": "4ad847fddc8244ac0d6fa74a2d68c6f71f39ba17eae60342bdd7efdb94b062c5",
+  "xmage_class": "mage.cards.a.AmokTime"
+}

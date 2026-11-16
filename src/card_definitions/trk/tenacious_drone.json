@@ -1,0 +1,14 @@
+{
+  "name": "Tenacious Drone",
+  "catalogue_id": 5956,
+  "oracle_id": "af6351a9-ac01-4fed-9ea9-a352d21a8312",
+  "facts_sha256": "5188f9456018f85857124410bf82206a365f7c938c7088ee2fa84352769fb511",
+  "physical_metadata_sha256": "75466939c7b7f48b070afd8bf0f3b05e0c6063ba7fa88c1412cb1b1569863d9a",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/t/TenaciousDrone.java",
+  "java_sha256": "16f375902ae0529d3c51859df161f2bdbd0ddc4af5107466674c62a686f62d19",
+  "xmage_class": "mage.cards.t.TenaciousDrone"
+}

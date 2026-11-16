@@ -3,6 +3,7 @@ use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum HandChoiceKind {
+    LookOnly,
     LookDiscardDraw,
     LookDiscardNonland,
     DiscardRevealedNonlandOrMoveExile,
@@ -27,6 +28,8 @@ pub enum HandChoiceKind {
     },
     /// Mandatory permanent unlinked exile of a card with no land type.
     ExileRevealedNonland,
+    LookMayExileNonlandWithPlaySurcharge(std::num::NonZeroU32),
+    LookMayExileNonlandThenVictimDraw,
     ExileRevealedNonlandCast,
     ExileRevealedNonlandReward {
         maximum: u64,
@@ -52,7 +55,8 @@ impl HandChoiceKind {
     fn optional(self) -> bool {
         matches!(
             self,
-            Self::ExileRevealedOrCreature
+            Self::LookOnly
+                | Self::ExileRevealedOrCreature
                 | Self::ExileRevealedLinkedOptional
                 | Self::DiscardNonlandReflexive { .. }
                 | Self::DiscardAnyReflexive { .. }
@@ -62,6 +66,8 @@ impl HandChoiceKind {
                 | Self::LookDiscardNonland
                 | Self::DiscardRevealedNonlandOrMoveExile
                 | Self::LookMayExileUntilSourceLeaves
+                | Self::LookMayExileNonlandWithPlaySurcharge(_)
+                | Self::LookMayExileNonlandThenVictimDraw
                 | Self::RevealOptional { .. }
         )
     }
@@ -230,6 +236,22 @@ impl Game {
             controller: item.controller,
             victim: Some(victim),
             source: item.source.expect("object-backed hand choice").object,
+            required: 0,
+            selected: Vec::new(),
+            candidates: self.exact_hand(victim),
+        });
+        true
+    }
+    pub(super) fn start_private_hand_look(&mut self, item: &SpellView) -> bool {
+        let Some(victim) = self.program_players(PlayerSet::Targeted, item).next() else {
+            return false;
+        };
+        self.set_hand_interaction(HandInteraction {
+            kind: HandChoiceKind::LookOnly,
+            actor: item.controller,
+            controller: item.controller,
+            victim: Some(victim),
+            source: item.source.expect("object-backed hand look").object,
             required: 0,
             selected: Vec::new(),
             candidates: self.exact_hand(victim),
@@ -507,6 +529,43 @@ impl Game {
         });
         true
     }
+    pub(super) fn start_private_hand_exile_nonland_with_play_surcharge(
+        &mut self,
+        item: &SpellView,
+        surcharge: std::num::NonZeroU32,
+    ) -> bool {
+        self.start_private_hand_exile_nonland(
+            item,
+            HandChoiceKind::LookMayExileNonlandWithPlaySurcharge(surcharge),
+        )
+    }
+    pub(super) fn start_private_hand_exile_nonland(
+        &mut self,
+        item: &SpellView,
+        kind: HandChoiceKind,
+    ) -> bool {
+        let Some(victim) = self.program_players(PlayerSet::Targeted, item).next() else {
+            return false;
+        };
+        let hand = self.exact_hand(victim);
+        if hand.is_empty() {
+            return false;
+        }
+        self.set_hand_interaction(HandInteraction {
+            kind,
+            actor: item.controller,
+            controller: item.controller,
+            victim: Some(victim),
+            source: item
+                .source
+                .expect("object-backed private hand choice")
+                .object,
+            required: 0,
+            selected: Vec::new(),
+            candidates: hand,
+        });
+        true
+    }
     pub(super) fn start_revealed_hand_exile_nonland(
         &mut self,
         item: &SpellView,
@@ -550,6 +609,7 @@ impl Game {
         let o = &self.state.objects[reference.card as usize];
         let in_hand = o.zone == Zone::Hand && Some(o.owner) == interaction.victim && o.is_card();
         match interaction.kind {
+            HandChoiceKind::LookOnly => false,
             HandChoiceKind::LookMayExileUntilSourceLeaves => {
                 in_hand
                     && !o.card.is_land()
@@ -560,7 +620,9 @@ impl Game {
                 in_hand && self.has_subtype(reference.card, subtype)
             }
             HandChoiceKind::DeployCreatures | HandChoiceKind::DeployPermanents => unreachable!(),
-            HandChoiceKind::LookDiscardNonland => {
+            HandChoiceKind::LookDiscardNonland
+            | HandChoiceKind::LookMayExileNonlandWithPlaySurcharge(_)
+            | HandChoiceKind::LookMayExileNonlandThenVictimDraw => {
                 in_hand && self.current_kinds(reference.card) & 2 == 0
             }
             HandChoiceKind::LookDiscardDraw
@@ -709,6 +771,7 @@ impl Game {
         }
         if let Some(object) = object {
             match interaction.kind {
+                HandChoiceKind::LookOnly => unreachable!("look-only has no card action"),
                 HandChoiceKind::ExileRevealedForControlledCast => {
                     let event = self.move_object(object.card, Zone::Exile);
                     if event.moved && event.destination == Zone::Exile {
@@ -752,6 +815,18 @@ impl Game {
                 | HandChoiceKind::ExileOwn
                 | HandChoiceKind::ExileRevealedNonland => {
                     self.move_object(object.card, Zone::Exile);
+                }
+                HandChoiceKind::LookMayExileNonlandWithPlaySurcharge(surcharge) => {
+                    let event = self.move_object(object.card, Zone::Exile);
+                    if event.moved && event.destination == Zone::Exile {
+                        self.grant_taxed_exile_play(event.before.owner, event.after, surcharge);
+                    }
+                }
+                HandChoiceKind::LookMayExileNonlandThenVictimDraw => {
+                    let event = self.move_object(object.card, Zone::Exile);
+                    if event.moved && event.destination == Zone::Exile {
+                        self.draw_many(event.before.owner, 1);
+                    }
                 }
                 HandChoiceKind::ExileRevealedNonlandReward { maximum, token } => {
                     let mana_value = self.object_mana_value(object.card);
@@ -918,9 +993,12 @@ impl Game {
                 .collect(),
             inspected_cards: matches!(
                 interaction.kind,
-                HandChoiceKind::LookDiscardDraw
+                HandChoiceKind::LookOnly
+                    | HandChoiceKind::LookDiscardDraw
                     | HandChoiceKind::LookDiscardNonland
                     | HandChoiceKind::LookMayExileUntilSourceLeaves
+                    | HandChoiceKind::LookMayExileNonlandWithPlaySurcharge(_)
+                    | HandChoiceKind::LookMayExileNonlandThenVictimDraw
             )
             .then(|| {
                 interaction

@@ -17,6 +17,7 @@ pub enum CastCostClause {
     OriginDiscard(Option<ObjectRef>),
     SneakReturn(Option<ObjectRef>),
     WebSlingingReturn(Option<ObjectRef>),
+    BeamMeUpReturn(Option<ObjectRef>, Option<ObjectRef>),
     /// Exile the activated craft source as its own ordered cost component.
     CraftSource,
     Harmonize(ObjectRef),
@@ -208,6 +209,19 @@ impl Announcement {
         {
             self.add_cast_cost_clause(CastCostClause::Mana);
             self.add_cast_cost_clause(CastCostClause::WebSlingingReturn(None));
+        }
+        if let Some(method) = self.item.cast.map(|cast| cast.method).filter(|method| {
+            matches!(
+                method,
+                CastMethod::BeamMeUp | CastMethod::BeamMeUpGranted(_)
+            )
+        }) {
+            self.add_cast_cost_clause(CastCostClause::Mana);
+            let provider = match method {
+                CastMethod::BeamMeUpGranted(provider) => Some(provider),
+                _ => None,
+            };
+            self.add_cast_cost_clause(CastCostClause::BeamMeUpReturn(None, provider));
         }
         if self.additional_cost().is_some_and(|s| {
             s.kind == EffectChoiceKind::ReturnTappedCreature
@@ -564,6 +578,12 @@ impl Game {
             }
             CastCostClause::WebSlingingReturn(_) => {
                 self.state.pending = Pending::WebSlingingReturnCost {
+                    player: a.item.controller,
+                };
+                self.state.announcing = Some(a);
+            }
+            CastCostClause::BeamMeUpReturn(_, _) => {
+                self.state.pending = Pending::BeamMeUpReturnCost {
                     player: a.item.controller,
                 };
                 self.state.announcing = Some(a);

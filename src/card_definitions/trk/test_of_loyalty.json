@@ -1,0 +1,14 @@
+{
+  "name": "Test of Loyalty",
+  "catalogue_id": 5960,
+  "oracle_id": "6cb1c3fb-033a-4de5-ad07-69d9ad0ca5ae",
+  "facts_sha256": "94ca56ac838023a158631917a02c588a383050af183105d9906db464b6d7cc89",
+  "physical_metadata_sha256": "859016c84dc691c0e8c67bce2f84c6d7ddb4012d56da8d007f1184f49810b9c0",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/t/TestOfLoyalty.java",
+  "java_sha256": "d32eb4159cfc342d6bd8968c11f06b6c5b50053169483c8806c5cefec09199e7",
+  "xmage_class": "mage.cards.t.TestOfLoyalty"
+}

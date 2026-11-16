@@ -1,0 +1,14 @@
+{
+  "name": "Adversary by Algorithm",
+  "catalogue_id": 5714,
+  "oracle_id": "37f3eda9-3242-4d62-846f-935543d8f4fd",
+  "facts_sha256": "70d6726c89a61c0ed6fa4a40f4d48794ffa709ad7706395c91a68b8c325b56b1",
+  "physical_metadata_sha256": "25f0745cbc915cb827eb3429afa645a41030c629e27dac0936f42a377cbf8dea",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/a/AdversaryByAlgorithm.java",
+  "java_sha256": "9f36cc675fdaa84b3122e87f0a1638e4f07904cb77769e0de81a8e5ae8e5d0f1",
+  "xmage_class": "mage.cards.a.AdversaryByAlgorithm"
+}

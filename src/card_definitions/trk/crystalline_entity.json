@@ -1,0 +1,14 @@
+{
+  "name": "Crystalline Entity",
+  "catalogue_id": 5764,
+  "oracle_id": "ca6f43d8-1498-4a13-b1cc-2d135b24a8b6",
+  "facts_sha256": "2a96f2080c0c4d503b367474654c7a150cf7e6fa3d1f4435bd7da59984c5fac5",
+  "physical_metadata_sha256": "c042d76d53ead58db86dad8d4cde2292c30de8fc0d21a107da9d32b026ded749",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/c/CrystallineEntity.java",
+  "java_sha256": "58ceac8a5d03e1c0a6a9b171a680bcb1fac1fbe8193d4378a52da488056855c2",
+  "xmage_class": "mage.cards.c.CrystallineEntity"
+}

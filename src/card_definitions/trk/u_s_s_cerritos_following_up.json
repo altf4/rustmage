@@ -1,0 +1,14 @@
+{
+  "name": "U.S.S. Cerritos, Following Up",
+  "catalogue_id": 5981,
+  "oracle_id": "472eac8f-2b82-4fa9-a40c-af11ec40f19e",
+  "facts_sha256": "4ce97e8d36d82608f97c468fc85c3da3af1ccbfe430074afae80acfff1f326bb",
+  "physical_metadata_sha256": "bbc3ceb856236ddc5f93477d6fb1d7bfa9262e7a9b5b276087fb6670a68fadcf",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/u/USSCerritosFollowingUp.java",
+  "java_sha256": "ab8e40a96d73b5fab1fd6709c83a096fd0210b398e4579b1d5a4c16f2e2b5fcd",
+  "xmage_class": "mage.cards.u.USSCerritosFollowingUp"
+}

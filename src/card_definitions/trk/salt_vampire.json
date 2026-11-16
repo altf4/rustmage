@@ -1,0 +1,14 @@
+{
+  "name": "Salt Vampire",
+  "catalogue_id": 5915,
+  "oracle_id": "31c7453e-33b8-4eb6-abac-28cdb35fb993",
+  "facts_sha256": "ea55179767d87e23b7dd611251340916804617b87199542ef65e2065622a3faa",
+  "physical_metadata_sha256": "5a883b32b847f7eaaf32f7158ad1d5e7bd7378ae0e9450ca74e236f5f125eee4",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/SaltVampire.java",
+  "java_sha256": "d7a94b5531a7685f8e856bb61c98572cb0f853c89ea8a3f7c053a5084d78c65b",
+  "xmage_class": "mage.cards.s.SaltVampire"
+}

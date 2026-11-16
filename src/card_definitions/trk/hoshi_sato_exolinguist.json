@@ -1,0 +1,14 @@
+{
+  "name": "Hoshi Sato, Exolinguist",
+  "catalogue_id": 5836,
+  "oracle_id": "39426cd1-8c0d-4ec6-8747-f0693080f8f2",
+  "facts_sha256": "0abb008c9f9b701f8400bf18a5baaaa818aa8778511801a31409bf09a83dfc60",
+  "physical_metadata_sha256": "2f68e15b277648418a558482ae0b8fd362d4f901c5a6778c482ade77f23861e9",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/h/HoshiSatoExolinguist.java",
+  "java_sha256": "5ceac8550e5783fa801b728b1532d2a2252f66a29578b9d0640d7812d7df9cef",
+  "xmage_class": "mage.cards.h.HoshiSatoExolinguist"
+}

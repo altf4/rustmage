@@ -1,0 +1,14 @@
+{
+  "name": "L'Rell, Fierce Visionary",
+  "catalogue_id": 5854,
+  "oracle_id": "ea684e78-483c-4b89-b184-b2aeede83cc7",
+  "facts_sha256": "e8f77a8c14bbddc2402c25f0340e805f1205f8b7b77d37be3ae3c7b6aba6cef9",
+  "physical_metadata_sha256": "406e723cfdb1398d0eff172aec3d8e5b7925c83f520523aa5de49a25b61875c9",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/l/LRellFierceVisionary.java",
+  "java_sha256": "19b798b2de472b13c4eb86840930089daa0f60b4675fc7b22804ff57fce378e3",
+  "xmage_class": "mage.cards.l.LRellFierceVisionary"
+}

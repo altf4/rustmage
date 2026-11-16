@@ -1,0 +1,14 @@
+{
+  "name": "Vash, Freelance Archaeologist",
+  "catalogue_id": 5991,
+  "oracle_id": "ec5a9dde-b89d-4c54-8563-4a7170f5cefd",
+  "facts_sha256": "40a52b6d9699d518ae452b3a11c8ddac0041a6402ce2d27aa0cceb321011e1f7",
+  "physical_metadata_sha256": "9c58dca4ffa360926c9d3f396124bacd6176e4d8dd88acc6d49667bb6464f564",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/v/VashFreelanceArchaeologist.java",
+  "java_sha256": "552dfe3434b2313ca7673cccbdb36f4f0ba7499d461059fe7315d425ae749154",
+  "xmage_class": "mage.cards.v.VashFreelanceArchaeologist"
+}

@@ -224,6 +224,21 @@ impl Game {
                         & u16::from(excluded)
                         == 0
             }
+            TargetRule::SpellKindsControlled {
+                kinds,
+                excluded,
+                relation,
+            } => {
+                if item.kind != StackKind::Spell
+                    || (relation >= 0 && (item.controller == controller) != (relation == 0))
+                {
+                    return false;
+                }
+                let source = item.source.expect("spell source exists");
+                let current = self.current_kinds(source.id);
+                (kinds == 0 || current & u16::from(kinds) != 0)
+                    && current & u16::from(excluded) == 0
+            }
             TargetRule::SpellCharacteristics {
                 colors,
                 min_mana,
@@ -292,6 +307,57 @@ impl Game {
                 }
                 _ => false,
             })
+    }
+
+    pub(super) fn offer_target_spell_controller_exile(&mut self, item: &SpellView) {
+        let controller = item.targets.iter().find_map(|bound| {
+            self.bound_stack_item(bound)
+                .filter(|spell| spell.kind == StackKind::Spell)
+                .map(|spell| spell.controller)
+        });
+        let resolution = self.state.resolving.as_mut().expect("resolving spell");
+        if let Some(player) = controller {
+            // The following instruction offers the caster a filtered free cast.
+            self.state.pending = Pending::EffectOptional {
+                player,
+                skip_to: resolution.pc + 1,
+            };
+        } else {
+            // A vanished target cannot grant the free cast either.
+            resolution.pc += 1;
+        }
+    }
+
+    pub(super) fn complete_target_spell_controller_exile(&mut self, accept: bool) -> bool {
+        let Pending::EffectOptional { skip_to, .. } = self.state.pending else {
+            return false;
+        };
+        let Some(resolution) = self.state.resolving.as_ref() else {
+            return false;
+        };
+        if resolution.program.get(resolution.pc.saturating_sub(1))
+            != Some(&Instruction::MayTargetSpellControllerExile)
+        {
+            return false;
+        }
+        let bound = resolution.item.targets.first().copied();
+        let exiled = if accept {
+            bound
+                .and_then(|bound| self.bound_stack_item(&bound))
+                .filter(|spell| spell.kind == StackKind::Spell)
+                .and_then(|spell| spell.source)
+                .is_some_and(|source| {
+                    let event = self.move_object(source.id, Zone::Exile);
+                    event.moved && event.destination == Zone::Exile
+                })
+        } else {
+            false
+        };
+        if exiled {
+            self.state.resolving.as_mut().unwrap().pc = skip_to;
+        }
+        self.run_program();
+        true
     }
     pub(super) fn register_delayed_stack_trigger(&mut self, item: &SpellView, ability: u16) {
         let mut delayed = item.clone();
@@ -401,6 +467,7 @@ impl Game {
                     object: source.object,
                     card: source.definition,
                     facts: source.facts,
+                    target_lki: None,
                 });
                 trigger.source_keywords = source.keywords;
                 trigger.source_tapped = source.tapped;
@@ -679,6 +746,8 @@ impl Game {
             controller,
             zone: Zone::Stack,
             generation,
+            phased_out_under: None,
+            phased_out_indirectly: false,
             tapped: false,
             summoning_sick: false,
             flashback: false,
@@ -718,6 +787,7 @@ impl Game {
         copy.is_copy = true;
         if let Some(cast) = &mut copy.cast {
             cast.payment = [0; 6];
+            cast.first_spell_cast_this_game = false;
             cast.controlled_subtype_at_cast = false;
             cast.behold_exiled = None;
             // The permission-created replacement is external to copiable values.

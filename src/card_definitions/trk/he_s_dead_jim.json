@@ -1,0 +1,14 @@
+{
+  "name": "He's Dead, Jim",
+  "catalogue_id": 5827,
+  "oracle_id": "ee7150d1-8b38-4387-9b9c-a40180430170",
+  "facts_sha256": "a02279b40bc24c8694fcb61e519029eecc44afc1972137ddc6d545910e4d9a36",
+  "physical_metadata_sha256": "b41106eecd252d24d075e5970fd18d2ce017cb79fb473a04f5fe8e4bb903c11e",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/h/HesDeadJim.java",
+  "java_sha256": "b7443b22b71f59e00475ea5f02f7390c779059b6c01e7a40165f6d435ce31be6",
+  "xmage_class": "mage.cards.h.HesDeadJim"
+}

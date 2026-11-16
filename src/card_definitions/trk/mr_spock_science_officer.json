@@ -1,0 +1,14 @@
+{
+  "name": "Mr. Spock, Science Officer",
+  "catalogue_id": 5870,
+  "oracle_id": "869bde03-8813-43a9-9df5-a21c62511b4b",
+  "facts_sha256": "cc4a8515c4f018a204815529b9c9409b30139e85547066a0227bff173c97c884",
+  "physical_metadata_sha256": "eebe0f06eea6ab87629cdb90ff24b3a18c7c59379d57400f4e0c50adb79806bc",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/m/MrSpockScienceOfficer.java",
+  "java_sha256": "39956e0e40ff24e5cd3bcdcdef01f05ba2f19762fd5d86db9bb5982b4bac5602",
+  "xmage_class": "mage.cards.m.MrSpockScienceOfficer"
+}

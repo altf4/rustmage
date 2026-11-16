@@ -93,6 +93,7 @@ fn grant_elemental_fixture(g: &mut Game, source: CardId) {
             source: recipient,
             types: &["Elemental"],
             additional: true,
+            until_cleanup: false,
             timestamp,
         });
     assert!(g.has_subtype(source, "Elemental"));

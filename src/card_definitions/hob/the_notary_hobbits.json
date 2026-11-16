@@ -2,13 +2,13 @@
   "name": "The Notary Hobbits",
   "catalogue_id": 4483,
   "oracle_id": "dc20b29b-856e-4d45-99cd-5e12cfc2324d",
-  "facts_sha256": "fc5dd40445a4a26b35489e84896c051acfade2e9f03309383acf3326f723bcb1",
+  "facts_sha256": "b2f77c264e299b6f58aa79a89630df8b67e4fbafd61e08a0f14bc0c6551c2ed3",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "75653d070fae58d5adc669a1906c4c2aadd6f493b98d35d4e118d1805732eb41"
   },
-  "physical_metadata_sha256": "ab6c95971435ce2432cd8e97bbc072053a39f87f1579aaf4bd7d665d983740d3",
+  "physical_metadata_sha256": "f1c4aba28209ad908badcf0aaee5def010b5cfe075bcc255b8056d420e7a67ed",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/t/TheNotaryHobbits.java",
   "java_sha256": "ba643bd9095fd0508c83cfac6ee375113765071ff54a13b940c9b50bc3aa0caa",

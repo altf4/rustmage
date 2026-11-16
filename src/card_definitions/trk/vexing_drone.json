@@ -1,0 +1,14 @@
+{
+  "name": "Vexing Drone",
+  "catalogue_id": 5993,
+  "oracle_id": "8e90e417-65ca-48bc-a32d-b93976519fe9",
+  "facts_sha256": "262e1cfc8dcaa9f4d6a81a73c301a0172a35b77e964beef976a20309f9641fc0",
+  "physical_metadata_sha256": "81fd01959845f7f09ef0e221911e2e23075ebceeaf8a73a8447fee45f61444a7",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/v/VexingDrone.java",
+  "java_sha256": "68a8d1c61b3267ba773b29d7b0c4e50214c7442a94c093ec7e388a405a1873ef",
+  "xmage_class": "mage.cards.v.VexingDrone"
+}

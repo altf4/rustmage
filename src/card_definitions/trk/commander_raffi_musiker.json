@@ -1,0 +1,14 @@
+{
+  "name": "Commander Raffi Musiker",
+  "catalogue_id": 5759,
+  "oracle_id": "4f8a70cb-2487-4e6d-9a3f-c6c5313b8e82",
+  "facts_sha256": "195bb4a3b0c8ce91fb7c9b4785fe06142301bc3be7457ca755a05de03d4d5c92",
+  "physical_metadata_sha256": "a91deb531d11df6d82f2fdd222562490d68af1b154ebb052e940c2d62cb83b39",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/c/CommanderRaffiMusiker.java",
+  "java_sha256": "858ed19e013acfed7c686f9de606e150926851fc2ff37a6424e9aeb17651c43c",
+  "xmage_class": "mage.cards.c.CommanderRaffiMusiker"
+}

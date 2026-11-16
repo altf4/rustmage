@@ -2,13 +2,13 @@
   "name": "Watery Grave",
   "catalogue_id": 5004,
   "oracle_id": "fc9ec820-4245-4a96-b009-5308a818ca58",
-  "facts_sha256": "ad004df70ec1081cd176f13b13a634fe0ff63756c652d9fa6e705f2c55a60c1a",
+  "facts_sha256": "9ab008cdd1ffb8be60633966ea286e917462154a22aa7b742a09bae9ae8f128c",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8a2a423ba5070b71cb9276cc3873a6731621fe771d72824654ff91408ac82186"
   },
-  "physical_metadata_sha256": "1e01cee2db8f3d74a96f7dd09acb5f2fa276bbb5ab808e0d0b0dac8f47fd1adf",
+  "physical_metadata_sha256": "b4e1799b99cf1d416c0e91294d05551acb2e5acade291142a0b9320079969780",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/w/WateryGrave.java",
   "java_sha256": "84f9ccaecd69c0f53791d54f496d352e76721f87d469efcf18fd90629b514dbd",

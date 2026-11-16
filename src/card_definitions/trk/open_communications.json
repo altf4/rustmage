@@ -1,0 +1,14 @@
+{
+  "name": "Open Communications",
+  "catalogue_id": 5879,
+  "oracle_id": "b08c5b86-4f84-46a3-877f-bbf71ec17adb",
+  "facts_sha256": "a0268ba833a8b3ae3bef79a711755b3d83d4879589afcb7fec3d7444355655cc",
+  "physical_metadata_sha256": "408c878ef7cadf4228bba59e6a95a5e08f4bd56509e5dc602820a1fdec50d44a",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/o/OpenCommunications.java",
+  "java_sha256": "f1c6cd9d5ad55eed84623fba82b178e2612f0fff2ca14ab3065bfe4ca9fd6392",
+  "xmage_class": "mage.cards.o.OpenCommunications"
+}

@@ -14,6 +14,7 @@ pub(super) struct LegendGroup {
 pub(super) struct SbaBatch {
     resume: Pending,
     deaths: Vec<CardId>,
+    destruction_deaths: Vec<CardId>,
     ceased: Vec<CardId>,
     detached: Vec<ObjectRef>,
     pairs: Vec<(ObjectRef, u64)>,
@@ -25,6 +26,7 @@ pub(super) struct SbaBatch {
 impl SbaBatch {
     fn changes_state(&self) -> bool {
         !self.deaths.is_empty()
+            || !self.destruction_deaths.is_empty()
             || !self.detached.is_empty()
             || !self.ceased.is_empty()
             || !self.pairs.is_empty()
@@ -36,7 +38,8 @@ impl SbaBatch {
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.resume.owned_bytes()
-            + (self.deaths.len() + self.ceased.len()) * std::mem::size_of::<CardId>()
+            + (self.deaths.len() + self.destruction_deaths.len() + self.ceased.len())
+                * std::mem::size_of::<CardId>()
             + self.pairs.len() * std::mem::size_of::<(ObjectRef, u64)>()
             + self.detached.len() * std::mem::size_of::<ObjectRef>()
             + self.roles.len() * std::mem::size_of::<RoleGroupView>()
@@ -170,6 +173,7 @@ impl Game {
         let mut batch = SbaBatch {
             resume: self.state.pending.clone(),
             deaths: Vec::new(),
+            destruction_deaths: Vec::new(),
             ceased: Vec::new(),
             detached: Vec::new(),
             pairs: Vec::new(),
@@ -184,7 +188,12 @@ impl Game {
             std::array::from_fn(|_| std::collections::BTreeMap::new());
         for (index, object) in self.state.objects.iter().enumerate() {
             let id = index as CardId;
-            if object.is_token() && !matches!(object.zone, Zone::Battlefield | Zone::Outside) {
+            if object.is_token()
+                && !matches!(
+                    object.zone,
+                    Zone::Battlefield | Zone::PhasedOut | Zone::Outside
+                )
+            {
                 batch.ceased.push(id);
             }
             if object.copy_kind == CopyKind::Spell
@@ -275,11 +284,12 @@ impl Game {
             if self.is_creature(id) {
                 let query = characteristics.get_or_init(|| self.characteristic_query());
                 let toughness = query.stats(id).toughness;
-                if toughness <= 0
-                    || ((object.damage >= toughness || object.deathtouch_since_sba)
-                        && !query.keywords(id).contains(Keywords::INDESTRUCTIBLE))
-                {
+                if toughness <= 0 {
                     batch.deaths.push(id);
+                } else if (object.damage >= toughness || object.deathtouch_since_sba)
+                    && !query.keywords(id).contains(Keywords::INDESTRUCTIBLE)
+                {
+                    batch.destruction_deaths.push(id);
                 }
             }
             let pairs = object.counters.plus_one.min(object.counters.minus_one);
@@ -538,6 +548,11 @@ impl Game {
         // Player loss looks back before all simultaneous state-based actions
         // (CR 603.10f), including death of the observing permanent.
         self.chosen_player_loss_triggers(batch.lost);
+        for id in batch.destruction_deaths {
+            if !self.sba_destruction_prevented(id) {
+                batch.deaths.push(id);
+            }
+        }
         for group in &batch.groups {
             let keep = group.keep.expect("every legend choice precedes the event");
             batch.deaths.extend(
@@ -592,8 +607,10 @@ impl Game {
         for (object, pairs) in batch.pairs {
             if self.object_ref(object.card) == object {
                 let counters = &mut self.state.objects[object.card as usize].counters;
-                counters.plus_one -= pairs;
-                counters.minus_one -= pairs;
+                // Another simultaneous SBA replacement may already have
+                // removed the +1/+1 counters from this exact creature.
+                counters.plus_one = counters.plus_one.saturating_sub(pairs);
+                counters.minus_one = counters.minus_one.saturating_sub(pairs);
             }
         }
         for id in batch.ceased {

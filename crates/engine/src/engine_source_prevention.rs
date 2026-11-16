@@ -89,6 +89,7 @@ fn attached_instruction(instruction: &Instruction) -> bool {
         | Instruction::Unprepare { subject }
         | Instruction::ChooseGrantKeywords { subject, .. }
         | Instruction::CreateCopyToken { subject, .. }
+        | Instruction::CreateTappedCopyToken { subject, .. }
         | Instruction::CreateCopyTokensScaled { subject, .. }
         | Instruction::Suspect { subject }
         | Instruction::Unsuspect { subject }
@@ -100,6 +101,7 @@ fn attached_instruction(instruction: &Instruction) -> bool {
         | Instruction::IfSubject { subject, .. }
         | Instruction::IfSubjectSubtype { subject, .. }
         | Instruction::GainControl { subject, .. }
+        | Instruction::Assimilate(subject)
         | Instruction::Connive { subject, .. }
         | Instruction::PutCountersScaled { subject, .. }
         | Instruction::AnimateSubject { subject, .. }

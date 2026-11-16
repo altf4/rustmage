@@ -63,6 +63,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 Instruction::GrantKeywords { .. } => Some(true),
                 Instruction::Connive { .. }
                 | Instruction::CreateCopyToken { .. }
+                | Instruction::CreateTappedCopyToken { .. }
                 | Instruction::CreateCopyTokensScaled { .. }
                 | Instruction::CreateCopiesOfEachTarget(_)
                 | Instruction::CreateCopyTokenWithExceptions { .. }
@@ -308,6 +309,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::PayConspire { .. }
             | Action::PaySneakReturn { .. }
             | Action::PayWebSlingingReturn { .. }
+            | Action::PayBeamMeUpReturn { .. }
             | Action::ChooseAdditionalCost { .. }
             | Action::ChooseAdditionalLife
             | Action::ChooseCreatureCounterCost { .. } => 60,
@@ -385,6 +387,8 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 ..
             } => 81,
             Action::AnnounceFreeCounterGraveyard { .. }
+            | Action::AnnounceSourceGraveyard { .. }
+            | Action::AnnounceSelectedOutsidePermanent { .. }
             | Action::AnnounceFreeGraveyardPermanent { .. }
             | Action::AnnounceFreeGraveyardAdditionalCosts { .. }
             | Action::AnnounceFreeFromPermission { .. }
@@ -409,6 +413,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceDisguiseGraveyard { .. }
             | Action::AnnounceSneak { .. }
             | Action::AnnounceWebSlinging { .. }
+            | Action::AnnounceBeamMeUp { .. }
             | Action::AnnounceForetold { .. }
             | Action::AnnouncePlotted { .. }
             | Action::AnnouncePlottedFace { .. }
@@ -433,12 +438,14 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceRoom { .. }
             | Action::AnnounceSplit { .. } => 79,
             Action::AnnouncePlot { .. }
+            | Action::SelectOutsideSourcePlay { .. }
             | Action::AnnounceForetell { .. }
             | Action::AnnounceLibraryTopPlot { .. }
             | Action::BeginFaceUp { .. }
             | Action::BeginFaceUpX { .. }
             | Action::BeginRoomUnlock { .. } => 40,
             Action::AnnounceActivate { .. }
+            | Action::AnnounceExiledCopyGrant { .. }
             | Action::AnnounceAttachedAbility { .. }
             | Action::AnnouncePlaneswalkerGrant { .. }
             | Action::AnnounceArtifactFood { .. }
@@ -449,6 +456,8 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceBorrowedAbility { .. }
             | Action::AnnounceInheritedAbility { .. }
             | Action::AnnounceGraveyardBorrowedAbility { .. } => 34,
+            Action::CancelOutsideSourcePlay => -1,
+            Action::PlaySourceGraveyardLand { .. } | Action::PlaySelectedOutsideLand => 79,
             Action::AnnounceMana { .. }
             | Action::AnnounceGrantedMana { .. }
             | Action::AnnounceGrantedManaTemplate { .. }
@@ -814,6 +823,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::ChooseToken { .. } => 10,
             Action::ChooseKeyword { .. }
             | Action::ChooseSourceCounterKind { .. }
+            | Action::ChooseTargetExistingCounterKindToPut { .. }
             | Action::ChooseResolutionColor { .. }
             | Action::ChoosePermanentType { .. }
             | Action::ChoosePowerThreshold { .. } => 10,

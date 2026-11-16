@@ -1,0 +1,14 @@
+{
+  "name": "Subspace Anomaly",
+  "catalogue_id": 5940,
+  "oracle_id": "1a28a83a-de27-4aaa-b35f-1e7075fc1e43",
+  "facts_sha256": "7f1c151bf4f26be4775466d7119662eeed63697a8000e544763c3360ccc1b3a6",
+  "physical_metadata_sha256": "d0bbcac776ff95ecded387665e9ac4459d1334e58c40c5cfb8dff0a0f2fedd2e",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/SubspaceAnomaly.java",
+  "java_sha256": "22dd20ceb645629a9e4b4788b5d08aded5e0541e282fa82b29ae215c802e8a3c",
+  "xmage_class": "mage.cards.s.SubspaceAnomaly"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Hologram Stalker",
+  "catalogue_id": 5834,
+  "oracle_id": "8f91e7aa-a2d4-42ed-a959-3acd621679a5",
+  "facts_sha256": "c22667ac84dd326701eb327afd5c9b3f9c095f436e06e69778cf25393e769816",
+  "physical_metadata_sha256": "00a5a282ca6704ab900e85fd08789d02de02d4df40e37a597a270c107f8d0cb8",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/h/HologramStalker.java",
+  "java_sha256": "3a8b2645a44f2161aab97d35bfcf38b3a1df9cce0af2a5922081d6bbf2d3f546",
+  "xmage_class": "mage.cards.h.HologramStalker"
+}

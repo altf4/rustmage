@@ -1,0 +1,14 @@
+{
+  "name": "Gaseous Anomaly",
+  "catalogue_id": 5814,
+  "oracle_id": "1fb736bf-c9bd-45ab-86ce-7f138f1724b2",
+  "facts_sha256": "8240ca965aadb6cba6d53671dc4e0dc7dca1a09bfc5693e0bed9c55a8f81d41d",
+  "physical_metadata_sha256": "0efa3f284169dc1752c1ff9928f4dedd96af261b031c5d22a0c18eb4dc074d2d",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/g/GaseousAnomaly.java",
+  "java_sha256": "ef3dd5b7cd6ad19c2dbb5e7cd3a7f6309fb827d22f37df2e4914dc5d88c94fe5",
+  "xmage_class": "mage.cards.g.GaseousAnomaly"
+}

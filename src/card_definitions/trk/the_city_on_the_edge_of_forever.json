@@ -1,0 +1,14 @@
+{
+  "name": "The City on the Edge of Forever",
+  "catalogue_id": 5963,
+  "oracle_id": "47c9ef8c-7ba7-4702-bd8c-5fedc59c8166",
+  "facts_sha256": "1debb402d778a5921e68114ffbffd4466cf18b4176d77fade5735c61d7870f94",
+  "physical_metadata_sha256": "2c79863c1bb3eaf19c545b70e5873e360178cb0050125f87e5a67a0b4e650f8b",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheCityOnTheEdgeOfForever.java",
+  "java_sha256": "a8ac76f2dd6ee89b637804b4ab2c1d2e18d51c05465af51794527ca7f0109507",
+  "xmage_class": "mage.cards.t.TheCityOnTheEdgeOfForever"
+}

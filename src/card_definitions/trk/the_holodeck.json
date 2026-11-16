@@ -1,0 +1,13 @@
+{
+  "name": "The Holodeck",
+  "catalogue_id": 5967,
+  "oracle_id": "ecf28b5d-a719-47d4-8ad9-d24b6297ebde",
+  "facts_sha256": "1fb978d9bf25741a78311282841ac8b6e3d0a1094fe18503a375b0a60ef4f0ec",
+  "physical_metadata_sha256": "d96e0a3e6aac7bb80db392dfb8c0d5cadb6d40d7c11b6676b892143f3e2a26c0",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

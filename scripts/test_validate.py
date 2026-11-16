@@ -5,11 +5,13 @@ import io
 import json
 import os
 from pathlib import Path
+import re
 import tempfile
 import unittest
 from unittest.mock import patch
 
 import validate
+import run_native_tests as native
 
 
 class ValidatorTests(unittest.TestCase):
@@ -199,14 +201,19 @@ class ValidatorTests(unittest.TestCase):
         self.assertEqual(receipt.read_text(), 'previous evidence')
 
     def test_native_suite_budget_fits_inside_parent_deadline(self):
-        for platform, compile_budget, suite_budget, lint_budget, parent_budget in [
-            ('linux', 1800, 480, 600, 3600),
-            ('darwin', 1800, 720, 600, 3600),
-            ('win32', 2700, 720, 750, 4500),
+        workflow = (Path(__file__).resolve().parents[1]/'.github/workflows/ci.yml').read_text()
+        workflow_limits = re.findall(
+            r"timeout-minutes: \$\{\{ matrix\.os == 'windows-latest' && (\d+) \|\| (\d+) \}\}",
+            workflow)
+        self.assertEqual(len(workflow_limits), 2, 'expected job and validation step deadlines')
+        for platform, compile_budget, suite_budget, lint_budget, release_budget, parent_budget in [
+            ('linux', 2100, 900, 600, 900, 5100),
+            ('darwin', 3300, 1200, 600, 900, 6600),
+            ('win32', 6000, 1800, 1500, 1800, 11700),
         ]:
             with self.subTest(platform=platform), patch.object(validate.sys, 'platform', platform):
                 first_command = len(self.command_timeouts)
-                status, _, report, commands = self.invoke()
+                status, _, report, commands = self.invoke('--release', '--python', 'smoke')
                 timeouts = self.command_timeouts[first_command:]
                 self.assertEqual(status, 0)
                 index = next(i for i, (command, _) in enumerate(commands)
@@ -216,13 +223,21 @@ class ValidatorTests(unittest.TestCase):
                                  compile_budget)
                 self.assertEqual(int(command[command.index('--suite-timeout') + 1]),
                                  suite_budget)
-                self.assertEqual(command[command.index('--test-timeout') + 1], '90')
+                self.assertEqual(command[command.index('--test-timeout') + 1], '180')
                 self.assertEqual(timeouts[index], compile_budget + suite_budget + 20)
                 lint_index = next(i for i, (command, _) in enumerate(commands)
                                   if command[:2] == ['cargo', 'clippy'])
                 self.assertEqual(timeouts[lint_index], lint_budget)
+                release_index = next(i for i, (command, _) in enumerate(commands)
+                                     if command[:2] == ['cargo', 'build'])
+                self.assertEqual(timeouts[release_index], release_budget)
                 self.assertEqual(report['timeout_seconds'], parent_budget)
                 self.assertLess(timeouts[index], parent_budget)
+                self.assertLess(sum(timeouts), parent_budget)
+                job_minutes, step_minutes = (
+                    int(limits[0 if platform == 'win32' else 1]) for limits in workflow_limits)
+                self.assertLess(parent_budget, step_minutes * 60)
+                self.assertGreaterEqual(job_minutes - step_minutes, 10)
                 self.assertTrue(report['success'])
 
     def test_environment_target_is_reused_and_explicit_target_takes_precedence(self):
@@ -256,6 +271,58 @@ class ValidatorTests(unittest.TestCase):
         self.assertFalse(any('scripts/python_tests.py' in command for command, _ in commands))
         self.assertEqual(stale.read_bytes(), b'stale library from an earlier build')
         self.assertTrue((target/'debug/incremental/fixture.o').is_file())
+
+    def test_ci_retires_only_completed_test_executables_before_release(self):
+        target = self.directory/'ci-target'
+        executable = target/'debug/deps'/('trk_fixture-123' +
+                                           ('.exe' if os.name == 'nt' else ''))
+        dependency = target/'debug/deps/librustmage_core.rlib'
+        preserved = target/'debug/incremental/fixture.o'
+
+        def native_report_and_release_check(command):
+            if 'scripts/run_native_tests.py' in command:
+                executable.parent.mkdir(parents=True, exist_ok=True)
+                executable.write_bytes(b'completed native test executable')
+                dependency.write_bytes(b'reusable dependency')
+                self.assertIn('--retire-binaries', command)
+                count, reclaimed = native.retire_test_binaries([executable], target)
+                report = Path(command[command.index('--report') + 1])
+                report.write_text(json.dumps({
+                    'success': True, 'terminal': True, 'active_processes': [],
+                    'binaries': [{'binary': str(executable)}],
+                    'retired_native_test_binaries': count,
+                    'retired_native_test_bytes': reclaimed,
+                }))
+            if command[:2] == ['cargo', 'build']:
+                self.assertFalse(executable.exists())
+                self.assertEqual(dependency.read_bytes(), b'reusable dependency')
+                self.assertEqual(preserved.read_bytes(), b'reusable compiled object')
+
+        self.on_command = native_report_and_release_check
+        with patch.object(native, 'active_peers', return_value=set()):
+            status, path, report, _ = self.invoke(
+                '--target-dir', str(target), '--release', '--python', 'smoke',
+                '--retire-native-binaries')
+        self.assertEqual(status, 0)
+        self.assertTrue(report['success'])
+        self.assertEqual(report['retired_native_test_binaries'], 1)
+        self.assertGreater(report['retired_native_test_bytes'], 0)
+        self.assertFalse(executable.exists())
+        self.assertEqual(dependency.read_bytes(), b'reusable dependency')
+        self.assert_snapshot(path, report, self.library_bytes)
+
+    def test_ci_retirement_rejects_an_unsafe_report_before_removing_any_binary(self):
+        target = self.directory/'ci-target'
+        executable = target/'debug/deps'/('trk_fixture-123' +
+                                           ('.exe' if os.name == 'nt' else ''))
+        executable.parent.mkdir(parents=True)
+        executable.write_bytes(b'completed native test executable')
+        outside = self.directory/('outside' + ('.exe' if os.name == 'nt' else ''))
+        outside.write_bytes(b'not a Cargo test output')
+        with self.assertRaisesRegex(RuntimeError, 'outside the Cargo test outputs'):
+            native.retire_test_binaries([executable, outside], target)
+        self.assertTrue(executable.exists())
+        self.assertTrue(outside.exists())
 
     def test_source_changes_during_a_run_invalidate_the_result(self):
         def change_source(command):

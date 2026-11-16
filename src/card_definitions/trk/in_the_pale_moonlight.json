@@ -1,0 +1,14 @@
+{
+  "name": "In the Pale Moonlight",
+  "catalogue_id": 5840,
+  "oracle_id": "90c78f79-982f-4acd-a8ba-0c6ce115a248",
+  "facts_sha256": "2aa690f032aa5e94848f60435f1d255a91e1dae58790582cb90f9ba89b1c2e89",
+  "physical_metadata_sha256": "ba80b0d7c2efb1b2b461c08347f6742a975793cf2037a9c846ce6cee4d246eea",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/i/InThePaleMoonlight.java",
+  "java_sha256": "3a51a11fd366bba04a869e59533a22b8cceef7e671168cfa9700760d90163eda",
+  "xmage_class": "mage.cards.i.InThePaleMoonlight"
+}

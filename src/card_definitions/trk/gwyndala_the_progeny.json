@@ -1,0 +1,13 @@
+{
+  "name": "Gwyndala, the Progeny",
+  "catalogue_id": 5825,
+  "oracle_id": "852c38fe-8bfa-420b-b961-7b91af9b38d1",
+  "facts_sha256": "c03921d12d9d649fcf697f22d87ee5285bc5fc37333bfb7eff336296e6ab9dea",
+  "physical_metadata_sha256": "5e0b996b99afb5144c86c615334379527ff33d94c8f12fcd0e3f1b42289e47aa",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "xmage_missing": true,
+  "official_rules_source": "https://magic.wizards.com/en/news/feature/star-trek-release-notes"
+}

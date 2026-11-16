@@ -20,6 +20,12 @@ pub(super) fn controlled_subtype_keywords<W: CharacteristicWorld + ?Sized>(
         StaticAbilityFragment::ControlledSubtypeKeywords { subtype, keywords } => {
             (0, subtype, keywords)
         }
+        StaticAbilityFragment::ControlledSubtypeKeywordsOnYourTurn { subtype, keywords } => {
+            if world.game().state.active != world.object(source.card).controller {
+                return None;
+            }
+            (0, subtype, keywords)
+        }
         StaticAbilityFragment::ControlledKindAndSubtypeKeywords {
             kind,
             subtype,
@@ -185,6 +191,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             });
         }
         StaticAbilityFragment::ControlledCreatureTrigger { .. }
+        | StaticAbilityFragment::ControlledArtifactCreatureTrigger { .. }
         | StaticAbilityFragment::ControlledSubtypeCastTrigger { .. } => {
             let ability = world.controlled_trigger_ability(source, id, *fragment)?;
             return Some(LayerSixGrant {
@@ -438,6 +445,30 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             keywords
         }
+        StaticAbilityFragment::ControlledPermanentAllKindsKeywordsAtSourceCounters {
+            kinds,
+            kind,
+            minimum,
+            keywords,
+        } => {
+            if !own
+                || world.kinds(id) & kinds != kinds
+                || world.counter_count(source.card, kind) < minimum
+            {
+                return None;
+            }
+            keywords
+        }
+        StaticAbilityFragment::ControlledOtherCounteredCreatureKeywords(keywords) => {
+            if !own
+                || id == source.card
+                || world.kinds(id) & 1 == 0
+                || !world.counter_amounts(id).has_any()
+            {
+                return None;
+            }
+            keywords
+        }
         StaticAbilityFragment::ConditionalEquippedCreatureKeywords {
             condition,
             keywords,
@@ -473,6 +504,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             keywords
         }
         StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+        | StaticAbilityFragment::ControlledSubtypeKeywordsOnYourTurn { .. }
         | StaticAbilityFragment::ControlledKindAndSubtypeKeywords { .. } => {
             controlled_subtype_keywords(world, *fragment, source, id)?
         }
@@ -673,6 +705,7 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
                     group.fragments.iter().any(|fragment| matches!(
                         fragment,
                         StaticAbilityFragment::SourceEntryModeActivation { .. }
+                            | StaticAbilityFragment::ControlledCreatureCounterRule { .. }
                             | StaticAbilityFragment::SourceMaxSpeedActivation(_)
                             | StaticAbilityFragment::SourceConditionalAttackTrigger { .. }
                             | StaticAbilityFragment::ControlledPlaneswalkerActivation(_)
@@ -886,7 +919,13 @@ fn evaluate<W: CharacteristicWorld + ?Sized>(
                 });
             }
         }
-        for (group, origin) in object.card.static_ability_groups().iter().enumerate() {
+        for (group, origin) in world
+            .recipe(id)
+            .definition
+            .static_ability_groups()
+            .iter()
+            .enumerate()
+        {
             let enabled = entry_modes::group_enabled(world, source, origin);
             let removes = origin
                 .fragments
@@ -930,6 +969,7 @@ fn evaluate<W: CharacteristicWorld + ?Sized>(
                         | StaticAbilityFragment::CounterBearingPermanentWard { .. }
                         | StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                         | StaticAbilityFragment::ControlledCreatureTrigger { .. }
+                        | StaticAbilityFragment::ControlledArtifactCreatureTrigger { .. }
                         | StaticAbilityFragment::ControlledSubtypeCastTrigger { .. }
                         | StaticAbilityFragment::GrantLinkedExileCreatureActivationsWithCounter(_)
                         | StaticAbilityFragment::AttachmentTrigger(..)
@@ -952,6 +992,8 @@ fn evaluate<W: CharacteristicWorld + ?Sized>(
                         | StaticAbilityFragment::ChosenTypeKeywords(..)
                         | StaticAbilityFragment::ControlledPermanentKeywords { .. }
                         | StaticAbilityFragment::ControlledPermanentAllKindsKeywords { .. }
+                        | StaticAbilityFragment::ControlledPermanentAllKindsKeywordsAtSourceCounters { .. }
+                        | StaticAbilityFragment::ControlledOtherCounteredCreatureKeywords(..)
                         | StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
                         | StaticAbilityFragment::ConditionalEquippedCreatureKeywords { .. }
                         | StaticAbilityFragment::ControlledTappedKeywords { .. }
@@ -1428,7 +1470,7 @@ impl Game {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ObjectView {
     pub(super) fn printed_abilities_available(&self) -> bool {
-        self.abilities.as_ref().is_none_or(|value| value.printed)
+        self.zone != Zone::PhasedOut && self.abilities.as_ref().is_none_or(|value| value.printed)
     }
     pub(super) fn static_grant_available(
         &self,

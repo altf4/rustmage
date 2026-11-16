@@ -198,6 +198,7 @@ pub(super) fn apply_skeleton_return(
             source,
             types: &["Skeleton"],
             additional: true,
+            until_cleanup: false,
             timestamp,
         });
     roles
@@ -289,13 +290,18 @@ impl Game {
                 .iter()
                 .flat_map(|group| group.fragments)
             {
-                let StaticAbilityFragment::ControlledCreatureTrigger {
-                    ability,
-                    other,
-                    nontoken,
-                } = *fragment
-                else {
-                    continue;
+                let (ability, other, nontoken) = match *fragment {
+                    StaticAbilityFragment::ControlledCreatureTrigger {
+                        ability,
+                        other,
+                        nontoken,
+                    } => (ability, other, nontoken),
+                    StaticAbilityFragment::ControlledArtifactCreatureTrigger { ability }
+                        if recipient.kinds & 16 != 0 =>
+                    {
+                        (ability, false, false)
+                    }
+                    _ => continue,
                 };
                 if (other && provider.reference == recipient.reference)
                     || (nontoken && recipient.is_token())
@@ -355,7 +361,7 @@ impl Game {
         let events = self.move_objects_raw(&returning, Zone::Hand);
         self.finish_zone_events(&events, &[]);
     }
-    fn register_delayed_return(&mut self, item: &SpellView, returning: ReturnLinkView) {
+    pub(super) fn register_delayed_return(&mut self, item: &SpellView, returning: ReturnLinkView) {
         let Some(source) = item.source else {
             return;
         };
@@ -910,6 +916,7 @@ impl Game {
                 source,
                 types,
                 additional: true,
+                until_cleanup: false,
                 timestamp,
             });
         if keywords != Keywords::NONE {
@@ -944,10 +951,18 @@ pub struct PlayerDamageShieldView {
     pub source: ObjectRef,
     pub source_card: Card,
     pub controller: Player,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_turn: Option<u32>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn prevent_player_damage_until_next_turn(&mut self, item: &SpellView) {
+        self.prevent_player_damage(item, None);
+    }
+    pub(super) fn prevent_player_damage_this_turn(&mut self, item: &SpellView) {
+        self.prevent_player_damage(item, Some(self.state.turn));
+    }
+    fn prevent_player_damage(&mut self, item: &SpellView, expires_turn: Option<u32>) {
         let source = item.source.expect("prevention source");
         self.state
             .roles
@@ -957,6 +972,7 @@ impl Game {
                 source: source.object,
                 source_card: source.card,
                 controller: item.controller,
+                expires_turn,
             });
     }
 }

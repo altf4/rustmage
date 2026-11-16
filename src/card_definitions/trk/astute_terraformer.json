@@ -1,0 +1,14 @@
+{
+  "name": "Astute Terraformer",
+  "catalogue_id": 5725,
+  "oracle_id": "c5a7a82e-3c13-4fa1-8bf5-bb85b2890f75",
+  "facts_sha256": "0bc7315dd13560fe50d875f0bfcba274785e28e1cb612c59645d0944b1d5b9b0",
+  "physical_metadata_sha256": "1ad2025e4bf5d075fefe777faa39e328f3a3605ca72c3e03434d6652734759e3",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/a/AstuteTerraformer.java",
+  "java_sha256": "dbe27aee820a1b1c1be7603b2845b973d3611269729b7bdebed73fd8f36b612a",
+  "xmage_class": "mage.cards.a.AstuteTerraformer"
+}

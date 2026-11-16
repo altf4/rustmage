@@ -1,0 +1,14 @@
+{
+  "name": "Sarek, Federation Ambassador",
+  "catalogue_id": 5917,
+  "oracle_id": "72c51539-5f15-4636-8cb8-b688cf53f431",
+  "facts_sha256": "42cc0e633135f8e268d2c214ffb600c6990ddadfa11696c61833973b2259de30",
+  "physical_metadata_sha256": "78ee8a2a2173f8843a15c41afb80c2bf8234fcafca5cd00aad6a5b6fe8ec2f7a",
+  "complete": true,
+  "oracle_source": "https://api.scryfall.com/cards/search?q=set%3Atrk+-is%3Atoken&unique=cards&order=name",
+  "audit_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage.Sets/src/mage/cards/s/SarekFederationAmbassador.java",
+  "java_sha256": "223009308d05f245ab6df83c7b2ececa19874cecc40d8e81db6cf04e519eb355",
+  "xmage_class": "mage.cards.s.SarekFederationAmbassador"
+}

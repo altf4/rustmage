@@ -1,0 +1,12 @@
+{
+  "name": "@token/trk-illusion-artifact",
+  "catalogue_id": 6011,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "4fbfb7a013c9a56d5ad72f30b2c5fd56f5ccdaf7179b17e56b7fe3139056df7c",
+  "oracle_source": "data/audits/trk.json",
+  "java_revision": "688ee53a9a2dc4646bf0588cd900f2ab91ca45e8",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/IllusionArtifactToken.java",
+  "java_sha256": "7fa6b890042da1108896be9efd44c047070fd8ca5738ad499c2ac7b727d52ecd"
+}

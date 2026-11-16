@@ -2,13 +2,13 @@
   "name": "Swamp",
   "catalogue_id": 2,
   "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
-  "facts_sha256": "0ddffcfeb10574ceab2d19fcaad90b912eb08a51601bfa0d51ceb993dcfc04e5",
+  "facts_sha256": "b0e96308e2dfc5d8f9386dd86d1f8d8cbca8a9c220f09d2e3146b30c6aa72cf6",
   "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3f48352f438bb3503b1c727434736447bb66d343a3e7952360d5c2ac245420c3"
   },
-  "physical_metadata_sha256": "b89422fcb086cbe1ed7f140d88a440dcc1741fd72734decc5ddc9b81b87697af",
+  "physical_metadata_sha256": "049403868cc76b4339966af2a3e2b28f646bc0def224c7310d82afeaa48c785a",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage/src/main/java/mage/cards/basiclands/Swamp.java",
   "java_sha256": "b292314acab07bf9e658419b7c2cebf25c9cf7fe0267792c1cdfb73d9ebd3855",
