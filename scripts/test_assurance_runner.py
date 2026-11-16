@@ -270,6 +270,18 @@ class AssuranceRunnerTests(unittest.TestCase):
                                log=Path(temporary)/'suite.log', timeout=3, test_timeout=0.1)
             self.assertEqual(result['exit'], 124)
             self.assertEqual(result['timed_out_case'], 'blocked')
+            self.assertEqual(result['timeout_scope'], 'case')
+
+    def test_suite_deadline_is_distinct_from_the_active_case_deadline(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            code = "import time; print('test still_running ... ',end='',flush=True); time.sleep(20)"
+            result = run_suite([sys.executable, '-c', code], env=os.environ,
+                               log=Path(temporary)/'suite.log', timeout=2, test_timeout=10)
+            self.assertEqual(result['exit'], 124)
+            self.assertTrue(result['timed_out'])
+            self.assertEqual(result['timed_out_case'], 'still_running')
+            self.assertEqual(result['timeout_scope'], 'suite')
+            self.assertFalse(result['orphaned_processes'])
 
     def test_process_exit_during_proc_read_is_treated_as_gone(self):
         # Linux can return ESRCH after opening procfs when the task exits before

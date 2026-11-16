@@ -84,7 +84,7 @@ def main(argv=None):
     parser.add_argument('--retire-native-binaries', action='store_true',
                         help='build/run/remove native test executables in bounded batches')
     parser.add_argument('--timeout', type=float,
-                        default=8700 if windows else 6600 if sys.platform == 'darwin' else 5100,
+                        default=11700 if windows else 6600 if sys.platform == 'darwin' else 5100,
                         help='total wall-clock budget after acquiring the build slot (default: %(default)s seconds)')
     targets = parser.add_mutually_exclusive_group()
     targets.add_argument('--target-dir', type=Path,
@@ -131,11 +131,13 @@ def main(argv=None):
     files = source_files()
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
     # Cold hosted runners link hundreds of integration targets serially.
-    # Cold Windows linked 683 of 872 integration targets in the former 3600s
-    # budget. Keep a bounded margin for the remaining serial links.
-    native_compile_timeout = 5000 if windows else 3300 if sys.platform == 'darwin' else 2100
+    # Windows CI run 43775947252 took 4828s to link 872 targets and 1131s
+    # for clippy. Allow runner variation while keeping every phase bounded.
+    native_compile_timeout = 6000 if windows else 3300 if sys.platform == 'darwin' else 2100
     # Hosted macOS and Windows runners also pay process startup for each target.
-    native_suite_timeout = 1200 if windows or sys.platform == 'darwin' else 900
+    # Windows exhausted 1200s after 775/872 binaries, with no failed case.
+    # This aggregate allowance does not relax the 180s per-case deadline.
+    native_suite_timeout = 1800 if windows else 1200 if sys.platform == 'darwin' else 900
     commands = [
         ('source pins', [sys.executable, 'scripts/check_sources.py'], 45),
         ('format', [sys.executable, 'scripts/format_workspace.py', '--check'], 45),
@@ -144,7 +146,7 @@ def main(argv=None):
         # Cold native toolchains on hosted Windows/macOS need time to populate
         # the per-set cache; compilation budgets are separate from game limits.
         ('clippy', ['cargo', 'clippy', '--workspace', '--all-targets', '--', '-D', 'warnings'],
-         1200 if windows else 600),
+         1500 if windows else 600),
         ('native assurance', [sys.executable, 'scripts/run_native_tests.py',
                               '--target-dir', str(target), '--report', str(report_dir/'native.json'),
                               '--test-timeout', '180', '--suite-timeout', str(native_suite_timeout),
@@ -153,7 +155,10 @@ def main(argv=None):
          native_compile_timeout + native_suite_timeout + 20),
     ]
     if args.release or args.python != 'none':
-        commands.append(('release build', ['cargo', 'build', '--release', '--lib', '--bin', 'benchmark'], 900))
+        # A cold Windows release still compiles the whole pool independently of
+        # the test profile. Reserve time for it after the complete native suite.
+        commands.append(('release build', ['cargo', 'build', '--release', '--lib', '--bin', 'benchmark'],
+                         1800 if windows else 900))
     if args.release:
         commands.append(('simulation sample', [str(target/'release'/executable_name('benchmark')), str(args.games)], 15))
     if args.python != 'none':

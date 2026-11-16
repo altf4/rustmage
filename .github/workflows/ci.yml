@@ -23,7 +23,9 @@ jobs:
       matrix:
         os: [ubuntu-24.04, macos-15, windows-latest]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 150
+    # Windows serial cold builds need the full phase budgets plus setup, gameplay,
+    # diagnostics and cache upload time. Other platforms retain their limits.
+    timeout-minutes: ${{ matrix.os == 'windows-latest' && 210 || 150 }}
     env:
       PYTHONDONTWRITEBYTECODE: '1'
       PYTHONUTF8: '1'
@@ -159,7 +161,7 @@ jobs:
 
       - name: Validate cards, interactions and Python API
         if: steps.scope.outputs.code == 'true'
-        timeout-minutes: ${{ matrix.os == 'windows-latest' && 148 || 130 }}
+        timeout-minutes: ${{ matrix.os == 'windows-latest' && 200 || 130 }}
         run: |
           retire=()
           if [[ "$RUNNER_OS" == "macOS" ]]; then

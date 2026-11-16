@@ -5,6 +5,7 @@ import io
 import json
 import os
 from pathlib import Path
+import re
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -200,10 +201,15 @@ class ValidatorTests(unittest.TestCase):
         self.assertEqual(receipt.read_text(), 'previous evidence')
 
     def test_native_suite_budget_fits_inside_parent_deadline(self):
-        for platform, compile_budget, suite_budget, lint_budget, parent_budget in [
-            ('linux', 2100, 900, 600, 5100),
-            ('darwin', 3300, 1200, 600, 6600),
-            ('win32', 5000, 1200, 1200, 8700),
+        workflow = (Path(__file__).resolve().parents[1]/'.github/workflows/ci.yml').read_text()
+        workflow_limits = re.findall(
+            r"timeout-minutes: \$\{\{ matrix\.os == 'windows-latest' && (\d+) \|\| (\d+) \}\}",
+            workflow)
+        self.assertEqual(len(workflow_limits), 2, 'expected job and validation step deadlines')
+        for platform, compile_budget, suite_budget, lint_budget, release_budget, parent_budget in [
+            ('linux', 2100, 900, 600, 900, 5100),
+            ('darwin', 3300, 1200, 600, 900, 6600),
+            ('win32', 6000, 1800, 1500, 1800, 11700),
         ]:
             with self.subTest(platform=platform), patch.object(validate.sys, 'platform', platform):
                 first_command = len(self.command_timeouts)
@@ -222,9 +228,16 @@ class ValidatorTests(unittest.TestCase):
                 lint_index = next(i for i, (command, _) in enumerate(commands)
                                   if command[:2] == ['cargo', 'clippy'])
                 self.assertEqual(timeouts[lint_index], lint_budget)
+                release_index = next(i for i, (command, _) in enumerate(commands)
+                                     if command[:2] == ['cargo', 'build'])
+                self.assertEqual(timeouts[release_index], release_budget)
                 self.assertEqual(report['timeout_seconds'], parent_budget)
                 self.assertLess(timeouts[index], parent_budget)
                 self.assertLess(sum(timeouts), parent_budget)
+                job_minutes, step_minutes = (
+                    int(limits[0 if platform == 'win32' else 1]) for limits in workflow_limits)
+                self.assertLess(parent_budget, step_minutes * 60)
+                self.assertGreaterEqual(job_minutes - step_minutes, 10)
                 self.assertTrue(report['success'])
 
     def test_environment_target_is_reused_and_explicit_target_takes_precedence(self):

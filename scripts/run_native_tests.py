@@ -234,6 +234,7 @@ def run_suite(command, *, env, log, timeout, test_timeout):
     active = None
     active_since = started
     timed_out_case = None
+    timeout_scope = None
     timed_out = False
     with Path(log).open('w') as output:
         process = subprocess.Popen(command, cwd=ROOT, env=env, stdout=output,
@@ -253,6 +254,7 @@ def run_suite(command, *, env, log, timeout, test_timeout):
                 if now-started >= timeout or (active and now-active_since >= test_timeout):
                     timed_out = True
                     timed_out_case = active
+                    timeout_scope = 'suite' if now-started >= timeout else 'case'
                     stop_process(process, members_before)
                     break
                 try:
@@ -272,6 +274,7 @@ def run_suite(command, *, env, log, timeout, test_timeout):
             raise
     return dict(command=[str(arg) for arg in command], exit=code,
                 timed_out=timed_out, timed_out_case=timed_out_case,
+                timeout_scope=timeout_scope,
                 orphaned_processes=orphaned, seconds=time.monotonic()-started,
                 log=str(log))
 
@@ -414,6 +417,7 @@ def main():
                              - (time.monotonic()-suite_start))
                 if remaining <= 0:
                     result['budget_exceeded'] = True
+                    print(f'Native suite execution budget exhausted ({args.suite_timeout:g}s)', flush=True)
                     complete = False
                     break
                 execution = run_suite(
@@ -429,6 +433,12 @@ def main():
                 index += 1
                 if execution['exit'] or not accounted:
                     complete = False
+                    if execution.get('timeout_scope') == 'suite':
+                        result['budget_exceeded'] = True
+                        print(f'Native suite execution budget exhausted ({args.suite_timeout:g}s)', flush=True)
+                    elif execution.get('timeout_scope') == 'case':
+                        print(f"Native case deadline exceeded ({args.test_timeout:g}s): "
+                              f"{execution['timed_out_case']}", flush=True)
                     print(output[-12000:], flush=True)
                     break
             result['execution_seconds'] += time.monotonic()-suite_start
