@@ -1203,7 +1203,7 @@ impl FundingState<'_> {
         match row.clause {
             CastCostClause::Mana => true,
             CastCostClause::Life(amount) | CastCostClause::AlternativeLife(amount) => {
-                self.life >= i128::from(amount)
+                amount == 0 || self.life >= i128::from(amount)
             }
             CastCostClause::CraftSource => {
                 self.reference(c.source.card) == c.source
@@ -1971,7 +1971,7 @@ impl Game {
         _purpose: mana_lots::Purpose,
         life: u32,
     ) -> bool {
-        self.state.players[goal.actor.index()].life >= i128::from(life)
+        life == 0 || self.state.players[goal.actor.index()].life >= i128::from(life)
     }
 }
 

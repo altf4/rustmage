@@ -276,6 +276,40 @@ impl Game {
         let source = a.item.source.expect("attempt source").object;
         let actor = a.item.controller;
         match self.state.pending {
+            Pending::CastCosts { .. } => !self.visit_cast_cost_clauses(&mut |_| true),
+            Pending::BlightPayment { .. } => !self.visit_blight_payments(&mut |_| true),
+            Pending::BeholdCost { .. } => a
+                .cast_costs
+                .as_ref()
+                .and_then(|costs| costs.active_clause())
+                .is_some_and(|clause| match clause {
+                    CastCostClause::Behold(subtype) => {
+                        !hand_choices::visit_behold_candidates(self, actor, subtype, &[], |_| true)
+                    }
+                    _ => false,
+                }),
+            Pending::TeamworkPayment { .. } => a.cast_costs.as_ref().is_some_and(|costs| {
+                let Some(CastCostClause::Teamwork(minimum)) = costs.active_clause() else {
+                    return false;
+                };
+                let mut sum = saddle::PowerSum::default();
+                for (id, permanent) in self.state.objects.iter().enumerate() {
+                    let object = self.object_ref(id as CardId);
+                    if permanent.zone == Zone::Battlefield
+                        && permanent.controller == actor
+                        && !permanent.tapped
+                        && self.is_creature(id as CardId)
+                    {
+                        let power = self.stats(id as CardId).power;
+                        sum.add(if costs.teammates.contains(&object) {
+                            power
+                        } else {
+                            power.max(0)
+                        });
+                    }
+                }
+                !sum.enough(minimum)
+            }),
             Pending::ConspirePayment { instance, .. } => {
                 let row = &a.conspire.as_ref().unwrap()[usize::from(instance)];
                 row.first_object
@@ -349,7 +383,11 @@ impl Game {
                 }
             }
             Pending::AdditionalCost { .. } => {
-                let Some(spec) = a.additional_cost() else {
+                let Some(spec) = (if a.paying_origin_discard() {
+                    Some(equip_costs::discard_cost())
+                } else {
+                    a.additional_cost()
+                }) else {
                     return false;
                 };
                 if spec.kind == EffectChoiceKind::DiscardHand {
