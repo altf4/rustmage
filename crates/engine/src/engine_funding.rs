@@ -6489,7 +6489,11 @@ impl Game {
                         Action::AnnounceBorrowedMana { .. }
                             | Action::AnnounceGraveyardBorrowedMana { .. }
                             | Action::AnnounceInheritedMana { .. }
-                    ) && once(action)
+                            | Action::ActivateBorrowedMana { .. }
+                            | Action::ActivateGraveyardBorrowedMana { .. }
+                            | Action::ActivateInheritedMana { .. }
+                    ) && self.mana_action_payable(&action)
+                        && once(action)
                 })
                 || self.visit_self_granted_activations(id, actor, false, &mut |action| {
                     matches!(action, Action::AnnounceSelfGrantedMana { .. }) && once(action)
@@ -6525,13 +6529,84 @@ impl Game {
                             object.card,
                             index as u16,
                             |produced| {
-                                self.mana_packet_admissible(&packet, counters.clone(), produced)
-                                    && once(Action::AnnounceMana {
-                                        card: id,
-                                        ability: index as u16,
-                                        counter_payment: counters.clone(),
-                                        production: produced,
-                                    })
+                                if !self.mana_packet_admissible(&packet, counters.clone(), produced)
+                                {
+                                    return false;
+                                }
+                                if once(Action::AnnounceMana {
+                                    card: id,
+                                    ability: index as u16,
+                                    counter_payment: counters.clone(),
+                                    production: produced,
+                                }) {
+                                    return true;
+                                }
+                                // A completely specified, currently payable mana
+                                // activation remains a concrete convenience action.
+                                // It performs no search for external materials or
+                                // any enclosing payment's continuation.
+                                if ability.cost.additional.is_some()
+                                    || ability.has_x_cost()
+                                    || ability.source_counter_cost().is_some()
+                                    || matches!(
+                                        ability.program.first(),
+                                        Some(Instruction::Modal(_))
+                                    )
+                                {
+                                    return false;
+                                }
+                                let purpose = self.purpose_for_item(&packet);
+                                let mut stopped = false;
+                                for cost in
+                                    self.activation_mana_costs(id, object.card, index as u16, 0)
+                                {
+                                    let cost = cast_origins::activation_payment_cost(
+                                        self,
+                                        actor,
+                                        self.object_ref(id),
+                                        cost,
+                                    );
+                                    let goal = FundingGoal {
+                                        actor,
+                                        required: cost.colored,
+                                        generic: cost.generic,
+                                        reserve: None,
+                                        source: Some((
+                                            self.object_ref(id),
+                                            index as u16,
+                                            counters.clone(),
+                                            object.card,
+                                            None,
+                                        )),
+                                    };
+                                    if !activation_counter_placement_payable(self, &goal)
+                                        || !source_exile_payable(self, &goal)
+                                    {
+                                        continue;
+                                    }
+                                    ManaPaymentDomain {
+                                        available: self.available_mana(actor, purpose),
+                                        required: cost.colored,
+                                        generic: cost.generic,
+                                    }
+                                    .representatives(
+                                        |payment| {
+                                            if !stopped {
+                                                stopped = once(Action::ActivateMana {
+                                                    card: id,
+                                                    ability: index as u16,
+                                                    payment,
+                                                    counter_payment: counters.clone(),
+                                                    production: produced,
+                                                });
+                                            }
+                                        },
+                                    );
+                                    if stopped {
+                                        return true;
+                                    }
+                                }
+                                false
                             },
                         )
                     },
