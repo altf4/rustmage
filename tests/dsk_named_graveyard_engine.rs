@@ -146,6 +146,7 @@ fn the_cost_uses_three_exact_physical_cards_and_cannot_be_refunded_in_response()
         assert_eq!(prohibited.object_ref(card), game.object_ref(card));
         assert_eq!(prohibited.object_view(card).zone, Zone::Graveyard);
     }
+    assert!(prohibited.state.stack.is_empty());
     game.state.step = Step::BeginCombat;
     reject(&mut game, announce(source));
     game.state.step = Step::Main1;

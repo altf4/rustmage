@@ -136,17 +136,21 @@ fn apply_raw_and_indexed(game: &mut Game, action: Action) -> Game {
         .position(|candidate| *candidate == action)
         .unwrap();
     let actor = indexed.actor().unwrap();
-    act(game, action);
+    act(game, action.clone());
     indexed
         .apply_index(actor, indexed.revision(), index)
         .unwrap();
     assert_eq!(indexed.snapshot(), game.snapshot());
+    let result = indexed.clone();
+    let mut replay = game.clone();
+    replay.restore(&snapshot).unwrap();
     indexed.restore(&snapshot).unwrap();
+    act(&mut replay, action);
     indexed
         .apply_index(actor, indexed.revision(), index)
         .unwrap();
-    assert_eq!(indexed.snapshot(), game.snapshot());
-    indexed
+    assert_eq!(indexed.snapshot(), replay.snapshot());
+    result
 }
 
 #[test]
@@ -328,6 +332,21 @@ fn failed_cast_rollback_retains_or_reverses_the_actual_replaced_counter_placemen
     act(&mut game, Action::ChooseCastCost { clause });
     let object = game.object_ref(silver);
     act(&mut game, Action::ChooseAuraAttachment { object });
+    let clause = game
+        .observe(PLAYER)
+        .cast_costs
+        .unwrap()
+        .clauses
+        .iter()
+        .position(|row| !row.paid && matches!(row.clause, CastCostClause::Casualty(_)))
+        .unwrap() as u16;
+    act(&mut game, Action::ChooseCastCost { clause });
+    assert!(
+        !game
+            .legal_actions()
+            .iter()
+            .any(|action| matches!(action, Action::PayCasualty { .. }))
+    );
     act(&mut game, Action::SubmitAttempt);
     assert!(matches!(game.state.pending, Pending::ManaRollback { .. }));
     assert!(game.observe(PLAYER.other()).mana_rollback.is_none());
