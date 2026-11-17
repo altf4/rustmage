@@ -447,6 +447,44 @@ fn land_type_and_attachment_mana_use_the_inheritor_in_actual_and_projected_payme
     }
 }
 
+#[test]
+fn concrete_inherited_mana_remains_available_inside_an_unfunded_parent() {
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &MIMIC)]);
+    let mut game = scenario(PLAYER);
+    let source = put(&mut game, PLAYER, "Grizzly Bears", Zone::Battlefield);
+    let donor = put(&mut game, PLAYER, "Llanowar Elves", Zone::Battlefield);
+    game.state.objects[donor as usize].tapped = true;
+    game.state.players[PLAYER.index()].mana = ZERO;
+    let row = inherited(&game, source)
+        .into_iter()
+        .find(|row| row.donor.card == donor)
+        .unwrap();
+    let spell = put(&mut game, PLAYER, "Divination", Zone::Hand);
+    act(&mut game, Action::AnnounceCast { card: spell });
+    let action = Action::ActivateInheritedMana {
+        source: row.source,
+        slot: row.slot,
+        counter_payment: Counters::default(),
+        payment: ZERO,
+        production: GREEN,
+    };
+    let mut indexed = game.clone();
+    let before = indexed.snapshot();
+    let at = indexed
+        .legal_actions()
+        .iter()
+        .position(|candidate| candidate == &action)
+        .unwrap();
+    let revision = indexed.revision();
+    indexed.apply_index(PLAYER, revision, at).unwrap();
+    act(&mut game, action.clone());
+    assert_eq!(indexed.snapshot(), game.snapshot());
+    assert!(game.object_view(source).tapped);
+    assert!(game.mana_payment_domain().is_none());
+    indexed.restore(&before).unwrap();
+    assert!(indexed.legal_actions().contains(&action));
+}
+
 fn animated_vacuum(game: &mut Game) -> CardId {
     let vacuum = put(game, PLAYER, "Ghost Vacuum", Zone::Battlefield);
     game.change_object_form(

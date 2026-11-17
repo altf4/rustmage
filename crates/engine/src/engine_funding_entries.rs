@@ -44,6 +44,7 @@ impl PaymentContinuation<'_> {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Announcement {
+    #[cfg(feature = "test-support")]
     fn collect_funding_references(&self, exact: &mut HashSet<CardId>) {
         let mut add = |object: ObjectRef| {
             exact.insert(object.card);
@@ -179,6 +180,7 @@ pub(super) struct EntryProjection {
     pub craft_materials: Vec<(ObjectRef, Vec<ObjectRef>)>,
     pub lands_entered: [u64; 2],
     pub battle_protectors: Vec<(ObjectRef, Player)>,
+    #[cfg(feature = "test-support")]
     pub consumed: Vec<ObjectRef>,
     pub counter: Option<replacements::CounterPreview>,
 }
@@ -227,6 +229,7 @@ impl EntryProjection {
             craft_materials: Vec::new(),
             lands_entered: std::array::from_fn(|p| w.game.state.players[p].lands_entered_this_turn),
             battle_protectors: Vec::new(),
+            #[cfg(feature = "test-support")]
             consumed: Vec::new(),
             counter: None,
         }
@@ -476,6 +479,7 @@ impl FundingState<'_> {
         });
         result
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn entry_guard(&self, guard: StepGuard, movement: &entries::EntryMove) -> bool {
         let player = movement.controller;
         let source = movement.before.reference;

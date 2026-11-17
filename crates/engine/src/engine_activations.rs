@@ -446,7 +446,8 @@ impl Game {
         sorcery: bool,
     ) -> bool {
         let readiness = self.activation_readiness(actor, ability);
-        !pure_loyalty_placement_prohibited(self, self.object_ref(card), &readiness)
+        !self.attempt_draw_is_face_down(self.object_ref(card))
+            && !pure_loyalty_placement_prohibited(self, self.object_ref(card), &readiness)
             && !ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
             && (ability.origin != ActivationOrigin::GraveyardBottomLibrary
                 || !ability_world::CharacteristicWorld::zone_move_prevented(

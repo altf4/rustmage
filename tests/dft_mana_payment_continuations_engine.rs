@@ -477,6 +477,45 @@ fn direct_borrowed_mana_battlefield_and_graveyard_routes_preserve_the_only_viabl
 }
 
 #[test]
+fn concrete_borrowed_mana_uses_current_lots_without_solving_its_parent() {
+    for route in [Route::ExileBorrowed, Route::GraveyardBorrowed] {
+        let _rules = scope(route);
+        for p in [Player::P0, Player::P1] {
+            let (mut raw, child, parent) = setup(route, p, 0);
+            start_parent(&mut raw, parent);
+            Game::reset_payment_planning_work();
+            let action = child.borrowed_direct();
+            assert!(raw.legal_actions().contains(&action));
+            let mut indexed_game = raw.clone();
+            let checkpoint = raw.snapshot();
+            indexed(&mut indexed_game, action.clone());
+            act(&mut raw, action);
+            assert_eq!(raw.snapshot(), indexed_game.snapshot());
+            assert!(matches!(raw.state.pending, Pending::ManaLotSpend { .. }));
+            // Spend ordinary green and retain green restricted to activations:
+            // the child is legal even though this strands the parent spell.
+            let spend = Action::ChooseManaLotSpend { amount: 0 };
+            indexed(&mut indexed_game, spend.clone());
+            act(&mut raw, spend);
+            assert_eq!(raw.snapshot(), indexed_game.snapshot());
+            assert!(raw.object_view(child.source).tapped);
+            assert!(raw.mana_payment_domain().is_none());
+            indexed_game.restore(&checkpoint).unwrap();
+            assert!(!indexed_game.object_view(child.source).tapped);
+            assert!(
+                indexed_game
+                    .legal_actions()
+                    .contains(&child.borrowed_direct())
+            );
+            let work = Game::payment_planning_work();
+            assert_eq!(work.projected_moves, 0);
+            assert_eq!(work.projected_steps, 0);
+            assert_eq!(work.continuation_plans, 0);
+        }
+    }
+}
+
+#[test]
 fn nested_native_indexed_granted_acquired_and_borrowed_payments_keep_only_complete_lot_plans() {
     for &route in ROUTES {
         let _rules = scope(route);
