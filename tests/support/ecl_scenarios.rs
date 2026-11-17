@@ -39,8 +39,13 @@ pub(super) fn checked(g: &mut Game, action: Action) {
     let index = g
         .legal_actions()
         .iter()
-        .position(|a| *a == action)
-        .unwrap_or_else(|| panic!("illegal independent {action:?} {:?}", g.state.pending));
+        .position(|candidate| *candidate == action);
+    if index.is_none() {
+        let Action::ChooseX { value } = action else {
+            panic!("missing concrete action");
+        };
+        assert!(g.x_choice().is_some_and(|domain| domain.contains(value)));
+    }
     let before = g.snapshot();
     assert_eq!(
         g.apply(actor.other(), action.clone()),
@@ -51,7 +56,11 @@ pub(super) fn checked(g: &mut Game, action: Action) {
         let parent = g.clone();
         parent.clone()
     };
-    branch.apply_index(actor, revision, index).unwrap();
+    if let Some(index) = index {
+        branch.apply_index(actor, revision, index).unwrap();
+    } else {
+        branch.apply(actor, action.clone()).unwrap();
+    }
     g.apply(actor, action.clone()).unwrap();
     assert_eq!(g.snapshot(), branch.snapshot());
     for player in [Player::P0, Player::P1] {
@@ -73,13 +82,17 @@ pub(super) fn checked(g: &mut Game, action: Action) {
     g.restore(&before).unwrap();
     assert_eq!(g.snapshot(), before);
     assert_eq!(
-        g.apply_index(actor, revision, index),
+        g.apply_index(actor, revision, index.unwrap_or(0)),
         Err(Error::StaleRevision)
     );
     // Replaying an announcement allocates a new attempt ID. Compare branches
     // forked after restore, with the same nonrewinding allocation history.
     let mut replay = g.clone();
-    replay.apply_index(actor, replay.revision(), index).unwrap();
+    if let Some(index) = index {
+        replay.apply_index(actor, replay.revision(), index).unwrap();
+    } else {
+        replay.apply(actor, action.clone()).unwrap();
+    }
     g.apply(actor, action).unwrap();
     assert_eq!(g.snapshot(), replay.snapshot());
 }
