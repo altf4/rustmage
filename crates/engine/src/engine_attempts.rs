@@ -59,6 +59,7 @@ pub struct AttemptView {
     pub contributions_sealed: bool,
     pub can_end_mana_window: bool,
     pub can_submit: bool,
+    pub can_reset_selection: bool,
     pub failure: Option<AttemptFailureReason>,
 }
 
@@ -201,6 +202,7 @@ impl Game {
     pub(super) fn visit_attempt_controls(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         (self.can_end_attempt_mana_window() && emit(Action::EndManaWindow))
             || (self.can_submit_attempt() && emit(Action::SubmitAttempt))
+            || (self.resettable_attempt_selection().is_some() && emit(Action::ResetCostSelection))
     }
 
     pub(super) fn end_attempt_mana_window(&mut self) {
@@ -306,6 +308,12 @@ impl Game {
             if let Some(contributions) = a.convoke.as_ref() {
                 total = contributions.remaining;
             }
+            // All required selections are supplied. A source counter/tap or
+            // other resource shared by two components cannot pay both. This
+            // checks this exact packet only, with no alternative resource search.
+            if !self.supplied_mana_costs_valid(a) {
+                return Some(AttemptFailureReason::UnsatisfiedMaterial);
+            }
             self.purpose_for_item(&a.item)
         } else {
             mana_lots::Purpose::Other
@@ -354,6 +362,7 @@ impl Game {
             contributions_sealed: self.attempt_contributions_sealed(),
             can_end_mana_window: self.can_end_attempt_mana_window(),
             can_submit: self.can_submit_attempt(),
+            can_reset_selection: self.resettable_attempt_selection().is_some(),
             failure: attempt.failure,
         })
     }
@@ -544,5 +553,168 @@ impl Game {
             }
         }
         self.resume_deferred_miracle_reveals(reveals);
+    }
+}
+
+#[derive(Clone, Copy)]
+enum AttemptSelection {
+    Additional,
+    Evidence,
+    Forage,
+    Teamwork,
+    Conspire(u16),
+    Mana,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    fn resettable_attempt_selection(&self) -> Option<AttemptSelection> {
+        if !self.attempt_payment_boundary() {
+            return None;
+        }
+        let a = self.state.announcing.as_ref()?;
+        let additional_unpaid = !a.additional_paid
+            || a.cast_costs.as_ref().is_some_and(|costs| {
+                matches!(
+                    costs.active_clause(),
+                    Some(CastCostClause::OriginCounters(_))
+                )
+            });
+        match self.state.pending {
+            Pending::AdditionalCost { .. } | Pending::PayCosts { .. } if additional_unpaid => {
+                if a.evidence
+                    .as_ref()
+                    .is_some_and(|e| !e.paid && !e.selected.is_empty())
+                {
+                    return Some(AttemptSelection::Evidence);
+                }
+                if a.forage.as_ref().is_some_and(|f| !f.selected.is_empty()) {
+                    return Some(AttemptSelection::Forage);
+                }
+                if a.additional.is_some()
+                    || a.additional_life
+                    || a.additional_group
+                        .as_ref()
+                        .is_some_and(|group| !group.is_empty())
+                    || a.creature_counter_cost
+                        .as_ref()
+                        .is_some_and(|group| !group.is_empty())
+                {
+                    return Some(AttemptSelection::Additional);
+                }
+            }
+            Pending::Evidence { .. }
+                if a.evidence
+                    .as_ref()
+                    .is_some_and(|e| !e.paid && !e.selected.is_empty()) =>
+            {
+                return Some(AttemptSelection::Evidence);
+            }
+            Pending::Forage { .. }
+                if a.forage.as_ref().is_some_and(|f| !f.selected.is_empty())
+                    || a.cast_costs
+                        .as_ref()
+                        .and_then(|c| c.origin_forage.as_ref())
+                        .is_some_and(|f| !f.selected.is_empty()) =>
+            {
+                return Some(AttemptSelection::Forage);
+            }
+            Pending::TeamworkPayment { .. }
+                if a.cast_costs
+                    .as_ref()
+                    .is_some_and(|c| !c.teammates.is_empty()) =>
+            {
+                return Some(AttemptSelection::Teamwork);
+            }
+            Pending::ConspirePayment { instance, .. }
+                if a.conspire
+                    .as_ref()
+                    .is_some_and(|rows| rows[usize::from(instance)].first_object.is_some()) =>
+            {
+                return Some(AttemptSelection::Conspire(instance));
+            }
+            _ => {}
+        }
+        if matches!(
+            self.state.pending,
+            Pending::PayCosts { .. }
+                | Pending::Convoke { .. }
+                | Pending::Improvise { .. }
+                | Pending::Delve { .. }
+                | Pending::Waterbend { .. }
+                | Pending::CreatureTapPayment { .. }
+        ) && (self.attempt_contributions_sealed()
+            || a.convoke.as_ref().is_some_and(|frame| {
+                !frame.selected.is_empty()
+                    || !frame.improvised.is_empty()
+                    || !frame.substituted.is_empty()
+                    || !frame.delved.is_empty()
+            }))
+            && a.cast_costs.as_ref().is_none_or(|costs| !costs.mana_paid)
+        {
+            return Some(AttemptSelection::Mana);
+        }
+        None
+    }
+
+    /// Edit only the current unpaid selection. Actual cost effects, earlier
+    /// paid clauses, declarations and the closed mana window are never undone.
+    pub(super) fn reset_attempt_cost_selection(&mut self) {
+        let selection = self
+            .resettable_attempt_selection()
+            .expect("editable unpaid selection");
+        let a = self.state.announcing.as_mut().unwrap();
+        let player = a.item.controller;
+        match selection {
+            AttemptSelection::Additional => {
+                a.additional = None;
+                a.additional_life = false;
+                a.additional_group_complete = false;
+                if let Some(group) = &mut a.additional_group {
+                    group.clear();
+                }
+                if let Some(group) = &mut a.creature_counter_cost {
+                    group.clear();
+                }
+                self.state.pending = Pending::AdditionalCost { player };
+            }
+            AttemptSelection::Evidence => {
+                let e = a.evidence.as_mut().unwrap();
+                e.selected.clear();
+                e.total = 0;
+                e.complete = false;
+                a.additional = None;
+                self.state.pending = Pending::Evidence { player };
+            }
+            AttemptSelection::Forage => {
+                if let Some(f) = a
+                    .cast_costs
+                    .as_mut()
+                    .and_then(|costs| costs.origin_forage.as_mut())
+                {
+                    f.selected.clear();
+                } else {
+                    a.forage.as_mut().unwrap().selected.clear();
+                }
+                a.additional = None;
+                self.state.pending = Pending::Forage { player };
+            }
+            AttemptSelection::Teamwork => a.cast_costs.as_mut().unwrap().teammates.clear(),
+            AttemptSelection::Conspire(instance) => {
+                a.conspire.as_mut().unwrap()[usize::from(instance)].first_object = None;
+            }
+            AttemptSelection::Mana => {
+                if a.convoke.is_some() {
+                    a.convoke = Some(Box::new(convoke::ConvokeSelection::new(
+                        a.total_cost.expect("locked cost"),
+                    )));
+                }
+                self.state
+                    .cast_rollback
+                    .as_mut()
+                    .unwrap()
+                    .contributions_sealed = false;
+            }
+        }
     }
 }
