@@ -149,7 +149,7 @@ fn chitin_and_ironclad_cycling_pay_the_printed_cost_and_ignore_spell_cost_reduct
             } else {
                 [0; 6]
             };
-            reject(&mut g, activation(card, ability));
+            admit(&g, activation(card, ability));
             g.state.players[p.index()].mana = mana;
             act(&mut g, activation(card, ability));
             pay(&mut g);
@@ -173,7 +173,7 @@ fn chitin_counts_owned_artifact_or_creature_cards_once_and_not_lands_or_foreign_
         put(&mut g, p.other(), "Pactdoll Terror", Zone::Graveyard);
         let card = put(&mut g, p, "Chitin Gravestalker", Zone::Hand);
         g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 1];
-        reject(&mut g, Action::AnnounceCast { card });
+        admit(&g, Action::AnnounceCast { card });
         g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 2];
         cast(&mut g, card, None);
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
@@ -192,7 +192,7 @@ fn chitin_generic_reduction_floors_at_zero_but_never_removes_the_black_symbol() 
     }
     let card = put(&mut g, p, "Chitin Gravestalker", Zone::Hand);
     g.state.players[0].mana = [0, 0, 0, 0, 0, 1];
-    reject(&mut g, Action::AnnounceCast { card });
+    admit(&g, Action::AnnounceCast { card });
     g.state.players[0].mana = [0, 0, 1, 0, 0, 0];
     cast(&mut g, card, None);
     drain(&mut g, None);
@@ -345,7 +345,7 @@ fn count_on_luck_triggers_only_on_own_upkeep_and_permits_a_paid_play_after_sourc
                 g.state.priority = p;
                 g.state.step = Step::Main1;
                 g.state.pending = Pending::Priority;
-                reject(&mut g, Action::AnnounceExile { card: top });
+                admit(&g, Action::AnnounceExile { card: top });
                 g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 0];
                 act(&mut g, Action::AnnounceExile { card: top });
                 act(

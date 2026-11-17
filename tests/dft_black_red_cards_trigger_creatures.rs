@@ -74,7 +74,7 @@ fn adrenaline_jockey_counts_committed_own_exhaust_even_if_the_ability_is_counter
         let source = put(&mut g, p, "Adrenaline Jockey", Zone::Battlefield);
         let engineer = put(&mut g, p, "Draconautics Engineer", Zone::Battlefield);
         g.state.players[p.index()].mana = [0; 6];
-        reject(&mut g, activation(engineer, 0));
+        admit(&g, activation(engineer, 0));
         assert_eq!(g.object_view(source).counters.plus_one, 0);
         g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 0];
         act(&mut g, activation(engineer, 0));

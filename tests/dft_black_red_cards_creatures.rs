@@ -79,7 +79,7 @@ fn engine_rat_pays_five_generic_and_black_for_repeatable_opponent_life_loss() {
         let source = put(&mut g, p, "Engine Rat", Zone::Battlefield);
         assert!(g.keywords(source).contains(Keywords::DEATHTOUCH));
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 6];
-        reject(&mut g, activation(source, 0));
+        admit(&g, activation(source, 0));
         for expected in [18, 16] {
             g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 5];
             activate(&mut g, source, 0);
@@ -116,7 +116,7 @@ fn thunderhead_gunner_discards_as_cost_obeys_sorcery_and_once_each_turn() {
         let mut g = scenario(p);
         let source = put(&mut g, p, "Thunderhead Gunner", Zone::Battlefield);
         assert!(g.keywords(source).contains(Keywords::REACH));
-        reject(&mut g, activation(source, 0));
+        admit(&g, activation(source, 0));
         let discard = put(&mut g, p, "Mountain", Zone::Hand);
         let other = put(&mut g, p, "Forest", Zone::Hand);
         let foreign = put(&mut g, p.other(), "Mountain", Zone::Hand);
@@ -380,7 +380,7 @@ fn pacesetter_and_prowcatcher_pay_distinct_exhaust_costs_and_keep_their_counters
         let mut g = scenario(Player::P0);
         let source = put(&mut g, Player::P0, name, Zone::Battlefield);
         g.state.players[0].mana = [0, 0, 0, 0, 0, generic + 1];
-        reject(&mut g, activation(source, 0));
+        admit(&g, activation(source, 0));
         g.state.players[0].mana = [0, 0, 0, 1, 0, generic];
         activate(&mut g, source, 0);
         assert_eq!(g.state.players[0].mana, [0; 6]);

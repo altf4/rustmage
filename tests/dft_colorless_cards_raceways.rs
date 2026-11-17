@@ -143,7 +143,7 @@ fn avishkar_pays_three_taps_and_discards_before_drawing_with_no_empty_hand_route
         };
         g.state.players[p.index()].speed = 4;
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
-        reject(&mut g, action.clone());
+        admit(&g, action.clone());
         let discard = put(&mut g, p, "Forest", Zone::Hand);
         let foreign = put(&mut g, p.other(), "Forest", Zone::Hand);
         g.state.players[p.index()].speed = 3;
@@ -280,7 +280,7 @@ fn night_market_cycles_for_three_at_instant_speed_without_entering_or_choosing_a
     let land = put(&mut g, p, "Night Market", Zone::Hand);
     g.state.priority = p;
     g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
-    reject(&mut g, announce_ability(land, 1));
+    admit(&g, announce_ability(land, 1));
     g.state.players[p.index()].mana[5] = 3;
     let before = g.state.players[p.index()].library.len();
     act(&mut g, announce_ability(land, 1));

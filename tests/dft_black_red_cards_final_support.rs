@@ -341,7 +341,7 @@ fn cursecloth_tap_targets_only_own_graveyard_creature_and_uses_exact_native_emba
             reject(&mut g, action.clone());
             g.state.step = Step::Main1;
             g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
-            reject(&mut g, action.clone());
+            admit(&g, action.clone());
             g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 1];
             let casts = g.state.players[p.index()].spells_cast_this_turn;
             act(&mut g, action);

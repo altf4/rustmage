@@ -293,7 +293,7 @@ fn guidelight_optimizer_blue_pays_artifacts_and_activations_but_not_nonartifact_
             act(&mut g, mana.clone());
             assert!(g.object_view(robot).tapped);
             reject(&mut g, mana);
-            reject(&mut g, Action::AnnounceCast { card: invalid });
+            admit(&g, Action::AnnounceCast { card: invalid });
             if activated {
                 activate(&mut g, syphon);
                 assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 1);

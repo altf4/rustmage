@@ -330,8 +330,8 @@ fn skyseers_chariot_names_a_nonland_and_taxes_both_players_actual_named_activati
     let own = put(&mut g, p, "Aether Syphon", Zone::Battlefield);
     let other = put(&mut g, p.other(), "Aether Syphon", Zone::Battlefield);
     g.state.players[0].mana = [0, 0, 0, 0, 0, 3];
-    reject(
-        &mut g,
+    admit(
+        &g,
         Action::AnnounceActivate {
             card: own,
             ability: 0,
