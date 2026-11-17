@@ -516,13 +516,14 @@ fn graveyard_exile_prohibition_is_shared_by_funding_and_actual_payment() {
         g.state.players[p.index()].mana = [0; 6];
         assert!(available(&g, source));
         begin(&mut g, source, None);
-        select(&mut g, artifact);
-        act(&mut g, Action::FinishAdditionalCostGroup);
+        reject_selection(&mut g, artifact);
         choose(
             &mut g,
             |a| matches!(a, Action::ActivateMana {card,..} if *card == blocker),
         );
         assert_eq!(g.object_view(blocker).zone, Zone::Graveyard);
+        select(&mut g, artifact);
+        act(&mut g, Action::FinishAdditionalCostGroup);
         pay(&mut g);
         assert_eq!(g.object_view(artifact).zone, Zone::Exile);
         drain(&mut g);
@@ -643,7 +644,14 @@ fn a_departing_source_cannot_pay_a_second_distinct_departure_cost() {
     let p = Player::P0;
     let mut g = scenario(p);
     let source = put(&mut g, p, "Clamorous Ironclad", Zone::Battlefield);
-    assert!(!available(&g, source));
+    admit(
+        &g,
+        Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
     let extra = put(&mut g, p, "Soul-Guide Lantern", Zone::Battlefield);
     assert!(available(&g, source));
     begin(&mut g, source, None);

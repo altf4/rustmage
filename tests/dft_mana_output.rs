@@ -161,7 +161,7 @@ fn parent_cast_funding_uses_the_post_cost_amount_and_rejects_a_stale_larger_prev
         let spell = put(&mut g, Player::P0, "Divination", Zone::Hand);
         g.state.players[0].mana = [0; 6];
         if counters == 1 {
-            reject(&mut g, Action::AnnounceCast { card: spell });
+            admit(&g, Action::AnnounceCast { card: spell });
             continue;
         }
         act(&mut g, Action::AnnounceCast { card: spell });
@@ -509,8 +509,8 @@ fn a_retained_late_choice_replays_its_concrete_output_and_quality_exactly_once()
     );
     assert!(g.state.cast_rollback.as_ref().unwrap().events.is_empty());
     // The opponent's copied Aura has already stranded the original parent.
-    // Every exact-quantity output must remain usable before selective rollback;
-    // this escape is different from choosing a color that newly strands a parent.
+    // Every exact-quantity output remains usable. The parent fails only after
+    // the player closes the mana window and explicitly submits it.
     let colors: Vec<Mana> = (0..5)
         .map(|color| {
             let mut production = [0; 6];
@@ -539,6 +539,8 @@ fn a_retained_late_choice_replays_its_concrete_output_and_quality_exactly_once()
     for production in colors {
         let mut branch = g.clone();
         act(&mut branch, Action::ChooseMana { production });
+        act(&mut branch, Action::EndManaWindow);
+        act(&mut branch, Action::SubmitAttempt);
         assert!(matches!(branch.state.pending, Pending::ManaRollback { .. }));
         act(&mut branch, Action::ChooseManaRollback { keep: true });
         assert_eq!(branch.state.players[0].mana, production);
@@ -568,6 +570,11 @@ fn a_retained_late_choice_replays_its_concrete_output_and_quality_exactly_once()
     };
     act(&mut g, choice.clone());
     indexed(&mut idx, choice);
+    assert_eq!(g.snapshot(), idx.snapshot());
+    for branch in [&mut g, &mut idx] {
+        act(branch, Action::EndManaWindow);
+        act(branch, Action::SubmitAttempt);
+    }
     assert_eq!(g.snapshot(), idx.snapshot());
     assert!(matches!(g.state.pending, Pending::ManaRollback { .. }));
     let receipt = g
@@ -627,7 +634,7 @@ fn removing_a_negative_counter_can_raise_power_mana_enough_to_fund_the_parent() 
         let wrong_color = put(&mut g, p, "Divination", Zone::Hand);
         g.state.players[p.index()].mana = [0; 6];
         assert_eq!(stats(&g, source), (1, 1));
-        reject(&mut g, Action::AnnounceCast { card: wrong_color });
+        admit(&g, Action::AnnounceCast { card: wrong_color });
         act(&mut g, Action::AnnounceCast { card: spell });
         let mut counters = Counters::default();
         counters.add(CounterKind::MinusOne, 1);
@@ -712,7 +719,7 @@ fn granted_dynamic_mana_uses_conservative_bounds_and_exact_post_cost_search() {
             let spell = put(&mut g, p, "Druid of the Cowl", Zone::Hand);
             g.state.players[p.index()].mana = [0; 6];
             if !can_remove {
-                reject(&mut g, Action::AnnounceCast { card: spell });
+                admit(&g, Action::AnnounceCast { card: spell });
                 assert_eq!(g.counter_count(source, CounterKind::MinusOne), 1);
                 continue;
             }

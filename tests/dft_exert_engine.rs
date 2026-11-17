@@ -355,11 +355,11 @@ fn exert_source_must_survive_its_mana_funding_even_without_a_tap_symbol() {
     let mut g = scenario(Player::P0);
     g.state.players[0].mana = [0; 6];
     let source = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
-    assert!(
-        !g.legal_actions().contains(&activation(source)),
-        "sacrificing source to fund its own exert cost cannot work"
-    );
-    reject(&mut g, activation(source));
+    admit(&g, activation(source));
+    let mut unpaid = g.clone();
+    act(&mut unpaid, activation(source));
+    reject(&mut unpaid, Action::PayCosts { payment: [0; 6] });
+    assert_eq!(unpaid.object_ref(source), g.object_ref(source));
     let other = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
     assert!(
         g.legal_actions().contains(&activation(source)),
