@@ -113,7 +113,7 @@ fn paid_adventure_uses_private_top_and_commits_after_payment_with_owned_restore(
         let top = put(&mut game, player, "Frolicking Familiar", Zone::Library);
         let top_object = game.object_ref(top);
         game.state.players[player.index()].mana = [0; 6];
-        assert!(paid_permissions(&game, top, CastFace::Adventure).is_empty());
+        assert_eq!(paid_permissions(&game, top, CastFace::Adventure).len(), 1);
         assert_eq!(
             game.observe(player).known_library_top[player.index()]
                 .unwrap()

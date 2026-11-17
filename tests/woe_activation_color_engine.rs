@@ -107,16 +107,25 @@ fn flexibility_uses_the_live_creature_and_preserves_colorless_and_mana_lot_restr
     let grave = put(&mut game, player, "Grizzly Bears", Zone::Graveyard);
     let noncreature = put(&mut game, player, "Swiftfoot Boots", Zone::Battlefield);
     game.state.players[player.index()].mana = THREE_C;
-    reject(&mut game, activate(noncreature, 0));
-    reject(&mut game, activate(grave, 1));
+    admit(&game, activate(noncreature, 0));
+    admit(&game, activate(grave, 1));
 
     let mut foreign = game.clone();
     let object = foreign.object_ref(provider);
     foreign.change_controller(object, player.other());
-    reject(&mut foreign, activate(creature, 0));
+    admit(&foreign, activate(creature, 0));
+    for (mut branch, source, ability) in [
+        (game.clone(), noncreature, 0),
+        (game.clone(), grave, 1),
+        (foreign, creature, 0),
+    ] {
+        act(&mut branch, activate(source, ability));
+        assert!(branch.mana_payment_domain().is_none());
+        reject(&mut branch, Action::PayCosts { payment: THREE_C });
+    }
     let mut no_colorless = game.clone();
     no_colorless.state.players[player.index()].mana = [0, 0, 0, 3, 0, 0];
-    reject(&mut no_colorless, activate(creature, 0));
+    admit(&no_colorless, activate(creature, 0));
 
     let mut restricted = game.clone();
     restricted.state.players[player.index()].mana = ZERO;
@@ -128,7 +137,14 @@ fn flexibility_uses_the_live_creature_and_preserves_colorless_and_mana_lot_restr
             ..Quality::ORDINARY
         }),
     );
-    reject(&mut restricted, activate(creature, 0));
+    admit(&restricted, activate(creature, 0));
+    for branch in [&mut no_colorless, &mut restricted] {
+        act(branch, activate(creature, 0));
+        assert!(branch.mana_payment_domain().is_none());
+        let payment = branch.state.players[player.index()].mana;
+        reject(branch, Action::PayCosts { payment });
+        assert_eq!(branch.object_view(creature).zone, Zone::Battlefield);
+    }
 
     let direct = Action::Activate {
         card: creature,
@@ -169,7 +185,7 @@ fn projected_deferred_mana_needs_the_permission_in_the_payment_world() {
     let cast = Action::AnnounceCast { card: spell };
 
     // The only way to get a second mana would remove the spending permission.
-    reject(&mut parent, cast.clone());
+    admit(&parent, cast.clone());
     let mountain = put(&mut parent, player, "Mountain", Zone::Battlefield);
     act(&mut parent, cast);
     act(
@@ -185,13 +201,17 @@ fn projected_deferred_mana_needs_the_permission_in_the_payment_world() {
         counter_payment: Counters::default(),
         production: RED,
     };
-    reject(&mut parent, sacrifice.clone());
+    admit(&parent, sacrifice.clone());
     let mut deferred = parent.clone();
     choose(
         &mut deferred,
         |action| matches!(action, Action::AnnounceMana { card, ability: 2, .. } if *card == producer),
     );
-    reject(&mut deferred, sacrifice);
+    admit(&deferred, sacrifice.clone());
+    let mut lost_permission = deferred.clone();
+    act(&mut lost_permission, sacrifice);
+    assert!(lost_permission.mana_payment_domain().is_none());
+    reject(&mut lost_permission, Action::PayCosts { payment: RED_C });
     act(&mut deferred, Action::TapMana { card: mountain });
     assert_eq!(deferred.mana_payment_domain().unwrap().required, C);
     assert_eq!(deferred.mana_payment_domain().unwrap().generic, 1);
@@ -226,7 +246,17 @@ fn projected_deferred_mana_needs_the_permission_in_the_payment_world() {
         .unwrap();
     assert_eq!(raw.snapshot(), indexed.snapshot());
     raw.restore(&saved).unwrap();
+    assert_eq!(raw.snapshot(), saved);
+    assert_eq!(
+        raw.apply_index(player, parent.revision(), index),
+        Err(Error::StaleRevision)
+    );
+    indexed = raw.clone();
     act(&mut raw, direct);
+    indexed
+        .apply_index(player, indexed.revision(), index)
+        .unwrap();
+    assert_eq!(raw.snapshot(), indexed.snapshot());
     for game in [&mut raw, &mut indexed] {
         act(game, Action::ChooseMana { production: BLUE });
         pay(game);

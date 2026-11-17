@@ -189,7 +189,7 @@ fn an_attached_sacrifice_requires_the_payers_aura_on_the_exact_source() {
         let wrong_controller = cast_aura(&mut g, other, source);
         g.state.active = player;
         g.state.priority = player;
-        reject(&mut g, activate(source));
+        admit(&g, activate(source));
         let payable = cast_aura(&mut g, player, source);
         assert_eq!(g.object_view(source).power, 8);
         act(&mut g, activate(source));

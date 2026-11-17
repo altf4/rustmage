@@ -133,8 +133,17 @@ fn the_grant_binds_the_exact_death_object_and_allows_the_paid_adventure() {
         assert_eq!(raw.snapshot(), indexed.snapshot());
         indexed.restore(&snapshot).unwrap();
         expect_permission(&indexed, player, source, None);
-        act(&mut indexed, announce.clone());
-        assert_eq!(indexed.snapshot(), raw.snapshot());
+        assert_eq!(indexed.snapshot(), snapshot);
+        assert_eq!(
+            indexed.apply_index(player, revision, index),
+            Err(Error::StaleRevision)
+        );
+        let mut replay = indexed.clone();
+        act(&mut replay, announce.clone());
+        indexed
+            .apply_index(player, indexed.revision(), index)
+            .unwrap();
+        assert_eq!(indexed.snapshot(), replay.snapshot());
 
         // Train Troops requires the full {4}{W} when using the ordinary route.
         reject(
@@ -253,7 +262,7 @@ fn an_alternative_cost_combines_only_with_the_permitted_face() {
         flash_surcharge: false,
     };
     reject(&mut game, free(CastFace::Normal));
-    reject(&mut game, Action::AnnounceAdventure { card: source });
+    admit(&game, Action::AnnounceAdventure { card: source });
     act(&mut game, free(CastFace::Adventure));
     act(&mut game, Action::PayCosts { payment: [0; 6] });
     act(&mut game, Action::Pass);

@@ -180,23 +180,23 @@ fn live_power_discounts_only_controlled_battlefield_creatures_and_respects_the_f
         let buried = put(&mut g, player, "Grizzly Bears", Zone::Graveyard);
         let action = activate(creature, 0);
         g.state.players[player.index()].mana = ONE;
-        reject(&mut g, action.clone());
+        admit(&g, action.clone());
         g.state.objects[provider as usize].growth.power = 2;
 
         let mut foreign = g.clone();
         foreign.state.objects[provider as usize].controller = player.other();
-        reject(&mut foreign, action.clone());
+        admit(&foreign, action.clone());
 
         let mut stripped = g.clone();
         let reducer = stripped.object_ref(provider);
         let source = stripped.object_ref(creature);
         stripped.remove_abilities_exact(&[reducer], source, player, AnimationDuration::EndOfTurn);
-        reject(&mut stripped, action.clone());
-        reject(&mut g, activate(buried, 2));
+        admit(&stripped, action.clone());
+        admit(&g, activate(buried, 2));
 
         let mut without_mana = g.clone();
         without_mana.state.players[player.index()].mana = [0; 6];
-        reject(&mut without_mana, action.clone());
+        admit(&without_mana, action.clone());
         act(&mut g, action);
         assert_eq!(g.mana_payment_domain().unwrap().generic, 1);
         pay(&mut g);
@@ -219,7 +219,7 @@ fn an_animated_land_can_combine_independent_reductions_to_zero() {
     let land = put(&mut g, player, "Crystal Grotto", Zone::Battlefield);
     put(&mut g, player, "Hill Giant", Zone::Battlefield);
     g.state.players[player.index()].mana = [0; 6];
-    reject(&mut g, activate(land, 0));
+    admit(&g, activate(land, 0));
 
     let provider = put(&mut g, player, "Bear Cub", Zone::Battlefield);
     g.state.objects[provider as usize].growth.power = 3;
@@ -272,7 +272,12 @@ fn an_animated_land_can_combine_independent_reductions_to_zero() {
     }
 
     act(&mut g, activate(land, 0));
-    assert!(g.observe(player).cost_choices.is_empty());
+    assert_eq!(g.observe(player).cost_choices.len(), 2);
+    let mut unfunded = g.clone();
+    act(&mut unfunded, Action::ChooseActivationCost { cost: 1 });
+    assert!(unfunded.mana_payment_domain().is_none());
+    reject(&mut unfunded, Action::PayCosts { payment: [0; 6] });
+    act(&mut g, Action::ChooseActivationCost { cost: 0 });
     assert_eq!(g.mana_payment_domain().unwrap().generic, 0);
     pay(&mut g);
     settle(&mut g);
@@ -341,7 +346,7 @@ fn target_discount_affects_whether_the_reduction_order_changes_the_total() {
 }
 
 #[test]
-fn projected_payment_lists_each_reduction_order_that_leaves_the_cast_fundable() {
+fn payment_lists_each_current_reduction_order_even_when_it_strands_the_cast() {
     let _rules = fixture_rules::activate(&[
         (card("Bear Cub"), &PASSIVE_REDUCER),
         (card("Hill Giant"), &LAND_REDUCER),
@@ -393,44 +398,44 @@ fn projected_payment_lists_each_reduction_order_that_leaves_the_cast_fundable() 
                 production: BLUE,
             };
             let mut direct = g.clone();
-            let valid = !parent_needs_generic || cost == 0;
             assert_eq!(
                 actions.iter().filter(|action| **action == activate).count(),
-                usize::from(valid)
+                1
             );
-            if valid {
-                act(&mut direct, activate);
-                assert_eq!(
-                    direct.state.players[player.index()].mana[5],
-                    1 - cost as u32
-                );
-                pay(&mut direct);
-                settle(&mut direct);
-                assert_eq!(direct.object_view(target).zone, Zone::Hand);
-            } else {
-                reject(&mut direct, activate);
-                continue;
-            }
+            act(&mut direct, activate);
+            assert_eq!(
+                direct.state.players[player.index()].mana[5],
+                1 - cost as u32
+            );
 
             let mut announced = g.clone();
             act(&mut announced, announce.clone());
-            if parent_needs_generic {
-                assert!(announced.observe(player).cost_choices.is_empty());
-            } else {
-                assert_eq!(announced.observe(player).cost_choices.len(), 2);
-                act(
-                    &mut announced,
-                    Action::ChooseActivationCost { cost: cost as u16 },
-                );
-            }
+            assert_eq!(announced.observe(player).cost_choices.len(), 2);
+            act(
+                &mut announced,
+                Action::ChooseActivationCost { cost: cost as u16 },
+            );
             assert_eq!(
                 announced.mana_payment_domain().unwrap().generic,
-                if parent_needs_generic { 0 } else { cost as u32 }
+                cost as u32
             );
             pay(&mut announced);
-            pay(&mut announced);
-            settle(&mut announced);
-            assert_eq!(announced.object_view(target).zone, Zone::Hand);
+            for branch in [&mut direct, &mut announced] {
+                if parent_needs_generic && cost == 1 {
+                    assert!(branch.mana_payment_domain().is_none());
+                    reject(branch, Action::PayCosts { payment: BLUE });
+                    act(branch, Action::EndManaWindow);
+                    act(branch, Action::SubmitAttempt);
+                    assert_eq!(
+                        branch.observe(player).last_attempt_outcome.unwrap().reason,
+                        Some(AttemptFailureReason::UnsatisfiedMana)
+                    );
+                } else {
+                    pay(branch);
+                    settle(branch);
+                    assert_eq!(branch.object_view(target).zone, Zone::Hand);
+                }
+            }
         }
     }
 }
@@ -483,14 +488,25 @@ fn paying_mana_can_remove_the_reducer_after_the_discount_is_locked() {
         pay(branch);
         settle(branch);
         assert_eq!(branch.state.players[player.index()].life, 21);
-        reject(branch, activation.clone());
+        admit(branch, activation.clone());
     }
     assert_eq!(raw.snapshot(), indexed.snapshot());
     indexed.restore(&before).unwrap();
-    act(&mut indexed, mana);
-    pay(&mut indexed);
-    settle(&mut indexed);
-    assert_eq!(raw.snapshot(), indexed.snapshot());
+    assert_eq!(indexed.snapshot(), before);
+    assert_eq!(
+        indexed.apply_index(player, revision, index),
+        Err(Error::StaleRevision)
+    );
+    let mut replay = indexed.clone();
+    act(&mut replay, mana);
+    indexed
+        .apply_index(player, indexed.revision(), index)
+        .unwrap();
+    for branch in [&mut replay, &mut indexed] {
+        pay(branch);
+        settle(branch);
+    }
+    assert_eq!(replay.snapshot(), indexed.snapshot());
 }
 
 #[test]
@@ -520,7 +536,7 @@ fn projected_cast_funding_sees_a_discounted_printed_or_intrinsic_mana_ability() 
         let target = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
         g.state.players[player.index()].mana = [0; 6];
         let announce = Action::AnnounceCast { card: spell };
-        reject(&mut g, announce.clone());
+        admit(&g, announce.clone());
         put(&mut g, player, "Hill Giant", Zone::Battlefield);
         act(&mut g, announce);
         act(

@@ -209,11 +209,13 @@ fn prove_branch(game: &Game, actor: Player, actions: &[Action], index: usize) ->
         sibling.apply_index(actor, revision, index),
         Err(Error::StaleRevision),
     );
+    let mut replay = sibling.clone();
+    replay.apply(actor, chosen.clone()).unwrap();
     sibling
         .apply_index(actor, sibling.revision(), index)
         .unwrap();
-    assert_eq!(sibling.snapshot(), raw.snapshot());
-    assert_eq!(player_views(&sibling), player_views(&raw));
+    assert_eq!(sibling.snapshot(), replay.snapshot());
+    assert_eq!(player_views(&sibling), player_views(&replay));
     true
 }
 

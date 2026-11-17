@@ -1197,8 +1197,8 @@ fn crystal_grotto_scries_and_cannot_fund_its_own_colored_mana_activation() {
         production,
         payment,
     };
-    reject(
-        &mut game,
+    admit(
+        &game,
         Action::AnnounceMana {
             card: grotto,
             ability: 1,
