@@ -126,12 +126,9 @@ fn deck(members: &BTreeSet<Card>, lands: &[(&str, usize)], spells: &[&str]) -> V
     deck
 }
 
-fn void_cast(observation: &Observation) -> Option<usize> {
-    if !observation.void_active_this_turn {
-        return None;
-    }
+fn current_mana(observation: &Observation) -> u64 {
     let actor = observation.actor.unwrap();
-    let current_mana = observation.players[actor.index()]
+    observation.players[actor.index()]
         .mana
         .iter()
         .map(|&amount| u64::from(amount))
@@ -145,17 +142,28 @@ fn void_cast(observation: &Observation) -> Option<usize> {
                     && object.card.is_land()
                     && !object.tapped
             })
-            .count() as u64;
+            .count() as u64
+}
+
+fn preferred_cast(observation: &Observation, names: &[&str]) -> Option<usize> {
+    let current_mana = current_mana(observation);
     observation.actions.iter().position(|action| {
         let (Action::AnnounceCast { card } | Action::Cast { card, .. }) = action else {
             return false;
         };
         observation.objects.iter().any(|object| {
             object.id == *card
-                && matches!(object.card.name(), "Tragic Trajectory" | "Roving Actuator")
+                && names.contains(&object.card.name())
                 && object.card.fixed_mana_value() <= current_mana
         })
     })
+}
+
+fn void_cast(observation: &Observation) -> Option<usize> {
+    observation
+        .void_active_this_turn
+        .then(|| preferred_cast(observation, &["Tragic Trajectory", "Roving Actuator"]))
+        .flatten()
 }
 
 fn decision(observation: &Observation) -> usize {
@@ -187,6 +195,10 @@ fn decision(observation: &Observation) -> usize {
     // Prefer an already active Void payoff before proposing another Warp.
     // This caller estimate uses only the current pool and untapped lands.
     if let Some(index) = void_cast(observation) {
+        return index;
+    }
+    if let Some(index) = preferred_cast(observation, &["Galactic Wayfarer", "Bioengineered Future"])
+    {
         return index;
     }
     if let Some(index) = observation.actions.iter().position(|action| {
@@ -455,7 +467,7 @@ fn eoe_standard_games_reach_terminal_outcomes_and_replay_owned_choices() {
                 serde_json::json!({
                     "action_contract": rustmage::ACTION_CONTRACT,
                     "observation_schema": rustmage::OBSERVATION_SCHEMA,
-                    "caller_contract": "EOE_STAGED_SMOKE_VOID_WARP_V1",
+                    "caller_contract": "EOE_STAGED_SMOKE_LANDER_VOID_WARP_V1",
                     "primitive_decision_limit": 4096,
                     "config": config(), "actions": journal,
                     "decisions": journal.len(), "outcome": game.outcome(),

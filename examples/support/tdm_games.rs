@@ -11,7 +11,7 @@ use std::time::Instant;
 pub const WORKLOAD: &str = "TDM_FROZEN_TERMINAL_STAGED_V2";
 pub const CALLER_CONTRACT: &str = "TDM_STAGED_SMOKE_V1";
 const TRACE_SCHEMA: u32 = 3;
-const RETRY_POLICY: &str = "Shared smoke policy defers paid priority proposals for the acting player's current turn after a failed attempt. A failed mana child prefers current-pool payment or closing the parent mana window. Available payments and mana actions precede ordered-cost and contributor-payment entry while the mana window is open. Generic rejected-attack memory lasts until FinishAttackers. No per-card retry limit; every microstep and retry counts toward 4096 primitive decisions.";
+const RETRY_POLICY: &str = "Shared smoke policy defers paid priority proposals for the acting player's current turn after a failed attempt. A failed mana child prefers current-pool payment or closing the parent mana window. Available payments and mana actions precede ordered-cost and contributor-payment entry while the mana window is open. The harness prefers an offered Omen face within its current pool plus untapped-land mana estimate, after land plays and the failed-turn guard. Generic rejected-attack memory lasts until FinishAttackers. No per-card retry limit; every microstep and retry counts toward 4096 primitive decisions.";
 pub const DECKS_SHA256: &str = "2daf20c80bb409b7f241680b990b39a1177101dd45e35eaa48fffc913d5fb12e";
 pub const REQUIRED: [&str; 8] = [
     "endure",
@@ -1569,6 +1569,50 @@ fn terminal(g: &Game, tracker: Option<&Tracker>, decision: usize) -> Result<Term
         g.outcome()
     ))
 }
+fn decision(observation: &Observation, offered: &[Action]) -> usize {
+    let smoke = policy::smoke_index_from_observation(observation, offered);
+    if matches!(offered[smoke], Action::PlayLand { .. })
+        || observation.attempt.is_some()
+        || observation.decision != "priority"
+        || observation.last_attempt_outcome.is_some_and(|outcome| {
+            outcome.turn == u64::from(observation.turn) && outcome.outcome == AttemptOutcome::Failed
+        })
+    {
+        return smoke;
+    }
+    let actor = observation.actor.unwrap();
+    let current_mana = observation.players[actor.index()]
+        .mana
+        .iter()
+        .map(|&amount| u64::from(amount))
+        .sum::<u64>()
+        + observation
+            .objects
+            .iter()
+            .filter(|object| {
+                object.controller == actor
+                    && object.zone == Zone::Battlefield
+                    && object.card.is_land()
+                    && !object.tapped
+            })
+            .count() as u64;
+    offered
+        .iter()
+        .position(|action| {
+            let Action::AnnounceOmen { card } = action else {
+                return false;
+            };
+            observation.objects.iter().any(|object| {
+                object.id == *card
+                    && object
+                        .card
+                        .omen_spell()
+                        .is_some_and(|face| face.fixed_mana_value() <= current_mana)
+            })
+        })
+        .unwrap_or(smoke)
+}
+
 fn run_one(
     w: &Workload,
     case: Case,
@@ -1625,7 +1669,7 @@ fn run_one(
                 "generic rejection memory filtered every action",
             )?;
             let offered: Vec<_> = eligible.iter().map(|(_, a)| a.clone()).collect();
-            let index = eligible[policy::smoke_index(&game, &offered)].0;
+            let index = eligible[decision(&game.observe(actor), &offered)].0;
             let action = actions[index].clone();
             if matches!(action, Action::Concede) {
                 return Err(format!(
@@ -1901,7 +1945,7 @@ pub fn run(
         seconds += g.measured_seconds;
         games.push(g);
     }
-    Ok(Report{workload:WORKLOAD.into(),action_contract:ACTION_CONTRACT.into(),observation_schema:OBSERVATION_SCHEMA,caller_contract:CALLER_CONTRACT.into(),retry_policy:RETRY_POLICY.into(),primitive_decision_limit:LIMIT,catalogue:CATALOGUE_VERSION.into(),deck_source_sha256:DECKS_SHA256.into(),harness_source_sha256:harness_sha256(),execution_inputs_sha256:w.execution_inputs_sha256.clone(),printed_outcome_ledger_sha256:w.proof_ledger_sha256.clone(),physical_manifest_sha256:physical_manifest_sha256(),mode:if mode==Mode::Verify{"verification"}else{"benchmark"}.into(),scope:"Exact frozen TDM-only Standard48 plus separate Cutter Freeform4;4096 primitive decisions per game under the staged action contract. omen_resolution_shuffle is the frozen legacy key for actual Omen resolution plus owner-library return; shuffle has a separate isolated RNG/order receipt when observable. Not general Standard coverage, gameplay parity, or exhaustive card proof".into(),physical_members:276,standard_cases:cases.iter().filter(|c|!c.freeform).map(|c|c.id()).collect::<BTreeSet<_>>().len(),freeform_cases:cases.iter().filter(|c|c.freeform).map(|c|c.id()).collect::<BTreeSet<_>>().len(),repetitions,decks:w.inputs.standard_decks.iter().chain(std::iter::once(&w.inputs.freeform_cutter_deck)).cloned().collect(),games_per_second:games.len()as f64/seconds,decisions_per_second:decisions as f64/seconds,decisions,completed_attempts,failed_attempts,attempt_submissions,incomplete_submissions,measured_seconds:seconds,games,witnesses,actual_spell_colors:colors,measurement:if mode==Mode::Verify{"Sum per-game wall time includes construction, legal-action emission, shared staged smoke policy/actor observations, unique completed/failed attempt and submission accounting, before/after verification telemetry, at most5 sampled root categories with independent Config+prefix replay parents and distinct sibling checks, complete raw replay, paired observation comparisons, SHA256 and persistent trace serialization. Omen witness records actual resolution and owner-library return only; separate isolated RNG/order receipts establish an actual shuffle when present. Not a simulation benchmark."}else{"Sum per-game construction+play time includes exact Config cloning, Game::new/shuffle, legal-action emission, generic rejected-attack memory, policy::smoke_index with its actor observation, rules apply, and lightweight committed-cast packet/card/color and unique completed/failed attempt/submission telemetry. Every microstep and retry counts as a primitive decision. Excludes workload/deck validation, replay/owned checks, detailed mechanic telemetry, trace/per-decision JSON, terminal reconciliation/report serialization, model inference/network/tensors. Same frozen cases as verified corpus, exactly3 repetitions; Freeform separately labelled."}.into()})
+    Ok(Report{workload:WORKLOAD.into(),action_contract:ACTION_CONTRACT.into(),observation_schema:OBSERVATION_SCHEMA,caller_contract:CALLER_CONTRACT.into(),retry_policy:RETRY_POLICY.into(),primitive_decision_limit:LIMIT,catalogue:CATALOGUE_VERSION.into(),deck_source_sha256:DECKS_SHA256.into(),harness_source_sha256:harness_sha256(),execution_inputs_sha256:w.execution_inputs_sha256.clone(),printed_outcome_ledger_sha256:w.proof_ledger_sha256.clone(),physical_manifest_sha256:physical_manifest_sha256(),mode:if mode==Mode::Verify{"verification"}else{"benchmark"}.into(),scope:"Exact frozen TDM-only Standard48 plus separate Cutter Freeform4;4096 primitive decisions per game under the staged action contract. omen_resolution_shuffle is the frozen legacy key for actual Omen resolution plus owner-library return; shuffle has a separate isolated RNG/order receipt when observable. Not general Standard coverage, gameplay parity, or exhaustive card proof".into(),physical_members:276,standard_cases:cases.iter().filter(|c|!c.freeform).map(|c|c.id()).collect::<BTreeSet<_>>().len(),freeform_cases:cases.iter().filter(|c|c.freeform).map(|c|c.id()).collect::<BTreeSet<_>>().len(),repetitions,decks:w.inputs.standard_decks.iter().chain(std::iter::once(&w.inputs.freeform_cutter_deck)).cloned().collect(),games_per_second:games.len()as f64/seconds,decisions_per_second:decisions as f64/seconds,decisions,completed_attempts,failed_attempts,attempt_submissions,incomplete_submissions,measured_seconds:seconds,games,witnesses,actual_spell_colors:colors,measurement:if mode==Mode::Verify{"Sum per-game wall time includes construction, legal-action emission, staged caller/actor observations, unique completed/failed attempt and submission accounting, before/after verification telemetry, at most5 sampled root categories with independent Config+prefix replay parents and distinct sibling checks, complete raw replay, paired observation comparisons, SHA256 and persistent trace serialization. Omen witness records actual resolution and owner-library return only; separate isolated RNG/order receipts establish an actual shuffle when present. Not a simulation benchmark."}else{"Sum per-game construction+play time includes exact Config cloning, Game::new/shuffle, legal-action emission, generic rejected-attack memory, the staged smoke and current-budget Omen caller with its actor observation, rules apply, and lightweight committed-cast packet/card/color and unique completed/failed attempt/submission telemetry. Every microstep and retry counts as a primitive decision. Excludes workload/deck validation, replay/owned checks, detailed mechanic telemetry, trace/per-decision JSON, terminal reconciliation/report serialization, model inference/network/tensors. Same frozen cases as verified corpus, exactly3 repetitions; Freeform separately labelled."}.into()})
 }
 pub fn write_shard(report: &Report, pair: usize, dir: &Path) -> Result<(), String> {
     write_json(&dir.join(format!("pair-{pair}-report.json")), report)
