@@ -142,6 +142,7 @@ pub(super) fn visit_behold_candidates<W: ability_world::CharacteristicWorld + ?S
             Zone::Hand => {
                 object.owner == actor
                     && object.is_card()
+                    && !world.game().attempt_draw_is_face_down(reference)
                     && world.subtypes(id).has(world.definition(id), subtype)
             }
             _ => false,
