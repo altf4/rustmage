@@ -479,7 +479,8 @@ fn skyward_spiders_hybrid_cost_and_conditional_flying_respect_actual_modificatio
         game.state.players[player.index()].mana = payment;
         act(&mut game, Action::AnnounceCast { card: spider });
         let cost = game
-            .spell_cost_choices()
+            .observe(player)
+            .cost_choices
             .into_iter()
             .find(|choice| choice.cost.colored == payment && choice.cost.generic == 0)
             .unwrap()
