@@ -290,6 +290,17 @@ impl Game {
         if self.current_material_cost_impossible() {
             return Some(AttemptFailureReason::UnsatisfiedMaterial);
         }
+        if self.state.announcing.is_none()
+            && (self
+                .plot_payment()
+                .is_some_and(|r| !r.source_is_current(self))
+                || self
+                    .state
+                    .room_unlock_payment()
+                    .is_some_and(|r| !r.source_is_current(self)))
+        {
+            return Some(AttemptFailureReason::UnsatisfiedMaterial);
+        }
         let (player, mut total) = self.current_attempt_cost()?;
         let purpose = if let Some(a) = self.state.announcing.as_ref() {
             if !matches!(

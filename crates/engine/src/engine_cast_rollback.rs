@@ -572,15 +572,7 @@ impl Game {
             }
             let mut rollback = rollback;
             let current = std::mem::replace(&mut self.state, rollback.before.clone());
-            self.complete_cast_rollback_restore(
-                &current,
-                rollback.spell,
-                &rollback.library_moves,
-                &rollback.public_hand_cards,
-                &rollback.obscured_hand_cards,
-                &rollback.public_face_down,
-                &rollback.obscured_face_down,
-            );
+            self.complete_cast_rollback_restore(&current, &rollback);
             self.finish_attempt_recovery(&mut rollback, Vec::new());
             return;
         }
@@ -591,16 +583,23 @@ impl Game {
     pub(super) fn complete_cast_rollback_restore(
         &mut self,
         current: &State,
-        spell: CardId,
-        library_moves: &[FrozenLibraryObject],
-        public_hand_cards: &[CardId],
-        obscured_hand_cards: &[CardId],
-        public_face_down: &[ObjectRef],
-        obscured_face_down: &[ObjectRef],
+        rollback: &CastRollback,
     ) {
-        self.preserve_irreversible_cast_library_changes(current, spell, library_moves);
-        self.restore_public_hand_knowledge(current, public_hand_cards, obscured_hand_cards);
-        self.restore_public_face_down(current, public_face_down, obscured_face_down);
+        self.preserve_irreversible_cast_library_changes(
+            current,
+            rollback.spell,
+            &rollback.library_moves,
+        );
+        self.restore_public_hand_knowledge(
+            current,
+            &rollback.public_hand_cards,
+            &rollback.obscured_hand_cards,
+        );
+        self.restore_public_face_down(
+            current,
+            &rollback.public_face_down,
+            &rollback.obscured_face_down,
+        );
         // A retained mana activation may have tapped a proposed blocker.
         // After reversing the declaration it must qualify for a new choice.
         if self.state.pending == Pending::Blockers
