@@ -547,9 +547,14 @@ fn brave_the_wilds_searches_on_either_route_and_animates_its_paid_target() {
 
     let mut unpaid = game.clone();
     act(&mut unpaid, Action::AnnounceCast { card: spell });
-    let sacrifice = Some(unpaid.object_ref(offering));
+    let sacrifice = unpaid.object_ref(offering);
     let mut missing_target = unpaid.clone();
-    act(&mut missing_target, Action::ChooseBargain { sacrifice });
+    act(
+        &mut missing_target,
+        Action::ChooseBargain {
+            sacrifice: Some(sacrifice),
+        },
+    );
     assert_eq!(missing_target.state.pending, Pending::Targets { player });
     admit(&missing_target, Action::SubmitAttempt);
     act(&mut missing_target, Action::SubmitAttempt);
@@ -560,7 +565,7 @@ fn brave_the_wilds_searches_on_either_route_and_animates_its_paid_target() {
         Some(AttemptFailureReason::UnsatisfiedDeclaration)
     );
     assert_eq!(missing_target.object_view(spell).zone, Zone::Hand);
-    assert_eq!(missing_target.object_ref(offering), sacrifice.unwrap());
+    assert_eq!(missing_target.object_ref(offering), sacrifice);
     assert_eq!(missing_target.object_view(offering).zone, Zone::Battlefield);
     bargain(&mut unpaid, None);
     pay(&mut unpaid);
