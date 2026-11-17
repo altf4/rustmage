@@ -451,6 +451,175 @@ fn completed_forage_with_missing_mana_fails_and_restores_the_exact_attempt() {
     }
 }
 
+fn select_cost_clause(game: &mut Game, clause: CastCostClause) {
+    if matches!(game.state.pending, Pending::PayCosts { .. }) {
+        act(game, Action::BeginOrderedCosts);
+    }
+    let index = game
+        .state
+        .announcing
+        .as_ref()
+        .unwrap()
+        .cast_costs
+        .as_ref()
+        .unwrap()
+        .clauses
+        .iter()
+        .position(|row| !row.paid && row.clause == clause)
+        .unwrap() as u16;
+    act(game, Action::ChooseCastCost { clause: index });
+}
+
+#[test]
+fn teamwork_two_accepts_one_two_power_creature_and_pays_the_exact_cost() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let helper = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+        let target = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+        let spell = put(&mut game, player, "Repulsor Blast", Zone::Hand);
+        game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 3];
+        Game::reset_payment_planning_work();
+        act(&mut game, Action::AnnounceCast { card: spell });
+        act(&mut game, Action::ChooseTeamwork { pay: true });
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        act(&mut game, Action::EndManaWindow);
+        select_cost_clause(&mut game, CastCostClause::Teamwork(2));
+        reject(&mut game, Action::FinishTeamwork);
+        let object = game.object_ref(helper);
+        let teammate = Action::ChooseTeammate { object };
+        let checkpoint = game.snapshot();
+        let mut indexed = game.clone();
+        let index = indexed
+            .legal_actions()
+            .iter()
+            .position(|action| action == &teammate)
+            .unwrap();
+        indexed
+            .apply_index(player, indexed.revision(), index)
+            .unwrap();
+        act(&mut game, teammate.clone());
+        assert_eq!(game.snapshot(), indexed.snapshot());
+        indexed.restore(&checkpoint).unwrap();
+        act(&mut indexed, teammate);
+        assert_eq!(game.snapshot(), indexed.snapshot());
+        let choice = game.teamwork_choice().unwrap();
+        assert_eq!(choice.minimum, 2);
+        assert_eq!(choice.selected, vec![object]);
+        assert_eq!(choice.selected_power, Some(2));
+        assert!(choice.can_finish);
+        assert!(!game.object_view(helper).tapped);
+        act(&mut game, Action::FinishTeamwork);
+        assert!(game.object_view(helper).tapped);
+        select_cost_clause(&mut game, CastCostClause::Mana);
+        reject(&mut game, Action::PayCosts { payment: [0; 6] });
+        act(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 0, 0, 1, 0, 3],
+            },
+        );
+        assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+        assert_eq!(
+            game.state.stack.last().unwrap().cast.unwrap().teamwork,
+            Some(true)
+        );
+        settle(&mut game);
+        assert_eq!(game.object_view(target).zone, Zone::Graveyard);
+        assert_eq!(game.state.players[player.other().index()].life, 18);
+        no_projection_work();
+    }
+}
+
+#[test]
+fn optional_material_costs_can_be_declared_before_materials_exist() {
+    for player in [Player::P0, Player::P1] {
+        for (name, intent, clause) in [
+            (
+                "Repulsor Blast",
+                Action::ChooseTeamwork { pay: true },
+                CastCostClause::Teamwork(2),
+            ),
+            (
+                "Cinder Strike",
+                Action::ChooseBlight { pay: true },
+                CastCostClause::Blight {
+                    amount: 1,
+                    selected: None,
+                },
+            ),
+            (
+                "Caustic Exhale",
+                Action::ChooseCastBehold { pay: true },
+                CastCostClause::Behold("Dragon"),
+            ),
+        ] {
+            let mut game = scenario(player);
+            let target = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+            let target_object = game.object_ref(target);
+            let spell = put(&mut game, player, name, Zone::Hand);
+            let mana = game.state.players[player.index()].mana;
+            Game::reset_payment_planning_work();
+            act(&mut game, Action::AnnounceCast { card: spell });
+            act(&mut game, intent);
+            act(
+                &mut game,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            assert!(game.attempt_view(player).unwrap().can_end_mana_window);
+            act(&mut game, Action::EndManaWindow);
+            select_cost_clause(&mut game, clause);
+            let invalid = match clause {
+                CastCostClause::Teamwork(_) => Action::ChooseTeammate {
+                    object: target_object,
+                },
+                CastCostClause::Blight { .. } => Action::PayBlight {
+                    object: target_object,
+                },
+                CastCostClause::Behold(_) => Action::ChooseBeholdCost {
+                    object: target_object,
+                },
+                _ => unreachable!(),
+            };
+            reject(&mut game, invalid);
+            let checkpoint = game.snapshot();
+            let mut indexed = game.clone();
+            let index = indexed
+                .legal_actions()
+                .iter()
+                .position(|action| *action == Action::SubmitAttempt)
+                .unwrap();
+            indexed
+                .apply_index(player, indexed.revision(), index)
+                .unwrap();
+            act(&mut game, Action::SubmitAttempt);
+            assert_eq!(game.snapshot(), indexed.snapshot());
+            indexed.restore(&checkpoint).unwrap();
+            act(&mut indexed, Action::SubmitAttempt);
+            assert_eq!(game.snapshot(), indexed.snapshot());
+            let outcome = game.last_attempt_outcome_view(player).unwrap();
+            assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+            assert_eq!(
+                outcome.reason,
+                Some(AttemptFailureReason::UnsatisfiedMaterial)
+            );
+            assert_eq!(game.object_view(spell).zone, Zone::Hand);
+            assert_eq!(game.object_ref(target), target_object);
+            assert!(!game.object_view(target).tapped);
+            assert_eq!(game.counter_count(target, CounterKind::MinusOne), 0);
+            assert_eq!(game.state.players[player.index()].mana, mana);
+            assert_eq!(game.state.players[player.other().index()].life, 20);
+            no_projection_work();
+        }
+    }
+}
+
 const TAP_AND_WATERBEND: CardRules = CardRules {
     effect: Effect::Creature(2, 2),
     activated: &[ActivatedAbility {
