@@ -211,7 +211,10 @@ impl Game {
 
     fn can_submit_attempt(&self) -> bool {
         (self.attempt_payment_boundary() && self.attempt_mana_window_closed())
-            || (self.state.cast_rollback.is_some() && self.declaration_failure())
+            || (self.state.cast_rollback.is_some()
+                && (self.declaration_failure()
+                    || (matches!(self.state.pending, Pending::ForageMethod { .. })
+                        && self.current_material_cost_impossible())))
     }
 
     pub(super) fn visit_attempt_controls(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
