@@ -235,17 +235,29 @@ fn restricted_mana_does_not_make_the_fee_route_payable() {
     let victim = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
     put(&mut game, player, "Short Bow", Zone::Battlefield);
     game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 1];
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    admit(&game, Action::AnnounceCast { card: spell });
     let creature = put(&mut game, player, "Bear Cub", Zone::Battlefield);
     let sacrifice = game.object_ref(creature);
     act(&mut game, Action::AnnounceCast { card: spell });
     let choices = game.observe(player).cost_choices;
-    assert_eq!(choices.len(), 1);
-    assert_eq!(
-        choices[0].additional_cost_route,
-        Some(AdditionalCostRoute::Nonmana)
+    assert_eq!(choices.len(), 2);
+    assert!(
+        choices
+            .iter()
+            .any(|choice| { choice.additional_cost_route == Some(AdditionalCostRoute::Nonmana) })
     );
-    reject(&mut game, Action::ChooseSpellCost { cost: 1 });
+    let mut fee = game.clone();
+    let route = choose_route(&fee, AdditionalCostRoute::Mana);
+    act(&mut fee, route);
+    target(&mut fee, victim);
+    assert!(fee.mana_payment_domain().is_none());
+    act(&mut fee, Action::EndManaWindow);
+    act(&mut fee, Action::SubmitAttempt);
+    assert_eq!(
+        fee.last_attempt_outcome_view(player).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
+    assert_eq!(fee.object_view(spell).zone, Zone::Hand);
     let action = choose_route(&game, AdditionalCostRoute::Nonmana);
     act(&mut game, action);
     target(&mut game, victim);

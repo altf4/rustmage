@@ -369,11 +369,12 @@ fn final_chapter_casts_any_number_in_any_order_and_pays_real_costs() {
         .iter()
         .position(|a| *a == action)
         .unwrap();
-    declined
-        .apply_index(player, declined.revision(), index)
+    let mut indexed = game.clone();
+    indexed
+        .apply_index(player, indexed.revision(), index)
         .unwrap();
     act(&mut game, action);
-    assert_eq!(declined.snapshot(), game.snapshot());
+    assert_eq!(indexed.snapshot(), game.snapshot());
     act(
         &mut game,
         Action::PayCosts {
@@ -383,7 +384,18 @@ fn final_chapter_casts_any_number_in_any_order_and_pays_real_costs() {
 
     let x_copy = copy_of(&game, &cohort, x_spell);
     act(&mut game, cast_copy(x_copy));
-    reject(&mut game, Action::ChooseX { value: 5 });
+    let mut unfunded = game.clone();
+    act(&mut unfunded, Action::ChooseX { value: 5 });
+    assert!(unfunded.mana_payment_domain().is_none());
+    act(&mut unfunded, Action::EndManaWindow);
+    act(&mut unfunded, Action::SubmitAttempt);
+    assert_eq!(
+        unfunded
+            .last_attempt_outcome_view(game.actor().unwrap())
+            .unwrap()
+            .reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
     act(&mut game, Action::ChooseX { value: 2 });
     act(
         &mut game,

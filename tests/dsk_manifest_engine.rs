@@ -566,7 +566,7 @@ fn restricted_mana_funds_the_face_up_special_action() {
         };
         let mut prefunded = root.clone();
         tap(&mut prefunded);
-        reject(&mut prefunded, Action::AnnounceCast { card: in_hand });
+        admit(&prefunded, Action::AnnounceCast { card: in_hand });
         act(&mut prefunded, begin.clone());
         act(&mut prefunded, Action::PayFaceUp { payment: TWO_GREEN });
 

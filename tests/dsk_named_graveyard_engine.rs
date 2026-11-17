@@ -115,7 +115,7 @@ fn the_cost_uses_three_exact_physical_cards_and_cannot_be_refunded_in_response()
     let unrelated = put(&mut game, player, "Island", Zone::Graveyard);
     let copy = put(&mut game, player, "Divination", Zone::Graveyard);
     game.state.objects[copy as usize].copy_kind = CopyKind::Card;
-    reject(&mut game, announce(source));
+    admit(&game, announce(source));
 
     let second = put(&mut game, player, "Divination", Zone::Graveyard);
     let mut prohibited = game.clone();

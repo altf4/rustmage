@@ -160,7 +160,7 @@ fn projected_funding_can_use_a_producer_enabled_by_the_replaced_mana_counter() {
     let source = put(&mut game, PLAYER, "Gingerbrute", Zone::Battlefield);
     let spell = put(&mut game, PLAYER, "Grizzly Bears", Zone::Hand);
     let announce = Action::AnnounceCast { card: spell };
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
 
     put(&mut game, PLAYER, "Doubling Season", Zone::Battlefield);
     let mut prohibited = game.clone();
@@ -170,7 +170,7 @@ fn projected_funding_can_use_a_producer_enabled_by_the_replaced_mana_counter() {
         "Hill Giant",
         Zone::Battlefield,
     );
-    reject(&mut prohibited, announce.clone());
+    admit(&prohibited, announce.clone());
 
     act(&mut game, announce);
     let mut indexed = apply_raw_and_indexed(&mut game, mana(source, 0, GREEN));
@@ -328,6 +328,7 @@ fn failed_cast_rollback_retains_or_reverses_the_actual_replaced_counter_placemen
     act(&mut game, Action::ChooseCastCost { clause });
     let object = game.object_ref(silver);
     act(&mut game, Action::ChooseAuraAttachment { object });
+    act(&mut game, Action::SubmitAttempt);
     assert!(matches!(game.state.pending, Pending::ManaRollback { .. }));
     assert!(game.observe(PLAYER.other()).mana_rollback.is_none());
 

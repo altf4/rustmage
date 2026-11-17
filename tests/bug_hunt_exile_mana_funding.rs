@@ -73,7 +73,7 @@ fn cast_with_untapped_islands(mut game: Game, p: Player, angel: CardId, lands: V
     assert!(lands.iter().all(|id| !game.object_view(*id).tapped));
     let mut four_islands = game.clone();
     four_islands.state.objects[lands[0] as usize].tapped = true;
-    reject(&mut four_islands, announce.clone());
+    admit(&four_islands, announce.clone());
 
     act(&mut game, announce);
     for land in lands {

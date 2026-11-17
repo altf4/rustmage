@@ -219,7 +219,7 @@ fn life_cast_keeps_tax_and_sacrifice_after_the_only_granting_source_leaves() {
     let spell = exile_named(&mut parent, opponent, "Corrupted Conviction");
     let announce = life_cast(spell, CastFace::Normal);
     parent.state.players[player.index()].mana = [0; 6];
-    reject(&mut parent, announce.clone());
+    admit(&parent, announce.clone());
     let tax = [0, 0, 0, 0, 0, 2];
     parent.state.players[player.index()].mana = tax;
     reject(&mut parent, Action::AnnounceExile { card: spell });
