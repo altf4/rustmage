@@ -488,7 +488,7 @@ fn activation_exact_x_targets_caps_the_domain_pays_exile_and_handles_zero_and_di
             let mut missing = g.clone();
             act(&mut missing, Action::ChooseX { value: 3 });
             for card in [a, b] {
-                act(
+                reject(
                     &mut missing,
                     Action::ChooseTarget {
                         target: Target::Card(card),

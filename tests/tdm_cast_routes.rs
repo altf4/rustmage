@@ -484,8 +484,12 @@ fn granted_harmonize_preserves_hybrid_and_twobrid_symbols() {
         }
         act(&mut g, granted(spell));
         if matches!(g.state.pending, Pending::SpellCost { .. }) {
-            let cost = named(name)
-                .cost_options()
+            let cost = g
+                .state
+                .announcing
+                .as_ref()
+                .unwrap()
+                .cost_choices()
                 .position(|cost| {
                     (0..6).all(|i| pool[i] >= cost.colored[i])
                         && (0..6)
@@ -603,14 +607,9 @@ fn harmonize_keeps_power_wide_until_tax_and_x_costs_are_reduced() {
             act(&mut g, Action::ChooseX { value: expected_x });
             let sacrifice = artifact.map(|id| g.object_ref(id));
             act(&mut g, Action::ChooseBargain { sacrifice });
-            let before = g.snapshot();
-            let revision = g.revision();
-            assert!(matches!(
-                g.apply(p, Action::ChooseHarmonizer { object: None }),
-                Err(Error::CapacityExceeded(_))
-            ));
-            assert_eq!(g.snapshot(), before);
-            assert_eq!(g.revision(), revision);
+            // Omitting the discount would make this declaration's total
+            // unrepresentable, so that equivalent is not an offered action.
+            reject(&mut g, Action::ChooseHarmonizer { object: None });
             let object = g.object_ref(helper);
             act(
                 &mut g,
@@ -1098,7 +1097,15 @@ fn delve_cannot_pay_a_required_colorless_symbol() {
     g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
     act(&mut g, Action::AnnounceCast { card: spell });
     if matches!(g.state.pending, Pending::SpellCost { .. }) {
-        choose(&mut g, |a| matches!(a, Action::ChooseSpellCost { .. }));
+        let cost = g
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .cost_choices()
+            .position(|cost| cost.colored[5] == 1 && cost.generic == 2)
+            .unwrap() as u16;
+        act(&mut g, Action::ChooseSpellCost { cost });
     }
     assert_eq!(
         g.state

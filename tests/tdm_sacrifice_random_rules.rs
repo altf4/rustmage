@@ -353,7 +353,7 @@ fn nonmana_x_preserves_sorcery_sickness_tap_control_and_sacrifice_prohibition() 
         (Card::from_name("Ghost Vacuum").unwrap(), &BLOCK),
     ]);
     let mut g = scenario(Player::P0);
-    let (source, _, _) = sidisi(&mut g, Player::P0);
+    let (source, material, target) = sidisi(&mut g, Player::P0);
     for case in 0..4 {
         let mut bad = g.clone();
         match case {
@@ -365,7 +365,26 @@ fn nonmana_x_preserves_sorcery_sickness_tap_control_and_sacrifice_prohibition() 
         reject(&mut bad, activate(source));
     }
     let block = put(&mut g, Player::P0, "Ghost Vacuum", Zone::Battlefield);
-    reject(&mut g, activate(source));
+    admit(&mut g, activate(source));
+    let mut prohibited = g.clone();
+    act(&mut prohibited, activate(source));
+    act(&mut prohibited, Action::ChooseX { value: 1 });
+    choose_target(&mut prohibited, target);
+    act(&mut prohibited, Action::BeginOrderedCosts);
+    row(&mut prohibited, CastCostClause::Additional);
+    let object = prohibited.object_ref(material);
+    reject(&mut prohibited, Action::ChooseAdditionalCost { object });
+    act(&mut prohibited, Action::SubmitAttempt);
+    assert_eq!(
+        prohibited
+            .last_attempt_outcome_view(Player::P0)
+            .unwrap()
+            .reason,
+        Some(AttemptFailureReason::UnsatisfiedMaterial)
+    );
+    assert!(!prohibited.object_view(source).tapped);
+    assert_eq!(prohibited.object_ref(material), object);
+    assert_eq!(prohibited.object_view(material).zone, Zone::Battlefield);
     g.move_object(block, Zone::Graveyard);
     assert!(g.legal_actions().contains(&activate(source)));
 }
@@ -642,7 +661,19 @@ fn random_graveyard_normal_spell_cost_allows_nonzero_printed_x_and_rejects_unfun
     settle(&mut g);
     let card = exiled(&g, &cards)[0];
     g.state.players[0].mana = [0; 6];
-    reject(&mut g, Action::AnnounceExile { card });
+    admit(&mut g, Action::AnnounceExile { card });
+    let mut unpaid = g.clone();
+    act(&mut unpaid, Action::AnnounceExile { card });
+    act(&mut unpaid, Action::ChooseX { value: 4 });
+    reject(&mut unpaid, Action::PayCosts { payment: [0; 6] });
+    act(&mut unpaid, Action::EndManaWindow);
+    act(&mut unpaid, Action::SubmitAttempt);
+    assert_eq!(
+        unpaid.last_attempt_outcome_view(Player::P0).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
+    assert_eq!(unpaid.object_view(card).zone, Zone::Exile);
+    assert_eq!(unpaid.object_ref(card), g.object_ref(card));
     g.state.players[0].mana = [0, 1, 0, 0, 0, 4];
     act(&mut g, Action::AnnounceExile { card });
     act(&mut g, Action::ChooseX { value: 4 });
@@ -820,7 +851,7 @@ fn nonmana_x_full_proposal_can_gain_its_only_sacrifice_witness_from_a_taxed_mana
     );
     let target = put(&mut g, Player::P0, "Vampire Nighthawk", Zone::Graveyard);
     g.state.players[0].mana = [0; 6];
-    reject(&mut g, activate(source));
+    admit(&mut g, activate(source));
     let material = put(&mut g, Player::P0, "Bear Cub", Zone::Exile);
     g.state.exile_links.push(ExileLink {
         source: g.object_ref(producer),
@@ -830,7 +861,7 @@ fn nonmana_x_full_proposal_can_gain_its_only_sacrifice_witness_from_a_taxed_mana
     });
     let mut no_window = g.clone();
     no_window.move_object(tax, Zone::Graveyard);
-    reject(&mut no_window, activate(source));
+    admit(&mut no_window, activate(source));
     // The same mana ability remains legal before the nonmana announcement.
     act(
         &mut no_window,

@@ -159,7 +159,31 @@ fn paid_equip_moves_bonuses_and_obeys_controller_timing_payment_and_incarnation(
         counter_payment: Counters::default(),
     };
     g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
-    reject(&mut g, announce.clone());
+    admit(&mut g, announce.clone());
+    let mut unpaid = g.clone();
+    act(&mut unpaid, announce.clone());
+    act(
+        &mut unpaid,
+        Action::ChooseTarget {
+            target: Target::Card(first),
+        },
+    );
+    reject(
+        &mut unpaid,
+        Action::PayCosts {
+            payment: [0, 0, 0, 0, 0, 2],
+        },
+    );
+    act(&mut unpaid, Action::EndManaWindow);
+    act(&mut unpaid, Action::SubmitAttempt);
+    assert_eq!(
+        unpaid.last_attempt_outcome_view(p).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
+    assert_eq!(
+        unpaid.object_view(cutter).attached_to,
+        g.object_view(cutter).attached_to
+    );
     g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 1];
     act(&mut g, announce.clone());
     reject(
