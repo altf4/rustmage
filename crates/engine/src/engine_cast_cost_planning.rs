@@ -1556,6 +1556,7 @@ impl FundingState<'_> {
         // remove a candidate from this exact positive-power upper sum.
         true
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn only_tap_mana(a: &ActivatedAbility) -> bool {
         let c = a.cost;
         a.origin == ActivationOrigin::Battlefield
@@ -1572,6 +1573,7 @@ impl FundingState<'_> {
             && matches!(a.program, [Instruction::AddMana(_)])
     }
 
+    #[cfg(feature = "test-support")]
     pub(super) fn mark_mana_clause_paid(&mut self) {
         if let Some(c) = &mut self.cast_costs {
             for row in &mut c.clauses {
