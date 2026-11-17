@@ -129,7 +129,11 @@ fn the_exile_offer_preserves_both_discard_costs_and_can_be_declined() {
                     .iter()
                     .any(|action| { matches!(action, Action::ChooseAdditionalCost { .. }) })
             );
-            act(&mut failed, Action::EndManaWindow);
+            let attempt = failed.attempt_view(player).unwrap();
+            assert_eq!(attempt.stage, AttemptStage::PayCosts);
+            assert!(attempt.mana_window_closed);
+            assert!(!attempt.can_end_mana_window);
+            assert!(attempt.can_submit);
             indexed_twin(&mut failed, Action::SubmitAttempt);
             let outcome = failed.last_attempt_outcome_view(player).unwrap();
             assert_eq!(outcome.outcome, AttemptOutcome::Failed);
