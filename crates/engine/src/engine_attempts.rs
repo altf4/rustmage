@@ -111,6 +111,8 @@ impl Game {
                     | Pending::Delve { .. }
                     | Pending::Waterbend { .. }
                     | Pending::CreatureTapPayment { .. }
+                    | Pending::Crew { .. }
+                    | Pending::Saddle { .. }
                     | Pending::BlightPayment { .. }
                     | Pending::TeamworkPayment { .. }
                     | Pending::ConspirePayment { .. }
@@ -629,6 +631,8 @@ enum AttemptSelection {
     Forage,
     Teamwork,
     Conspire(u16),
+    Crew,
+    Saddle,
     Mana,
 }
 
@@ -639,6 +643,36 @@ impl Game {
             return None;
         }
         let a = self.state.announcing.as_ref()?;
+        // These frames retain only provisional contributors until the actual
+        // activation payment. A completed selection with unpaid mana is editable.
+        if matches!(
+            self.state.pending,
+            Pending::Crew { .. } | Pending::PayCosts { .. }
+        ) && self
+            .state
+            .crew
+            .as_ref()
+            .and_then(|crew| crew.payment.as_ref())
+            .is_some_and(|payment| {
+                !payment.selected.is_empty()
+                    && a.item
+                        .source
+                        .is_some_and(|source| source.object == payment.source)
+            })
+        {
+            return Some(AttemptSelection::Crew);
+        }
+        if matches!(
+            self.state.pending,
+            Pending::Saddle { .. } | Pending::PayCosts { .. }
+        ) && self.state.saddle_payment.as_ref().is_some_and(|payment| {
+            !payment.selected.is_empty()
+                && a.item
+                    .source
+                    .is_some_and(|source| source.object == payment.source)
+        }) {
+            return Some(AttemptSelection::Saddle);
+        }
         let additional_unpaid = !a.additional_paid
             || a.cast_costs.as_ref().is_some_and(|costs| {
                 matches!(
@@ -768,6 +802,18 @@ impl Game {
             AttemptSelection::Teamwork => a.cast_costs.as_mut().unwrap().teammates.clear(),
             AttemptSelection::Conspire(instance) => {
                 a.conspire.as_mut().unwrap()[usize::from(instance)].first_object = None;
+            }
+            AttemptSelection::Crew => {
+                let payment = self.state.crew.as_mut().unwrap().payment.as_mut().unwrap();
+                payment.selected.clear();
+                payment.complete = false;
+                self.state.pending = Pending::Crew { player };
+            }
+            AttemptSelection::Saddle => {
+                let payment = self.state.saddle_payment.as_mut().unwrap();
+                payment.selected.clear();
+                payment.complete = false;
+                self.state.pending = Pending::Saddle { player };
             }
             AttemptSelection::Mana => {
                 if a.convoke.is_some() {

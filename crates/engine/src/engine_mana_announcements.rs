@@ -29,7 +29,11 @@ impl Game {
         };
         assert!(matches!(
             self.state.pending,
-            Pending::PayCosts { .. } | Pending::Evidence { .. }
+            Pending::PayCosts { .. }
+                | Pending::Evidence { .. }
+                | Pending::Forage { .. }
+                | Pending::Crew { .. }
+                | Pending::Saddle { .. }
         ));
         let quality = self
             .state
