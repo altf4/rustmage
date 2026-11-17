@@ -129,7 +129,9 @@ fn two_battlefield_targets_share_an_effective_type_and_departure_uses_exact_fact
         ability: 0,
         counter_payment: Counters::default(),
     };
-    admit(&game, announce.clone());
+    // No two controlled creatures currently share a creature type. This is a
+    // concrete joint-target restriction, independent of future payment.
+    reject(&mut game, announce.clone());
 
     let old = game.object_ref(departing);
     game.add_characteristics_to(
@@ -143,7 +145,18 @@ fn two_battlefield_targets_share_an_effective_type_and_departure_uses_exact_fact
     );
     assert!(game.has_subtype(departing, "Bear"));
     act(&mut game, announce);
-    reject(&mut game, select_target(alone));
+    let mut stranded = game.clone();
+    act(&mut stranded, select_target(alone));
+    for card in [alone, survivor, departing, foreign] {
+        reject(&mut stranded, select_target(card));
+    }
+    reject(&mut stranded, Action::FinishTargets);
+    act(&mut stranded, Action::SubmitAttempt);
+    assert_eq!(
+        stranded.last_attempt_outcome_view(player).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedDeclaration)
+    );
+    assert!(!stranded.object_view(source).tapped);
     reject(&mut game, select_target(foreign));
     act(&mut game, select_target(survivor));
     reject(&mut game, select_target(survivor));

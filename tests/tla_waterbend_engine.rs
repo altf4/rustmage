@@ -312,7 +312,40 @@ fn convoke_and_waterbend_share_one_funding_domain() {
     act(&mut game, Action::AnnounceCast { card: spell });
     act(&mut game, Action::BeginWaterbend);
     let blue_ref = game.object_ref(blue);
-    reject(&mut game, Action::ChooseWaterbender { object: blue_ref });
+    admit(&game, Action::ChooseWaterbender { object: blue_ref });
+    let mut missing_blue = game.clone();
+    act(
+        &mut missing_blue,
+        Action::ChooseWaterbender { object: blue_ref },
+    );
+    reject(
+        &mut missing_blue,
+        Action::ChooseConvoker {
+            object: blue_ref,
+            contribution: ConvokeContribution::Blue,
+        },
+    );
+    choose_waterbender(&mut missing_blue, first);
+    let object = missing_blue.object_ref(second);
+    reject(&mut missing_blue, Action::ChooseWaterbender { object });
+    reject(
+        &mut missing_blue,
+        Action::PayCosts {
+            payment: [0, 0, 0, 0, 0, 2],
+        },
+    );
+    act(&mut missing_blue, Action::SubmitAttempt);
+    assert_eq!(
+        missing_blue
+            .last_attempt_outcome_view(actor)
+            .unwrap()
+            .reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
+    assert_eq!(missing_blue.object_view(spell).zone, Zone::Hand);
+    for card in [blue, first, second] {
+        assert!(!missing_blue.object_view(card).tapped);
+    }
     act(
         &mut game,
         Action::ChooseConvoker {
@@ -347,7 +380,7 @@ fn additional_x_respects_target_capacity_and_leaves_mana_value_fixed() {
     let mut missing = game.clone();
     act(&mut missing, Action::ChooseX { value: 3 });
     for card in [first, second] {
-        act(
+        reject(
             &mut missing,
             Action::ChooseTarget {
                 target: Target::Card(card),
