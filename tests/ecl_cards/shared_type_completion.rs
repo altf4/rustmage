@@ -1,4 +1,4 @@
-//! Whole target groups must be completable before a cast or target prefix commits.
+//! Supplied target groups are exact; an admitted prefix can lack a continuation.
 use crate::ecl_scenarios::{checked, named, settle, setup};
 use rustmage_core::engine::*;
 fn reject(g: &mut Game, a: Action) {
@@ -38,7 +38,7 @@ fn ecl_unbury_unrelated_graveyard_cards_never_offer_the_two_target_mode() {
     }
 }
 #[test]
-fn ecl_unbury_first_target_requires_a_distinct_shared_type_completion() {
+fn ecl_unbury_first_target_without_a_shared_type_partner_fails_explicitly() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
         let elf = named(&mut g, p, "Scarblade Scout", Zone::Graveyard);
@@ -52,12 +52,28 @@ fn ecl_unbury_first_target_requires_a_distinct_shared_type_completion() {
         let spell = named(&mut g, p, "Unbury", Zone::Hand);
         checked(&mut g, Action::AnnounceCast { card: spell });
         checked(&mut g, Action::ChooseMode { mode: 1 });
-        reject(
-            &mut g,
+        let mut stranded = g.clone();
+        checked(
+            &mut stranded,
             Action::ChooseTarget {
                 target: Target::Card(elf),
             },
         );
+        for card in [elf, a, b] {
+            reject(
+                &mut stranded,
+                Action::ChooseTarget {
+                    target: Target::Card(card),
+                },
+            );
+        }
+        reject(&mut stranded, Action::FinishTargets);
+        checked(&mut stranded, Action::SubmitAttempt);
+        assert_eq!(
+            stranded.last_attempt_outcome_view(p).unwrap().reason,
+            Some(AttemptFailureReason::UnsatisfiedDeclaration)
+        );
+        assert_eq!(stranded.object_view(spell).zone, Zone::Hand);
         checked(
             &mut g,
             Action::ChooseTarget {
