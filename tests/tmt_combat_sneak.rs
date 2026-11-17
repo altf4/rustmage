@@ -98,7 +98,8 @@ fn tmt_foot_ninjas_sneak_hybrid_routes_and_exact_entry() {
                 2
             );
             let cost = g
-                .spell_cost_choices()
+                .observe(player)
+                .cost_choices
                 .into_iter()
                 .find(|choice| choice.cost.colored[color] == 1)
                 .unwrap()
