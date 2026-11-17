@@ -1194,6 +1194,18 @@ fn foreign_aura_invalidating_linked_cast_restores_permission_and_offers_exact_ma
         act(&mut g, Action::ChooseAuraAttachment { object });
         assert_eq!(g.object_view(spell).zone, Zone::Stack);
         act(&mut g, Action::EndManaWindow);
+        if g.legal_actions().contains(&Action::BeginOrderedCosts) {
+            act(&mut g, Action::BeginOrderedCosts);
+            let clause = g
+                .observe(Player::P0)
+                .cast_costs
+                .unwrap()
+                .clauses
+                .iter()
+                .position(|row| row.clause == CastCostClause::Mana)
+                .unwrap() as u16;
+            act(&mut g, Action::ChooseCastCost { clause });
+        }
         act(&mut g, Action::SubmitAttempt);
         assert_eq!(g.object_view(spell).zone, Zone::Exile);
         assert_eq!(g.object_ref(spell), physical);

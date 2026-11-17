@@ -1,5 +1,6 @@
 //! Real optional conspire costs, trigger packets and exact target-copy choices.
 use crate::ecl_scenarios::{checked, named, settle, setup};
+use crate::support::admit;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
 fn reject(g: &mut Game, action: Action) {
@@ -582,13 +583,40 @@ fn ecl_raiding_convoke_and_conspire_cannot_tap_the_same_colored_donors() {
         let mana = clause(&g, |c| c == CastCostClause::Mana);
         checked(&mut g, Action::ChooseCastCost { clause: mana });
         let object = g.object_ref(a);
-        reject(
-            &mut g,
+        admit(
+            &g,
             Action::ChooseConvoker {
                 object,
                 contribution: ConvokeContribution::Black,
             },
         );
+        let mut spent_donor = g.clone();
+        checked(
+            &mut spent_donor,
+            Action::ChooseConvoker {
+                object,
+                contribution: ConvokeContribution::Black,
+            },
+        );
+        let object = spent_donor.object_ref(c);
+        checked(
+            &mut spent_donor,
+            Action::ChooseConvoker {
+                object,
+                contribution: ConvokeContribution::Generic,
+            },
+        );
+        checked(
+            &mut spent_donor,
+            Action::PayCosts {
+                payment: [0, 0, 6, 0, 0, 0],
+            },
+        );
+        select_conspire(&mut spent_donor, source);
+        let objects = [spent_donor.object_ref(a), spent_donor.object_ref(b)];
+        reject(&mut spent_donor, Action::PayConspire { objects });
+        fail_material_attempt(&mut spent_donor);
+        assert!(!spent_donor.object_view(a).tapped);
         for id in [c, d] {
             let object = g.object_ref(id);
             checked(
@@ -731,8 +759,8 @@ fn ecl_raiding_mana_abilities_may_recolor_fresh_donors_before_any_cost_payment()
                 target: Target::Player(p.other()),
             },
         );
-        reject(
-            &mut g,
+        admit(
+            &g,
             Action::ActivateMana {
                 card: a,
                 ability: 0,
@@ -795,7 +823,30 @@ fn ecl_raiding_real_drum_mana_cost_cannot_consume_a_reserved_color_donor() {
             },
         );
         let object = g.object_ref(a);
-        reject(&mut g, Action::ChooseAdditionalCost { object });
+        admit(&g, Action::ChooseAdditionalCost { object });
+        let mut spent_donor = g.clone();
+        checked(&mut spent_donor, Action::ChooseAdditionalCost { object });
+        checked(&mut spent_donor, Action::PayCosts { payment: [0; 6] });
+        if matches!(spent_donor.state.pending, Pending::EffectMana { .. }) {
+            checked(
+                &mut spent_donor,
+                Action::ChooseMana {
+                    production: [0, 0, 0, 1, 0, 0],
+                },
+            );
+        }
+        checked(
+            &mut spent_donor,
+            Action::PayCosts {
+                payment: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        select_conspire(&mut spent_donor, source);
+        let objects = [spent_donor.object_ref(a), spent_donor.object_ref(b)];
+        reject(&mut spent_donor, Action::PayConspire { objects });
+        fail_material_attempt(&mut spent_donor);
+        assert!(!spent_donor.object_view(a).tapped);
+        assert!(!spent_donor.object_view(drum).tapped);
         let object = g.object_ref(helper);
         checked(&mut g, Action::ChooseAdditionalCost { object });
         checked(&mut g, Action::PayCosts { payment: [0; 6] });

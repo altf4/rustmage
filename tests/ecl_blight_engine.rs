@@ -258,7 +258,7 @@ fn blight_forced_effect_can_choose_prohibited_creature_and_empty_board_finishes(
     }
 }
 #[test]
-fn blight_positive_cost_is_unavailable_under_prohibition_but_zero_x_is_payable() {
+fn blight_positive_cost_fails_under_prohibition_but_zero_x_is_payable() {
     let _scope = fixture_rules::activate(&[
         (card("Opt"), &X),
         (card("Bear Cub"), &BODY),
@@ -267,17 +267,62 @@ fn blight_positive_cost_is_unavailable_under_prohibition_but_zero_x_is_payable()
     let mut g = scenario(Player::P0);
     put(&mut g, Player::P0, "Short Bow", Zone::Battlefield);
     let source = put(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);
-    reject(&mut g, activate(source));
+    admit(&g, activate(source));
+    let mut blocked = g.clone();
+    act(&mut blocked, activate(source));
+    act(&mut blocked, Action::BeginOrderedCosts);
+    let clause = blocked
+        .observe(Player::P0)
+        .cast_costs
+        .unwrap()
+        .clauses
+        .iter()
+        .position(|row| row.clause == CastCostClause::Additional)
+        .unwrap() as u16;
+    act(&mut blocked, Action::ChooseCastCost { clause });
+    let object = blocked.object_ref(source);
+    reject(&mut blocked, Action::ChooseAdditionalCost { object });
+    act(&mut blocked, Action::SubmitAttempt);
+    assert_eq!(
+        blocked
+            .last_attempt_outcome_view(Player::P0)
+            .unwrap()
+            .reason,
+        Some(AttemptFailureReason::UnsatisfiedMaterial)
+    );
+    assert!(!blocked.object_view(source).tapped);
+    assert_eq!(blocked.counter_count(source, CounterKind::MinusOne), 0);
     let spell = put(&mut g, Player::P0, "Opt", Zone::Hand);
     act(&mut g, Action::AnnounceCast { card: spell });
     assert_eq!(
         g.x_choice().unwrap().intervals,
         vec![XInterval {
             minimum: 0,
-            maximum: 0
+            maximum: 4
         }]
     );
-    reject(&mut g, Action::ChooseX { value: 1 });
+    let mut positive = g.clone();
+    act(&mut positive, Action::ChooseX { value: 1 });
+    act(&mut positive, Action::BeginOrderedCosts);
+    let clause = positive
+        .observe(Player::P0)
+        .cast_costs
+        .unwrap()
+        .clauses
+        .iter()
+        .position(|row| row.clause == CastCostClause::Additional)
+        .unwrap() as u16;
+    act(&mut positive, Action::ChooseCastCost { clause });
+    reject(&mut positive, Action::ChooseAdditionalCost { object });
+    act(&mut positive, Action::SubmitAttempt);
+    assert_eq!(
+        positive
+            .last_attempt_outcome_view(Player::P0)
+            .unwrap()
+            .outcome,
+        AttemptOutcome::Failed
+    );
+    assert_eq!(positive.counter_count(source, CounterKind::MinusOne), 0);
     act(&mut g, Action::ChooseX { value: 0 });
     finish_costs(&mut g, source);
     drain(&mut g);
