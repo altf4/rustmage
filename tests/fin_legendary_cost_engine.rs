@@ -204,7 +204,7 @@ fn a_mana_payment_cannot_consume_its_only_legendary_grant() {
 
     // This Aura can pay U by sacrificing itself, but that would remove the
     // only legendary creature witness from the resulting funding world.
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    admit(&game, Action::AnnounceCast { card: spell });
     let mut primary = game.clone();
     let land = put(&mut primary, player, "Island", Zone::Battlefield);
     announce(&mut primary, spell, 0, Target::Spell(victim));

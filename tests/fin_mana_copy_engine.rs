@@ -70,7 +70,7 @@ fn mana_payment_registers_before_the_cast_and_copies_the_countered_spell_once() 
 
     let mut tapped = parent.clone();
     tapped.state.objects[source as usize].tapped = true;
-    reject(&mut tapped, announce.clone());
+    admit(&tapped, announce.clone());
     reject(&mut tapped, mana(source));
     assert!(tapped.observe(player).delayed_spell_copies.is_empty());
 

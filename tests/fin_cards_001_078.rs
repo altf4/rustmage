@@ -512,7 +512,7 @@ fn cargo_ship_crews_for_one_and_its_colorless_mana_funds_equip() {
     restricted.state.objects[pilot as usize].tapped = true;
     restricted.state.players[player.index()].mana = [0, 0, 0, 1, 0, 2];
     act(&mut restricted, mana(ship, colorless));
-    reject(&mut restricted, Action::AnnounceCast { card: giant });
+    admit(&restricted, Action::AnnounceCast { card: giant });
 
     game.state.players[player.index()].mana = [0; 6];
     act(&mut game, mana(ship, colorless));
@@ -538,7 +538,7 @@ fn clouds_exact_equip_target_gets_a_discount_and_bonuses_only_on_its_turn() {
     game.state.players[player.index()].mana = [0; 6];
 
     act(&mut game, announce_ability(boots, 0));
-    reject(&mut game, target(other));
+    admit(&game, target(other));
     act(&mut game, target(cloud));
     if matches!(game.state.pending, Pending::PayCosts { .. }) {
         pay(&mut game);
@@ -564,7 +564,7 @@ fn diamond_weapon_discounts_only_permanents_and_prevents_combat_damage() {
     put(&mut game, player.other(), "Grizzly Bears", Zone::Graveyard);
 
     game.state.players[player.index()].mana = [0, 0, 0, 0, 2, 4];
-    reject(&mut game, Action::AnnounceCast { card: weapon });
+    admit(&game, Action::AnnounceCast { card: weapon });
     game.state.players[player.index()].mana = [0, 0, 0, 1, 2, 5];
     cast(&mut game, weapon, None);
     settle(&mut game);
@@ -1113,7 +1113,7 @@ fn balamb_garden_discounts_other_towns_and_its_vehicle_draws_when_it_attacks() {
     assert_eq!(tap.state.players[player.index()].mana, blue);
 
     game.state.players[player.index()].mana = [0, 1, 0, 0, 1, 3];
-    reject(&mut game, announce_ability(garden, 1));
+    admit(&game, announce_ability(garden, 1));
     game.state.players[player.index()].mana[5] = 4;
     let front = game.object_ref(garden);
     act(&mut game, announce_ability(garden, 1));
@@ -1153,7 +1153,7 @@ fn bartz_affinity_and_damage_both_use_other_controlled_birds_as_appropriate() {
     let victim = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
     game.state.objects[victim as usize].growth.toughness = 7;
     game.state.players[player.index()].mana = [0, 0, 0, 0, 2, 0];
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    admit(&game, Action::AnnounceCast { card: spell });
     game.state.players[player.index()].mana[5] = 1;
     cast(&mut game, spell, None);
     reach(&mut game, |a| *a == target(victim));

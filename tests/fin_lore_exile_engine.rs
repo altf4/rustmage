@@ -195,7 +195,7 @@ fn only_this_players_positive_lore_on_this_exact_saga_unlocks_paid_casting() {
     assert_eq!(game.actor(), Some(player));
     game.state.players[player.index()].mana[3] = 0;
     let announce = Action::AnnounceExile { card: exiled };
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
     game.state.players[player.index()].mana[3] = 1;
     act(&mut game, announce);
     act(

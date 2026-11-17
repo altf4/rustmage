@@ -132,7 +132,7 @@ fn freya_flies_on_her_controllers_turn_and_pays_equipment_or_equip_only() {
     act(&mut game, tap);
     assert_eq!(game.state.players[p.index()].mana, red);
     for card in [artifact, bolt] {
-        reject(&mut game, Action::AnnounceCast { card });
+        admit(&game, Action::AnnounceCast { card });
     }
     let mut paid_equip = game.clone();
     announce_ability(&mut paid_equip, equip, 0);
@@ -1320,7 +1320,21 @@ fn gogo_pays_two_per_x_and_copies_a_frozen_trigger_twice_with_independent_target
     game.state.players[p.index()].mana = [0, 0, 0, 0, 0, 4];
     announce_ability(&mut game, gogo, 0);
     reject(&mut game, Action::ChooseX { value: 0 });
-    reject(&mut game, Action::ChooseX { value: 3 });
+    let mut unfunded = game.clone();
+    act(&mut unfunded, Action::ChooseX { value: 3 });
+    act(
+        &mut unfunded,
+        Action::ChooseTarget {
+            target: Target::Stack(ability),
+        },
+    );
+    assert!(unfunded.mana_payment_domain().is_none());
+    act(&mut unfunded, Action::EndManaWindow);
+    act(&mut unfunded, Action::SubmitAttempt);
+    assert_eq!(
+        unfunded.last_attempt_outcome_view(p).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
     act(&mut game, Action::ChooseX { value: 2 });
     act(
         &mut game,

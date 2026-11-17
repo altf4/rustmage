@@ -144,7 +144,7 @@ fn double_x_funds_and_commits_exactly_then_copies_the_frozen_ability_independent
     assert_eq!(game.actor(), Some(player));
 
     let land = put(&mut game, player, "Forest", Zone::Battlefield);
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
     let mut lands = vec![land];
     lands.extend((0..3).map(|_| put(&mut game, player, "Forest", Zone::Battlefield)));
     act(&mut game, announce);
@@ -152,12 +152,20 @@ fn double_x_funds_and_commits_exactly_then_copies_the_frozen_ability_independent
         game.observe(player).x_choice.unwrap().intervals,
         [XInterval {
             minimum: 1,
-            maximum: 2
+            maximum: u32::MAX / 2
         }]
     );
     assert!(game.observe(opponent).x_choice.is_none());
     reject(&mut game, Action::ChooseX { value: 0 });
-    reject(&mut game, Action::ChooseX { value: 3 });
+    let mut unfunded = game.clone();
+    act(&mut unfunded, Action::ChooseX { value: 3 });
+    choose_target(&mut unfunded, Target::Stack(original));
+    act(&mut unfunded, Action::EndManaWindow);
+    act(&mut unfunded, Action::SubmitAttempt);
+    assert_eq!(
+        unfunded.last_attempt_outcome_view(player).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
     act(&mut game, Action::ChooseX { value: 2 });
     reject(
         &mut game,
