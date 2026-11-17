@@ -344,6 +344,27 @@ fn additional_x_respects_target_capacity_and_leaves_mana_value_fixed() {
     game.state.players[actor.index()].mana = [0, 1, 0, 0, 0, 2];
     act(&mut game, Action::AnnounceCast { card: spell });
     admit(&game, Action::ChooseX { value: 3 });
+    let mut missing = game.clone();
+    act(&mut missing, Action::ChooseX { value: 3 });
+    for card in [first, second] {
+        act(
+            &mut missing,
+            Action::ChooseTarget {
+                target: Target::Card(card),
+            },
+        );
+    }
+    reject(&mut missing, Action::FinishTargets);
+    act(&mut missing, Action::SubmitAttempt);
+    let failure = missing.last_attempt_outcome_view(actor).unwrap();
+    assert_eq!(failure.outcome, AttemptOutcome::Failed);
+    assert_eq!(
+        failure.reason,
+        Some(AttemptFailureReason::UnsatisfiedDeclaration)
+    );
+    assert_eq!(missing.object_view(spell).zone, Zone::Hand);
+    assert_eq!(missing.object_ref(first), game.object_ref(first));
+    assert_eq!(missing.object_ref(second), game.object_ref(second));
     act(&mut game, Action::ChooseX { value: 2 });
     act(
         &mut game,
@@ -438,12 +459,13 @@ fn large_waterbend_x_counts_each_mana_or_waterbend_tap_once_with_a_live_exile_li
         game.x_choice().unwrap().intervals,
         [XInterval {
             minimum: 1,
-            maximum: 26
+            maximum: u32::MAX
         }]
     );
     assert!(game.observe(actor.other()).x_choice.is_none());
     admit(&game, Action::ChooseX { value: 27 });
-    let choose_maximum = Action::ChooseX { value: 26 };
+    admit(&game, Action::ChooseX { value: 26 });
+    let choose_maximum = Action::ChooseX { value: u32::MAX };
     let checkpoint = game.snapshot();
     let mut indexed = game.clone();
     let index = indexed
@@ -488,7 +510,7 @@ fn waterbend_x_keeps_a_mana_sacrifice_that_returns_linked_contributors() {
         game.x_choice().unwrap().intervals,
         [XInterval {
             minimum: 1,
-            maximum: 4
+            maximum: u32::MAX
         }]
     );
     admit(&game, Action::ChooseX { value: 5 });
@@ -538,7 +560,7 @@ fn scalar_x_counts_one_tap_per_land_with_flexible_grants_and_earthbending() {
         game.x_choice().unwrap().intervals,
         [XInterval {
             minimum: 0,
-            maximum: 12
+            maximum: u32::MAX
         }]
     );
     admit(&game, Action::ChooseX { value: 13 });
@@ -647,7 +669,7 @@ fn resolution_waterbend_chooses_after_drawing() {
             .iter()
             .any(|a| matches!(a, Action::Discard { .. }))
     );
-    reject(&mut game, Action::BeginWaterbend);
+    admit(&game, Action::BeginWaterbend);
     act(&mut game, Action::TapMana { card: mountain });
     act(&mut game, Action::BeginWaterbend);
     choose_waterbender(&mut game, artifact);
@@ -849,6 +871,8 @@ fn linked_waterbend_rewinds_an_unpayable_foreign_mana_choice_to_exact_exile() {
             object: contribution,
         },
     );
+    act(&mut game, Action::EndManaWindow);
+    act(&mut game, Action::SubmitAttempt);
     assert!(matches!(game.state.pending, Pending::ManaRollback { .. }));
     let saved = game.snapshot();
     for keep in [false, true] {
@@ -873,7 +897,7 @@ fn linked_waterbend_rewinds_an_unpayable_foreign_mana_choice_to_exact_exile() {
             raw.state.players[player.index()].turn_facts.bent_elements,
             0
         );
-        assert_eq!(raw.legal_actions().contains(&cast), !keep);
+        admit(&raw, cast.clone());
         assert_eq!(raw.object_ref(returning) == returned_card, !keep);
     }
 }

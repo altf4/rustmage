@@ -501,7 +501,7 @@ fn creature_tap_mana_is_available_to_real_and_projected_payments() {
     let mut ordinary = game.clone();
     ordinary.state.objects[forest as usize].tapped = true;
     ordinary.state.players[p.index()].mana = [0; 6];
-    reject(&mut ordinary, announce_growth.clone());
+    admit(&ordinary, announce_growth.clone());
     act(&mut ordinary, Action::TapMana { card: island });
     assert_eq!(ordinary.state.players[p.index()].mana, [0, 1, 0, 0, 0, 0]);
 
