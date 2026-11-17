@@ -1,4 +1,4 @@
-//! Late output choices must finish real payments; soft resolution choices may decline.
+//! Late output choices are local; concrete parent payments and recovery remain exact.
 mod support;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
@@ -137,6 +137,23 @@ fn late_choices(g: &Game, p: Player) -> BTreeSet<Mana> {
     assert_eq!(g.revision(), revision);
     set
 }
+fn assert_stranded_output(game: &Game, production: Mana) {
+    admit(game, choice(production));
+    let mut failed = game.clone();
+    act(&mut failed, choice(production));
+    let actor = failed.actor().unwrap();
+    assert!(failed.mana_payment_domain().is_none());
+    let payment = failed.state.players[actor.index()].mana;
+    reject(&mut failed, Action::PayCosts { payment });
+    act(&mut failed, Action::EndManaWindow);
+    act(&mut failed, Action::SubmitAttempt);
+    let outcome = failed.last_attempt_outcome_view(actor).unwrap();
+    assert_eq!(outcome.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+    assert!(matches!(
+        outcome.outcome,
+        AttemptOutcome::Failed | AttemptOutcome::Recovering
+    ));
+}
 fn finish_engineer(g: &mut Game, source: CardId) {
     pay(g);
     settle(g);
@@ -159,7 +176,7 @@ fn reach_resolution_payment(g: &mut Game) {
     panic!("bounded optional resolution payment");
 }
 #[test]
-fn actual_engineer_last_treasure_has_only_red_in_raw_index_and_observed_choices_owned() {
+fn actual_engineer_last_treasure_offers_all_colors_with_exact_payment_and_owned_recovery() {
     for p in [Player::P0, Player::P1] {
         let mut parent = scenario(p);
         let source = engineer(&mut parent, p);
@@ -171,12 +188,8 @@ fn actual_engineer_last_treasure_has_only_red_in_raw_index_and_observed_choices_
             Zone::Battlefield,
             "the mana source cost is already paid"
         );
-        assert_eq!(late_choices(&parent, p), BTreeSet::from([RED]));
-        assert!(
-            !parent.legal_actions().contains(&choice(GREEN)),
-            "no indexed green choice exists"
-        );
-        reject(&mut parent, choice(GREEN));
+        assert_eq!(late_choices(&parent, p), all_colors());
+        assert_stranded_output(&parent, GREEN);
         let saved = parent.snapshot();
         let mut raw = parent.clone();
         let mut indexed = parent.clone();
@@ -206,7 +219,7 @@ fn actual_engineer_last_treasure_has_only_red_in_raw_index_and_observed_choices_
     }
 }
 #[test]
-fn actual_red_spell_parents_reject_a_late_wrong_color_after_the_treasure_is_spent() {
+fn actual_red_spell_parents_recover_after_a_late_wrong_color_is_submitted() {
     for p in [Player::P0, Player::P1] {
         for (name, generic, damage) in [("Shock", 0, 2), ("Lightning Strike", 1, 3)] {
             let mut g = scenario(p);
@@ -224,8 +237,8 @@ fn actual_red_spell_parents_reject_a_late_wrong_color_after_the_treasure_is_spen
                 act(&mut g, Action::FinishTargets);
             }
             act(&mut g, late_start(mana));
-            assert_eq!(late_choices(&g, p), BTreeSet::from([RED]));
-            reject(&mut g, choice(GREEN));
+            assert_eq!(late_choices(&g, p), all_colors());
+            assert_stranded_output(&g, GREEN);
             act(&mut g, choice(RED));
             pay(&mut g);
             settle(&mut g);
@@ -236,7 +249,7 @@ fn actual_red_spell_parents_reject_a_late_wrong_color_after_the_treasure_is_spen
     }
 }
 #[test]
-fn last_treasure_output_must_finish_the_real_blue_mana_child_and_its_red_ancestor() {
+fn last_treasure_output_is_local_and_blue_completes_the_real_mana_child_and_red_ancestor() {
     let _scope = fixture_rules::activate(&[(Card::GrizzlyBears, &BLUE_COST_RED_OUTPUT)]);
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
@@ -247,9 +260,9 @@ fn last_treasure_output_must_finish_the_real_blue_mana_child_and_its_red_ancesto
         act(&mut g, converter_start(converter));
         act(&mut g, late_start(mana));
         assert_eq!(g.observe(p).suspended_mana_announcements.len(), 2);
-        assert_eq!(late_choices(&g, p), BTreeSet::from([BLUE]));
+        assert_eq!(late_choices(&g, p), all_colors());
         for wrong in [GREEN, RED] {
-            reject(&mut g, choice(wrong));
+            assert_stranded_output(&g, wrong);
         }
         act(&mut g, choice(BLUE));
         pay(&mut g);
@@ -428,7 +441,7 @@ fn optional_resolution_payment_keeps_all_colors_because_the_resolution_can_decli
     }
 }
 #[test]
-fn declining_an_outer_resolution_does_not_excuse_stranding_its_real_mana_child() {
+fn stranded_real_mana_child_requires_submission_even_under_an_optional_resolution() {
     let _scope = fixture_rules::activate(&[
         (Card::from_name("Opt").unwrap(), &SOFT_RED_PAYMENT),
         (Card::GrizzlyBears, &BLUE_COST_RED_OUTPUT),
@@ -443,8 +456,8 @@ fn declining_an_outer_resolution_does_not_excuse_stranding_its_real_mana_child()
         reach_resolution_payment(&mut g);
         act(&mut g, converter_start(converter));
         act(&mut g, late_start(mana));
-        assert_eq!(late_choices(&g, p), BTreeSet::from([BLUE]));
-        reject(&mut g, choice(GREEN));
+        assert_eq!(late_choices(&g, p), all_colors());
+        assert_stranded_output(&g, GREEN);
         act(&mut g, choice(BLUE));
         pay(&mut g);
         choose(&mut g, |a| matches!(a, Action::PayResolutionMana { .. }));
@@ -511,9 +524,9 @@ fn late_combination_allocations_complete_the_colored_spell_parent_without_hiding
                 }
                 act(&mut g, late_start(producer));
                 assert_eq!(g.object_view(producer).zone, Zone::Graveyard);
-                assert_eq!(late_choices(&g, p), expected);
+                assert_eq!(late_choices(&g, p), every_allocation);
                 if !spare_mountain {
-                    reject(&mut g, choice(GG));
+                    assert_stranded_output(&g, GG);
                 }
                 act(&mut g, choice(output));
                 if output == GG {

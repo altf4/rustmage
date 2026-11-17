@@ -525,7 +525,7 @@ fn an_as_entry_copy_can_supply_the_remaining_parent_cast_mana_and_decline_is_unf
     );
     assert!(matches!(g.state.pending, Pending::EntryCopy { .. }));
     assert_eq!(g.state.objects[mana as usize].zone, Zone::Graveyard);
-    reject(&mut g, Action::ChooseEntryCopy { object: None });
+    admit(&g, Action::ChooseEntryCopy { object: None });
     select_copy(&mut g, blueprint);
     assert_eq!(
         g.state.objects[returning as usize].card,
@@ -626,10 +626,14 @@ fn foreign_as_entry_copy_that_invalidates_a_parent_cast_is_kept_with_its_mana_ev
     assert!(matches!(g.state.pending, Pending::AuraEntry { .. }));
     let recipient = g.object_ref(remaining_mana);
     act(&mut g, Action::ChooseAuraAttachment { object: recipient });
+    assert_eq!(g.state.objects[spell as usize].zone, Zone::Stack);
+    assert!(g.mana_payment_domain().is_none());
+    act(&mut g, Action::EndManaWindow);
+    act(&mut g, Action::SubmitAttempt);
     assert_eq!(
         g.state.objects[spell as usize].zone,
         Zone::Hand,
-        "the copied Aura removes the remaining producer's mana ability"
+        "submitting the stranded parent starts recovery after the copied Aura removes its producer"
     );
     assert!(matches!(g.state.pending, Pending::ManaRollback { .. }));
     let keep = Action::ChooseManaRollback { keep: true };

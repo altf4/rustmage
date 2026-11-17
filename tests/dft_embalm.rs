@@ -275,7 +275,7 @@ fn embalm_pays_hybrid_and_twobrid_printed_symbols_without_using_spell_alternativ
     grant(&mut g, card);
     g.state.players[0].mana = [0; 6];
     let a = action(&g, card);
-    reject(&mut g, a);
+    admit(&g, a);
     g.state.players[0].mana[0] = 1;
     embalm(&mut g, card);
 }
@@ -479,7 +479,17 @@ fn graveyard_exile_prohibition_is_shared_by_actual_embalm_and_funding() {
         Zone::Battlefield,
     );
     let a = action(&g, card);
-    reject(&mut g, a.clone());
+    admit(&g, a.clone());
+    let mut prohibited = g.clone();
+    act(&mut prohibited, a.clone());
+    reject(
+        &mut prohibited,
+        Action::PayCosts {
+            payment: [1, 0, 0, 0, 0, 0],
+        },
+    );
+    assert_eq!(prohibited.object_ref(card), g.object_ref(card));
+    assert!(tokens(&prohibited).is_empty());
     g.move_object(blocker, Zone::Hand);
     assert!(g.legal_actions().contains(&a));
     embalm(&mut g, card);
@@ -780,7 +790,7 @@ fn an_embalmed_aerial_doombot_has_no_own_mana_cost_to_reduce_its_power_up_cost()
         counter_payment: Counters::default(),
     };
     g.state.players[0].mana = [0, 0, 0, 0, 0, 5];
-    reject(&mut g, action.clone());
+    admit(&g, action.clone());
     let goal = FundingGoal {
         actor: Player::P0,
         required: [0; 6],

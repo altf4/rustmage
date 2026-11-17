@@ -517,10 +517,7 @@ fn intrinsic_graveyard_route_rejects_wrong_owner_timing_life_and_sacrifice_legal
     let p = Player::P0;
     let mut g = scenario(p);
     let source = put(&mut g, p, "Grizzly Bears", Zone::Graveyard);
-    assert!(
-        !g.legal_actions().contains(&route(source)),
-        "graveyard card cannot sacrifice itself"
-    );
+    admit(&g, route(source));
     let material = put(&mut g, p, "Clamorous Ironclad", Zone::Battlefield);
     assert!(g.legal_actions().contains(&route(source)));
     g.state.players[p.index()].life = 1;
@@ -532,10 +529,10 @@ fn intrinsic_graveyard_route_rejects_wrong_owner_timing_life_and_sacrifice_legal
     reject(&mut g, route(source));
     g.state.step = Step::Main1;
     g.state.objects[material as usize].controller = p.other();
-    reject(&mut g, route(source));
+    admit(&g, route(source));
     g.state.objects[material as usize].controller = p;
     let blocker = put(&mut g, p, "Hill Giant", Zone::Battlefield);
-    reject(&mut g, route(source));
+    admit(&g, route(source));
     g.move_object(blocker, Zone::Graveyard);
     g.state.objects[source as usize].owner = p.other();
     reject(&mut g, route(source));
@@ -553,9 +550,23 @@ fn route_funding_allows_tap_then_sacrifice_but_rejects_double_consumed_treasure(
     g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
     let treasure = g.state.objects.len() as CardId;
     g.create_tokens(p, named("@token/b60f6cd3b44b22bd289fe4e2"), 1, false);
+    admit(&g, route(source));
+    let mut spent = g.clone();
+    act(&mut spent, route(source));
+    choose(&mut spent, |action| {
+        matches!(action, Action::ActivateMana { card, production, .. }
+        if *card == treasure && *production == [0, 0, 0, 0, 1, 0])
+    });
+    act(&mut spent, Action::BeginOrderedCosts);
+    let clause = cost_index(&spent, CastCostClause::Additional);
+    act(&mut spent, Action::ChooseCastCost { clause });
+    let object = g.object_ref(treasure);
+    reject(&mut spent, Action::ChooseAdditionalCost { object });
     assert!(
-        !g.legal_actions().contains(&route(source)),
-        "the only artifact cannot both sacrifice for mana and pay the separate sacrifice"
+        !spent
+            .legal_actions()
+            .iter()
+            .any(|a| matches!(a, Action::ChooseAdditionalCost { .. }))
     );
     g.move_object(treasure, Zone::Exile);
     let producer = put(&mut g, p, "Clamorous Ironclad", Zone::Battlefield);

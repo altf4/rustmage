@@ -424,11 +424,18 @@ fn suppressed_toughness_ability_cannot_pay_with_toughness() {
     settle_choices(&mut g);
     assert_eq!(g.crew_saddle_power(pilot, vehicle, "Vehicle"), 1);
     g.state.objects[pilot as usize].tapped = false;
-    assert!(!g.legal_actions().contains(&Action::AnnounceActivate {
+    let action = Action::AnnounceActivate {
         card: vehicle,
         ability: 0,
-        counter_payment: Counters::default()
-    }));
+        counter_payment: Counters::default(),
+    };
+    admit(&g, action.clone());
+    let mut underpowered = g.clone();
+    act(&mut underpowered, action);
+    let object = underpowered.object_ref(pilot);
+    act(&mut underpowered, Action::ChooseCrewer { object });
+    reject(&mut underpowered, Action::FinishCrew);
+    assert!(!underpowered.object_view(pilot).tapped);
     g.move_object(blank, Zone::Graveyard);
     assert_eq!(g.crew_saddle_power(pilot, vehicle, "Vehicle"), 4);
     assert!(g.legal_actions().contains(&Action::AnnounceActivate {
