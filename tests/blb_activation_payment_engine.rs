@@ -82,13 +82,20 @@ fn tap_creature(g: &Game, card: CardId) -> Action {
 }
 
 fn fail_unpaid(g: &mut Game, actor: Player, untapped: &[CardId]) {
+    // Beginning either contributor selection has already closed this attempt's
+    // mana window; the unpaid selection can be submitted directly.
+    assert!(g.attempt_view(actor).unwrap().mana_window_closed);
     assert!(g.mana_payment_domain().is_none());
     reject(g, Action::PayCosts { payment: [0; 6] });
-    act(g, Action::EndManaWindow);
+    reject(g, Action::EndManaWindow);
     act(g, Action::SubmitAttempt);
     assert_eq!(
         g.last_attempt_outcome_view(actor).unwrap().outcome,
         AttemptOutcome::Failed
+    );
+    assert_eq!(
+        g.last_attempt_outcome_view(actor).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
     );
     assert!(g.state.announcing.is_none());
     assert!(g.state.stack.is_empty());
