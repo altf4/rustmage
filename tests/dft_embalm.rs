@@ -141,15 +141,25 @@ fn action(g: &Game, id: CardId) -> Action {
 }
 fn choose_cost_and_pay(g: &mut Game) {
     for _ in 0..4 {
-        if let Some(a) = g
-            .legal_actions()
-            .into_iter()
-            .find(|a| matches!(a, Action::ChooseActivationCost { .. }))
-        {
-            act(g, a)
-        } else {
+        if !matches!(g.state.pending, Pending::ActivationCost { .. }) {
             break;
         }
+        // Equivalents are declarations; pick the printed route matching this
+        // scenario's pool instead of depending on future-payment pruning.
+        let a = g.state.announcing.as_ref().unwrap();
+        let pool = g.state.players[a.item.controller.index()].mana;
+        let cost = a
+            .cost_choices()
+            .position(|cost| {
+                ManaPaymentDomain {
+                    available: pool,
+                    required: cost.colored,
+                    generic: cost.generic,
+                }
+                .payable()
+            })
+            .expect("scripted pool pays a printed embalm equivalent");
+        act(g, Action::ChooseActivationCost { cost: cost as u16 });
     }
     pay(g);
 }
