@@ -175,7 +175,7 @@ fn discount_copies_and_applies_only_to_the_equips_generic_component() {
         counter_payment: Counters::default(),
     };
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 8];
-    assert!(!game.legal_actions().contains(&announce(successor.card, 0)));
+    admit(&game, announce(successor.card, 0));
     game.state.players[player.index()].mana = payment;
     let legal = game.legal_actions();
     assert!(!legal.contains(&announce(original, 0)));

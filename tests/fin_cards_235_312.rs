@@ -769,7 +769,15 @@ fn assert_crystal_discount(game: &Game, crystal: CardId, spell: &str, pool: Mana
     let announce = Action::AnnounceCast { card: spell };
     let mut without = discounted.clone();
     without.move_object(crystal, Zone::Exile);
-    reject(&mut without, announce.clone());
+    act(&mut without, announce.clone());
+    assert!(without.mana_payment_domain().is_none());
+    act(&mut without, Action::EndManaWindow);
+    act(&mut without, Action::SubmitAttempt);
+    assert_eq!(
+        without.last_attempt_outcome_view(player).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
+    assert_eq!(without.object_view(spell).zone, Zone::Hand);
     act(&mut discounted, announce);
     pay(&mut discounted);
     assert_eq!(discounted.object_view(spell).zone, Zone::Stack);
@@ -1119,7 +1127,7 @@ fn emperor_restricts_its_mana_and_transforms_after_its_third_counter() {
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
     reject(&mut game, tap_production(emperor, [0, 0, 0, 0, 1, 0]));
     act(&mut game, tap_production(emperor, [0, 0, 0, 1, 0, 0]));
-    reject(&mut game, Action::AnnounceCast { card: creature });
+    admit(&game, Action::AnnounceCast { card: creature });
     cast(&mut game, shock, Some(Target::Player(opponent)));
     settle(&mut game);
     assert_eq!(game.state.players[opponent.index()].life, 18);

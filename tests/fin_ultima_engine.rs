@@ -172,19 +172,21 @@ fn the_conditional_land_bonus_funds_a_cast_and_disappears_with_its_provider() {
     game.state.players[player.index()].mana = [0; 6];
     let announce = Action::AnnounceCast { card: spell };
     let before = game.snapshot();
-    let exact = rustmage_core::engine::funding::FundingGoal {
-        actor: player,
-        required: [0, 0, 0, 0, 0, 2],
-        generic: 0,
-        reserve: None,
-        source: None,
-    };
-    assert!(game.can_fund(exact.clone()));
     assert!(game.legal_actions().contains(&announce));
     let mut without_provider = game.clone();
     without_provider.move_object(provider, Zone::Graveyard);
-    assert!(!without_provider.can_fund(exact));
-    reject(&mut without_provider, announce.clone());
+    act(&mut without_provider, announce.clone());
+    act(&mut without_provider, tap(land, COLORLESS));
+    assert!(without_provider.mana_payment_domain().is_none());
+    act(&mut without_provider, Action::EndManaWindow);
+    act(&mut without_provider, Action::SubmitAttempt);
+    assert_eq!(
+        without_provider
+            .last_attempt_outcome_view(player)
+            .unwrap()
+            .reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
     assert_eq!(game.snapshot(), before);
 
     act(&mut game, announce);

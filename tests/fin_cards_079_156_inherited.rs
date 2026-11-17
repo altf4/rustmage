@@ -101,7 +101,7 @@ fn fate_discounts_only_a_tapped_creature_and_destroys_it() {
     let artifact = put(&mut game, p.other(), "Short Bow", Zone::Battlefield);
     game.state.objects[artifact as usize].tapped = true;
     game.state.players[p.index()].mana = [1, 0, 0, 0, 0, 2];
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    admit(&game, Action::AnnounceCast { card: spell });
     game.state.objects[creature as usize].tapped = true;
     act(&mut game, Action::AnnounceCast { card: spell });
     reject(
@@ -546,7 +546,7 @@ fn laughing_mad_requires_a_distinct_discard_in_both_cast_routes() {
         } else {
             Action::AnnounceFlashback { card: spell }
         };
-        reject(&mut game, announce.clone());
+        admit(&game, announce.clone());
         let discard = put(&mut game, p, "Forest", Zone::Hand);
         act(&mut game, announce);
         let object = game.object_ref(discard);

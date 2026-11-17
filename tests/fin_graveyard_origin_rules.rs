@@ -83,7 +83,7 @@ fn paid_origin_checks_timing_ownership_and_joint_life_and_mana_funding() {
     assert!(g.legal_actions().contains(&action));
     g.state.players[p.index()].life = 4;
     g.state.players[p.index()].mana = [0; 6];
-    reject(&mut g, action.clone());
+    admit(&g, action.clone());
 
     for _ in 0..3 {
         put(&mut g, p, "Forest", Zone::Battlefield);
