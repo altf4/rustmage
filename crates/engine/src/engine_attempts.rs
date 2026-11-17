@@ -428,8 +428,31 @@ impl Game {
 
     /// Called at CR601.2i/602.2b, before a mana ability starts its immediate
     /// resolution. Existing output continuations keep their checkpoint owner.
-    pub(super) fn mark_attempt_costs_complete(&mut self) {
-        if let Some(attempt) = self.state.cast_rollback.as_mut() {
+    pub(super) fn mark_attempt_costs_complete(&mut self, context: u64) {
+        let Some(attempt) = self.state.cast_rollback.as_mut() else {
+            return;
+        };
+        // A direct activation can finish in its first action, before the normal
+        // post-step ownership binding. Never mistake a suspended parent's item
+        // (or an unrelated trigger announcement) for this child's boundary.
+        let belongs = attempt.context == Some(context)
+            || (attempt.context.is_none()
+                && attempt
+                    .before
+                    .announcing
+                    .as_ref()
+                    .is_none_or(|a| a.item.id != context)
+                && attempt
+                    .before
+                    .mana_announcement_stack
+                    .as_ref()
+                    .is_none_or(|frames| {
+                        frames
+                            .iter()
+                            .all(|frame| frame.announcement.item.id != context)
+                    }));
+        if belongs {
+            attempt.context = Some(context);
             attempt.costs_complete = true;
         }
     }
