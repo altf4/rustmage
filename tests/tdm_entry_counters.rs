@@ -470,8 +470,31 @@ fn graveyard_origin_counters_require_an_actual_cast_and_keep_normal_costs() {
         entry(&mut g, vec![m]);
         assert_eq!(g.counter_count(id, CounterKind::Finality), 0);
         let id = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+        let original = g.object_ref(id);
         g.state.players[p.index()].mana = [0; 6];
-        reject(&mut g, Action::AnnounceCast { card: id });
+        act(&mut g, Action::AnnounceCast { card: id });
+        assert_eq!(g.object_view(id).zone, Zone::Stack);
+        assert!(g.mana_payment_domain().is_none());
+        reject(&mut g, Action::PayCosts { payment: [0; 6] });
+        act(&mut g, Action::EndManaWindow);
+        let mut indexed = g.clone();
+        let at = indexed
+            .legal_actions()
+            .iter()
+            .position(|action| *action == Action::SubmitAttempt)
+            .unwrap();
+        indexed.apply_index(p, indexed.revision(), at).unwrap();
+        act(&mut g, Action::SubmitAttempt);
+        assert_eq!(g.snapshot(), indexed.snapshot());
+        assert_eq!(g.object_view(id).zone, Zone::Graveyard);
+        assert_eq!(g.object_ref(id), original);
+        assert_eq!(g.counter_count(id, CounterKind::Finality), 0);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert!(g.state.announcing.is_none());
+        assert_eq!(
+            g.last_attempt_outcome_view(p).unwrap().outcome,
+            AttemptOutcome::Failed
+        );
     }
 }
 #[test]
