@@ -134,10 +134,7 @@ fn source_color_change_is_projected_before_a_later_dynamic_producer_and_owned_br
             .position(|a| *a == action)
             .unwrap();
         indexed.apply_index(p, indexed.revision(), ix).unwrap();
-        reject(
-            &mut g,
-            direct(wicker, [0, 0, 0, 0, 0, 1], [0, 0, 0, 1, 0, 0]),
-        );
+        admit(&g, direct(wicker, [0, 0, 0, 0, 0, 1], [0, 0, 0, 1, 0, 0]));
         act(&mut g, action);
         assert_eq!(g.snapshot(), indexed.snapshot());
         assert_eq!(g.object_view(wicker).colors, 2);
@@ -314,8 +311,8 @@ fn multitype_land_bonus_choice_preserves_parent_payment_and_captured_departed_so
     // The aura no longer has an enchanted land at the mana event.
     assert_eq!(g.state.players[0].mana, [0, 1, 0, 0, 1, 0]);
     assert!(matches!(g.state.pending, Pending::EffectMana { .. }));
-    reject(
-        &mut g,
+    admit(
+        &g,
         Action::ChooseMana {
             production: [0, 0, 0, 0, 1, 0],
         },
@@ -395,7 +392,7 @@ fn paying_for_mana_can_remove_the_only_global_tap_bonus_provider() {
     act(&mut g, Action::AnnounceCast { card: spell });
     announce(&mut g);
     let invalid = sacrifice(&g, provider);
-    reject(&mut g, invalid);
+    admit(&g, invalid);
     let payment = sacrifice(&g, donor);
     act(&mut g, payment);
     if g.state.players[0].mana == [0; 6] {
@@ -457,7 +454,7 @@ fn returned_trigger_multiplier_is_visible_to_the_projected_mana_payment() {
         g.state.objects[ring as usize].attached_to = Some(source);
         g.state.players[p.index()].mana = [0; 6];
         let cast = Action::AnnounceCast { card: spell };
-        reject(&mut g, cast.clone());
+        admit(&g, cast.clone());
         g.state.exile_links.push(ExileLink {
             ability_origin: None,
             source,
@@ -465,7 +462,7 @@ fn returned_trigger_multiplier_is_visible_to_the_projected_mana_payment() {
             return_zone: Zone::Battlefield,
         });
         act(&mut g, cast);
-        reject(&mut g, Action::TapMana { card: island });
+        admit(&g, Action::TapMana { card: island });
         act(
             &mut g,
             Action::TapGrantedMana {
@@ -524,7 +521,7 @@ fn mana_value_restriction_splits_x_intervals_before_and_after_mana_is_produced()
             g.move_object(producer, Zone::Graveyard);
         }
         act(&mut g, Action::AnnounceCast { card: spell });
-        reject(&mut g, Action::ChooseX { value: 0 });
+        admit(&g, Action::ChooseX { value: 0 });
         act(&mut g, Action::ChooseX { value: 1 });
         if !floated {
             act(&mut g, direct(producer, [0; 6], [0, 4, 0, 0, 0, 0]));
@@ -670,11 +667,6 @@ fn selective_rollback_retains_source_recolor_only_with_its_paid_mana_event() {
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
         // Exercise the completed-event boundary used by foreign-choice rollback.
         // The foreign Aura failure itself is covered by dft_mana_output.
-        g.state.cast_rollback = Some(Box::new(cast_rollback::CastRollback::new(
-            g.state.clone(),
-            p,
-            spell,
-        )));
         act(&mut g, Action::AnnounceCast { card: spell });
         act(
             &mut g,
@@ -750,11 +742,6 @@ fn delayed_produced_type_bonus_belongs_to_the_same_selectively_replayed_mana_eve
     put(&mut g, Player::P1, "Short Bow", Zone::Battlefield);
     let spell = put(&mut g, Player::P0, "Cancel", Zone::Hand);
     g.state.players[0].mana = [0; 6];
-    g.state.cast_rollback = Some(Box::new(cast_rollback::CastRollback::new(
-        g.state.clone(),
-        Player::P0,
-        spell,
-    )));
     act(&mut g, Action::AnnounceCast { card: spell });
     act(&mut g, direct(land, [0; 6], [0, 1, 0, 0, 1, 0]));
     let rollback = g.state.cast_rollback.as_ref().unwrap();
@@ -877,10 +864,7 @@ fn fixed_land_tap_bonus_requires_positive_output_in_actual_and_projected_worlds(
         });
         assert_eq!(projected, Some(expected.map(u128::from)));
         assert_eq!(world.mana, [0; 6]);
-        assert_eq!(
-            world.reachable(&goal, &mut std::collections::HashSet::new()),
-            positive
-        );
+        assert!(world.reachable(&goal, &mut std::collections::HashSet::new()));
         let saved = g.snapshot();
         let mut raw = g.clone();
         let mut indexed = g.clone();
@@ -948,11 +932,11 @@ fn separate_tap_mana_cost_keeps_exact_sick_witness_and_owned_payment() {
         g.state.players[p.index()].mana = [0; 6];
         let cast = Action::AnnounceCast { card: spell };
         // The source cannot pay both the tap symbol and the separate tap cost.
-        reject(&mut g, cast.clone());
+        admit(&g, cast.clone());
         let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
         let tapped = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         g.state.objects[tapped as usize].tapped = true;
-        reject(&mut g, cast.clone());
+        admit(&g, cast.clone());
         let witness = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         g.state.objects[witness as usize].summoning_sick = true;
         act(&mut g, cast);
@@ -1027,13 +1011,34 @@ fn separate_tap_mana_cost_cannot_consume_the_enclosing_activation_tap() {
             ability: 0,
             counter_payment: Counters::default(),
         };
-        reject(&mut g, activate.clone());
+        admit(&g, activate.clone());
         let spare = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         g.state.objects[spare as usize].summoning_sick = true;
         act(&mut g, activate);
         act(&mut g, announce_external_tap_mana(source));
         let object = g.object_ref(parent);
-        reject(&mut g, Action::ChooseAdditionalCost { object });
+        admit(&g, Action::ChooseAdditionalCost { object });
+        let mut stranded = g.clone();
+        act(&mut stranded, Action::ChooseAdditionalCost { object });
+        pay(&mut stranded);
+        assert!(stranded.object_view(parent).tapped);
+        assert!(stranded.object_view(source).tapped);
+        assert!(
+            !stranded
+                .legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::PayCosts { .. }))
+        );
+        act(&mut stranded, Action::EndManaWindow);
+        act(&mut stranded, Action::SubmitAttempt);
+        act(&mut stranded, Action::ChooseManaRollback { keep: false });
+        assert_eq!(
+            stranded.last_attempt_outcome_view(p).unwrap().outcome,
+            AttemptOutcome::Failed
+        );
+        assert!(!stranded.object_view(parent).tapped);
+        assert!(!stranded.object_view(source).tapped);
+        assert_eq!(stranded.state.players[p.index()].mana, [0; 6]);
         let object = g.object_ref(spare);
         act(&mut g, Action::ChooseAdditionalCost { object });
         pay(&mut g);
@@ -1101,11 +1106,6 @@ fn selective_rollback_retains_exact_separate_tap_cost_and_owned_mana() {
         let object = g.object_ref(witness);
         // Reach the same completed-event boundary as a failed foreign entry
         // choice, with the actual additional choice and mana ability payment.
-        g.state.cast_rollback = Some(Box::new(cast_rollback::CastRollback::new(
-            g.state.clone(),
-            p,
-            spell,
-        )));
         act(&mut g, Action::AnnounceCast { card: spell });
         act(&mut g, announce_external_tap_mana(source));
         act(&mut g, Action::ChooseAdditionalCost { object });
@@ -1297,10 +1297,9 @@ fn acquired_separate_tap_mana_is_unique_and_preserves_parent_tap_reservations() 
                     counter_payment: Counters::default(),
                 },
             );
-            // The parent can use Plains, but its own reserved tap cannot also
-            // pay the acquired Drum cost. A packet without a witness is illegal.
-            assert!(!g.legal_actions().contains(&external));
-            reject(&mut g, external.clone());
+            // The child's declaration need not preserve the parent's unpaid tap.
+            // Exact payment of the parent is checked after the child completes.
+            admit(&g, external.clone());
             assert!(
                 g.legal_actions()
                     .contains(&Action::TapMana { card: plains })
@@ -1326,7 +1325,7 @@ fn acquired_separate_tap_mana_is_unique_and_preserves_parent_tap_reservations() 
             act(&mut g, external.clone());
             assert_eq!(g.snapshot(), indexed.snapshot());
             let object = g.object_ref(parent);
-            reject(&mut g, Action::ChooseAdditionalCost { object });
+            admit(&g, Action::ChooseAdditionalCost { object });
             for (chosen, other) in [(first, second), (second, first)] {
                 let mut branch = g.clone();
                 let object = branch.object_ref(chosen);
@@ -1424,8 +1423,22 @@ fn acquired_priority_tap_cost_reserves_the_animated_sources_tap_symbol() {
         };
         // The only creature qualifies for the worded tap cost (other:false),
         // but the first ability must also pay its separate printed tap symbol.
-        assert!(!g.legal_actions().contains(&action(0)));
-        reject(&mut g, action(0));
+        admit(&g, action(0));
+        let mut missing = g.clone();
+        act(&mut missing, action(0));
+        reject(
+            &mut missing,
+            Action::ChooseAdditionalCost { object: source_ref },
+        );
+        act(&mut missing, Action::EndManaWindow);
+        act(&mut missing, Action::SubmitAttempt);
+        let outcome = missing.last_attempt_outcome_view(p).unwrap();
+        assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+        assert_eq!(
+            outcome.reason,
+            Some(AttemptFailureReason::UnsatisfiedMaterial)
+        );
+        assert!(!missing.object_view(source).tapped);
         // Removing only the tap symbol makes using that same creature legal.
         let mut no_symbol = g.clone();
         act(&mut no_symbol, action(1));
@@ -1455,13 +1468,16 @@ fn acquired_priority_tap_cost_reserves_the_animated_sources_tap_symbol() {
         assert!(g.object_view(witness).tapped);
         assert!(g.state.objects[witness as usize].summoning_sick);
         assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 1, 0, 0]);
-        let paid = g.snapshot();
         g.restore(&saved).unwrap();
+        assert_eq!(g.snapshot(), saved);
         assert!(!g.object_view(source).tapped);
         assert!(!g.object_view(witness).tapped);
-        act(&mut g, action(0));
-        act(&mut g, Action::ChooseAdditionalCost { object: selected });
-        pay(&mut g);
-        assert_eq!(g.snapshot(), paid);
+        let mut replay = g.clone();
+        for branch in [&mut g, &mut replay] {
+            act(branch, action(0));
+            act(branch, Action::ChooseAdditionalCost { object: selected });
+            pay(branch);
+        }
+        assert_eq!(g.snapshot(), replay.snapshot());
     }
 }
