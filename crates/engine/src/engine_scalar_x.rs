@@ -67,16 +67,7 @@ impl Game {
             .map_or(0, Self::announcement_optional_reduction);
         self.scalar_x_total_with_extra(actor, id, base, x, self.effective_spell_card(id), extra)
     }
-    pub(super) fn scalar_x_total_for_definition(
-        &self,
-        actor: Player,
-        id: CardId,
-        base: ManaCost,
-        x: u32,
-        card: Card,
-    ) -> Option<ManaCost> {
-        self.scalar_x_total_with_extra(actor, id, base, x, card, 0)
-    }
+
     pub(super) fn scalar_x_total_with_extra(
         &self,
         actor: Player,

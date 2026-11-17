@@ -181,3 +181,128 @@ fn conspire_selects_one_object_before_an_atomic_pair_payment() {
             .all(|&card| !game.object_view(card).tapped)
     );
 }
+
+const ANY_CARD: SacrificeFilter = SacrificeFilter {
+    keywords: Keywords::NONE,
+    source_only: false,
+    kinds: 0,
+    nonland: false,
+    other: false,
+    tokens: None,
+    artifact_enchantment_or_token: false,
+    subtype: None,
+};
+const LIFE_SPELL: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[Instruction::Draw(PlayerSet::Controller, 1)],
+    ),
+    extras: &rustmage_core::cards::authored::CardExtras {
+        additional_cost: Some(AdditionalCost {
+            kind: EffectChoiceKind::PayLife(2),
+            filter: ANY_CARD,
+        }),
+        ..rustmage_core::cards::authored::CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+const DISCARD_OR_LIFE: CardRules = CardRules {
+    extras: &rustmage_core::cards::authored::CardExtras {
+        additional_cost: Some(AdditionalCost {
+            kind: EffectChoiceKind::DiscardOrLife(2),
+            filter: ANY_CARD,
+        }),
+        ..rustmage_core::cards::authored::CardExtras::EMPTY
+    },
+    ..LIFE_SPELL
+};
+const LIFE_ABILITY: CardRules = CardRules {
+    effect: Effect::Permanent,
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        cost: ActivationCost {
+            life: 2,
+            ..ActivationCost::ZERO
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::Draw(PlayerSet::Controller, 1)],
+        sorcery: false,
+        once_per_turn: false,
+    }],
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn fixed_life_costs_use_current_life_and_reject_changed_concrete_payments() {
+    let spell_definition = Card::from_name("Divination").unwrap();
+    let ability_definition = Card::from_name("Short Bow").unwrap();
+    let _rules = fixture_rules::activate(&[
+        (spell_definition, &LIFE_SPELL),
+        (ability_definition, &LIFE_ABILITY),
+    ]);
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let spell = put(&mut game, player, "Divination", Zone::Hand);
+        let source = put(&mut game, player, "Short Bow", Zone::Battlefield);
+        game.state.players[player.index()].life = 1;
+        let announce_spell = Action::AnnounceCast { card: spell };
+        let announce_ability = Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+        };
+        assert!(!game.legal_actions().contains(&announce_spell));
+        assert!(!game.legal_actions().contains(&announce_ability));
+        reject(&mut game, announce_spell.clone());
+        reject(&mut game, announce_ability.clone());
+
+        game.state.players[player.index()].life = 2;
+        assert!(game.legal_actions().contains(&announce_ability));
+        let concrete = Action::Activate {
+            card: source,
+            ability: 0,
+            target: None,
+            payment: [0; 6],
+            counter_payment: Counters::default(),
+        };
+        assert!(game.legal_actions().contains(&concrete));
+        game.state.players[player.index()].life = 1;
+        reject(&mut game, concrete);
+
+        game.state.players[player.index()].life = 2;
+        act(&mut game, announce_spell);
+        act(&mut game, Action::BeginOrderedCosts);
+        clause(&mut game, CastCostClause::Additional);
+        assert!(game.legal_actions().contains(&Action::ChooseAdditionalLife));
+        game.state.players[player.index()].life = 1;
+        reject(&mut game, Action::ChooseAdditionalLife);
+        assert!(game.current_material_cost_impossible());
+    }
+}
+
+#[test]
+fn a_discard_or_life_cost_keeps_the_discard_route_at_one_life() {
+    let spell_definition = Card::from_name("Divination").unwrap();
+    let _rules = fixture_rules::activate(&[(spell_definition, &DISCARD_OR_LIFE)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    game.state.players[player.index()].life = 1;
+    let spell = put(&mut game, player, "Divination", Zone::Hand);
+    let discard = put(&mut game, player, "Forest", Zone::Hand);
+    let object = game.object_ref(discard);
+    act(&mut game, Action::AnnounceCast { card: spell });
+    act(&mut game, Action::BeginOrderedCosts);
+    clause(&mut game, CastCostClause::Additional);
+    assert!(!game.legal_actions().contains(&Action::ChooseAdditionalLife));
+    assert!(
+        game.legal_actions()
+            .contains(&Action::ChooseAdditionalCost { object })
+    );
+    assert!(!game.current_material_cost_impossible());
+    act(&mut game, Action::ChooseAdditionalCost { object });
+    assert_eq!(game.object_view(discard).zone, Zone::Graveyard);
+    assert_eq!(game.state.players[player.index()].life, 1);
+}

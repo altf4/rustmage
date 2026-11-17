@@ -52,33 +52,7 @@ impl Game {
             .all(|&object| !Self::variable_cost_source_conflict(&goal, object))
             && self.additional_selection_valid(spec, goal.actor, source, chosen, exact)
     }
-    pub(super) fn variable_cost_candidate_available(
-        &self,
-        a: &Announcement,
-        spec: AdditionalCost,
-        object: ObjectRef,
-    ) -> bool {
-        let mut selected = a.additional_group.as_deref().cloned().unwrap_or_default();
-        if a.additional_group_complete || selected.contains(&object) {
-            return false;
-        }
-        let source = a.item.source.expect("cost source").object;
-        if !self.additional_candidate(spec, a.item.controller, source, object) {
-            return false;
-        }
-        selected.push(object);
-        if self.cast_costs_mana_paid() {
-            return self.cast_cost_group_fundable(&selected, false);
-        }
-        self.variable_cost_group_fundable(
-            self.funding_goal(a),
-            self.purpose_for_item(&a.item),
-            spec,
-            source,
-            &selected,
-            false,
-        )
-    }
+
     pub(super) fn variable_cost_selection_complete(&self) -> bool {
         let Some(a) = self.state.announcing.as_ref() else {
             return false;

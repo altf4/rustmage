@@ -1,5 +1,6 @@
 //! Local validation for declared nonmana clauses and supplied material selections.
 use super::*;
+#[cfg(feature = "test-support")]
 use crate::cards::ZoneReplacementRule;
 use ability_world::CharacteristicWorld;
 
@@ -22,16 +23,20 @@ pub(super) struct CostContext {
     selected: Vec<ObjectRef>,
     exact: bool,
     counters: Vec<(ObjectRef, CounterKind)>,
+    #[cfg(feature = "test-support")]
     mana: Option<ManaCost>,
     teammates: Vec<ObjectRef>,
     teamwork_exact: bool,
+    #[cfg(feature = "test-support")]
     delve_selected: bool,
+    #[cfg(feature = "test-support")]
     pub(super) tap_payment_used: usize,
     /// Existing announcement phase, retained only in this private query context.
     mana_closed: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CostContext {
+    #[cfg(feature = "test-support")]
     pub(super) fn crafts_permanents(&self) -> bool {
         self.clauses.iter().any(|row| {
             !row.paid
@@ -47,6 +52,7 @@ impl CostContext {
         })
     }
 
+    #[cfg(feature = "test-support")]
     pub(super) fn needs_web_return(&self) -> bool {
         self.clauses
             .iter()
@@ -96,7 +102,9 @@ impl CostContext {
             }
         }
         Some(Box::new(Self {
+            #[cfg(feature = "test-support")]
             delve_selected: a.convoke.as_ref().is_some_and(|f| !f.delved.is_empty()),
+            #[cfg(feature = "test-support")]
             tap_payment_used: a
                 .convoke
                 .as_ref()
@@ -107,6 +115,7 @@ impl CostContext {
             teammates: c.teammates.clone(),
             teamwork_exact: false,
             actor: a.item.controller,
+            #[cfg(feature = "test-support")]
             mana: a
                 .convoke
                 .as_ref()
@@ -174,6 +183,7 @@ impl FundingState<'_> {
     /// Keep a fixed mana requirement for reveals, graveyard exiles, craft and
     /// witnessed returns. The fixed-world proof separately excludes departures
     /// that could restore mana sources or change an attached recipient.
+    #[cfg(feature = "test-support")]
     pub(super) fn fixed_mana_costs(&self, goal: &FundingGoal) -> bool {
         self.cast_costs.as_ref().is_none_or(|c| {
             c.mana
@@ -214,6 +224,7 @@ impl FundingState<'_> {
     /// In the fixed tap-only proof, a live exile link is inert unless one of
     /// the remaining ordered costs can remove its source. Unknown cost packets
     /// are rejected separately by `fixed_mana_costs`.
+    #[cfg(feature = "test-support")]
     pub(super) fn fixed_mana_link_can_return(&self, goal: &FundingGoal, source: ObjectRef) -> bool {
         if self.reference(source.card) != source
             || self.object(source.card).zone != Zone::Battlefield
@@ -260,6 +271,7 @@ impl FundingState<'_> {
     /// Intrinsic land mana cannot repair a counter shortfall. Avoid enumerating
     /// equivalent land subsets while retaining the complete search for costs or
     /// mana abilities that can introduce counters, objects, or new abilities.
+    #[cfg(feature = "test-support")]
     pub(super) fn fixed_origin_counter_deficit(&self) -> bool {
         let Some(c) = &self.cast_costs else {
             return false;
@@ -317,6 +329,7 @@ impl FundingState<'_> {
     /// Unknown costs and worlds with linked or nested state changes retain the
     /// complete search. Counts deliberately ignore filters, control, names,
     /// counters and tapping, all of which can change during funding.
+    #[cfg(feature = "test-support")]
     pub(super) fn additional_cost_deficit(&self) -> bool {
         let Some(c) = &self.cast_costs else {
             return false;
@@ -437,6 +450,7 @@ impl FundingState<'_> {
     }
     /// Only a fixed witness set permits rejecting an absent chosen subtype
     /// before mana search. This also handles mandatory single behold/exile costs.
+    #[cfg(feature = "test-support")]
     fn unchanging_behold_witness_deficit(&self, c: &CostContext, spec: AdditionalCost) -> bool {
         let required = match spec.kind.payment_kind() {
             EffectChoiceKind::BeholdMany(amount) => usize::from(amount),
@@ -626,32 +640,8 @@ impl FundingState<'_> {
                 self.project_cost_spell_source(source.object);
             }
         }
-        if let Some(a) = a.filter(|a| a.cast_costs.is_some())
-            && let Some(frame) = &a.convoke
-        {
-            // A contributor is reserved during selection and becomes tapped in
-            // the speculative world. The live group commits only with payment.
-            for selected in frame.objects() {
-                if let Some(r) = self
-                    .resources
-                    .iter_mut()
-                    .find(|r| r.id == selected.card && r.object.generation == selected.generation)
-                {
-                    r.object.tapped = true;
-                }
-            }
-            if !frame.delved.is_empty() {
-                let mut projected = None;
-                self.cost_departures(&frame.delved, Zone::Exile, &mut |next| {
-                    projected = Some(next.clone());
-                    true
-                });
-                if let Some(next) = projected {
-                    *self = next;
-                }
-            }
-        }
     }
+
     pub(super) fn set_payment_context(&mut self, a: &Announcement) {
         self.set_tap_payment(a.tap_payment());
         self.payment_source = a.item.source.map(|s| s.object);
@@ -734,6 +724,7 @@ impl FundingState<'_> {
             object.controller = self.actor;
         }
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn cost_object(
         &self,
         spec: AdditionalCost,
@@ -823,12 +814,14 @@ impl FundingState<'_> {
                 || self.suspected(r.card),
             )
     }
+    #[cfg(feature = "test-support")]
     fn keywords_for_cost(&self, id: CardId) -> Keywords {
         self.resources
             .iter()
             .find(|r| r.id == id)
             .map_or(Keywords::NONE, |r| self.keywords(r))
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn cost_departures(
         &self,
         objects: &[ObjectRef],
@@ -1047,6 +1040,7 @@ impl FundingState<'_> {
             world.visit_death_exile_gains(gains, &mut |next| next.visit_linked_returns(emit))
         })
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn project_nonbattlefield_move(
         &mut self,
         before: ObjectRef,
@@ -1071,6 +1065,7 @@ impl FundingState<'_> {
         self.project_resource_nonbattlefield_move(index, before, zone, meld_front)
     }
 
+    #[cfg(feature = "test-support")]
     pub(super) fn project_resource_nonbattlefield_move(
         &mut self,
         index: usize,
@@ -1150,6 +1145,7 @@ impl FundingState<'_> {
         }
         after
     }
+    #[cfg(feature = "test-support")]
     fn visit_death_exile_gains(
         &self,
         gains: &[(Player, u8)],
@@ -1177,6 +1173,7 @@ impl FundingState<'_> {
                 next.visit_death_exile_gains(later, emit)
             })
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn set_cost_counter_prefix(&mut self, selected: &[(ObjectRef, CounterKind)]) {
         if let Some(c) = &mut self.cast_costs {
             c.counters = selected.to_vec();
@@ -1433,6 +1430,7 @@ impl FundingState<'_> {
         c.teamwork_exact = exact;
     }
 
+    #[cfg(feature = "test-support")]
     pub(super) fn has_ordered_convoke(&self) -> bool {
         self.cast_costs.as_ref().is_some_and(|c| {
             c.clauses
@@ -1442,6 +1440,7 @@ impl FundingState<'_> {
     }
     /// A deliberately narrow negative bound across future mana-source moves.
     /// Unknown providers and non-tap mutations retain the complete search.
+    #[cfg(feature = "test-support")]
     pub(super) fn pure_tap_teamwork_deficit(&self, goal: &FundingGoal) -> bool {
         let Some(c) = &self.cast_costs else {
             return false;
@@ -1584,6 +1583,7 @@ impl FundingState<'_> {
             c.active = None;
         }
     }
+    #[cfg(feature = "test-support")]
     pub(in crate::engine) fn project_convoker(
         &mut self,
         object: ObjectRef,
@@ -1617,12 +1617,14 @@ impl FundingState<'_> {
         self.resources[index].object.tapped = true;
         true
     }
+    #[cfg(feature = "test-support")]
     pub(in crate::engine) fn project_improviser(&mut self, object: ObjectRef) -> bool {
         if !self.improvise_available() || !improvise::eligible(self, self.actor, object) {
             return false;
         }
         self.project_generic_tapper(object)
     }
+    #[cfg(feature = "test-support")]
     pub(in crate::engine) fn project_substituter(&mut self, object: ObjectRef) -> bool {
         let Some(payment) = self.activation_tap_payment else {
             return false;
@@ -1637,6 +1639,7 @@ impl FundingState<'_> {
         self.cast_costs.as_mut().unwrap().tap_payment_used += 1;
         true
     }
+    #[cfg(feature = "test-support")]
     fn project_generic_tapper(&mut self, object: ObjectRef) -> bool {
         let Some(index) = self
             .resources
@@ -1655,6 +1658,7 @@ impl FundingState<'_> {
         self.resources[index].object.tapped = true;
         true
     }
+    #[cfg(feature = "test-support")]
     pub(in crate::engine) fn project_delver(&mut self, object: ObjectRef) -> bool {
         if !self.delve_available()
             || !delve::eligible(self, self.actor, object, self.payment_source)
@@ -1688,18 +1692,6 @@ impl FundingState<'_> {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    /// A declared activation checks its current source, without planning payments.
-    pub(in crate::engine) fn preview_ordered_activation_cost(
-        &self,
-        goal: FundingGoal,
-        spec: AdditionalCost,
-        _craft: bool,
-    ) -> bool {
-        self.activation_can_fund(goal, Some(spec))
-    }
-    pub(in crate::engine) fn teamwork_proposal_fundable(&self, a: &Announcement) -> bool {
-        a.cost_options().next().is_some()
-    }
     pub(in crate::engine) fn teamwork_prefix_fundable(
         &self,
         selected: &[ObjectRef],
@@ -1897,21 +1889,7 @@ impl Game {
                     })
             })
     }
-    pub(in crate::engine) fn cast_cost_object_fundable(&self, object: ObjectRef) -> bool {
-        let Some(a) = self.state.announcing.as_ref() else {
-            return false;
-        };
-        let Some(spec) = a.additional_cost() else {
-            return false;
-        };
-        self.additional_selection_valid(
-            spec,
-            a.item.controller,
-            a.item.source.unwrap().object,
-            &[object],
-            true,
-        )
-    }
+
     pub(in crate::engine) fn cast_cost_group_fundable(
         &self,
         selected: &[ObjectRef],
@@ -1941,15 +1919,7 @@ impl Game {
         }
         world.cost_selection_admissible()
     }
-    pub(in crate::engine) fn cast_cost_counters_fundable(
-        &self,
-        selected: &[(ObjectRef, CounterKind)],
-    ) -> bool {
-        let a = self.state.announcing.as_ref().unwrap();
-        let mut world = self.cast_cost_world(a);
-        world.cast_costs.as_mut().unwrap().counters = selected.to_vec();
-        world.cost_completion()
-    }
+
     pub(in crate::engine) fn conspire_intent_fundable(&self, _pay: bool) -> bool {
         self.state
             .announcing
@@ -1963,15 +1933,6 @@ impl Game {
             .as_ref()
             .and_then(|a| a.casualty.as_ref())
             .is_some_and(|rows| rows.iter().any(|row| !row.declared))
-    }
-    /// A concrete life requirement is checked against the current life total.
-    pub(in crate::engine) fn can_fund_life_cost(
-        &self,
-        goal: FundingGoal,
-        _purpose: mana_lots::Purpose,
-        life: u32,
-    ) -> bool {
-        life == 0 || self.state.players[goal.actor.index()].life >= i128::from(life)
     }
 }
 
@@ -2036,10 +1997,13 @@ impl Game {
             selected: selected.to_vec(),
             exact,
             counters: counters.to_vec(),
+            #[cfg(feature = "test-support")]
             mana: None,
             teammates: Vec::new(),
             teamwork_exact: false,
+            #[cfg(feature = "test-support")]
             delve_selected: false,
+            #[cfg(feature = "test-support")]
             tap_payment_used: 0,
             mana_closed: current
                 .and_then(|a| a.cast_costs.as_ref())
@@ -2066,6 +2030,7 @@ impl Game {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl FundingState<'_> {
     /// Enumerate the exact pre-SBA counter worlds produced by paying a blight cost.
+    #[cfg(feature = "test-support")]
     fn visit_blight_cost_projection(
         &self,
         subject: ObjectRef,

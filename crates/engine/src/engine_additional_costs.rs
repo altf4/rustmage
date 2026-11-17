@@ -480,17 +480,7 @@ impl Game {
     ) -> bool {
         self.additional_candidate_in_world(self, spec, actor, source, object, false)
     }
-    /// A mana ability may remove a current graveyard-exile prohibition before
-    /// this nonmana cost is actually paid. Funding proves that continuation.
-    pub(super) fn additional_candidate_for_funding(
-        &self,
-        spec: AdditionalCost,
-        actor: Player,
-        source: ObjectRef,
-        object: ObjectRef,
-    ) -> bool {
-        self.additional_candidate_in_world(self, spec, actor, source, object, true)
-    }
+
     pub(super) fn additional_candidate_in_world<W: ability_world::CharacteristicWorld + ?Sized>(
         &self,
         world: &W,
@@ -504,6 +494,24 @@ impl Game {
             || matches!(spec.kind, EffectChoiceKind::DiscardOneMatchingOr { .. })
         {
             return false;
+        }
+        if world.object(object.card).zone == Zone::Hand
+            && world.game().attempt_draw_is_face_down(object)
+        {
+            let filter = spec.filter;
+            let kind = spec.in_zone(Zone::Hand).kind.payment_kind();
+            if !matches!(
+                kind,
+                EffectChoiceKind::Discard | EffectChoiceKind::ExileFromHand
+            ) || filter.kinds != 0
+                || filter.nonland
+                || filter.tokens.is_some()
+                || filter.artifact_enchantment_or_token
+                || filter.subtype.is_some()
+                || filter.keywords != Keywords::NONE
+            {
+                return false;
+            }
         }
         if spec.kind.chooses_cost_creature() {
             return chosen_cost_creature_matches(world, actor, object, spec.kind);
@@ -759,6 +767,26 @@ impl Game {
                 .is_none_or(|subtype| subtypes.has(o.card, subtype))
     }
 
+    /// A fixed mandatory life payment is an immediate condition. An unchosen
+    /// discard-or-life route remains open, and an explicitly chosen mana
+    /// alternative may replace the printed additional cost.
+    pub(super) fn spell_immediate_cost_available(
+        &self,
+        actor: Player,
+        definition: Card,
+        cost: ManaCost,
+    ) -> bool {
+        definition.mana_alternative_replaces_additional(cost)
+            || definition
+                .additional_cost()
+                .is_none_or(|spec| match spec.kind {
+                    EffectChoiceKind::PayLife(amount) => {
+                        amount == 0 || self.state.players[actor.index()].life >= i128::from(amount)
+                    }
+                    _ => true,
+                })
+    }
+
     pub(super) fn spell_can_fund(&self, actor: Player, card: CardId, cost: ManaCost) -> bool {
         self.spell_can_fund_for_definition(actor, card, cost, self.effective_spell_card(card))
     }
@@ -769,24 +797,12 @@ impl Game {
         cost: ManaCost,
         definition: Card,
     ) -> bool {
-        self.spell_total_for_definition(actor, card, cost, definition)
-            .is_some()
+        self.spell_immediate_cost_available(actor, definition, cost)
+            && self
+                .spell_total_for_definition(actor, card, cost, definition)
+                .is_some()
     }
-    pub(super) fn spell_can_fund_total(
-        &self,
-        actor: Player,
-        card: CardId,
-        cost: ManaCost,
-        route: Option<ForageRoute>,
-    ) -> bool {
-        self.spell_can_fund_total_for_definition(
-            actor,
-            card,
-            cost,
-            route,
-            self.effective_spell_card(card),
-        )
-    }
+
     pub(super) fn spell_can_fund_total_for_definition(
         &self,
         actor: Player,
@@ -828,33 +844,6 @@ impl Game {
         u32::try_from(battlefield.saturating_add(linked_returns)).unwrap_or(u32::MAX)
     }
 
-    pub(super) fn group_cost_fundable(
-        &self,
-        goal: FundingGoal,
-        _purpose: mana_lots::Purpose,
-        spec: AdditionalCost,
-        source: ObjectRef,
-        chosen: &[ObjectRef],
-    ) -> bool {
-        chosen.iter().all(|&object| {
-            !matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
-                || !tap_cost_reserves_source(&goal, object)
-        }) && self.additional_selection_valid(spec, goal.actor, source, chosen, false)
-    }
-
-    pub(super) fn different_name_sacrifice_fundable(
-        &self,
-        goal: FundingGoal,
-        spec: AdditionalCost,
-        amount: u16,
-        chosen: &[ObjectRef],
-    ) -> bool {
-        let Some((source, ..)) = goal.source.as_ref() else {
-            return false;
-        };
-        chosen.len() <= usize::from(amount)
-            && self.additional_selection_valid(spec, goal.actor, *source, chosen, false)
-    }
     pub(super) fn activation_can_fund(
         &self,
         goal: FundingGoal,
