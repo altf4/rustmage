@@ -94,13 +94,13 @@ pub use rustmage_core::engine::{
     XChoiceView, XInterval, Zone, ZoneChange, ZoneReplacementChoiceView, ZoneReplacementKind,
     ZoneReplacementPickView, ZoneRevealView, ZoneSearchView,
 };
-pub use rustmage_core::engine::{ManaPaymentAction, ManaPaymentChoice};
 pub use rustmage_core::engine::{
     CopiedSagaLoreView, DamageDoublerView, LifeGainReplacement, LifeGainReplacementChoice,
     LifeGainReplacementEffect, ManaSplitChoiceView, MeldDepartureOrder, MeldOrderingChoice,
     MeldedPermanentView, NoncombatDamageIncreaseView,
 };
 pub use rustmage_core::engine::{ExileZeroOrigin, ExileZeroUseView, PaidCastOrigin};
+pub use rustmage_core::engine::{ManaPaymentAction, ManaPaymentChoice};
 pub use rustmage_core::policy;
 pub use rustmage_core::protocol;
 pub use rustmage_core::{CapacityExceeded, CardName, PermanentType};

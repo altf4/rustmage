@@ -12406,7 +12406,7 @@
     "src/catalogue.rs": "01554000ade12fdd9b611ac87667361f09ce1f2d590b63836ed6b7dfd9c0c438",
     "src/ffi.rs": "dc5d9c545f822822d3571619e108180db4c255c30c890774c8ebb26a45f1b94b",
     "src/generated/catalogue.rs": "a6f085b29e6d142c2b3f3857d304001aac80907a71870b0cbfd33841b3cf3c28",
-    "src/lib.rs": "b9e41e676535987683a7859056ce507a844877a1c448bfd9ebf5c69c09f08bb3",
+    "src/lib.rs": "1986d5516dd001032d3de90a559f88b0d3a44285d5dbddc759c8bad3edb7e454",
     "tests/tdm_complete_games.rs": "2c669b016830fb2da151ae6f7ae3fc4047b4e2f21f1d06d9b22dbaa61e1c5e5e"
   },
   "schema": 1,
