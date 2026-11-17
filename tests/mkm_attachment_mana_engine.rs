@@ -192,14 +192,29 @@ fn two_attached_choices_fund_distinct_colored_pips_and_resume_the_enclosing_cast
         game.observe(payer).mana_tap_bonus_source,
         Some(game.object_ref(first))
     );
-    assert_eq!(mana_choices(&game), BTreeSet::from([WHITE, BLUE]));
-    reject(&mut game, Action::ChooseMana { production: RED });
+    let colors = BTreeSet::from([WHITE, BLUE, BLACK, RED, GREEN]);
+    assert_eq!(mana_choices(&game), colors);
+    let mut stranded = game.clone();
+    act(&mut stranded, Action::ChooseMana { production: RED });
+    act(&mut stranded, Action::ChooseMana { production: WHITE });
+    reject(
+        &mut stranded,
+        Action::PayCosts {
+            payment: [1, 0, 0, 1, 0, 0],
+        },
+    );
+    act(&mut stranded, Action::EndManaWindow);
+    act(&mut stranded, Action::SubmitAttempt);
+    assert_eq!(
+        stranded.last_attempt_outcome_view(payer).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
     act(&mut game, Action::ChooseMana { production: BLUE });
     assert_eq!(
         game.observe(payer).mana_tap_bonus_source,
         Some(game.object_ref(second))
     );
-    assert_eq!(mana_choices(&game), BTreeSet::from([WHITE]));
+    assert_eq!(mana_choices(&game), colors);
     act(&mut game, Action::ChooseMana { production: WHITE });
     assert!(matches!(game.state.pending, Pending::PayCosts { .. }));
     pay(&mut game);

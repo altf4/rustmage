@@ -286,7 +286,29 @@ fn actual_damage_gives_its_recipient_controller_normal_plays_until_their_next_cl
     act(&mut game, Action::Pass);
     reject(&mut game, Action::PlayLand { card: land });
     game.state.players[beneficiary.index()].mana = [0, 0, 0, 4, 0, 0];
-    reject(&mut game, Action::AnnounceExile { card: spell });
+    admit(&game, Action::AnnounceExile { card: spell });
+    let mut wrong_color = game.clone();
+    act(&mut wrong_color, Action::AnnounceExile { card: spell });
+    reject(
+        &mut wrong_color,
+        Action::PayCosts {
+            payment: [0, 0, 0, 2, 0, 0],
+        },
+    );
+    act(&mut wrong_color, Action::EndManaWindow);
+    act(&mut wrong_color, Action::SubmitAttempt);
+    assert_eq!(
+        wrong_color
+            .last_attempt_outcome_view(beneficiary)
+            .unwrap()
+            .reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
+    assert_eq!(wrong_color.object_view(spell).zone, Zone::Exile);
+    assert_eq!(
+        wrong_color.state.players[beneficiary.index()].mana,
+        [0, 0, 0, 4, 0, 0]
+    );
 
     let first_turn = game.state.turn;
     advance_until(&mut game, |g| {

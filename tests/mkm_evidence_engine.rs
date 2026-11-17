@@ -667,7 +667,21 @@ fn printed_and_alternative_evidence_use_disjoint_cards_and_commit_two_ordered_ev
     );
 
     choose_cost(&mut reverse, CastCostClause::Additional);
-    reject(&mut reverse, Action::ChooseEvidence { object: reference });
+    admit(&reverse, Action::ChooseEvidence { object: reference });
+    let mut stranded = reverse.clone();
+    select_evidence(&mut stranded, &[large]);
+    assert_eq!(stranded.object_view(large).zone, Zone::Exile);
+    choose_cost(&mut stranded, CastCostClause::OriginEvidence(10));
+    act(&mut stranded, Action::SubmitAttempt);
+    assert_eq!(
+        stranded.last_attempt_outcome_view(player).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMaterial)
+    );
+    assert_eq!(stranded.object_view(spell).zone, Zone::Hand);
+    for id in [large, first, second] {
+        assert_eq!(stranded.object_view(id).zone, Zone::Graveyard);
+    }
+    assert!(stranded.observe(player).last_evidence.is_none());
     select_evidence(&mut reverse, &[first, second]);
     let event = reverse.observe(player.other()).last_evidence.unwrap();
     assert_eq!((event.sequence, event.threshold), (1, 6));
@@ -866,10 +880,35 @@ fn a_parent_cast_keeps_its_exact_evidence_while_mana_evidence_branches_and_repla
     let parent_source = game.object_ref(spell);
     act(&mut game, announce_evidence_mana(source));
     assert!(game.observe(player.other()).evidence.is_none());
-    for unavailable in [reserved, other] {
-        let choice = choose_evidence(&game, unavailable);
-        reject(&mut game, choice);
+    let foreign = choose_evidence(&game, other);
+    reject(&mut game, foreign);
+    let reserved_choice = choose_evidence(&game, reserved);
+    admit(&game, reserved_choice);
+    let mut stranded = game.clone();
+    select_evidence(&mut stranded, &[reserved]);
+    pay(&mut stranded);
+    act(&mut stranded, Action::ChooseMana { production: BLUE });
+    assert_eq!(stranded.object_view(reserved).zone, Zone::Exile);
+    reject(
+        &mut stranded,
+        Action::PayCosts {
+            payment: [0, 1, 0, 0, 0, 2],
+        },
+    );
+    act(&mut stranded, Action::EndManaWindow);
+    act(&mut stranded, Action::SubmitAttempt);
+    assert_eq!(
+        stranded.last_attempt_outcome_view(player).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMaterial)
+    );
+    if matches!(stranded.state.pending, Pending::ManaRollback { .. }) {
+        act(&mut stranded, Action::ChooseManaRollback { keep: false });
     }
+    assert_eq!(stranded.object_view(spell).zone, Zone::Hand);
+    assert_eq!(stranded.object_view(reserved).zone, Zone::Graveyard);
+    assert!(!stranded.object_view(source).tapped);
+    assert_eq!(stranded.counter_count(source, CounterKind::Unlock), 0);
+    assert_eq!(stranded.state.players[player.index()].mana, initial_payment);
 
     let choice = choose_evidence(&game, first);
     let index = game
@@ -896,7 +935,7 @@ fn a_parent_cast_keeps_its_exact_evidence_while_mana_evidence_branches_and_repla
     select_evidence(&mut game, &[second]);
     pay(&mut game);
     assert_eq!(game.object_view(reserved).zone, Zone::Graveyard);
-    reject(&mut game, Action::ChooseMana { production: GREEN });
+    admit(&game, Action::ChooseMana { production: GREEN });
     act(&mut game, Action::ChooseMana { production: BLUE });
     assert_eq!(game.state.pending, Pending::PayCosts { player });
     assert_eq!(game.counter_count(source, CounterKind::Unlock), 1);
