@@ -212,7 +212,19 @@ fn masked_meower_needs_a_discard_then_sacrifices_and_draws() {
     let mut game = scenario(player);
     let cat = put(&mut game, player, "Masked Meower", Zone::Battlefield);
     assert!(game.object_view(cat).keywords.contains(Keywords::HASTE));
-    reject(&mut game, activated(cat));
+    admit(&game, activated(cat));
+    let mut missing = game.clone();
+    act(&mut missing, activated(cat));
+    assert!(
+        !missing
+            .legal_actions()
+            .iter()
+            .any(|action| matches!(action, Action::ChooseAdditionalCost { .. }))
+    );
+    reject(&mut missing, Action::PayCosts { payment: [0; 6] });
+    recover_failed_cost(&mut missing, AttemptFailureReason::UnsatisfiedMaterial);
+    assert_eq!(missing.object_ref(cat), game.object_ref(cat));
+    assert_eq!(missing.object_view(cat).zone, Zone::Battlefield);
     let discard = put(&mut game, player, "Island", Zone::Hand);
     act(&mut game, activated(cat));
     let object = game.object_ref(discard);
@@ -400,7 +412,20 @@ fn research_team_uses_seven_mana_for_two_draws_on_the_opponent_s_turn() {
     let team = put(&mut game, player, "Oscorp Research Team", Zone::Battlefield);
     act(&mut game, Action::Pass);
     game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 5];
-    reject(&mut game, activated(team));
+    admit(&game, activated(team));
+    let mut short = game.clone();
+    act(&mut short, activated(team));
+    assert!(short.mana_payment_domain().is_none());
+    reject(
+        &mut short,
+        Action::PayCosts {
+            payment: [0, 1, 0, 0, 0, 5],
+        },
+    );
+    recover_failed_cost(&mut short, AttemptFailureReason::UnsatisfiedMana);
+    assert_eq!(short.object_ref(team), game.object_ref(team));
+    assert_eq!(short.hand_count(player), 0);
+    assert_eq!(short.state.players[player.index()].mana, [0, 1, 0, 0, 0, 5]);
     game.state.players[player.index()].mana[5] = 6;
     act(&mut game, activated(team));
     pay(&mut game);

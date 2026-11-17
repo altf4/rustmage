@@ -271,10 +271,21 @@ fn verify_pairings(
                         policy::smoke_index_from_observation(&observation, &offered)
                     });
                 let (index, action) = &eligible[selected];
-                assert!(
-                    !matches!(action, Action::Concede),
-                    "{label} attempted concession"
-                );
+                if matches!(action, Action::Concede) {
+                    std::fs::write(
+                        evidence.join(format!("{label}-stalled.json")),
+                        serde_json::to_vec_pretty(&serde_json::json!({
+                            "action_contract": ACTION_CONTRACT,
+                            "observation_schema": OBSERVATION_SCHEMA,
+                            "primitive_decision_limit": 4096,
+                            "config": config, "actions": trace,
+                            "observation": observation,
+                        }))
+                        .unwrap(),
+                    )
+                    .unwrap();
+                    panic!("{label} attempted concession");
+                }
                 match action {
                     Action::Attack { card } | Action::AttackPlaneswalker { card, .. } => {
                         pending_attack = Some(*card);
@@ -312,6 +323,10 @@ fn verify_pairings(
                         "actions": trace,
                         "actor": actor,
                         "failing_action": action,
+                        "observation": observation,
+                        "action_contract": ACTION_CONTRACT,
+                        "observation_schema": OBSERVATION_SCHEMA,
+                        "primitive_decision_limit": 4096,
                     });
                     let path = evidence.join(format!("{label}-failure.json"));
                     std::fs::write(&path, serde_json::to_vec_pretty(&failure).unwrap()).unwrap();
@@ -324,10 +339,28 @@ fn verify_pairings(
                 }
                 trace.push((actor, action.clone()));
             }
+            if game.outcome().is_none() {
+                let actor = game.actor().unwrap();
+                std::fs::write(
+                    evidence.join(format!("{label}-limit.json")),
+                    serde_json::to_vec_pretty(&serde_json::json!({
+                        "action_contract": ACTION_CONTRACT,
+                        "observation_schema": OBSERVATION_SCHEMA,
+                        "primitive_decision_limit": 4096,
+                        "config": config, "actions": trace,
+                        "observation": game.observe(actor),
+                    }))
+                    .unwrap(),
+                )
+                .unwrap();
+            }
             std::fs::write(
                 evidence.join(format!("{label}.json")),
                 serde_json::to_vec_pretty(&serde_json::json!({
                     "catalogue": CATALOGUE_VERSION,
+                    "action_contract": ACTION_CONTRACT,
+                    "observation_schema": OBSERVATION_SCHEMA,
+                    "primitive_decision_limit": 4096,
                     "config": config,
                     "decks": [left_name, right_name],
                     "actions": trace,
