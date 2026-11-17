@@ -130,7 +130,7 @@ fn choosing_after_mana_is_non_targeting_and_tracks_live_or_departed_power() {
     game.state.objects[victim as usize].counters.plus_one = 4;
     let spell = put(&mut game, player, "Shock", Zone::Hand);
     game.state.players[player.index()].mana = [0; 6];
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    admit(&game, Action::AnnounceCast { card: spell });
 
     let creature = put(&mut game, player, "Goblin Piker", Zone::Battlefield);
     game.state.objects[creature as usize].gained_keywords = Keywords::PROTECTION_RED;
@@ -200,7 +200,7 @@ fn only_the_exact_warped_exile_is_eligible_and_its_last_power_is_kept() {
     game.state.objects[victim as usize].counters.plus_one = 4;
     let ordinary = put(&mut game, player, "Bear Cub", Zone::Exile);
     let spell = put(&mut game, player, "Shock", Zone::Hand);
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    admit(&game, Action::AnnounceCast { card: spell });
 
     act(&mut game, Action::AnnounceWarp { card: warped });
     pay(&mut game);

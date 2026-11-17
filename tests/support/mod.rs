@@ -88,6 +88,7 @@ pub(crate) fn spawn(g: &mut Game, owner: Player, card: Card, zone: Zone) -> Card
     id
 }
 
+#[track_caller]
 pub(crate) fn act(g: &mut Game, action: Action) {
     g.apply(g.actor().expect("nonterminal scenario"), action.clone())
         .unwrap_or_else(|error| panic!("{action:?}: {error:?}; pending {:?}", g.state.pending));
@@ -163,6 +164,7 @@ pub(crate) fn settle(g: &mut Game) {
     panic!("48-action resolution budget exhausted");
 }
 
+#[track_caller]
 pub(crate) fn reject(g: &mut Game, action: Action) {
     let before = g.snapshot();
     let revision = g.revision();
@@ -175,6 +177,7 @@ pub(crate) fn reject(g: &mut Game, action: Action) {
 }
 
 /// Check an offered next step without committing it to the scenario's main path.
+#[track_caller]
 pub(crate) fn admit(g: &Game, action: Action) {
     let actor = g.actor().expect("nonterminal scenario");
     let index = g

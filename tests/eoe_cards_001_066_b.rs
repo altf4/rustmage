@@ -342,7 +342,7 @@ fn lightstall_inquisitor_privately_exiles_an_opponents_choice_with_exact_play_te
                 flash_surcharge: false,
                 surcharge: std::num::NonZeroU32::new(1).unwrap(),
             };
-            reject(&mut branch, taxed.clone());
+            admit(&branch, taxed.clone());
             branch.state.players[opponent.index()].mana[5] += 1;
             act(&mut branch, taxed);
             pay(&mut branch);

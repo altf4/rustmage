@@ -92,7 +92,7 @@ fn bygone_colossus_warps_as_a_nine_nine_then_uses_its_normal_cost_on_later_turns
     let mut game = scenario(player);
     let card = put(&mut game, player, "Bygone Colossus", Zone::Hand);
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
-    reject(&mut game, Action::AnnounceCast { card });
+    admit(&game, Action::AnnounceCast { card });
     act(&mut game, Action::AnnounceWarp { card });
     pay(&mut game);
     settle(&mut game);
@@ -107,7 +107,7 @@ fn bygone_colossus_warps_as_a_nine_nine_then_uses_its_normal_cost_on_later_turns
         game.state.turn == turn + 2 && game.state.step == Step::Main1
     });
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 8];
-    reject(&mut game, Action::AnnounceExile { card });
+    admit(&game, Action::AnnounceExile { card });
     game.state.players[player.index()].mana[5] = 9;
     act(&mut game, Action::AnnounceExile { card });
     pay(&mut game);
@@ -205,7 +205,7 @@ fn thrumming_hivepool_counts_controlled_slivers_grants_both_keywords_and_creates
     }
     let pool = put(&mut game, player, "Thrumming Hivepool", Zone::Hand);
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 4];
-    reject(&mut game, Action::AnnounceCast { card: pool });
+    admit(&game, Action::AnnounceCast { card: pool });
     game.create_tokens(player, sliver, 1, false);
     assert!(!game.advance_entries());
     cast(&mut game, pool, None);

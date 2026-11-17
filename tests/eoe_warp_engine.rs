@@ -194,16 +194,17 @@ fn warp_x_payment_preserves_printed_mana_value_and_exact_exile_recast() {
             game.x_choice().unwrap().intervals,
             vec![XInterval {
                 minimum: 0,
-                maximum: 2,
+                maximum: u32::MAX,
             }]
         );
         assert!(game.observe(p.other()).x_choice.is_none());
-        reject(&mut game, Action::ChooseX { value: 3 });
+        let mut larger = game.clone();
+        act(&mut larger, Action::ChooseX { value: 3 });
         let action = Action::ChooseX { value: 2 };
         let index = game
             .legal_actions()
             .iter()
-            .position(|a| *a == action)
+            .position(|a| *a == Action::ChooseX { value: 0 })
             .unwrap();
         let revision = game.revision();
         let snapshot = game.snapshot();
@@ -212,8 +213,13 @@ fn warp_x_payment_preserves_printed_mana_value_and_exact_exile_recast() {
         drop(game);
         assert_eq!(raw.apply(p.other(), action.clone()), Err(Error::WrongActor));
         assert_eq!(raw.snapshot(), snapshot);
-        act(&mut raw, action.clone());
+        act(&mut raw, Action::ChooseX { value: 0 });
         indexed.apply_index(p, revision, index).unwrap();
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        raw.restore(&snapshot).unwrap();
+        indexed.restore(&snapshot).unwrap();
+        act(&mut raw, action.clone());
+        act(&mut indexed, action);
         for child in [&mut raw, &mut indexed] {
             pay(child);
             let cast = child.state.stack.last().unwrap();
@@ -292,7 +298,7 @@ fn hybrid_warp_keeps_the_additional_cost_for_each_colored_equivalent() {
     let card = put(&mut game, p, "Goblin Piker", Zone::Hand);
     let warp = Action::AnnounceWarp { card };
     game.state.players[p.index()].mana = RED.colored;
-    reject(&mut game, warp.clone());
+    admit(&game, warp.clone());
 
     let mut sacrifice = game.clone();
     let donor = put(&mut sacrifice, p, "Bear Cub", Zone::Battlefield);
@@ -313,7 +319,7 @@ fn hybrid_warp_keeps_the_additional_cost_for_each_colored_equivalent() {
 
     game.state.players[p.index()].mana = [0, 0, 0, 1, 0, 2];
     act(&mut game, warp);
-    reject(&mut game, Action::ChooseSpellCost { cost: 1 });
+    admit(&game, Action::ChooseSpellCost { cost: 1 });
     act(&mut game, Action::ChooseSpellCost { cost: 3 });
     pay(&mut game);
     let cast = game.state.stack.last().unwrap().cast.unwrap();
