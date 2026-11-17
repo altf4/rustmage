@@ -1359,10 +1359,12 @@ pub(super) fn counter_outcomes<W: super::ability_world::CharacteristicWorld + ?S
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone)]
-#[cfg(feature = "test-support")]
 pub(super) struct CounterPreview {
+    #[cfg(feature = "test-support")]
     pub index: usize,
+    #[cfg(feature = "test-support")]
     pub placement: CounterPlacement,
+    #[cfg(feature = "test-support")]
     pub used: Vec<CounterReplacementId>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

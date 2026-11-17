@@ -2,6 +2,7 @@
 use super::ability_world::CharacteristicWorld;
 use super::*;
 use crate::cards::StaticAbilityFragment;
+#[cfg(feature = "test-support")]
 use std::collections::BTreeSet;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

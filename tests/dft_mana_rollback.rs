@@ -198,6 +198,7 @@ fn rollback(p: Player, replacement: bool, dependent: bool) -> (Game, CardId, Car
     act(&mut g, Action::ChooseCastCost { clause });
     let object = g.object_ref(silver);
     act(&mut g, Action::ChooseAuraAttachment { object });
+    act(&mut g, Action::SubmitAttempt);
     assert!(
         matches!(g.state.pending, Pending::ManaRollback { .. }),
         "{p:?}/replacement={replacement}/dependent={dependent}: {:?}",

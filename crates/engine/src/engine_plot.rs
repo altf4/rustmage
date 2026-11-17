@@ -236,16 +236,7 @@ impl Game {
     pub(super) fn plot_x_choice(&self) -> Option<XChoiceView> {
         let request = *self.plot_payment()?;
         let symbols = request.x_symbols?.get();
-        let mut minimum = 0;
-        let mut maximum = (u32::MAX - request.cost.generic) / symbols;
-        while minimum < maximum {
-            let midpoint = minimum + (maximum - minimum).div_ceil(2);
-            if self.plot_payment_fundable(request.choose_x(midpoint)) {
-                minimum = midpoint;
-            } else {
-                maximum = midpoint - 1;
-            }
-        }
+        let maximum = (u32::MAX - request.cost.generic) / symbols;
         Some(XChoiceView {
             card: request.object,
             intervals: vec![XInterval {

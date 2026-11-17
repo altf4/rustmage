@@ -512,6 +512,7 @@ fn failure_reverses_discard_after_a_frozen_library_departure() {
             g.move_object(card, Zone::Hand);
         }
         let frozen = g.object_ref(card);
+        act(&mut g, Action::ChooseAdditionalCost { object: frozen });
         act(&mut g, Action::BeginOrderedCosts);
         let clause = g
             .state
@@ -531,7 +532,6 @@ fn failure_reverses_discard_after_a_frozen_library_departure() {
                 clause: clause as u16,
             },
         );
-        act(&mut g, Action::ChooseAdditionalCost { object: frozen });
         assert_eq!(g.object_view(card).zone, Zone::Graveyard);
         let saved = g.snapshot();
         let mut indexed = g.clone();
@@ -571,7 +571,6 @@ fn smoke_policy_keeps_each_players_failure_history_through_alternating_priority(
     let turn = g.state.turn;
     let mut failed = [false; 2];
     for _ in 0..80 {
-        let actor = g.actor().unwrap();
         let actions = g.legal_actions();
         let index = rustmage_core::policy::smoke_index(&g, &actions);
         let action = actions[index].clone();
@@ -596,7 +595,21 @@ fn smoke_policy_keeps_each_players_failure_history_through_alternating_priority(
 fn deferred_draw_reveal_joins_cast_triggers_before_ordering() {
     let p = Player::P0;
     let mut g = scenario(p);
-    let iconoclast = put(&mut g, p, "Third Path Iconoclast", Zone::Battlefield);
+    const OBSERVER: CardRules = CardRules {
+        effect: Effect::Permanent,
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::SpellCast {
+                relation: CastRelation::You,
+                filter: CastFilter::Noncreature,
+                ordinal: None,
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::GainLife(PlayerSet::Controller, 1)],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[(Card::from_name("Short Bow").unwrap(), &OBSERVER)]);
+    let iconoclast = put(&mut g, p, "Short Bow", Zone::Battlefield);
     put(&mut g, p, "Lorehold, the Historian", Zone::Battlefield);
     let spell = put(&mut g, p, "Divination", Zone::Hand);
     put(&mut g, p, "Shock", Zone::Library);

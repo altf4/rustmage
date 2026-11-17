@@ -29,9 +29,10 @@ pub fn rollback_planning_work() -> RollbackPlanningWork {
 }
 #[cfg(feature = "test-support")]
 fn count_rollback_branch() {
-    ROLLBACK_WORK.update(|mut work| {
+    ROLLBACK_WORK.with(|counter| {
+        let mut work = counter.get();
         work.replay_branches = work.replay_branches.saturating_add(1);
-        work
+        counter.set(work);
     });
 }
 
@@ -370,9 +371,10 @@ impl Game {
     }
     fn mana_rollback_suffix(&self, events: &[ManaEvent]) -> bool {
         #[cfg(feature = "test-support")]
-        ROLLBACK_WORK.update(|mut work| {
+        ROLLBACK_WORK.with(|counter| {
+            let mut work = counter.get();
             work.suffix_entries = work.suffix_entries.saturating_add(1);
-            work
+            counter.set(work);
         });
         // Every reversible suffix can be declined immediately. Only future
         // irreversible activations constrain earlier retention decisions.
@@ -429,15 +431,7 @@ impl Game {
             let mut rollback = self.state.cast_rollback.take().unwrap();
             let replay = rollback.replay.take().unwrap();
             self.state.pending = rollback.before.pending.clone();
-            self.complete_cast_rollback_restore(
-                &replay.current,
-                rollback.spell,
-                &rollback.library_moves,
-                &rollback.public_hand_cards,
-                &rollback.obscured_hand_cards,
-                &rollback.public_face_down,
-                &rollback.obscured_face_down,
-            );
+            self.complete_cast_rollback_restore(&replay.current, &rollback);
             self.finish_attempt_recovery(&mut rollback, replay.retained);
         }
     }
