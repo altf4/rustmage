@@ -4,6 +4,7 @@ use crate::ecl_scenarios::{simple_cast as cast, spawn};
 use crate::support::admit;
 use rustmage_core::cards::ChoiceColor;
 use rustmage_core::cards::*;
+use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::engine::*;
 
 #[path = "white_blue_inherited.rs"]
@@ -1755,7 +1756,9 @@ fn wild_unraveling_cannot_waive_additional_cost_and_uncounterable_spells_still_r
             }
             assert_eq!(unpaid.object_view(id).zone, Zone::Hand);
             assert_eq!(unpaid.state.players[0].mana, pool);
-            assert!(unpaid.state.stack.iter().any(|item| item.id == bolt));
+            assert!(unpaid.state.stack.iter().any(|item| {
+                item.kind == StackKind::Spell && item.source.is_some_and(|source| source.id == bolt)
+            }));
         }
     }
     let mut g = setup(Player::P1);
@@ -2486,7 +2489,9 @@ fn blossombind_blocks_blight_payment_routes_and_optional_resolution_payment() {
     assert_eq!(prohibited.counter_count(bear, CounterKind::MinusOne), 0);
     assert_eq!(prohibited.object_view(id).zone, Zone::Hand);
     assert_eq!(prohibited.state.players[0].mana, [0, 2, 0, 0, 0, 1]);
-    assert!(prohibited.state.stack.iter().any(|item| item.id == bolt));
+    assert!(prohibited.state.stack.iter().any(|item| {
+        item.kind == StackKind::Spell && item.source.is_some_and(|source| source.id == bolt)
+    }));
     checked(&mut g, Action::ChooseSpellCost { cost: 1 });
     checked(
         &mut g,
