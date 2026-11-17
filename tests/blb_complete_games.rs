@@ -350,6 +350,8 @@ fn bloomburrow_standard_games_finish_and_replay_with_real_mechanic_events() {
     let mut draws = 0;
     let mut games = 0;
     let mut actions = 0;
+    let mut failed_attempts = 0;
+    let mut completed_attempts = 0;
     let mut public_branches = 0;
     let mut private_branches = 0;
     let mut gameplay = Duration::ZERO;
@@ -374,6 +376,8 @@ fn bloomburrow_standard_games_finish_and_replay_with_real_mechanic_events() {
             let mut game = Game::new(config.clone()).unwrap();
             let mut journal = Vec::new();
             let mut branches = [false; 2];
+            let mut failed_ids = BTreeSet::new();
+            let mut completed_ids = BTreeSet::new();
             let started = Instant::now();
             while game.outcome().is_none() && journal.len() < 4096 {
                 let actor = game.actor().unwrap();
@@ -408,7 +412,19 @@ fn bloomburrow_standard_games_finish_and_replay_with_real_mechanic_events() {
                     );
                     panic!("{label}, decision {} {action:?}: {error}", journal.len());
                 }
-                coverage.transition(&view, &action, &game.observe(actor));
+                let after = game.observe(actor);
+                if let Some(outcome) = after.last_attempt_outcome {
+                    match outcome.outcome {
+                        rustmage::AttemptOutcome::Failed => {
+                            failed_ids.insert(outcome.attempt_id);
+                        }
+                        rustmage::AttemptOutcome::Completed => {
+                            completed_ids.insert(outcome.attempt_id);
+                        }
+                        _ => (),
+                    }
+                }
+                coverage.transition(&view, &action, &after);
                 journal.push((actor, action));
             }
             gameplay += started.elapsed();
@@ -416,7 +432,13 @@ fn bloomburrow_standard_games_finish_and_replay_with_real_mechanic_events() {
                 directory.as_deref(),
                 &format!("{label}.json"),
                 json!({
-                    "catalogue": rustmage::CATALOGUE_VERSION, "config": config,
+                    "catalogue": rustmage::CATALOGUE_VERSION,
+                    "action_contract": rustmage::ACTION_CONTRACT,
+                    "observation_schema": rustmage::OBSERVATION_SCHEMA,
+                    "caller_contract": "staged_smoke_current_counts_v1",
+                    "primitive_decision_limit": 4096,
+                    "failed_attempts": failed_ids.len(), "completed_attempts": completed_ids.len(),
+                    "config": config,
                     "decks": [left_name, right_name], "actions": journal, "outcome": game.outcome(),
                     "public_branch": branches[0], "private_branch": branches[1],
                 }),
@@ -428,6 +450,8 @@ fn bloomburrow_standard_games_finish_and_replay_with_real_mechanic_events() {
                 Outcome::Winner(player) => wins[player.index()] += 1,
                 Outcome::Draw => draws += 1,
             }
+            failed_attempts += failed_ids.len();
+            completed_attempts += completed_ids.len();
             actions += journal.len();
             games += 1;
             public_branches += usize::from(branches[0]);
@@ -470,6 +494,11 @@ fn bloomburrow_standard_games_finish_and_replay_with_real_mechanic_events() {
         );
     }
     let report = json!({
+        "action_contract": rustmage::ACTION_CONTRACT,
+        "observation_schema": rustmage::OBSERVATION_SCHEMA,
+        "caller_contract": "staged_smoke_current_counts_v1",
+        "primitive_decision_limit": 4096,
+        "failed_attempts": failed_attempts, "completed_attempts": completed_attempts,
         "games": games, "decisions": actions, "wins": wins, "draws": draws,
         "colors": coverage.colors, "actual_casts": coverage.casts, "cast_names": coverage.names,
         "events": coverage.events, "public_branches": public_branches,
