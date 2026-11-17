@@ -4,6 +4,7 @@ use rustmage::{
     StackKind, Zone,
 };
 use std::collections::{BTreeMap, BTreeSet};
+use std::path::{Path, PathBuf};
 use std::time::Instant;
 
 const PAIRINGS: &[(usize, usize)] = &[
@@ -153,6 +154,16 @@ fn private(view: &Observation) -> bool {
     view.library_choice.is_some() || view.search_choice.is_some() || view.mana_payment.is_some()
 }
 
+fn write_report(directory: Option<&Path>, name: &str, report: serde_json::Value) {
+    if let Some(directory) = directory {
+        std::fs::write(
+            directory.join(name),
+            serde_json::to_vec_pretty(&report).unwrap(),
+        )
+        .unwrap();
+    }
+}
+
 #[derive(Default)]
 struct Evidence {
     games: usize,
@@ -263,6 +274,15 @@ fn eoe_standard_games_reach_terminal_outcomes_and_replay_owned_choices() {
     let start = Instant::now();
     let mut evidence = Evidence::default();
     let trace = std::env::var_os("RUSTMAGE_EOE_TRACE").is_some();
+    let directory = std::env::var_os("RUSTMAGE_EOE_EVIDENCE_DIR")
+        .map(PathBuf::from)
+        .or_else(|| {
+            std::env::var_os("RUSTMAGE_TDM_EVIDENCE_DIR")
+                .map(|directory| PathBuf::from(directory).join("eoe"))
+        });
+    if let Some(directory) = &directory {
+        std::fs::create_dir_all(directory).unwrap();
+    }
     for &(a, b) in PAIRINGS {
         for (i, seed) in [4, 9].into_iter().enumerate() {
             let config = || Config {
@@ -283,10 +303,21 @@ fn eoe_standard_games_reach_terminal_outcomes_and_replay_owned_choices() {
                 eprintln!("EOE game {a} vs {b} seed {seed} started");
             }
             while game.outcome().is_none() {
-                assert!(
-                    journal.len() < 4096,
-                    "EOE game {a} vs {b}, seed {seed} did not terminate"
-                );
+                if journal.len() >= 4096 {
+                    let actor = game.actor().unwrap();
+                    write_report(
+                        directory.as_deref(),
+                        &format!("{a}-{b}-{seed}-limit.json"),
+                        serde_json::json!({
+                            "action_contract": rustmage::ACTION_CONTRACT,
+                            "observation_schema": rustmage::OBSERVATION_SCHEMA,
+                            "primitive_decision_limit": 4096,
+                            "config": config(), "actions": journal,
+                            "observation": game.observe(actor),
+                        }),
+                    );
+                    panic!("EOE game {a} vs {b}, seed {seed} did not terminate");
+                }
                 let actor = game.actor().unwrap();
                 if trace && journal.len().is_multiple_of(64) {
                     eprintln!(
@@ -298,7 +329,20 @@ fn eoe_standard_games_reach_terminal_outcomes_and_replay_owned_choices() {
                 let before = game.observe(actor);
                 let index = decision(&before);
                 let action = before.actions[index].clone();
-                assert_ne!(action, Action::Concede);
+                if action == Action::Concede {
+                    write_report(
+                        directory.as_deref(),
+                        &format!("{a}-{b}-{seed}-stalled.json"),
+                        serde_json::json!({
+                            "action_contract": rustmage::ACTION_CONTRACT,
+                            "observation_schema": rustmage::OBSERVATION_SCHEMA,
+                            "primitive_decision_limit": 4096,
+                            "config": config(), "actions": journal,
+                            "observation": before,
+                        }),
+                    );
+                    panic!("EOE game {a} vs {b}, seed {seed} chose Concede");
+                }
                 let sensitive = private(&before);
                 // A Devour choice on a public spell has a public entrant and lands.
                 if sensitive || before.entry_devour.is_some() || journal.len().is_multiple_of(64) {
