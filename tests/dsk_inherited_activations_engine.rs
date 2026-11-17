@@ -137,6 +137,18 @@ fn announcement(row: InheritedAbilityView) -> Action {
     }
 }
 
+fn assert_restored_attempt_gameplay(original: &Game, replayed: &Game) {
+    let original_id = original.attempt_view(PLAYER).unwrap().attempt_id;
+    let replayed_id = replayed.attempt_view(PLAYER).unwrap().attempt_id;
+    assert!(
+        replayed_id > original_id,
+        "replayed attempt receives a fresh identity"
+    );
+    let mut normalized = replayed.clone();
+    normalized.state.cast_rollback.as_mut().unwrap().attempt_id = original_id;
+    assert_eq!(original.snapshot(), normalized.snapshot());
+}
+
 #[test]
 fn live_names_controllers_and_exact_donors_gate_independent_source_use() {
     let mimic = named("Grizzly Bears");
@@ -175,7 +187,7 @@ fn live_names_controllers_and_exact_donors_gate_independent_source_use() {
     indexed
         .apply_index(PLAYER, indexed.revision(), index)
         .unwrap();
-    assert_eq!(game.snapshot(), indexed.snapshot());
+    assert_restored_attempt_gameplay(&game, &indexed);
     pay(&mut game);
     reject(&mut game, action.clone());
     game.move_object(donor, Zone::Exile);
@@ -606,7 +618,7 @@ fn two_vacuums_and_a_curator_have_separate_linked_exile_through_copy_and_sacrifi
     assert_eq!(game.snapshot(), indexed.snapshot());
     game.restore(&checkpoint).unwrap();
     game.apply_index(PLAYER, game.revision(), index).unwrap();
-    assert_eq!(game.snapshot(), indexed.snapshot());
+    assert_restored_attempt_gameplay(&indexed, &game);
     pay(&mut game);
     assert_eq!(game.object_view(source).zone, Zone::Graveyard);
     let packet = game.state.stack.last().unwrap();
