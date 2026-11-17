@@ -282,6 +282,11 @@ impl Game {
             waterbend.selected = Some(Vec::new());
             return;
         }
+        // Resolution has its separate payment above. An owned announcement
+        // now enters payment, including plans with no ordered clause state.
+        if self.state.cast_rollback.is_some() {
+            self.end_attempt_mana_window();
+        }
         let announcement = self
             .state
             .announcing
