@@ -207,6 +207,23 @@ impl Game {
         {
             return false;
         }
+        let rules = definition.activation(ability);
+        // This fixed zero-mana cost has no mana window or other cost group
+        // that could remove the current prohibition. Taxes, X and replacement
+        // equip routes still declare normally and validate their actual payment.
+        if goal.generic == 0
+            && goal.required == [0; 6]
+            && rules.cost
+                == (ActivationCost {
+                    tap: rules.cost.tap,
+                    ..ActivationCost::ZERO
+                })
+            && definition.activation_x_symbols(ability) == 0
+            && !rules.is_equip()
+            && activations::printed_counter_placement_prohibited(self, source, definition, ability)
+        {
+            return false;
+        }
         let mut packet = self.activation_packet(goal.actor, source.card, ability);
         packet.set_source_definition(definition);
         packet.borrowed_slot = borrowed_slot;
