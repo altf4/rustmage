@@ -56,7 +56,9 @@ impl SourcePreventionState {
             + self
                 .shields
                 .iter()
-                .map(|shield| shield.item.owned_bytes() - std::mem::size_of::<SpellView>())
+                // SpellView is inline in Shield; owned_bytes counts only its
+                // separately owned payload and does not include that record.
+                .map(|shield| shield.item.owned_bytes())
                 .sum::<usize>()
     }
 }
