@@ -397,7 +397,8 @@ fn decision(view: &Observation, actions: &[Action]) -> usize {
         // than spending their early turns attempting three-mana spells on two.
         return index;
     }
-    if let Some((index, _, _)) = actions
+    // Preserve the quest setup when another nonland can be bottomed instead.
+    if let Some((index, _, _, _)) = actions
         .iter()
         .enumerate()
         .filter_map(|(index, action)| {
@@ -408,10 +409,11 @@ fn decision(view: &Observation, actions: &[Action]) -> usize {
             Some((
                 index,
                 object.card.is_land() == (opening_lands > 3),
+                object.card.name() != "Support Mission",
                 object.card.fixed_mana_value(),
             ))
         })
-        .max_by_key(|&(_, preferred, value)| (preferred, value))
+        .max_by_key(|&(_, preferred, other_than_setup, value)| (preferred, other_than_setup, value))
     {
         return index;
     }
