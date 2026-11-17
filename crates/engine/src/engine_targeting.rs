@@ -2123,7 +2123,11 @@ impl Game {
                 return;
             };
             let item = &announcement.item;
-            if spec.max > 0 && self.visit_item_targets(item, spec.rule, |_| true) {
+            if spec.max > 0 && self.visit_item_targets(item, spec.rule, |_| true)
+                || spec.min > 0 && !announcement.trigger
+            {
+                // A caller-driven declaration may expose a required group
+                // with no current target. Preserve it for explicit failure.
                 let player = item.controller;
                 self.state.announcing.as_mut().unwrap().spec = spec;
                 self.state.pending = Pending::Targets { player };

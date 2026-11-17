@@ -447,7 +447,7 @@ fn variable_face_up_and_resolution_payments_do_not_enumerate_huge_unpaid_x() {
 
 #[test]
 fn resolution_alternatives_share_exact_domains_and_bounded_indexed_payments() {
-    let _rules = fixture_rules::activate(&[(Card::Opt, &RESOLUTION)]);
+    let _rules = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &RESOLUTION)]);
     let player = Player::P0;
     let mut game = scenario(player);
     let spell = put(&mut game, player, "Opt", Zone::Hand);
@@ -484,7 +484,7 @@ fn resolution_alternatives_share_exact_domains_and_bounded_indexed_payments() {
 #[test]
 fn special_raw_payments_still_require_eligible_mana_and_selected_materials() {
     let _rules = fixture_rules::activate(&[
-        (Card::Opt, &RESOLUTION_MATERIAL),
+        (Card::from_name("Opt").unwrap(), &RESOLUTION_MATERIAL),
         (Card::GoblinPiker, &RESTRICTED),
     ]);
     let player = Player::P0;
@@ -555,7 +555,7 @@ fn special_raw_payments_still_require_eligible_mana_and_selected_materials() {
 
 #[test]
 fn foretell_domain_is_private_and_only_accepts_its_action_kind() {
-    let _rules = fixture_rules::activate(&[(Card::Opt, &FORETELL)]);
+    let _rules = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &FORETELL)]);
     let player = Player::P1;
     let mut game = scenario(player);
     let card = put(&mut game, player, "Opt", Zone::Hand);
