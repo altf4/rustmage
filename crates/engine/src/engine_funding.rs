@@ -5902,7 +5902,7 @@ impl Game {
                                     Self::announcement_base_cost(announcement),
                                     announcement.item.x.unwrap_or(0),
                                 )
-                                .expect("validated scalar cost");
+                                .capacity("spell mana cost exhausted");
                         }
                         self.provisional_target_cost(
                             announcement,

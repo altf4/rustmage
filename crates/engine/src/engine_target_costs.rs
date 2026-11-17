@@ -417,6 +417,6 @@ impl Game {
             qualifies,
             Self::announcement_optional_reduction(a),
         )
-        .expect("validated provisional cost")
+        .capacity("spell mana cost exhausted")
     }
 }
