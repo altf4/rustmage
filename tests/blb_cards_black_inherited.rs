@@ -431,9 +431,42 @@ fn huskburster_swarm_reduces_generic_cost_for_its_owners_creature_cards_only() {
     put(&mut game, player.other(), "Grizzly Bears", Zone::Graveyard);
     put(&mut game, player, "Forest", Zone::Exile);
     game.state.players[player.index()].mana = [0, 0, 1, 0, 0, 0];
-    reject(&mut game, Action::AnnounceCast { card: swarm });
+    act(&mut game, Action::AnnounceCast { card: swarm });
+    assert_eq!(
+        game.state.announcing.as_ref().unwrap().total_cost,
+        Some(ManaCost {
+            colored: [0, 0, 1, 0, 0, 0],
+            generic: 1,
+        })
+    );
+    reject(
+        &mut game,
+        Action::PayCosts {
+            payment: [0, 0, 1, 0, 0, 0],
+        },
+    );
+    act(&mut game, Action::EndManaWindow);
+    act(&mut game, Action::SubmitAttempt);
+    let outcome = game.last_attempt_outcome_view(player).unwrap();
+    assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+    assert_eq!(outcome.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+    assert_eq!(game.object_view(swarm).zone, Zone::Hand);
+    assert_eq!(game.state.players[player.index()].mana, [0, 0, 1, 0, 0, 0]);
     put(&mut game, player, "Grizzly Bears", Zone::Graveyard);
-    cast(&mut game, swarm, None);
+    act(&mut game, Action::AnnounceCast { card: swarm });
+    assert_eq!(
+        game.state.announcing.as_ref().unwrap().total_cost,
+        Some(ManaCost {
+            colored: [0, 0, 1, 0, 0, 0],
+            generic: 0,
+        })
+    );
+    act(
+        &mut game,
+        Action::PayCosts {
+            payment: [0, 0, 1, 0, 0, 0],
+        },
+    );
     settle(&mut game);
     assert_eq!(game.state.players[player.index()].mana, [0; 6]);
     assert!(
