@@ -505,9 +505,8 @@ fn failure_reverses_discard_after_a_frozen_library_departure() {
             &[Instruction::Draw(PlayerSet::Controller, 2)],
         ),
         extras: &rustmage_core::cards::authored::CardExtras {
-            has_convoke: true,
             additional_cost: Some(AdditionalCost {
-                kind: EffectChoiceKind::Discard,
+                kind: EffectChoiceKind::DiscardOrLife(2),
                 filter: SacrificeFilter {
                     kinds: 0,
                     other: true,
@@ -564,6 +563,20 @@ fn failure_reverses_discard_after_a_frozen_library_departure() {
             act(&mut g, Action::ChooseAdditionalCost { object: frozen });
         }
         assert_eq!(g.object_view(card).zone, Zone::Graveyard);
+        let mana_clause = g
+            .observe(p)
+            .cast_costs
+            .unwrap()
+            .clauses
+            .iter()
+            .position(|row| row.clause == CastCostClause::Mana)
+            .unwrap() as u16;
+        act(
+            &mut g,
+            Action::ChooseCastCost {
+                clause: mana_clause,
+            },
+        );
         let saved = g.snapshot();
         let mut indexed = g.clone();
         let revision = indexed.revision();

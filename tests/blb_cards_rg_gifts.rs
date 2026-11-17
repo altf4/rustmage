@@ -105,7 +105,30 @@ fn sazacaps_brew_requires_discard_and_can_still_draw_after_the_creature_departs(
     let mut game = scenario(player);
     let creature = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
     let brew = put(&mut game, player, "Sazacap's Brew", Zone::Hand);
-    reject(&mut game, Action::AnnounceCast { card: brew });
+    let mut missing_discard = game.clone();
+    announce_gift(&mut missing_discard, player, brew, false);
+    act(
+        &mut missing_discard,
+        Action::ChooseTarget {
+            target: Target::Player(player),
+        },
+    );
+    if missing_discard
+        .legal_actions()
+        .contains(&Action::FinishTargets)
+    {
+        act(&mut missing_discard, Action::FinishTargets);
+    }
+    act(&mut missing_discard, Action::EndManaWindow);
+    act(&mut missing_discard, Action::SubmitAttempt);
+    assert_eq!(
+        missing_discard
+            .last_attempt_outcome_view(player)
+            .unwrap()
+            .outcome,
+        AttemptOutcome::Failed
+    );
+    assert_eq!(missing_discard.object_view(brew).zone, Zone::Hand);
     let discarded = put(&mut game, player, "Forest", Zone::Hand);
     announce_gift(&mut game, player, brew, true);
     act(

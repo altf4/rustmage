@@ -195,7 +195,25 @@ fn rottenmouth_viper_applies_sacrifices_and_resolves_each_blight_choice() {
     put(&mut game, player, "Doubling Season", Zone::Battlefield);
     game.state.players[player.index()].mana = [0, 0, 1, 0, 3, 0];
     act(&mut game, Action::AnnounceCast { card: viper });
-    reject(&mut game, Action::ChooseX { value: 1 });
+    let mut insufficient_discount = game.clone();
+    act(&mut insufficient_discount, Action::ChooseX { value: 1 });
+    act(&mut insufficient_discount, Action::BeginOrderedCosts);
+    cast_cost(&mut insufficient_discount, CastCostClause::Additional);
+    choose_cost(&mut insufficient_discount, food);
+    cast_cost(&mut insufficient_discount, CastCostClause::Mana);
+    act(&mut insufficient_discount, Action::SubmitAttempt);
+    assert_eq!(
+        insufficient_discount
+            .last_attempt_outcome_view(player)
+            .unwrap()
+            .outcome,
+        AttemptOutcome::Failed
+    );
+    assert_eq!(insufficient_discount.object_view(viper).zone, Zone::Hand);
+    assert_eq!(
+        insufficient_discount.object_view(food).zone,
+        Zone::Battlefield
+    );
     act(&mut game, Action::ChooseX { value: 2 });
     act(&mut game, Action::BeginOrderedCosts);
     cast_cost(&mut game, CastCostClause::Additional);
