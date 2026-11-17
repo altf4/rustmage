@@ -874,10 +874,20 @@ fn ecl_transform_eirdu_grant_excludes_noncreatures_opponents_and_blanked_provide
         ));
         let creature = named(&mut g, p, "Great Forest Druid", Zone::Hand);
         g.state.players[p.index()].mana = [0; 6];
-        assert!(
-            !g.legal_actions()
-                .contains(&Action::AnnounceCast { card: creature })
+        admit(&g, Action::AnnounceCast { card: creature });
+        let mut unpaid = g.clone();
+        checked(&mut unpaid, Action::AnnounceCast { card: creature });
+        assert!(!unpaid.legal_actions().iter().any(|action| matches!(
+            action,
+            Action::ChooseConvoker { .. } | Action::PayCosts { .. }
+        )));
+        checked(&mut unpaid, Action::EndManaWindow);
+        checked(&mut unpaid, Action::SubmitAttempt);
+        assert_eq!(
+            unpaid.last_attempt_outcome_view(p).unwrap().reason,
+            Some(AttemptFailureReason::UnsatisfiedMana)
         );
+        assert_eq!(unpaid.object_view(creature).zone, Zone::Hand);
         assert!(
             rustmage_core::engine::convoke::available(
                 &g,

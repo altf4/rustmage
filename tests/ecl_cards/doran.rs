@@ -1,7 +1,34 @@
 //! Doran uses the spell's real characteristics and an exact, non-targeted combat subject.
 use crate::ecl_scenarios::{cast, checked, named, settle, setup};
+use crate::support::{admit, reject};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
+fn assert_unpaid(g: &Game, card: CardId, generic: u32) {
+    admit(g, Action::AnnounceCast { card });
+    let mut attempt = g.clone();
+    let player = attempt.actor().unwrap();
+    checked(&mut attempt, Action::AnnounceCast { card });
+    assert_eq!(
+        attempt
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .total_cost
+            .unwrap()
+            .generic,
+        generic
+    );
+    let payment = attempt.state.players[player.index()].mana;
+    reject(&mut attempt, Action::PayCosts { payment });
+    checked(&mut attempt, Action::EndManaWindow);
+    checked(&mut attempt, Action::SubmitAttempt);
+    assert_eq!(
+        attempt.last_attempt_outcome_view(player).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
+    assert_eq!(attempt.object_view(card).zone, Zone::Hand);
+}
 fn attack(g: &mut Game, ids: &[CardId]) {
     g.state.step = Step::Attackers;
     g.state.pending = Pending::Attackers;
@@ -37,10 +64,7 @@ fn ecl_doran_paid_body_reduces_only_qualifying_creature_generic_costs() {
         assert!(g.on_battlefield(barrier));
         let bear = named(&mut g, p, "Bear Cub", Zone::Hand);
         g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 0];
-        assert!(
-            !g.legal_actions()
-                .contains(&Action::AnnounceCast { card: bear })
-        );
+        assert_unpaid(&g, bear, 1);
         g.state.players[p.index()].mana[5] = 1;
         cast(&mut g, bear, None, &[]);
         assert_eq!(g.state.stack.last().unwrap().cast.unwrap().mana_spent(), 2);
@@ -65,10 +89,7 @@ fn ecl_doran_reducer_requires_current_control_and_available_source_ability() {
             }
             let barrier = named(&mut g, p, "Gleaming Barrier", Zone::Hand);
             g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
-            assert!(
-                !g.legal_actions()
-                    .contains(&Action::AnnounceCast { card: barrier })
-            );
+            assert_unpaid(&g, barrier, 2);
             g.state.players[p.index()].mana[5] = 2;
             cast(&mut g, barrier, None, &[]);
             settle(&mut g);

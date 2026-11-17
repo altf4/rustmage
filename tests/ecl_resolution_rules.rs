@@ -568,12 +568,28 @@ fn graveyard_pair_mode_and_first_target_need_a_distinct_shared_creature_type() {
             continue;
         }
         checked(&mut g, mode);
-        reject(
-            &mut g,
+        let mut stranded = g.clone();
+        checked(
+            &mut stranded,
             Action::ChooseTarget {
                 target: Target::Card(giant),
             },
         );
+        for card in [giant, bear, partner] {
+            reject(
+                &mut stranded,
+                Action::ChooseTarget {
+                    target: Target::Card(card),
+                },
+            );
+        }
+        reject(&mut stranded, Action::FinishTargets);
+        checked(&mut stranded, Action::SubmitAttempt);
+        assert_eq!(
+            stranded.last_attempt_outcome_view(p).unwrap().reason,
+            Some(AttemptFailureReason::UnsatisfiedDeclaration)
+        );
+        assert_eq!(stranded.object_view(spell).zone, Zone::Hand);
         checked(
             &mut g,
             Action::ChooseTarget {
