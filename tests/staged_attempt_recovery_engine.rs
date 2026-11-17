@@ -211,3 +211,135 @@ fn restored_active_attempt_has_independent_raw_and_indexed_failure_continuations
     assert_eq!(original.object_view(spell).zone, Zone::Stack);
     assert_eq!(raw.object_view(spell).zone, Zone::Hand);
 }
+
+#[test]
+fn drawn_cards_stay_opaque_but_can_pay_unrestricted_discard_until_attempt_finishes() {
+    const UNRESTRICTED: SacrificeFilter = SacrificeFilter {
+        keywords: Keywords::NONE,
+        source_only: false,
+        kinds: 0,
+        nonland: false,
+        other: true,
+        tokens: None,
+        artifact_enchantment_or_token: false,
+        subtype: None,
+    };
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let spell = put(&mut g, p, "Bear Cub", Zone::Hand);
+        let drawn = put(&mut g, p, "Bear Cub", Zone::Library);
+        act(&mut g, Action::AnnounceCast { card: spell });
+        assert!(g.draw_one_unreplaced(p));
+        let object = g.object_ref(drawn);
+        let source = g
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .item
+            .source
+            .unwrap()
+            .object;
+        assert!(g.attempt_draw_is_face_down(object));
+        assert_eq!(
+            g.attempt_draws_view(p),
+            vec![AttemptDrawView { object, player: p }]
+        );
+        assert!(g.attempt_draws_view(p.other()).is_empty());
+        assert!(
+            !g.observe(p)
+                .objects
+                .iter()
+                .any(|row| row.reference == object)
+        );
+        assert!(g.additional_candidate(
+            AdditionalCost {
+                kind: EffectChoiceKind::Discard,
+                filter: UNRESTRICTED
+            },
+            p,
+            source,
+            object,
+        ));
+        assert!(!g.additional_candidate(
+            AdditionalCost {
+                kind: EffectChoiceKind::Discard,
+                filter: SacrificeFilter {
+                    kinds: 1,
+                    ..UNRESTRICTED
+                }
+            },
+            p,
+            source,
+            object,
+        ));
+        pay(&mut g);
+        assert!(!g.attempt_draw_is_face_down(object));
+        assert!(g.attempt_draws_view(p).is_empty());
+        assert!(
+            g.observe(p)
+                .objects
+                .iter()
+                .any(|row| row.reference == object)
+        );
+        assert!(
+            !g.observe(p.other())
+                .objects
+                .iter()
+                .any(|row| row.reference == object)
+        );
+    }
+}
+
+#[test]
+fn reversal_retains_actual_draw_incarnation_ordinals_and_deferred_reveal_without_reroll() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    zero_pool(&mut g, p);
+    let spell = put(&mut g, p, "Bear Cub", Zone::Hand);
+    let drawn = put(&mut g, p, "Shock", Zone::Library);
+    act(&mut g, Action::AnnounceCast { card: spell });
+    assert!(g.draw_one_unreplaced(p));
+    let object = g.object_ref(drawn);
+    let rng = g.state.rng;
+    g.remember_public_hand(object);
+    assert!(
+        !g.observe(p.other())
+            .objects
+            .iter()
+            .any(|row| row.reference == object)
+    );
+    close_and_submit(&mut g);
+    assert_eq!(g.object_ref(drawn), object);
+    assert_eq!(g.object_view(drawn).zone, Zone::Hand);
+    assert!(!g.state.players[p.index()].library.contains(&drawn));
+    assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 1);
+    assert_eq!(g.state.rng, rng);
+    assert!(
+        g.observe(p.other())
+            .objects
+            .iter()
+            .any(|row| row.reference == object)
+    );
+    assert!(g.attempt_draws_view(p).is_empty());
+}
+
+#[test]
+fn optional_draw_reveal_waits_for_recovery_and_resumes_original_priority() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    zero_pool(&mut g, p);
+    put(&mut g, p, "Lorehold, the Historian", Zone::Battlefield);
+    let spell = put(&mut g, p, "Bear Cub", Zone::Hand);
+    let drawn = put(&mut g, p, "Shock", Zone::Library);
+    act(&mut g, Action::AnnounceCast { card: spell });
+    assert!(g.draw_one_unreplaced(p));
+    assert!(g.observe(p).miracle.is_none());
+    assert!(!matches!(g.state.pending, Pending::MiracleReveal { .. }));
+    close_and_submit(&mut g);
+    assert_eq!(g.observe(p).miracle.unwrap().object, g.object_ref(drawn));
+    assert!(g.state.announcing.is_none());
+    act(&mut g, Action::DeclineMiracle);
+    assert_eq!(g.state.pending, Pending::Priority);
+    assert_eq!(g.state.priority, p);
+}

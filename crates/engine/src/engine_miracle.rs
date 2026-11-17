@@ -11,7 +11,7 @@ pub struct MiracleChoiceView {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
-struct RevealChoice {
+pub(super) struct RevealChoice {
     player: Player,
     object: ObjectRef,
     grant: Option<(AttachmentTriggerView, u16)>,
@@ -57,6 +57,8 @@ struct Protection {
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct MiracleState {
     choice: Option<RevealChoice>,
+    /// Optional reveals released after an enclosing cast or activation finishes.
+    reveal_resume: Option<Box<Pending>>,
     draw_order: Option<DrawOrder>,
     remaining_choices: VecDeque<RevealChoice>,
     draws: VecDeque<DrawRequest>,
@@ -67,6 +69,9 @@ pub(super) struct MiracleState {
 pub(super) fn owned_bytes(data: &Option<Box<MiracleState>>) -> usize {
     data.as_ref().map_or(0, |s| {
         std::mem::size_of::<MiracleState>()
+            + s.reveal_resume.as_ref().map_or(0, |pending| {
+                std::mem::size_of::<Pending>() + pending.owned_bytes()
+            })
             + s.remaining_choices.len() * std::mem::size_of::<RevealChoice>()
             + s.draws
                 .iter()
@@ -165,12 +170,31 @@ impl Game {
                 }
             }
         }
+        if self.defer_attempt_miracle_reveals(object, &mut choices) {
+            return;
+        }
         if let Some(choice) = choices.pop_front() {
             let state = self.state.miracle.get_or_insert_default();
             debug_assert!(state.choice.is_none() && state.remaining_choices.is_empty());
             state.choice = Some(choice);
             state.remaining_choices = choices;
             self.state.pending = Pending::MiracleReveal { player };
+        }
+    }
+    pub(super) fn resume_deferred_miracle_reveals(&mut self, choices: Vec<RevealChoice>) {
+        if choices.is_empty() {
+            return;
+        }
+        let pending = self.state.pending.clone();
+        let state = self.state.miracle.get_or_insert_default();
+        state.remaining_choices.extend(choices);
+        if state.choice.is_none() && state.draw_order.is_none() {
+            let choice = state.remaining_choices.pop_front().unwrap();
+            self.state.pending = Pending::MiracleReveal {
+                player: choice.player,
+            };
+            state.choice = Some(choice);
+            state.reveal_resume.get_or_insert_with(|| Box::new(pending));
         }
     }
     pub(super) fn draw_many_interruptible(&mut self, player: Player, amount: u128) {
@@ -425,7 +449,9 @@ impl Game {
         for row in state.protection {
             self.grant_keyword_effects(&row.objects, row.source, Keywords::INDESTRUCTIBLE);
         }
-        if self.state.resolving.is_some() {
+        if let Some(pending) = state.reveal_resume {
+            self.state.pending = *pending;
+        } else if self.state.resolving.is_some() {
             self.run_program();
         } else {
             self.give_priority();
