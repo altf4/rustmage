@@ -5412,7 +5412,6 @@ fn soul_immolation_zero_requires_a_creature_but_does_not_place_counters_even_whe
     for p in [Player::P0, Player::P1] {
         let mut g = hexing_setup(p);
         let spell = named(&mut g, p, "Soul Immolation", Zone::Hand);
-        reject(&mut g, Action::AnnounceCast { card: spell });
         reject(
             &mut g,
             Action::Cast {
@@ -5421,21 +5420,73 @@ fn soul_immolation_zero_requires_a_creature_but_does_not_place_counters_even_whe
                 payment: [0, 0, 0, 5, 0, 0],
             },
         );
-        let witness = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
-        hexing_open(&mut g, p, "Blossombind", Some(Target::Card(witness)));
-        hexing_finish(&mut g, true);
-        assert!(replacements::counters_prohibited(&g, g.object_ref(witness)));
+        let mana = g.state.players[p.index()].mana;
         checked(&mut g, Action::AnnounceCast { card: spell });
         assert_eq!(
             g.x_choice().unwrap().intervals,
             vec![XInterval {
                 minimum: 0,
-                maximum: 0
+                maximum: 0,
             }]
         );
-        reject(&mut g, Action::ChooseX { value: 1 });
         checked(&mut g, Action::ChooseX { value: 0 });
+        checked(&mut g, Action::EndManaWindow);
+        open_additional_payment(&mut g);
+        assert!(
+            !g.legal_actions()
+                .iter()
+                .any(|action| matches!(action, Action::ChooseAdditionalCost { .. }))
+        );
+        checked(&mut g, Action::SubmitAttempt);
+        let failure = g.last_attempt_outcome_view(p).unwrap();
+        assert_eq!(failure.outcome, AttemptOutcome::Failed);
+        assert_eq!(
+            failure.reason,
+            Some(AttemptFailureReason::UnsatisfiedMaterial)
+        );
+        assert_eq!(g.object_view(spell).zone, Zone::Hand);
+        assert_eq!(g.state.players[p.index()].mana, mana);
+
+        let witness = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        hexing_open(&mut g, p, "Blossombind", Some(Target::Card(witness)));
+        hexing_finish(&mut g, true);
+        assert!(replacements::counters_prohibited(&g, g.object_ref(witness)));
+        let mana = g.state.players[p.index()].mana;
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        assert_eq!(
+            g.x_choice().unwrap().intervals,
+            vec![XInterval {
+                minimum: 0,
+                maximum: 2,
+            }]
+        );
+        reject(&mut g, Action::ChooseX { value: 3 });
+        checked(&mut g, Action::ChooseX { value: 1 });
+        checked(&mut g, Action::EndManaWindow);
+        open_additional_payment(&mut g);
         let object = g.object_ref(witness);
+        reject(&mut g, Action::ChooseAdditionalCost { object });
+        assert!(
+            !g.legal_actions()
+                .iter()
+                .any(|action| matches!(action, Action::ChooseAdditionalCost { .. }))
+        );
+        checked(&mut g, Action::SubmitAttempt);
+        let failure = g.last_attempt_outcome_view(p).unwrap();
+        assert_eq!(failure.outcome, AttemptOutcome::Failed);
+        assert_eq!(
+            failure.reason,
+            Some(AttemptFailureReason::UnsatisfiedMaterial)
+        );
+        assert_eq!(g.object_view(spell).zone, Zone::Hand);
+        assert_eq!(g.object_ref(witness), object);
+        assert_eq!(g.object_view(witness).zone, Zone::Battlefield);
+        assert_eq!(g.counter_count(witness, CounterKind::MinusOne), 0);
+        assert!(replacements::counters_prohibited(&g, object));
+        assert_eq!(g.state.players[p.index()].mana, mana);
+
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        checked(&mut g, Action::ChooseX { value: 0 });
         pay_additional(&mut g, object);
         kindle_pay(&mut g);
         settle(&mut g);

@@ -88,6 +88,9 @@ impl Announcement {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn blight_x_intervals(&self, a: &Announcement) -> Vec<XInterval> {
+        // Soul Immolation explicitly bounds X by greatest controlled creature
+        // toughness at declaration. Later mana abilities or cost payments do
+        // not change the chosen value, and payment feasibility does not prune it.
         let maximum = self
             .state
             .objects
