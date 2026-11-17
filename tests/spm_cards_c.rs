@@ -52,3 +52,17 @@ fn declare(game: &mut Game, attackers: &[CardId]) {
     }
     act(game, Action::FinishAttackers);
 }
+
+fn recover_failed_cost(game: &mut Game, reason: AttemptFailureReason) {
+    let player = game.actor().unwrap();
+    if game.legal_actions().contains(&Action::EndManaWindow) {
+        act(game, Action::EndManaWindow);
+    }
+    act(game, Action::SubmitAttempt);
+    let outcome = game.last_attempt_outcome_view(player).unwrap();
+    assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+    assert_eq!(outcome.reason, Some(reason));
+    assert_eq!(game.state.pending, Pending::Priority);
+    assert!(game.state.announcing.is_none());
+    assert!(game.state.stack.is_empty());
+}

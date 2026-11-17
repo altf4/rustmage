@@ -447,7 +447,21 @@ fn shock_pays_one_red_and_deals_two_damage_to_a_planeswalker() {
     game.add_counter(jace, CounterKind::Loyalty, 3);
     let shock = put(&mut game, player, "Shock", Zone::Hand);
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 1];
-    reject(&mut game, Action::AnnounceCast { card: shock });
+    admit(&game, Action::AnnounceCast { card: shock });
+    let mut short = game.clone();
+    act(&mut short, Action::AnnounceCast { card: shock });
+    target(&mut short, Target::Card(jace));
+    assert!(short.mana_payment_domain().is_none());
+    reject(
+        &mut short,
+        Action::PayCosts {
+            payment: [0, 0, 0, 0, 0, 1],
+        },
+    );
+    recover_failed_cost(&mut short, AttemptFailureReason::UnsatisfiedMana);
+    assert_eq!(short.object_ref(shock), game.object_ref(shock));
+    assert_eq!(short.object_view(shock).zone, Zone::Hand);
+    assert_eq!(short.counter_count(jace, CounterKind::Loyalty), 3);
     game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 0];
     cast(&mut game, shock, Some(Target::Card(jace)));
     settle(&mut game);
@@ -464,8 +478,14 @@ fn skyward_spiders_hybrid_cost_and_conditional_flying_respect_actual_modificatio
         let spider = put(&mut game, player, "Skyward Spider", Zone::Hand);
         game.state.players[player.index()].mana = payment;
         act(&mut game, Action::AnnounceCast { card: spider });
-        choose(&mut game, |a| matches!(a, Action::ChooseSpellCost { .. }));
-        pay(&mut game);
+        let cost = game
+            .spell_cost_choices()
+            .into_iter()
+            .find(|choice| choice.cost.colored == payment && choice.cost.generic == 0)
+            .unwrap()
+            .index;
+        act(&mut game, Action::ChooseSpellCost { cost });
+        act(&mut game, Action::PayCosts { payment });
         settle(&mut game);
         assert_eq!(game.state.players[player.index()].mana, [0; 6]);
         let aura = put(&mut game, player.other(), "Pacifism", Zone::Battlefield);

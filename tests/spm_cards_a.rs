@@ -156,7 +156,11 @@ fn alien_symbiosis_adds_its_aura_traits_and_discards_only_for_its_graveyard_perm
             },
         );
         let action = Action::AnnounceGraveyardAdditionalCosts { card: source };
-        admit(&game, action.clone());
+        if graveyard {
+            admit(&game, action.clone());
+        } else {
+            reject(&mut game, action.clone());
+        }
         let discard = put(&mut game, P, "Forest", Zone::Hand);
         if graveyard {
             act(&mut game, action);
@@ -363,9 +367,30 @@ fn arachne_web_slings_then_peeks_privately_and_taxes_the_chosen_type_for_each_se
     for (player, id) in [(P, own_shock), (O, enemy_shock)] {
         game.state.priority = player;
         game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 0];
-        assert!(!normal_cast_available(&game, id));
+        admit(&game, Action::AnnounceCast { card: id });
+        let mut short = game.clone();
+        act(&mut short, Action::AnnounceCast { card: id });
+        target(&mut short, Target::Player(player.other()));
+        assert!(short.mana_payment_domain().is_none());
+        reject(
+            &mut short,
+            Action::PayCosts {
+                payment: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        act(&mut short, Action::EndManaWindow);
+        act(&mut short, Action::SubmitAttempt);
+        assert_eq!(
+            short.last_attempt_outcome_view(player).unwrap().reason,
+            Some(AttemptFailureReason::UnsatisfiedMana)
+        );
+        assert_eq!(short.object_view(id).zone, Zone::Hand);
+        assert_eq!(short.state.players[player.index()].mana, [0, 0, 0, 1, 0, 0]);
         game.state.players[player.index()].mana[5] = 1;
-        assert!(normal_cast_available(&game, id));
+        let mut funded = game.clone();
+        cast(&mut funded, id, Some(Target::Player(player.other())));
+        settle(&mut funded);
+        assert_eq!(funded.state.players[player.index()].mana, [0; 6]);
     }
 }
 

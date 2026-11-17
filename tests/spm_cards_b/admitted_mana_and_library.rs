@@ -35,7 +35,20 @@ fn web_watch_exiles_two_and_its_mixed_mana_pays_only_for_spells_cast_from_exile(
     produce(&mut game, watch, produced);
     assert_eq!(game.state.players[player.index()].mana, produced);
     assert!(game.object_view(watch).tapped);
-    reject(&mut game, Action::AnnounceCast { card: hand_spell });
+    admit(&game, Action::AnnounceCast { card: hand_spell });
+    let mut restricted = game.clone();
+    act(&mut restricted, Action::AnnounceCast { card: hand_spell });
+    choose_target(&mut restricted, Target::Player(player.other()));
+    assert!(restricted.mana_payment_domain().is_none());
+    reject(
+        &mut restricted,
+        Action::PayCosts {
+            payment: [0, 0, 0, 1, 0, 0],
+        },
+    );
+    recover_failed_cost(&mut restricted, AttemptFailureReason::UnsatisfiedMana);
+    assert_eq!(restricted.object_view(hand_spell).zone, Zone::Hand);
+    assert_eq!(restricted.state.players[player.index()].mana, produced);
     act(&mut game, Action::AnnounceExile { card: exile_spell });
     choose_target(&mut game, Target::Player(player.other()));
     pay(&mut game);
@@ -214,7 +227,14 @@ fn multiversal_passage_chooses_its_land_type_before_payment_for_untapped_entry()
     assert!(blanked.has_subtype(land, "Island"));
     assert!(!blanked.object_view(land).tapped);
     reject(&mut blanked, mana.clone());
-    reject(&mut blanked, announce.clone());
+    admit(&blanked, announce.clone());
+    act(&mut blanked, announce.clone());
+    assert!(blanked.mana_payment_domain().is_none());
+    reject(&mut blanked, mana.clone());
+    reject(&mut blanked, Action::PayCosts { payment: blue });
+    recover_failed_cost(&mut blanked, AttemptFailureReason::UnsatisfiedMana);
+    assert_eq!(blanked.object_view(spell).zone, Zone::Hand);
+    assert!(!blanked.object_view(land).tapped);
 
     act(&mut game, announce);
     let index = game
