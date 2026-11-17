@@ -385,7 +385,21 @@ fn bloomburrow_standard_games_finish_and_replay_with_real_mechanic_events() {
                 check_privacy(&view, actor);
                 let index = workload_index(&view);
                 let action = view.actions[index].clone();
-                assert_ne!(action, Action::Concede);
+                if action == Action::Concede {
+                    write_report(
+                        directory.as_deref(),
+                        &format!("{label}-stalled.json"),
+                        json!({
+                            "config": config, "actions": journal, "observation": view,
+                        }),
+                    );
+                    panic!(
+                        "{label} chose Concede at decision {} in {}: {:?}",
+                        journal.len(),
+                        view.decision,
+                        view.actions
+                    );
+                }
                 let private = private_choice(&view)
                     && view
                         .library_selection

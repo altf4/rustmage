@@ -132,6 +132,37 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
         if own == beneficial { 70 } else { -10 }
     };
     let score = |action: &Action| -> i128 {
+        // A failed child leaves its parent open. Preserve caller progress by
+        // trying another source or ending the window instead of restarting it.
+        if observation.attempt.is_some()
+            && let Some(outcome) = observation
+                .last_attempt_outcome
+                .filter(|o| o.outcome == crate::AttemptOutcome::Failed)
+            && let Some((card, ability)) = match action {
+                Action::AnnounceMana { card, ability, .. }
+                | Action::ActivateMana { card, ability, .. }
+                | Action::AnnounceBorrowedMana { card, ability, .. }
+                | Action::ActivateBorrowedMana { card, ability, .. }
+                | Action::AnnounceGraveyardBorrowedMana { card, ability, .. }
+                | Action::ActivateGraveyardBorrowedMana { card, ability, .. } => {
+                    Some((*card, Some(*ability)))
+                }
+                Action::AnnounceInheritedMana { source, .. }
+                | Action::ActivateInheritedMana { source, .. }
+                | Action::AnnounceSelfGrantedMana { source, .. } => Some((source.card, None)),
+                Action::AnnounceGrantedMana { card, .. }
+                | Action::AnnounceGrantedManaTemplate { card, .. } => Some((*card, None)),
+                _ => None,
+            }
+            && outcome.source.is_some_and(|source| {
+                source.card == card && observation.objects.iter().any(|o| o.reference == source)
+            })
+            && outcome
+                .ability
+                .is_none_or(|prior| ability.is_none_or(|next| next == prior))
+        {
+            return -10;
+        }
         if observation.attempt.is_none()
             && observation.decision == "priority"
             && observation.last_attempt_outcome.is_some_and(|outcome| {
