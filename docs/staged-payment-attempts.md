@@ -122,4 +122,15 @@ python3 scripts/benchmark.py --games 10000 --repeats 5 --output ~/.cache/rustmag
 
 Its fixed freeform deck and native caller exclude model inference, tensor encoding, JSON and Python. Report that scope with its host/compiler metadata and samples; it does not measure the complete Standard pool or collection pipeline. Add the contract, schema, library hash and smoke-policy rules above to the experiment's provenance.
 
+The TDM corpus uses `TDM_FROZEN_TERMINAL_STAGED_V2`, caller `TDM_STAGED_SMOKE_V1`, and trace schema 3. Its receipts bind the action contract, observation schema, shared policy and execution-input hashes, retry policy, and unchanged 4096 primitive-decision limit. The six Standard pairings, 48 Standard games, four separate Cutter Freeform games, eight natural mechanic gates, decks, seeds, and three benchmark repetitions remain fixed. Completed and failed attempt IDs are counted once; accepted submission commands and incomplete submissions are counted separately. Full raw replay must reproduce these counts, and benchmark repetitions must match the verified case counts as well as its decisions and outcome. Reading those existing outcome rows is included in the measured benchmark work.
+
+The staged smoke caller defers further paid priority proposals for the current turn after its own failed attempt, and prefers paying or closing the parent window after a failed mana child. The TDM harness retains its generic rejected-attack memory through `FinishAttackers`. These caller rules introduce no engine retry restriction. The execution-input refusal gate and write-once evidence paths remain mandatory; regenerate the input manifest only after source changes are finished and consuming jobs have terminated, then use a fresh evidence directory. Preserve previous `TDM_FROZEN_TERMINAL_V1` receipts and libraries as historical artifacts; they cannot authenticate this protocol.
+
+```sh
+python3 scripts/tdm_execution_inputs.py --check
+RUSTMAGE_TDM_EVIDENCE_DIR=~/.cache/rustmage-tdm-staged-unique-run python3 scripts/resource_guard.py -- cargo run --release --example tdm_games -- verify
+RUSTMAGE_TDM_EVIDENCE_DIR=~/.cache/rustmage-tdm-staged-unique-run python3 scripts/resource_guard.py -- cargo run --release --example tdm_games -- benchmark
+RUSTMAGE_TDM_EVIDENCE_DIR=~/.cache/rustmage-tdm-staged-unique-run python3 scripts/resource_guard.py -- cargo run --release --example tdm_games -- benchmark-freeform
+```
+
 Only after engine correctness and timing pass, compare collection with a caller and policy that understand this contract. For the handoff's last panel, use 48 workers and two inference engines per side, with temperature 0.5 where supported. Report completed games per minute, timeouts, engine CPU, inference calls and wait time, primitive decisions per game, failures/retries and peak memory. A changed action-count limit or retry strategy defines a new protocol. An old policy on changed menus is not a controlled strength comparison. Faster action generation alone does not establish faster completed-game throughput, and no throughput target is presumed achieved.
