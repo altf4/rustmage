@@ -152,6 +152,8 @@ fn decks(workload: &Workload) -> BTreeMap<&str, (&str, Vec<Card>)> {
 
 // Workload preferences inspect only this actor's current public information.
 // The estimate chooses which attempt to try; concrete payment remains an action.
+// Count each currently offered land source once, even if it offers several
+// colors. A fetch land's nonmana activation does not supply mana yet.
 fn current_mana_budget(view: &Observation) -> u64 {
     let actor = view.actor.unwrap();
     view.players[actor.index()]
@@ -166,7 +168,13 @@ fn current_mana_budget(view: &Observation) -> u64 {
                 object.controller == actor
                     && object.zone == Zone::Battlefield
                     && object.card.is_land()
-                    && !object.tapped
+                    && view.actions.iter().any(|action| {
+                        matches!(action,
+                            Action::TapMana { card }
+                                | Action::ActivateMana { card, .. }
+                                | Action::TapGrantedMana { card, .. }
+                                if *card == object.id)
+                    })
             })
             .count() as u64
 }
