@@ -150,6 +150,117 @@ fn decks(workload: &Workload) -> BTreeMap<&str, (&str, Vec<Card>)> {
         .collect()
 }
 
+// Workload preferences inspect only this actor's current public information.
+// The estimate chooses which attempt to try; concrete payment remains an action.
+fn current_mana_budget(view: &Observation) -> u64 {
+    let actor = view.actor.unwrap();
+    view.players[actor.index()]
+        .mana
+        .iter()
+        .map(|&n| u64::from(n))
+        .sum::<u64>()
+        + view
+            .objects
+            .iter()
+            .filter(|object| {
+                object.controller == actor
+                    && object.zone == Zone::Battlefield
+                    && object.card.is_land()
+                    && !object.tapped
+            })
+            .count() as u64
+}
+
+fn caller_allows(view: &Observation, action: &Action) -> bool {
+    let actor = view.actor.unwrap();
+    if view.decision == "priority"
+        && matches!(
+            action,
+            Action::AnnounceActivate { .. }
+                | Action::BeginActivate { .. }
+                | Action::Activate { .. }
+        )
+        && (view.active != actor || !matches!(view.step, Step::Main1 | Step::Main2))
+    {
+        return false;
+    }
+    if let Some(item) = &view.announcing
+        && let StackKind::ActivatedAbility { ability } = item.kind
+        && let Some((source, definition)) = item.source_identity()
+        && definition.activations()[usize::from(ability)].cost.tap
+        && matches!(action,
+            Action::TapMana { card } | Action::ActivateMana { card, .. }
+                | Action::TapGrantedMana { card, .. } | Action::AnnounceMana { card, .. }
+                if *card == source.card)
+    {
+        // Preserve the current activation's supplied tap cost. Tapping its
+        // source for mana would make the final concrete payment illegal.
+        return false;
+    }
+    true
+}
+
+fn decision(view: &Observation, actions: &[Action], seek_back_face: bool) -> usize {
+    let smoke = policy::smoke_index_from_observation(view, actions);
+    if matches!(actions[smoke], Action::PlayLand { .. })
+        || (view.attempt.is_none()
+            && view.decision == "priority"
+            && view.last_attempt_outcome.is_some_and(|outcome| {
+                outcome.turn == u64::from(view.turn) && outcome.outcome == AttemptOutcome::Failed
+            }))
+    {
+        return smoke;
+    }
+    // Exercise an offered contribution after the current pool already covers
+    // the mana cost; no additional producer or contributor is predicted.
+    if view.mana_payment.is_some()
+        && let Some(index) = actions
+            .iter()
+            .position(|action| matches!(action, Action::BeginConvoke))
+    {
+        return index;
+    }
+    if view.decision != "priority" {
+        return smoke;
+    }
+    let budget = current_mana_budget(view);
+    if let Some(index) = actions.iter().position(|action| match action {
+        Action::AnnounceBack { card } if seek_back_face => view
+            .objects
+            .iter()
+            .find(|object| object.id == *card)
+            .and_then(|object| object.card.back_face())
+            .is_some_and(|back| back.fixed_mana_value() <= budget),
+        Action::AnnounceLibraryLife { .. } => true,
+        _ => false,
+    }) {
+        return index;
+    }
+    if matches!(
+        actions[smoke],
+        Action::AnnounceWebSlinging { .. }
+            | Action::AnnounceMayhem { .. }
+            | Action::AnnounceGrantedMayhem { .. }
+            | Action::AnnounceLibraryLife { .. }
+            | Action::AnnounceExile { .. }
+    ) {
+        return smoke;
+    }
+    actions
+        .iter()
+        .enumerate()
+        .filter_map(|(index, action)| {
+            let (Action::AnnounceCast { card } | Action::Cast { card, .. }) = action else {
+                return None;
+            };
+            let object = view.objects.iter().find(|object| object.id == *card)?;
+            let value = object.card.fixed_mana_value();
+            (value <= budget).then_some((index, value))
+        })
+        .max_by_key(|&(_, value)| value)
+        .map_or(smoke, |(index, _)| index)
+}
+
 fn verify_pairings(
     batch: &str,
     pairings: Range<usize>,
@@ -239,6 +350,7 @@ fn verify_pairings(
                 let eligible: Vec<_> = actions
                     .iter()
                     .enumerate()
+                    .filter(|(_, action)| caller_allows(&observation, action))
                     .filter(|(_, action)| match action {
                         Action::Attack { card } | Action::AttackPlaneswalker { card, .. } => {
                             !rejected.contains(card)
@@ -257,19 +369,7 @@ fn verify_pairings(
                     .map(|(index, action)| (index, action.clone()))
                     .collect();
                 let offered: Vec<_> = eligible.iter().map(|(_, action)| action.clone()).collect();
-                let selected = offered
-                    .iter()
-                    .position(|action| {
-                        seek_back_face
-                            && !observation.last_attempt_outcome.is_some_and(|outcome| {
-                                outcome.outcome == AttemptOutcome::Failed
-                                    && outcome.turn == u64::from(observation.turn)
-                            })
-                            && matches!(action, Action::AnnounceBack { .. })
-                    })
-                    .unwrap_or_else(|| {
-                        policy::smoke_index_from_observation(&observation, &offered)
-                    });
+                let selected = decision(&observation, &offered, seek_back_face);
                 let (index, action) = &eligible[selected];
                 if matches!(action, Action::Concede) {
                     std::fs::write(
