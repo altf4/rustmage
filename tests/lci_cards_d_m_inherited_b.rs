@@ -318,7 +318,7 @@ fn inti_exiles_one_card_for_a_simultaneous_discard_and_the_spell_pays_its_own_co
     assert_eq!(game.top_library_card(p), Some(untouched));
     assert_eq!(game.object_view(spell).zone, Zone::Exile);
     game.state.players[p.index()].mana = [0; 6];
-    reject(&mut game, Action::AnnounceExile { card: spell });
+    admit(&game, Action::AnnounceExile { card: spell });
     game.state.players[p.index()].mana = [0, 0, 0, 1, 0, 0];
     act(&mut game, Action::AnnounceExile { card: spell });
     act(

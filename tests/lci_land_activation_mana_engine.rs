@@ -146,8 +146,8 @@ fn chosen_amount_and_restriction_survive_the_lot_branch() {
     assert_eq!(lots.len(), 1);
     assert_eq!(lots[0].restriction, ManaRestrictionView::LandActivation);
     assert_eq!(lots[0].amounts[1], 2);
-    reject(&mut game, activate(creature, 0));
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    admit(&game, activate(creature, 0));
+    admit(&game, Action::AnnounceCast { card: spell });
 
     for branch in [&mut game, &mut indexed] {
         act(branch, activate(land, 0));

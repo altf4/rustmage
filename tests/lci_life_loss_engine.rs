@@ -166,7 +166,7 @@ fn projected_mana_accounts_for_replaced_life_costs_and_raw_index_restore() {
         act(&mut game, Action::Pass);
         assert_eq!(game.actor(), Some(player));
         let announce = Action::AnnounceCast { card: negate };
-        reject(&mut game, announce.clone());
+        admit(&game, announce.clone());
 
         game.state.players[player.index()].life = 9;
         act(&mut game, announce);

@@ -216,7 +216,7 @@ fn free_and_limited_permissions_keep_separate_payment_and_entry_consequences() {
     ordinary.spend_any_mana = true;
     ordinary.exile_on_graveyard = true;
     indexed.state.players[p.index()].mana = [0, 2, 0, 0, 0, 0];
-    reject(&mut indexed, paid.clone());
+    admit(&indexed, paid.clone());
     indexed.state.players[p.index()].mana = [0, 0, 0, 1, 0, 1];
     act(&mut indexed, paid);
     costs(&mut indexed);
@@ -262,7 +262,7 @@ fn chosen_faces_x_and_flash_use_the_proposed_spell() {
         act(&mut g, cast);
         let domain = g.x_choice().unwrap();
         assert!(domain.contains(2));
-        assert!(!domain.contains(3));
+        assert!(domain.contains(u32::MAX));
         act(&mut g, Action::ChooseX { value: 2 });
         costs(&mut g);
         for _ in 0..18 {
@@ -405,6 +405,8 @@ fn foreign_mana_entry_rewinds_the_cast_and_exact_link_before_retention() {
     );
     let green = g.object_ref(green);
     act(&mut g, Action::ChooseAuraAttachment { object: green });
+    act(&mut g, Action::EndManaWindow);
+    act(&mut g, Action::SubmitAttempt);
     assert!(matches!(g.state.pending, Pending::ManaRollback { .. }));
     assert_eq!(g.object_ref(spell), reference);
     assert_eq!(g.object_view(spell).zone, Zone::Exile);

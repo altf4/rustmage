@@ -124,7 +124,7 @@ fn souls_of_the_lost_pays_either_cost_and_recounts_its_own_graveyard() {
     let mut game = scenario(p);
     let source = candidate(&mut game, p, "Souls of the Lost", Zone::Hand);
     let action = Action::AnnounceCast { card: source };
-    reject(&mut game, action.clone());
+    admit(&game, action.clone());
     let discard = put(&mut game, p, "Opt", Zone::Hand);
     let sacrifice = put(&mut game, p, "Forest", Zone::Battlefield);
     for chosen in [discard, sacrifice] {

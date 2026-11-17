@@ -107,7 +107,7 @@ fn canonized_in_blood_targets_a_controlled_creature_and_sacrifices_for_the_demon
     };
     let mut short = game.clone();
     short.state.players[player.index()].mana = [0, 0, 1, 0, 0, 6];
-    reject(&mut short, activation.clone());
+    admit(&short, activation.clone());
     act(&mut game, activation);
     pay(&mut game);
     assert_eq!(game.object_view(enchantment).zone, Zone::Graveyard);

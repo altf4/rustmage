@@ -200,11 +200,13 @@ fn prove_branch(game: &Game, view: &Observation, index: usize) -> bool {
         sibling.apply_index(actor, revision, index),
         Err(Error::StaleRevision)
     );
+    let mut restored_raw = sibling.clone();
+    restored_raw.apply(actor, chosen.clone()).unwrap();
     sibling
         .apply_index(actor, sibling.revision(), index)
         .unwrap();
-    assert_eq!(sibling.snapshot(), raw.snapshot());
-    assert_eq!(observations(&sibling), observations(&raw));
+    assert_eq!(sibling.snapshot(), restored_raw.snapshot());
+    assert_eq!(observations(&sibling), observations(&restored_raw));
     true
 }
 

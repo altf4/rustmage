@@ -236,7 +236,7 @@ fn guardian_of_the_great_door_pays_two_white_and_four_distinct_eligible_taps() {
     let artifact = put(&mut game, p, "Short Bow", Zone::Battlefield);
     let land = put(&mut game, p, "Forest", Zone::Battlefield);
     let opposing = put(&mut game, p.other(), "Forest", Zone::Battlefield);
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    admit(&game, Action::AnnounceCast { card: spell });
     let second_land = put(&mut game, p, "Island", Zone::Battlefield);
     act(&mut game, Action::AnnounceCast { card: spell });
     choose_materials(

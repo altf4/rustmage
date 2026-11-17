@@ -77,9 +77,15 @@ fn the_last_counter_unlocks_projected_funding_and_zero_still_produces_mana() {
     reject(&mut game, mana(source, 1, GREEN));
     act(&mut game, Action::AnnounceCast { card: spell });
     if matches!(game.state.pending, Pending::SpellCost { .. }) {
-        choose(&mut game, |action| {
-            matches!(action, Action::ChooseSpellCost { .. })
-        });
+        let cost = game
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .cost_options()
+            .position(|cost| cost.colored == [0, 1, 0, 0, 1, 0])
+            .unwrap() as u16;
+        act(&mut game, Action::ChooseSpellCost { cost });
     }
     let action = mana(source, 0, BLUE);
     let index = game
@@ -197,6 +203,10 @@ fn failed_cast_can_keep_or_reverse_the_completed_counter_removal_with_its_mana()
     act(&mut game, Action::ChooseCastCost { clause });
     let object = game.object_ref(silver);
     act(&mut game, Action::ChooseAuraAttachment { object });
+    if game.legal_actions().contains(&Action::EndManaWindow) {
+        act(&mut game, Action::EndManaWindow);
+    }
+    act(&mut game, Action::SubmitAttempt);
     assert!(matches!(game.state.pending, Pending::ManaRollback { .. }));
     assert!(game.observe(p.other()).mana_rollback.is_none());
     let saved = game.snapshot();

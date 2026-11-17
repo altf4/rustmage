@@ -130,7 +130,7 @@ fn the_tomb_of_aclazotz_grants_one_ordinary_paid_cast_with_vampire_and_finality(
         flash_surcharge: false,
     };
     let action = cast_route(&game, spell);
-    reject(&mut game, action.clone());
+    admit(&game, action.clone());
     game.state.players[p.index()].mana = WHITE;
     for card in [foreign, wrong] {
         let invalid = cast_route(&game, card);

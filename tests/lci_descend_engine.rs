@@ -230,7 +230,7 @@ fn distinct_owned_permanent_types_control_the_mana_activation_and_funding() {
             production: WHITE,
         };
         let announce = Action::AnnounceCast { card: hawk };
-        assert!(!game.legal_actions().contains(&announce));
+        admit(&game, announce.clone());
         reject(&mut game, mana.clone());
 
         put(&mut game, player, "Spelunking", Zone::Graveyard);

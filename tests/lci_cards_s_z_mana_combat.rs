@@ -72,7 +72,7 @@ fn sunshot_militia_accepts_itself_and_a_sick_artifact_creature() {
         game.state.players[p.other().index()].life,
         STARTING_LIFE - 1
     );
-    reject(&mut game, activate(source, 0));
+    admit(&game, activate(source, 0));
 }
 
 #[test]
@@ -185,8 +185,8 @@ fn sunken_citadel_exposes_only_its_color_and_funds_a_land_activation() {
         game.observe(p).mana_lots[0].restriction,
         ManaRestrictionView::LandActivation
     );
-    reject(&mut game, Action::AnnounceCast { card: spell });
-    reject(&mut game, activate(trail, 0));
+    admit(&game, Action::AnnounceCast { card: spell });
+    admit(&game, activate(trail, 0));
     act(&mut game, activate(vein, 1));
     pay(&mut game);
     assert_eq!(game.object_view(vein).zone, Zone::Graveyard);
