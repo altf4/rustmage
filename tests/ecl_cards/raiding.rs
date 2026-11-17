@@ -409,17 +409,40 @@ fn ecl_raiding_printed_sacrifice_returns_a_fresh_donor_before_the_conspire_cost(
         select_additional(&mut g);
         checked(&mut g, Action::ChooseAdditionalCost { object: hunter_ref });
         for _ in 0..30 {
-            if matches!(g.state.pending, Pending::ConspirePayment { .. }) {
+            if matches!(
+                g.state.pending,
+                Pending::CastCosts { .. } | Pending::ConspirePayment { .. }
+            ) {
                 break;
             }
+            // Finish the linked return's entry choices before explicitly
+            // selecting the conspire clause in pay_pair below.
             let action = g
                 .legal_actions()
                 .into_iter()
-                .find(|a| !matches!(a, Action::Concede))
-                .unwrap();
+                .find(|a| {
+                    !matches!(
+                        a,
+                        Action::Concede
+                            | Action::EndManaWindow
+                            | Action::SubmitAttempt
+                            | Action::ResetCostSelection
+                    )
+                })
+                .unwrap_or_else(|| panic!("missing entry continuation: {:?}", g.observe(p)));
             checked(&mut g, action);
         }
+        assert!(
+            matches!(
+                g.state.pending,
+                Pending::CastCosts { .. } | Pending::ConspirePayment { .. }
+            ),
+            "unfinished linked entry: {:?}",
+            g.observe(p)
+        );
+        assert_eq!(g.object_view(hunter).zone, Zone::Graveyard);
         assert_eq!(g.object_view(auntie).zone, Zone::Battlefield);
+        assert!(!g.object_view(auntie).tapped);
         pay_pair(&mut g, source, donor, auntie);
         assert!(g.state.announcing.is_none());
         finish_copies(&mut g);
