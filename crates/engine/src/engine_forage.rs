@@ -200,6 +200,13 @@ impl Game {
     }
 
     fn forage_route_available(&self, route: ForageRoute) -> bool {
+        // Choose the cost route before opening the mana window. Mana abilities
+        // can create its Food or graveyard materials after this declaration.
+        if matches!(self.state.pending, Pending::ForageMethod { .. })
+            && matches!(route, ForageRoute::ExileThree | ForageRoute::Food)
+        {
+            return true;
+        }
         let player = self.semantic_actor().unwrap();
         match route {
             ForageRoute::Black => self.state.announcing.as_ref().is_some_and(|a| {

@@ -27,6 +27,20 @@ const CONVERTER: CardRules = CardRules {
     }],
     ..CardRules::EMPTY
 };
+const SACRIFICIAL_MANA: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    activated: &[ActivatedAbility {
+        cost: ActivationCost {
+            sacrifice: true,
+            ..ActivationCost::ZERO
+        },
+        program: &[Instruction::AddMana(ManaProduction::Fixed([
+            0, 0, 0, 0, 2, 0,
+        ]))],
+        ..CONVERTER.activated[0]
+    }],
+    ..CardRules::EMPTY
+};
 
 fn no_projection_work() {
     let work = Game::payment_planning_work();
@@ -149,7 +163,7 @@ fn closing_the_mana_window_preserves_payment_but_hides_new_abilities() {
 }
 
 #[test]
-fn forage_without_any_route_can_fail_before_the_mana_window_opens() {
+fn forage_without_current_materials_declares_a_route_then_fails_after_the_mana_window() {
     for player in [Player::P0, Player::P1] {
         let mut game = scenario(player);
         let source = put(
@@ -168,14 +182,28 @@ fn forage_without_any_route_can_fail_before_the_mana_window_opens() {
         Game::reset_payment_planning_work();
         act(&mut game, announce.clone());
         assert_eq!(game.state.pending, Pending::ForageMethod { player });
-        assert!(game.observe(player).forage.unwrap().routes.is_empty());
+        assert_eq!(
+            game.observe(player).forage.unwrap().routes,
+            vec![ForageRoute::ExileThree, ForageRoute::Food]
+        );
         let attempt = game.attempt_view(player).unwrap();
         assert_eq!(attempt.stage, AttemptStage::Declare);
         assert_eq!(attempt.locked_cost, None);
         assert!(!attempt.mana_window_closed);
         assert!(!attempt.can_end_mana_window);
-        assert!(attempt.can_submit);
+        assert!(!attempt.can_submit);
         reject(&mut game, Action::EndManaWindow);
+        reject(&mut game, Action::SubmitAttempt);
+        act(
+            &mut game,
+            Action::ChooseForageRoute {
+                route: ForageRoute::ExileThree,
+            },
+        );
+        assert_eq!(game.state.pending, Pending::Forage { player });
+        assert!(game.attempt_view(player).unwrap().can_end_mana_window);
+        assert!(game.observe(player).forage.unwrap().candidates.is_empty());
+        act(&mut game, Action::EndManaWindow);
 
         let mut indexed = game.clone();
         let index = indexed
@@ -206,9 +234,122 @@ fn forage_without_any_route_can_fail_before_the_mana_window_opens() {
         // Recovery records the failed execution without hiding another attempt.
         act(&mut game, announce);
         assert!(game.attempt_view(player).unwrap().attempt_id > attempt.attempt_id);
+        act(
+            &mut game,
+            Action::ChooseForageRoute {
+                route: ForageRoute::Food,
+            },
+        );
+        assert!(game.observe(player).forage.unwrap().candidates.is_empty());
+        reject(
+            &mut game,
+            Action::ChooseForage {
+                object: source_object,
+            },
+        );
+        act(&mut game, Action::EndManaWindow);
         act(&mut game, Action::SubmitAttempt);
+        let outcome = game.last_attempt_outcome_view(player).unwrap();
+        assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+        assert_eq!(
+            outcome.reason,
+            Some(AttemptFailureReason::UnsatisfiedMaterial)
+        );
         assert_eq!(game.state.pending, Pending::Priority);
         assert_eq!(game.object_ref(source), source_object);
+        no_projection_work();
+    }
+}
+
+#[test]
+fn forage_can_use_a_graveyard_card_created_during_its_mana_window() {
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &SACRIFICIAL_MANA)]);
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let source = put(
+            &mut game,
+            player,
+            "Camellia, the Seedmiser",
+            Zone::Battlefield,
+        );
+        let squirrel = put(&mut game, player, "Barkform Harvester", Zone::Battlefield);
+        let mana_source = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+        let old_mana_source = game.object_ref(mana_source);
+        let grave = [(); 2].map(|_| put(&mut game, player, "Forest", Zone::Graveyard));
+        game.state.players[player.index()].mana = [0; 6];
+        Game::reset_payment_planning_work();
+        act(
+            &mut game,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        assert_eq!(
+            game.observe(player).forage.unwrap().routes,
+            vec![ForageRoute::ExileThree, ForageRoute::Food]
+        );
+        act(
+            &mut game,
+            Action::ChooseForageRoute {
+                route: ForageRoute::ExileThree,
+            },
+        );
+        assert_eq!(game.observe(player).forage.unwrap().candidates.len(), 2);
+        let make_material = Action::ActivateMana {
+            card: mana_source,
+            ability: 0,
+            payment: [0; 6],
+            counter_payment: Counters::default(),
+            production: [0, 0, 0, 0, 2, 0],
+        };
+        let checkpoint = game.snapshot();
+        let mut indexed = game.clone();
+        let index = indexed
+            .legal_actions()
+            .iter()
+            .position(|action| action == &make_material)
+            .unwrap();
+        indexed
+            .apply_index(player, indexed.revision(), index)
+            .unwrap();
+        act(&mut game, make_material.clone());
+        assert_eq!(game.snapshot(), indexed.snapshot());
+        indexed.restore(&checkpoint).unwrap();
+        act(&mut indexed, make_material);
+        assert_eq!(game.snapshot(), indexed.snapshot());
+        assert_eq!(game.object_view(mana_source).zone, Zone::Graveyard);
+        assert_ne!(game.object_ref(mana_source), old_mana_source);
+        assert_eq!(game.state.players[player.index()].mana, [0, 0, 0, 0, 2, 0]);
+        assert_eq!(game.observe(player).forage.unwrap().candidates.len(), 3);
+        act(&mut game, Action::EndManaWindow);
+        reject(
+            &mut game,
+            Action::ChooseForage {
+                object: old_mana_source,
+            },
+        );
+        for card in grave.into_iter().chain([mana_source]) {
+            let object = game.object_ref(card);
+            act(&mut game, Action::ChooseForage { object });
+        }
+        act(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 2, 0],
+            },
+        );
+        assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+        for card in grave.into_iter().chain([mana_source]) {
+            assert_eq!(game.object_view(card).zone, Zone::Exile);
+        }
+        assert_eq!(
+            game.last_attempt_outcome_view(player).unwrap().outcome,
+            AttemptOutcome::Completed
+        );
+        settle(&mut game);
+        assert_eq!(game.counter_count(squirrel, CounterKind::PlusOne), 1);
         no_projection_work();
     }
 }
