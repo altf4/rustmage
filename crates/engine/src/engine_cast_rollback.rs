@@ -82,6 +82,13 @@ impl CastRollback {
             obscured_face_down: Vec::new(),
         }
     }
+    pub(super) fn knowledge_object(&self, card: CardId) -> Option<&Object> {
+        self.library_moves
+            .iter()
+            .find(|row| row.card == card)
+            .map(|row| &row.object)
+            .or_else(|| self.before.objects.get(card as usize))
+    }
     pub(super) fn bytes(&self) -> usize {
         self.bytes
             + self
@@ -152,9 +159,7 @@ impl Game {
         }
         if let Some(rollback) = &mut self.state.cast_rollback
             && rollback
-                .before
-                .objects
-                .get(reference.card as usize)
+                .knowledge_object(reference.card)
                 .is_some_and(|o| o.zone == Zone::Hand && o.generation == reference.generation)
             && !rollback.obscured_hand_cards.contains(&reference.card)
             && !rollback.public_hand_cards.contains(&reference.card)
@@ -234,7 +239,7 @@ impl Game {
             .iter()
             .enumerate()
             .filter_map(|(id, object)| {
-                let original = rollback.before.objects.get(id)?;
+                let original = rollback.knowledge_object(id as CardId)?;
                 (original.zone == Zone::Hand
                     && !rollback.obscured_hand_cards.contains(&(id as CardId))
                     && object.zone == Zone::Exile

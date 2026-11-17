@@ -11401,14 +11401,9 @@ impl Game {
                 && before.card
                     == Card::from_name("@face-down/disguise").expect("pinned catalogue identity"))
             && let Some(rollback) = &mut self.state.cast_rollback
-            && rollback
-                .before
-                .objects
-                .get(id as usize)
-                .is_some_and(|original| {
-                    original.zone == before.zone
-                        && original.generation == before.reference.generation
-                })
+            && rollback.knowledge_object(id).is_some_and(|original| {
+                original.zone == before.zone && original.generation == before.reference.generation
+            })
             && !rollback.obscured_hand_cards.contains(&id)
             && !rollback.public_hand_cards.contains(&id)
         {
