@@ -174,6 +174,29 @@ pub(crate) fn reject(g: &mut Game, action: Action) {
     assert_eq!(g.revision(), revision);
 }
 
+/// Check an offered next step without committing it to the scenario's main path.
+pub(crate) fn admit(g: &Game, action: Action) {
+    let actor = g.actor().expect("nonterminal scenario");
+    let index = g
+        .legal_actions()
+        .iter()
+        .position(|candidate| *candidate == action)
+        .expect("admissible next step must be offered");
+    let before = g.snapshot();
+    let revision = g.revision();
+    let mut raw = g.clone();
+    let mut indexed = g.clone();
+    act(&mut raw, action);
+    indexed.apply_index(actor, revision, index).unwrap();
+    assert_eq!(raw.snapshot(), indexed.snapshot());
+    indexed.restore(&before).unwrap();
+    assert_eq!(indexed.snapshot(), before);
+    assert_eq!(
+        indexed.apply_index(actor, revision, index),
+        Err(Error::StaleRevision)
+    );
+}
+
 pub(crate) fn stats(g: &Game, id: CardId) -> (i128, i128) {
     let s = g.stats(id);
     (s.power, s.toughness)
