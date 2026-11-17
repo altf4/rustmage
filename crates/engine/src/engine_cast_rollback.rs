@@ -1,6 +1,6 @@
 //! Owned spell and activation attempts, including nested mana announcements.
 //! The borrowed funding solver never owns this checkpoint or clones a Game.
-//! Failed proposals offer selective legal mana-ability reversal (CR733.1),
+//! Failed proposals offer selective legal mana-ability reversal (CR734.1),
 //! preserving irreversible library actions and the completed events that remain.
 use super::*;
 

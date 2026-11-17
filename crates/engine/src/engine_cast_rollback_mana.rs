@@ -1,4 +1,4 @@
-//! Selective CR733.1 reversal of completed, frozen mana events.
+//! Selective CR734.1 reversal of completed, frozen mana events.
 //! These cold actual-event reconstructions never participate in funding search.
 use super::*;
 use additional_costs::ManaCostObjects;
