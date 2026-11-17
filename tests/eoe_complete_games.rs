@@ -126,6 +126,38 @@ fn deck(members: &BTreeSet<Card>, lands: &[(&str, usize)], spells: &[&str]) -> V
     deck
 }
 
+fn void_cast(observation: &Observation) -> Option<usize> {
+    if !observation.void_active_this_turn {
+        return None;
+    }
+    let actor = observation.actor.unwrap();
+    let current_mana = observation.players[actor.index()]
+        .mana
+        .iter()
+        .map(|&amount| u64::from(amount))
+        .sum::<u64>()
+        + observation
+            .objects
+            .iter()
+            .filter(|object| {
+                object.controller == actor
+                    && object.zone == Zone::Battlefield
+                    && object.card.is_land()
+                    && !object.tapped
+            })
+            .count() as u64;
+    observation.actions.iter().position(|action| {
+        let (Action::AnnounceCast { card } | Action::Cast { card, .. }) = action else {
+            return false;
+        };
+        observation.objects.iter().any(|object| {
+            object.id == *card
+                && matches!(object.card.name(), "Tragic Trajectory" | "Roving Actuator")
+                && object.card.fixed_mana_value() <= current_mana
+        })
+    })
+}
+
 fn decision(observation: &Observation) -> usize {
     let smoke = rustmage::policy::smoke_index_from_observation(observation, &observation.actions);
     if matches!(observation.actions[smoke], Action::PlayLand { .. })
@@ -150,6 +182,11 @@ fn decision(observation: &Observation) -> usize {
             .iter()
             .position(|action| matches!(action, Action::ChooseEntryDevour { .. }))
     {
+        return index;
+    }
+    // Prefer an already active Void payoff before proposing another Warp.
+    // This caller estimate uses only the current pool and untapped lands.
+    if let Some(index) = void_cast(observation) {
         return index;
     }
     if let Some(index) = observation.actions.iter().position(|action| {
@@ -311,6 +348,7 @@ fn eoe_standard_games_reach_terminal_outcomes_and_replay_owned_choices() {
             evidence.warped_refs.clear();
             let mut game = Game::new(config()).unwrap();
             let mut journal = Vec::new();
+            let mut void_windows = Vec::new();
             let case_start = Instant::now();
             if trace {
                 eprintln!("EOE game {a} vs {b} seed {seed} started");
@@ -342,6 +380,13 @@ fn eoe_standard_games_reach_terminal_outcomes_and_replay_owned_choices() {
                 let before = game.observe(actor);
                 let index = decision(&before);
                 let action = before.actions[index].clone();
+                if directory.is_some() && before.void_active_this_turn {
+                    void_windows.push(serde_json::json!({
+                        "decision": journal.len(), "turn": before.turn,
+                        "step": before.step, "actor": actor, "chosen": action,
+                        "preferred_void_cast": void_cast(&before).map(|index| &before.actions[index]),
+                    }));
+                }
                 if action == Action::Concede {
                     write_report(
                         directory.as_deref(),
@@ -404,6 +449,19 @@ fn eoe_standard_games_reach_terminal_outcomes_and_replay_owned_choices() {
                 evidence.record(&before, &game.observe(observer), &action);
                 journal.push((actor, action));
             }
+            write_report(
+                directory.as_deref(),
+                &format!("{a}-{b}-{seed}-trace.json"),
+                serde_json::json!({
+                    "action_contract": rustmage::ACTION_CONTRACT,
+                    "observation_schema": rustmage::OBSERVATION_SCHEMA,
+                    "caller_contract": "EOE_STAGED_SMOKE_VOID_WARP_V1",
+                    "primitive_decision_limit": 4096,
+                    "config": config(), "actions": journal,
+                    "decisions": journal.len(), "outcome": game.outcome(),
+                    "void_windows": void_windows,
+                }),
+            );
             let mut replay = Game::new(config()).unwrap();
             evidence.decisions += journal.len();
             for (actor, action) in journal {

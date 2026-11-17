@@ -11,7 +11,7 @@ use std::time::Instant;
 pub const WORKLOAD: &str = "TDM_FROZEN_TERMINAL_STAGED_V2";
 pub const CALLER_CONTRACT: &str = "TDM_STAGED_SMOKE_V1";
 const TRACE_SCHEMA: u32 = 3;
-const RETRY_POLICY: &str = "Shared smoke policy defers paid priority proposals for the acting player's current turn after a failed attempt. A failed mana child prefers current-pool payment or closing the parent mana window. Generic rejected-attack memory lasts until FinishAttackers. No per-card retry limit; every microstep and retry counts toward 4096 primitive decisions.";
+const RETRY_POLICY: &str = "Shared smoke policy defers paid priority proposals for the acting player's current turn after a failed attempt. A failed mana child prefers current-pool payment or closing the parent mana window. Available payments and mana actions precede BeginOrderedCosts while the mana window is open. Generic rejected-attack memory lasts until FinishAttackers. No per-card retry limit; every microstep and retry counts toward 4096 primitive decisions.";
 pub const DECKS_SHA256: &str = "2daf20c80bb409b7f241680b990b39a1177101dd45e35eaa48fffc913d5fb12e";
 pub const REQUIRED: [&str; 8] = [
     "endure",
