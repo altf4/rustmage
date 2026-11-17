@@ -1,4 +1,4 @@
-//! A live activation power restriction participates in real and projected legality.
+//! A live activation power restriction applies to each supplied mana activation.
 mod support;
 
 use rustmage as _;
@@ -28,7 +28,7 @@ const RULES: CardRules = CardRules {
 };
 
 #[test]
-fn live_power_changes_real_and_funded_activation_and_stale_actions_reject() {
+fn live_power_changes_mana_activation_without_hiding_unfunded_spell_attempts() {
     let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &RULES)]);
     let player = Player::P0;
     let mut game = scenario(player);
@@ -44,7 +44,7 @@ fn live_power_changes_real_and_funded_activation_and_stale_actions_reject() {
     game.state.players[player.index()].mana = [0; 6];
     assert_eq!(stats(&game, source), (2, 2));
     assert!(!game.legal_actions().iter().any(is_source_mana));
-    reject(&mut game, announce.clone());
+    fail_unfunded_attempt(&mut game, announce.clone(), player);
 
     let pump = put(&mut game, player, "Shore Up", Zone::Hand);
     game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 0];
@@ -75,5 +75,24 @@ fn live_power_changes_real_and_funded_activation_and_stale_actions_reject() {
     }
     assert_eq!(stats(&game, source), (2, 2));
     reject(&mut game, mana_action);
-    reject(&mut game, announce);
+    fail_unfunded_attempt(&mut game, announce, player);
+}
+
+fn fail_unfunded_attempt(game: &mut Game, announce: Action, player: Player) {
+    assert!(game.legal_actions().contains(&announce));
+    let source = match announce {
+        Action::AnnounceCast { card } => game.object_ref(card),
+        _ => unreachable!(),
+    };
+    act(game, announce);
+    assert!(game.mana_payment_domain().is_none());
+    act(game, Action::EndManaWindow);
+    act(game, Action::SubmitAttempt);
+    let outcome = game.last_attempt_outcome_view(player).unwrap();
+    assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+    assert_eq!(outcome.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+    assert_eq!(game.object_ref(source.card), source);
+    assert_eq!(game.object_view(source.card).zone, Zone::Hand);
+    assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+    assert!(game.state.stack.is_empty());
 }
