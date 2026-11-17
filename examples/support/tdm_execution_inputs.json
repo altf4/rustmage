@@ -115,7 +115,7 @@
     "crates/engine/src/engine_activation_observers.rs": "ececdddbbfed83ef10e47aae76cc65241cb74dee0d02701a26ce8087a0229c17",
     "crates/engine/src/engine_activation_target_costs.rs": "1ce4854e77e18aa962d95f68abc3bb20b76d8ff3be4ec68699230ed38ece37ee",
     "crates/engine/src/engine_activations.rs": "e9a0234b2c715f463c275aa97609b3dd66f44439a87bd6b68c1e62e8f02993c4",
-    "crates/engine/src/engine_additional_costs.rs": "c4dc57663b79d7f488024ea36f7d7524fcbdc22bb66e8a5a7dcb3ae9d7b115bc",
+    "crates/engine/src/engine_additional_costs.rs": "2926a0d0e4a6c75cfd117e466ccd08f51088e40b77791f2d899de40b7923d99c",
     "crates/engine/src/engine_adventure.rs": "3f024e68642ba90fadba3dc4d98080b2d0613efea54e58afb8e97c10cf7ccda2",
     "crates/engine/src/engine_assimilate.rs": "7d88c63f6f318951166a1c34ab3ec4558ebd292189412f861aecdbe44646eeaf",
     "crates/engine/src/engine_attachment_death.rs": "c855c58edc67b5a3710f258a7d5261de00bd03076a2aa8659cda388058949dfc",
