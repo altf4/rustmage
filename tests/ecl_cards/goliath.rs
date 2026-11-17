@@ -1,5 +1,5 @@
 //! Resolution-only replacements, exact dream counters and one free cast during attack resolution.
-use crate::ecl_scenarios::{cast, checked, named, settle, setup};
+use crate::ecl_scenarios::{cast, checked, named, settle, setup, success_continuation};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
 const NAME: &str = "Goliath Daydreamer";
@@ -25,9 +25,8 @@ fn reach(g: &mut Game, stop: impl Fn(&Game) -> bool) {
                     Action::Pass | Action::FinishTargets | Action::PayCosts { .. }
                 )
             })
-            .or_else(|| actions.iter().find(|a| !matches!(a, Action::Concede)))
-            .unwrap()
-            .clone();
+            .cloned()
+            .unwrap_or_else(|| success_continuation(g, &actions));
         checked(g, a);
     }
     panic!("missing Goliath choice {:?}", g.state.pending);
