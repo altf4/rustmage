@@ -149,6 +149,71 @@ fn closing_the_mana_window_preserves_payment_but_hides_new_abilities() {
 }
 
 #[test]
+fn forage_without_any_route_can_fail_before_the_mana_window_opens() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let source = put(
+            &mut game,
+            player,
+            "Camellia, the Seedmiser",
+            Zone::Battlefield,
+        );
+        let source_object = game.object_ref(source);
+        let mana = game.state.players[player.index()].mana;
+        let announce = Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+        };
+        Game::reset_payment_planning_work();
+        act(&mut game, announce.clone());
+        assert_eq!(game.state.pending, Pending::ForageMethod { player });
+        assert!(game.observe(player).forage.unwrap().routes.is_empty());
+        let attempt = game.attempt_view(player).unwrap();
+        assert_eq!(attempt.stage, AttemptStage::Declare);
+        assert_eq!(attempt.locked_cost, None);
+        assert!(!attempt.mana_window_closed);
+        assert!(!attempt.can_end_mana_window);
+        assert!(attempt.can_submit);
+        reject(&mut game, Action::EndManaWindow);
+
+        let mut indexed = game.clone();
+        let index = indexed
+            .legal_actions()
+            .iter()
+            .position(|action| *action == Action::SubmitAttempt)
+            .unwrap();
+        indexed
+            .apply_index(player, indexed.revision(), index)
+            .unwrap();
+        act(&mut game, Action::SubmitAttempt);
+        assert_eq!(game.snapshot(), indexed.snapshot());
+        let outcome = game.last_attempt_outcome_view(player).unwrap();
+        assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+        assert_eq!(
+            outcome.reason,
+            Some(AttemptFailureReason::UnsatisfiedMaterial)
+        );
+        assert_eq!(game.state.pending, Pending::Priority);
+        assert!(game.state.announcing.is_none());
+        assert!(game.state.stack.is_empty());
+        assert_eq!(game.object_ref(source), source_object);
+        assert_eq!(game.object_view(source).zone, Zone::Battlefield);
+        assert!(!game.object_view(source).tapped);
+        assert_eq!(game.state.players[player.index()].mana, mana);
+        assert!(game.legal_actions().contains(&announce));
+
+        // Recovery records the failed execution without hiding another attempt.
+        act(&mut game, announce);
+        assert!(game.attempt_view(player).unwrap().attempt_id > attempt.attempt_id);
+        act(&mut game, Action::SubmitAttempt);
+        assert_eq!(game.state.pending, Pending::Priority);
+        assert_eq!(game.object_ref(source), source_object);
+        no_projection_work();
+    }
+}
+
+#[test]
 fn completed_forage_with_missing_mana_fails_and_restores_the_exact_attempt() {
     for player in [Player::P0, Player::P1] {
         for route in [ForageRoute::ExileThree, ForageRoute::Food] {
