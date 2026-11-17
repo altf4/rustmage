@@ -171,10 +171,37 @@ fn current_mana_budget(view: &Observation) -> u64 {
             .count() as u64
 }
 
+fn currently_offered_color(view: &Observation, color: usize) -> bool {
+    view.players[view.actor.unwrap().index()].mana[color] > 0
+        || view.actions.iter().any(|action| match action {
+            Action::ActivateMana { production, .. } | Action::TapGrantedMana { production, .. } => {
+                production[color] > 0
+            }
+            Action::TapMana { card } => view
+                .objects
+                .iter()
+                .find(|object| object.id == *card)
+                .is_some_and(|object| {
+                    object.has_subtype(["Plains", "Island", "Swamp", "Mountain", "Forest"][color])
+                }),
+            _ => false,
+        })
+}
+
 fn caller_allows(view: &Observation, action: &Action) -> bool {
     let actor = view.actor.unwrap();
     if view.decision == "priority" {
         let budget = current_mana_budget(view);
+        if let Action::AnnounceCast { card } = action
+            && view.objects.iter().any(|object| {
+                object.id == *card && object.card.name() == "Araña, Heart of the Spider"
+            })
+            && (!currently_offered_color(view, 0) || !currently_offered_color(view, 3))
+        {
+            // Do not let the setup preference consume the turn's one attempt
+            // while all current mana sources provide only one of its colors.
+            return false;
+        }
         if let Action::AnnounceCast { card } = action
             && view
                 .objects
