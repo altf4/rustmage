@@ -4,6 +4,23 @@ use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
 
+fn choose_pool_spell_cost(g: &mut Game) {
+    let a = g.state.announcing.as_ref().unwrap();
+    let pool = g.state.players[a.item.controller.index()].mana;
+    let cost = a
+        .cost_choices()
+        .position(|cost| {
+            ManaPaymentDomain {
+                available: pool,
+                required: cost.colored,
+                generic: cost.generic,
+            }
+            .payable()
+        })
+        .expect("scripted pool pays the declared equivalent") as u16;
+    act(g, Action::ChooseSpellCost { cost });
+}
+
 fn idle(g: &Game) -> bool {
     g.state.pending == Pending::Priority
         && g.state.stack.is_empty()
@@ -146,7 +163,7 @@ fn exile_stalwart(g: &mut Game, p: Player, severance: CardId, source: CardId, ol
     g.state.players[p.index()].mana = [1, 0, 1, 0, 1, 0];
     act(g, Action::AnnounceCast { card: severance });
     assert!(matches!(g.state.pending, Pending::SpellCost { .. }));
-    choose(g, |a| matches!(a, Action::ChooseSpellCost { .. }));
+    choose_pool_spell_cost(g);
     act(
         g,
         Action::ChooseTarget {

@@ -584,7 +584,7 @@ fn exact_defender_permission_is_paid_keeps_keyword_and_survives_control_or_text_
     let wall = put(&mut g, Player::P0, "Aegis Turtle", Zone::Battlefield);
     assert!(!g.can_declare_attacker(Player::P0, wall));
     g.state.players[0].mana = [0; 6];
-    reject(
+    admit(
         &mut g,
         Action::AnnounceActivate {
             card: wall,
@@ -592,6 +592,23 @@ fn exact_defender_permission_is_paid_keeps_keyword_and_survives_control_or_text_
             counter_payment: Counters::default(),
         },
     );
+    let mut unpaid = g.clone();
+    act(
+        &mut unpaid,
+        Action::AnnounceActivate {
+            card: wall,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    reject(&mut unpaid, Action::PayCosts { payment: [0; 6] });
+    act(&mut unpaid, Action::EndManaWindow);
+    act(&mut unpaid, Action::SubmitAttempt);
+    assert_eq!(
+        unpaid.last_attempt_outcome_view(Player::P0).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
+    assert!(!unpaid.can_declare_attacker(Player::P0, wall));
     g.state.players[0].mana = [0, 0, 0, 0, 1, 2];
     activate(&mut g, wall, 0);
     assert!(g.keywords(wall).contains(Keywords::DEFENDER));
