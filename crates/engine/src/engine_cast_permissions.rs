@@ -1090,7 +1090,11 @@ impl Game {
                 .scalar_x_intervals_with_announcement(actor, card, definition, Some(&a))
                 .is_empty();
         }
-        let admissible = |choice: &Announcement| choice.cost_options().next().is_some();
+        let admissible = |choice: &Announcement| {
+            choice
+                .cost_options()
+                .any(|cost| self.spell_immediate_cost_available(actor, definition, cost))
+        };
         if let Some(modes) = a.item.modes() {
             return modes.iter().enumerate().any(|(index, mode)| {
                 if !self.item_mode_eligible(&a.item, index)
