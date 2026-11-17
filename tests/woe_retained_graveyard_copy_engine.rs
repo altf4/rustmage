@@ -133,11 +133,15 @@ fn exact_funded_x_copies_and_recopies_without_resetting_the_source() {
             game.observe(player).x_choice.unwrap().intervals,
             [XInterval {
                 minimum: 0,
-                maximum: 1
+                maximum: u32::MAX
             }]
         );
         assert!(game.observe(player.other()).x_choice.is_none());
-        reject(&mut game, Action::ChooseX { value: 2 });
+        let mut unfunded = game.clone();
+        act(&mut unfunded, Action::ChooseX { value: 2 });
+        select(&mut unfunded, bear);
+        assert!(unfunded.mana_payment_domain().is_none());
+        reject(&mut unfunded, Action::PayCosts { payment: ZERO });
 
         let mut zero = game.clone();
         act(&mut zero, Action::ChooseX { value: 0 });
@@ -198,8 +202,13 @@ fn exact_funded_x_copies_and_recopies_without_resetting_the_source() {
             indexed.apply_index(player, revision, index),
             Err(Error::StaleRevision)
         );
-        act(&mut indexed, action);
-        assert_eq!(indexed.snapshot(), game.snapshot());
+        assert_eq!(indexed.snapshot(), checkpoint);
+        let mut replay = indexed.clone();
+        act(&mut replay, action);
+        indexed
+            .apply_index(player, indexed.revision(), index)
+            .unwrap();
+        assert_eq!(indexed.snapshot(), replay.snapshot());
         assert!(game.observe(player).x_choice.unwrap().contains(2));
         act(&mut game, Action::ChooseX { value: 2 });
         select(&mut game, bear);

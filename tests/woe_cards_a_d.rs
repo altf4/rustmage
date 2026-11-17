@@ -549,7 +549,20 @@ fn brave_the_wilds_searches_on_either_route_and_animates_its_paid_target() {
     let mut unpaid = game.clone();
     act(&mut unpaid, Action::AnnounceCast { card: spell });
     let sacrifice = Some(unpaid.object_ref(offering));
-    reject(&mut unpaid, Action::ChooseBargain { sacrifice });
+    let mut missing_target = unpaid.clone();
+    act(&mut missing_target, Action::ChooseBargain { sacrifice });
+    assert_eq!(missing_target.state.pending, Pending::Targets { player });
+    admit(&missing_target, Action::SubmitAttempt);
+    act(&mut missing_target, Action::SubmitAttempt);
+    let outcome = missing_target.last_attempt_outcome_view(player).unwrap();
+    assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+    assert_eq!(
+        outcome.reason,
+        Some(AttemptFailureReason::UnsatisfiedDeclaration)
+    );
+    assert_eq!(missing_target.object_view(spell).zone, Zone::Hand);
+    assert_eq!(missing_target.object_ref(offering), sacrifice.unwrap());
+    assert_eq!(missing_target.object_view(offering).zone, Zone::Battlefield);
     bargain(&mut unpaid, None);
     pay(&mut unpaid);
     assert!(unpaid.state.stack.last().unwrap().targets.is_empty());
@@ -658,7 +671,7 @@ fn agatha_uses_live_power_and_boosts_only_other_creatures() {
     assert_eq!(stats(&game, agatha), (4, 4));
     let mut without_mana = game.clone();
     without_mana.state.players[player.index()].mana = [0; 6];
-    reject(&mut without_mana, activate(keykeeper));
+    admit(&without_mana, activate(keykeeper));
     act(&mut game, activate(keykeeper));
     target(&mut game, giant);
     let cost = game.mana_payment_domain().unwrap();
@@ -1141,7 +1154,7 @@ fn decadent_dragon_steals_private_exact_cards_and_pays_with_attack_treasure() {
 
     let mut wrong_color = game.clone();
     wrong_color.state.players[player.index()].mana = [0, 1, 0, 0, 0, 0];
-    reject(&mut wrong_color, Action::AnnounceExile { card: stolen });
+    admit(&wrong_color, Action::AnnounceExile { card: stolen });
 
     let mut later = game.clone();
     finish_turn(&mut later);
@@ -1708,7 +1721,7 @@ fn dutiful_griffin_pays_two_role_enchantments_from_graveyard_on_another_turn() {
     cast(&mut game, murder, Some(Target::Card(griffin)));
     settle(&mut game);
     assert_eq!(game.object_view(griffin).zone, Zone::Graveyard);
-    reject(&mut game, activate(griffin));
+    admit(&game, activate(griffin));
 
     cast(&mut game, courtiers[1], None);
     settle(&mut game);

@@ -66,7 +66,7 @@ fn gained_food_subtype_supplies_mana_during_a_paid_announcement() {
             reject(&mut game, tap_food(grantor, card));
         }
         let announce = Action::AnnounceCast { card: elves };
-        reject(&mut game, announce.clone());
+        admit(&game, announce.clone());
 
         game.state.players[player.index()].mana = [8; 6];
         cast(&mut game, ragost, None);
@@ -84,7 +84,7 @@ fn gained_food_subtype_supplies_mana_during_a_paid_announcement() {
         assert!(!without_subtype.has_subtype(boots, "Food"));
         without_subtype.state.players[player.index()].mana = [0; 6];
         reject(&mut without_subtype, tap_food(grantor, boots));
-        reject(&mut without_subtype, announce.clone());
+        admit(&without_subtype, announce.clone());
 
         game.state.players[player.index()].mana = [0; 6];
         act(&mut game, announce);
@@ -142,7 +142,7 @@ fn food_mana_respects_recipient_ability_order_sickness_and_control() {
     reject(&mut game, tap_food(first_grant, ready));
     let mut without_mana = game.clone();
     without_mana.state.players[player.index()].mana = [0; 6];
-    reject(&mut without_mana, Action::AnnounceCast { card: elves });
+    admit(&without_mana, Action::AnnounceCast { card: elves });
 
     // A later grant applies after the blanking effect, with a distinct origin.
     cast(&mut game, later_grant, None);

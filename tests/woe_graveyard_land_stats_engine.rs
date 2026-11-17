@@ -218,7 +218,7 @@ fn the_live_bonus_tracks_type_control_and_abilities_in_play_and_funding() {
     let cast = Action::AnnounceCast { card: spell };
     animate(&mut game, land);
     animate(&mut game, foreign);
-    reject(&mut game, cast.clone());
+    admit(&game, cast.clone());
     let turtle = put(&mut game, player, "Hill Giant", Zone::Battlefield);
     let expected = Stats {
         power: 3,
@@ -233,7 +233,7 @@ fn the_live_bonus_tracks_type_control_and_abilities_in_play_and_funding() {
     transferred.change_controller(transferred.object_ref(turtle), player.other());
     assert_eq!(transferred.stats(land).power, 2);
     assert_eq!(transferred.stats(foreign), expected);
-    reject(&mut transferred, cast.clone());
+    admit(&transferred, cast.clone());
 
     let mut stripped = game.clone();
     stripped.remove_abilities_exact(
@@ -243,7 +243,7 @@ fn the_live_bonus_tracks_type_control_and_abilities_in_play_and_funding() {
         AnimationDuration::EndOfTurn,
     );
     assert_eq!(stripped.stats(land).power, 2);
-    reject(&mut stripped, cast.clone());
+    admit(&stripped, cast.clone());
 
     act(&mut game, cast);
     choose(

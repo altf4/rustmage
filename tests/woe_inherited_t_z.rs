@@ -478,7 +478,7 @@ fn witchstalker_frenzy_counts_declared_attackers_that_left_combat() {
     let bounce = put(&mut game, player, "Unsummon", Zone::Hand);
     let frenzy = put(&mut game, player, "Witchstalker Frenzy", Zone::Hand);
     game.state.players[player.index()].mana = [0; 6];
-    reject(&mut game, Action::AnnounceCast { card: frenzy });
+    admit(&game, Action::AnnounceCast { card: frenzy });
     advance(&mut game, |game| game.state.pending == Pending::Attackers);
     for card in attackers {
         act(&mut game, Action::Attack { card });

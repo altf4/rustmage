@@ -126,7 +126,7 @@ fn paid_sacrifice_uses_the_artifact_lki_and_counts_live_named_permanents() {
         assert!(game.has_subtype(artifact, "Robot"));
         assert!(!game.has_subtype(artifact, "Food"));
         let mut unfunded = game.clone();
-        reject(&mut unfunded, from_first.clone());
+        admit(&unfunded, from_first.clone());
 
         let second_land = put(&mut game, player, "Forest", Zone::Battlefield);
         let actions = game.legal_actions();

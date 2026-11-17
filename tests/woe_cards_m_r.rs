@@ -1884,7 +1884,7 @@ fn rowan_freezes_gross_life_loss_for_black_and_red_spell_faces_until_cleanup() {
 
         let mut dual = game.clone();
         dual.state.players[player.index()].mana = [0, 0, 1, 1, 0, 0];
-        reject(&mut dual, Action::AnnounceCast { card: bolg });
+        admit(&dual, Action::AnnounceCast { card: bolg });
         dual.state.players[player.index()].mana[5] = 1;
         act(&mut dual, Action::AnnounceCast { card: bolg });
         act(
@@ -1897,7 +1897,7 @@ fn rowan_freezes_gross_life_loss_for_black_and_red_spell_faces_until_cleanup() {
 
         let mut green = game.clone();
         green.state.players[player.index()].mana = [0, 0, 0, 0, 1, 0];
-        reject(&mut green, Action::AnnounceCast { card: adventure });
+        admit(&green, Action::AnnounceCast { card: adventure });
         game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 0];
         act(&mut game, Action::AnnounceAdventure { card: adventure });
         act(
