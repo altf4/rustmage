@@ -453,7 +453,7 @@ fn uncle_iroh_reduces_only_lesson_costs_and_reinforcements_pump_other_allies() {
     game.state.step = Step::Main2;
     game.state.players[player.index()].combat_red_mana = 0;
     game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 0];
-    reject(&mut game, Action::AnnounceCast { card: nonlesson });
+    admit(&game, Action::AnnounceCast { card: nonlesson });
     cast(&mut game, lesson, None);
     assert_eq!(
         game.state.stack.last().unwrap().cast.unwrap().payment,

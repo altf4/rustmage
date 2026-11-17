@@ -184,7 +184,7 @@ fn foretell_cast_uses_later_timing_and_the_exact_alternative() {
         game.legal_actions()
             .contains(&Action::AnnounceExile { card })
     );
-    reject(&mut game, foretold_cast(exiled));
+    admit(&game, foretold_cast(exiled));
 
     game.state.players[player.index()].mana = [0, 2, 0, 1, 0, 0];
     let before = game.snapshot();

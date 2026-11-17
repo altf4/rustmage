@@ -170,7 +170,7 @@ fn hermitic_herbalist_can_split_lesson_only_mana_and_make_unrestricted_mana() {
     );
     act(&mut game, produce(1, [0, 1, 0, 1, 0, 0]));
     assert_eq!(game.state.players[player.index()].mana, [0, 1, 0, 1, 0, 0]);
-    reject(&mut game, Action::AnnounceCast { card: shock });
+    admit(&game, Action::AnnounceCast { card: shock });
     kickless_lesson(&mut game, lesson, victim);
     drain(&mut game);
     assert_eq!(game.object_view(victim).damage, 2);
