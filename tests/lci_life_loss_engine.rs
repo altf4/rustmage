@@ -200,6 +200,8 @@ fn projected_mana_accounts_for_replaced_life_costs_and_raw_index_restore() {
         assert_eq!(raw.state.players[player.index()].life, 5);
         assert_eq!(raw.state.players[player.index()].life_lost_this_turn, 4);
         indexed.restore(&saved).unwrap();
+        raw.restore(&saved).unwrap();
+        act(&mut raw, activation.clone());
         act(&mut indexed, activation);
         assert_eq!(raw.snapshot(), indexed.snapshot());
     }
