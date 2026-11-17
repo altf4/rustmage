@@ -1090,28 +1090,7 @@ impl Game {
                 .scalar_x_intervals_with_announcement(actor, card, definition, Some(&a))
                 .is_empty();
         }
-        if teamwork {
-            return self.teamwork_intent_fundable(&a, false)
-                || self.teamwork_intent_fundable(&a, true);
-        }
-        let fundable = |choice: &Announcement| {
-            if bargain_changes_targets {
-                return self.visit_bargain_choices(choice, |_| true);
-            }
-            if kicker_changes_targets {
-                return self.kicker_choice_fundable(choice, false)
-                    || self.kicker_choice_fundable(choice, true);
-            }
-            if choice.independent_additional_mana().is_some() {
-                return choice
-                    .cost_options()
-                    .enumerate()
-                    .any(|(index, _)| self.announcement_cost_choice_fundable(choice, index));
-            }
-            choice
-                .cost_options()
-                .any(|cost| self.announcement_cost_fundable(choice, cost))
-        };
+        let admissible = |choice: &Announcement| choice.cost_options().next().is_some();
         if let Some(modes) = a.item.modes() {
             return modes.iter().enumerate().any(|(index, mode)| {
                 if !self.item_mode_eligible(&a.item, index)
@@ -1124,9 +1103,9 @@ impl Game {
                 let mut choice = a.clone();
                 choice.item.mode = Some(u16::try_from(index).expect("mode index"));
                 choice.plan = mode.targets;
-                fundable(&choice)
+                admissible(&choice)
             });
         }
-        fundable(&a)
+        admissible(&a)
     }
 }

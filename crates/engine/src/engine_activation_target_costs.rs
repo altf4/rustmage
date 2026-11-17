@@ -57,22 +57,10 @@ impl Game {
             discount.with_ordinary(target_discount),
             increase,
         );
-        let mut total = minimum.expect("validated activation total");
-        let order_costs = alternate.and_then(|alternate| {
-            let mut candidate = a.clone();
-            candidate.activation_generic_increase = increase;
-            candidate.total_cost = Some(alternate);
-            if !self.activation_total_fundable(&candidate) {
-                return None;
-            }
-            candidate.total_cost = Some(total);
-            if self.activation_total_fundable(&candidate) {
-                Some([total, alternate])
-            } else {
-                total = alternate;
-                None
-            }
-        });
+        let total = minimum.expect("validated activation total");
+        // Both legal reduction orders remain declarations even when one cannot
+        // be funded. The caller chooses; the total then locks.
+        let order_costs = alternate.map(|alternate| [total, alternate]);
         let a = self.state.announcing.as_mut().unwrap();
         a.activation_generic_increase = increase;
         a.activation_discount = u32::try_from(discount.ordinary).unwrap_or(u32::MAX);
@@ -199,333 +187,47 @@ impl Game {
         packet: &SpellView,
         counter_payment: &Counters,
     ) -> bool {
-        let StackKind::ActivatedAbility { ability } = packet.kind else {
-            unreachable!("activated packet");
-        };
-        let source = packet.source.expect("activated packet source");
-        let mut proposal =
+        let proposal =
             self.payment_announcement(packet.clone(), counter_payment.clone(), None, None);
-        if proposal.declares_target_value_x() {
-            return !self.target_value_x_intervals(&proposal).is_empty();
-        }
-        let minimum = source.card.activation(ability).minimum_x();
-        if proposal.item.x.is_none() && minimum != 0 {
-            proposal.item.x = Some(minimum);
-        }
-        if proposal.has_equip_discard_alternative()
-            || proposal
-                .additional_cost()
-                .is_some_and(|c| c.kind.uses_target_mana_value())
-            || source.card.activation_target_color_discount(ability) != 0
-            || proposal.activation_discounts().leave_one != 0
-                && Self::activation_target_sensitive(source.card, ability)
-        {
-            return self.activation_exact_target_fundable(&proposal, None, false);
-        }
-        let options = proposal.cost_options().count();
-        (0..options).any(|slot| {
-            proposal.select_cost(slot);
-            if !Self::activation_target_sensitive(source.card, ability) {
-                return proposal
-                    .untargeted_activation_totals()
-                    .into_iter()
-                    .flatten()
-                    .any(|total| {
-                        let mut candidate = proposal.clone();
-                        candidate.total_cost = Some(total);
-                        self.activation_packet_fundable(&candidate)
-                    });
-            }
-            let spec = proposal
-                .plan
-                .single()
-                .expect("one-target activation cost modifier");
-            self.visit_item_targets(packet, spec.rule, |target| {
-                let mut candidate = proposal.clone();
-                candidate.item.targets.push(self.bind_target(target));
-                candidate.total_cost = Some(self.activation_target_total(
-                    packet.controller,
-                    source.object,
-                    source.card,
-                    ability,
-                    target,
-                    proposal.cost.expect("selected activation cost"),
-                ));
-                self.activation_packet_fundable(&candidate)
-            })
-        })
+        self.activation_packet_admissible(&proposal)
+            && (proposal.declares_target_value_x()
+                || self.item_targets_available(packet, proposal.plan)
+                || packet.modes().is_some())
     }
     pub(super) fn initial_activation_target_fundable(
         &self,
         goal: FundingGoal,
         plan: TargetPlan,
     ) -> bool {
-        let Some((source, index, counters, definition, _)) = goal.source.as_ref() else {
-            unreachable!("activation source");
+        let Some((source, ability, counters, definition, borrowed_slot)) = goal.source else {
+            return false;
         };
-        let ability = definition.activation(*index);
-        if ability.declares_target_value_x() {
-            let mut packet = self.activation_packet(goal.actor, source.card, *index);
-            packet.set_source_definition(*definition);
-            packet.borrowed_slot = goal.source.as_ref().unwrap().4;
-            let proposal = self.payment_announcement(packet, counters.clone(), None, None);
-            return !self.target_value_x_intervals(&proposal).is_empty();
-        }
-        if ability.equip_discard_alternative()
-            || ability
-                .cost
-                .additional
-                .is_some_and(|c| c.kind.uses_target_mana_value())
-            || definition.activation_target_color_discount(*index) != 0
-            || Self::activation_target_sensitive(*definition, *index)
-                && self
-                    .activation_generic_discount(source.card, *definition, *index)
-                    .leave_one
-                    != 0
+        if self.state.objects.get(source.card as usize).is_none()
+            || self.object_ref(source.card) != source
         {
-            let mut packet = self.activation_packet(goal.actor, source.card, *index);
-            packet.set_source_definition(*definition);
-            packet.borrowed_slot = goal.source.as_ref().unwrap().4;
-            let mut proposal = self.payment_announcement(packet, counters.clone(), None, None);
-            proposal.plan = plan;
-            let minimum = ability.minimum_x();
-            if minimum != 0 {
-                proposal.item.x = Some(minimum);
-            }
-            return self.activation_exact_target_fundable(&proposal, None, false);
+            return false;
         }
-        if *counters == Counters::default() && self.first_equip_zero_available(goal.actor, ability)
-        {
-            let mut packet = self.activation_packet(goal.actor, source.card, *index);
-            packet.set_source_definition(*definition);
-            let announcement = self.payment_announcement(packet, counters.clone(), None, None);
-            let purpose = self.purpose_for_item(&announcement.item);
-            for (slot, base) in announcement.cost_options().enumerate() {
-                if announcement.activation_route_for_index(slot)
-                    != ActivationCostRoute::FirstEquipZero
-                {
-                    continue;
-                }
-                let fund = |total: ManaCost| {
-                    self.can_fund_for(
-                        FundingGoal {
-                            source: None,
-                            reserve: None,
-                            actor: goal.actor,
-                            required: total.colored,
-                            generic: total.generic,
-                        },
-                        purpose,
-                    )
-                };
-                if !Self::activation_target_sensitive(*definition, *index) {
-                    if fund(base) {
-                        return true;
-                    }
-                } else {
-                    let spec = plan.single().expect("one-target activation cost modifier");
-                    if self.visit_targets(spec.rule, goal.actor, *source, |target| {
-                        fund(self.activation_target_total(
-                            goal.actor,
-                            *source,
-                            *definition,
-                            *index,
-                            target,
-                            base,
-                        ))
-                    }) {
-                        return true;
-                    }
-                }
-            }
-        }
-        if !Self::activation_target_sensitive(*definition, *index) {
-            return self.activation_can_fund(goal, ability.cost.additional);
-        }
-        let spec = plan.single().expect("one-target activation cost modifier");
-        self.visit_targets(spec.rule, goal.actor, *source, |target| {
-            let total = self.activation_target_total(
-                goal.actor,
-                *source,
-                *definition,
-                *index,
-                target,
-                ManaCost {
-                    colored: goal.required,
-                    generic: goal.generic,
-                },
-            );
-            let mut proposal = goal.clone();
-            proposal.required = total.colored;
-            proposal.generic = total.generic;
-            self.activation_can_fund(proposal, ability.cost.additional)
-        })
+        let mut packet = self.activation_packet(goal.actor, source.card, ability);
+        packet.set_source_definition(definition);
+        packet.borrowed_slot = borrowed_slot;
+        let mut proposal = self.payment_announcement(packet, counters, None, None);
+        proposal.plan = plan;
+        self.activation_packet_admissible(&proposal)
+            && (proposal.declares_target_value_x()
+                || self.item_targets_available(&proposal.item, plan)
+                || proposal.item.modes().is_some())
     }
     pub(super) fn announcement_activation_target_fundable(
         &self,
         a: &Announcement,
         extra: Option<Target>,
-        finished: bool,
+        _finished: bool,
     ) -> bool {
-        let StackKind::ActivatedAbility { ability } = a.item.kind else {
-            unreachable!();
-        };
-        if a.has_equip_discard_alternative()
-            || a.additional_cost()
-                .is_some_and(|c| c.kind.uses_target_mana_value())
-            || a.item
-                .source
-                .expect("activation source")
-                .card
-                .activation_target_color_discount(ability)
-                != 0
-            || a.activation_discounts().leave_one != 0
-        {
-            return self.activation_exact_target_fundable(a, extra, finished);
-        }
-        let test = |base: ManaCost| {
-            let free = a.activation_cost_route == ActivationCostRoute::FirstEquipZero;
-            let goal = FundingGoal {
-                actor: a.item.controller,
-                required: base.colored,
-                generic: base.generic,
-                reserve: None,
-                source: (!free).then(|| {
-                    (
-                        a.item
-                            .source
-                            .expect("cost announcement has object source")
-                            .object,
-                        ability,
-                        a.counter_payment.clone(),
-                        a.item
-                            .source
-                            .expect("cost announcement has object source")
-                            .card,
-                        a.item.borrowed_slot,
-                    )
-                }),
-            };
-            if free {
-                self.can_fund_for(goal, self.purpose_for_item(&a.item))
-            } else {
-                self.activation_can_fund(goal, a.additional_cost())
-            }
-        };
-        if let Some(total) = a.total_cost {
-            return test(total);
-        }
-        let chosen = extra.or_else(|| {
-            a.item
-                .targets
-                .first()
-                .filter(|b| self.same_target_object(**b))
-                .map(|b| b.target)
-        });
-        if finished && chosen.is_none() {
-            return false;
-        }
-        let fund_target = |target| {
-            let apply = |base| {
-                test(
-                    self.activation_target_total(
-                        a.item.controller,
-                        a.item.target_source(),
-                        a.item
-                            .source
-                            .expect("cost announcement has object source")
-                            .card,
-                        ability,
-                        target,
-                        base,
-                    ),
-                )
-            };
-            if let Some(base) = a.cost {
-                apply(base)
-            } else {
-                a.cost_options().any(apply)
-            }
-        };
-        if let Some(target) = chosen {
-            fund_target(target)
-        } else {
-            let spec = a
-                .plan
-                .single()
-                .expect("one-target activation cost modifier");
-            self.visit_item_targets(&a.item, spec.rule, fund_target)
-        }
+        // The targeting state machine enforces group counts and joint target
+        // constraints. Check a supplied target, never any possible continuation.
+        extra.is_none_or(|target| self.item_target_matches(&a.item, a.spec.rule, target))
     }
 
-    fn activation_target_choice_fundable(&self, a: &Announcement, target: Target) -> bool {
-        let minimum = if a
-            .additional_cost()
-            .is_some_and(|c| c.kind.uses_target_mana_value())
-        {
-            let Target::Card(id) = target else {
-                return false;
-            };
-            Some(self.object_mana_value(id))
-        } else {
-            None
-        };
-        self.activation_target_totals(a, target)
-            .into_iter()
-            .flatten()
-            .any(|total| {
-                let mut selected = a.clone();
-                selected.total_cost = Some(total);
-                if let Some(minimum) = minimum {
-                    selected.initialize_cast_costs(false);
-                    selected.cast_costs.as_mut().unwrap().target_mana_value = Some(minimum);
-                }
-                self.activation_packet_fundable(&selected)
-            })
-    }
-    fn activation_exact_target_fundable(
-        &self,
-        a: &Announcement,
-        extra: Option<Target>,
-        finished: bool,
-    ) -> bool {
-        if a.total_cost.is_some() {
-            return self.activation_packet_fundable(a);
-        }
-        let chosen = extra.or_else(|| {
-            a.item
-                .targets
-                .first()
-                .filter(|b| self.same_target_object(**b))
-                .map(|b| b.target)
-        });
-        if finished && chosen.is_none() {
-            return false;
-        }
-        let fund_choice = |proposal: &Announcement| {
-            if let Some(target) = chosen {
-                self.activation_target_choice_fundable(proposal, target)
-            } else {
-                self.visit_item_targets(
-                    &a.item,
-                    a.plan
-                        .single()
-                        .expect("one-target activation cost modifier")
-                        .rule,
-                    |target| self.activation_target_choice_fundable(proposal, target),
-                )
-            }
-        };
-        if a.activation_choice.is_some() {
-            return fund_choice(a);
-        }
-        let mut proposal = a.clone();
-        let options = a.cost_options().count();
-        (0..options).any(|slot| {
-            proposal.select_cost(slot);
-            fund_choice(&proposal)
-        })
-    }
     pub(super) fn visit_target_cost_direct_actions(
         &self,
         card: CardId,
@@ -565,7 +267,7 @@ impl Game {
                     {
                         let mut selected = proposal.clone();
                         selected.total_cost = Some(total);
-                        if !self.activation_packet_fundable(&selected) {
+                        if !self.activation_packet_admissible(&selected) {
                             continue;
                         }
                         let mut done = false;
