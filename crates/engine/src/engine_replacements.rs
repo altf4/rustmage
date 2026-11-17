@@ -1315,6 +1315,7 @@ impl Game {
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[cfg(feature = "test-support")]
 pub(super) fn counter_outcomes<W: super::ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
     placement: &CounterPlacement,

@@ -473,7 +473,12 @@ impl FundingState<'_> {
             vec![]
         };
         let mut result = None;
-        seed.commit_projected_entries(vec![movement.clone()], &order, &mut |world| {
+        // The entrant's current entry characteristics precede any separate
+        // post-entry counter event. That event keeps its real replacement
+        // continuation; a preview must not select one of its future outcomes.
+        let mut entrant = movement.clone();
+        entrant.post_entry_counters = None;
+        seed.commit_projected_entries(vec![entrant], &order, &mut |world| {
             result = Some(inspect(world));
             true
         });
@@ -2363,15 +2368,16 @@ impl FundingState<'_> {
                 on_creature,
             );
         }
+        #[cfg(feature = "test-support")]
         if moves
             .iter()
             .any(|movement| movement.post_entry_counters.is_some())
         {
-            next.visit_post_entry_counter_events(&moves, 0, &mut Vec::new(), emit)
-        } else {
-            emit(&next)
+            return next.visit_post_entry_counter_events(&moves, 0, &mut Vec::new(), emit);
         }
+        emit(&next)
     }
+    #[cfg(feature = "test-support")]
     fn visit_post_entry_counter_events(
         &self,
         moves: &[entries::EntryMove],
@@ -2379,6 +2385,7 @@ impl FundingState<'_> {
         changes: &mut Vec<(ObjectRef, Counters, Player)>,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
+        record_payment_projection(1);
         let Some(movement) = moves.get(at) else {
             if changes.is_empty() {
                 return emit(self);
