@@ -172,11 +172,26 @@ impl Game {
         }
         let mut available = 0usize;
         self.visit_item_targets(&a.item, a.spec.rule, |target| {
-            if !a
-                .item
-                .targets
-                .iter()
-                .any(|bound| bound.group == a.group && bound.target == target)
+            let slot_available = if matches!(
+                a.spec.rule,
+                TargetRule::Grouped {
+                    constraint: TargetGroupConstraint::DistinctCardTypeSlots,
+                    ..
+                }
+            ) {
+                let used = a.item.target_type_slots.as_ref().map_or(0, |slots| {
+                    slots.iter().fold(0u16, |mask, kind| mask | *kind)
+                });
+                matches!(target, Target::Card(id) if self.current_kinds(id) & !used != 0)
+            } else {
+                true
+            };
+            if slot_available
+                && !a
+                    .item
+                    .targets
+                    .iter()
+                    .any(|bound| bound.group == a.group && bound.target == target)
                 && self.target_group_compatible(a.spec.rule, a.group, &a.item.targets, target)
             {
                 available += 1;
