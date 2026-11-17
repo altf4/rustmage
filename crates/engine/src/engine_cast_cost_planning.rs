@@ -84,6 +84,7 @@ impl CostContext {
         let mut source_counter_reservation = Counters::default();
         if let StackKind::ActivatedAbility { ability } = a.item.kind
             && a.activation_cost_route == ActivationCostRoute::Printed
+            && !c.mana_paid
         {
             let cost = a
                 .item

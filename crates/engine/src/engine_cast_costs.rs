@@ -1,4 +1,4 @@
-//! Owned nonmana cost clauses. Mana is committed once before any clause is paid.
+//! Owned ordered cost clauses. The explicit mana row commits the initial payment once.
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -351,6 +351,12 @@ impl Announcement {
         {
             self.add_cast_cost_clause(CastCostClause::Additional);
         }
+        // Every initialized plan must retain its initial payment when callers
+        // enter ordered costs before paying mana. This row also commits an
+        // activation's fixed tap, life and source-counter costs exactly once.
+        if self.cast_costs.is_some() {
+            self.add_cast_cost_clause(CastCostClause::Mana);
+        }
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -373,13 +379,10 @@ impl Game {
             return false;
         };
         costs.mana_closed = true;
-        if !costs
+        costs.mana_paid = costs
             .clauses
             .iter()
-            .any(|r| r.clause == CastCostClause::Mana && !r.paid)
-        {
-            costs.mana_paid = true;
-        }
+            .any(|row| row.clause == CastCostClause::Mana && row.paid);
         if let Some(index) = costs.active {
             let clause = costs.clauses[usize::from(index)].clause;
             assert!(matches!(
@@ -704,5 +707,5 @@ impl Game {
 fn costs_unpaid(a: &Announcement) -> bool {
     a.cast_costs
         .as_ref()
-        .is_some_and(|c| c.clauses.iter().any(|r| !r.paid))
+        .is_some_and(|c| !c.mana_paid || c.clauses.iter().any(|r| !r.paid))
 }
