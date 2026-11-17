@@ -57,7 +57,7 @@ impl Game {
             discount.with_ordinary(target_discount),
             increase,
         );
-        let total = minimum.expect("validated activation total");
+        let total = minimum.capacity("activation mana cost exhausted");
         // Both legal reduction orders remain declarations even when one cannot
         // be funded. The caller chooses; the total then locks.
         let order_costs = alternate.map(|alternate| [total, alternate]);

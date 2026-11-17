@@ -12,6 +12,22 @@ pub(crate) struct SpellCostReduction {
 }
 
 impl SpellCostReduction {
+    /// Largest wide generic expression that still narrows after the declared
+    /// reductions. This is a representation bound, independent of resources.
+    pub(super) fn raw_generic_capacity(self, base: Mana, discount: ManaCost, extra: u64) -> u64 {
+        let generic = self
+            .generic
+            .saturating_add(u64::from(discount.generic))
+            .saturating_add(extra);
+        let generic = (0..6).fold(generic, |total, i| {
+            total.saturating_add(
+                self.colored[i]
+                    .saturating_add(u64::from(discount.colored[i]))
+                    .saturating_sub(u64::from(base[i])),
+            )
+        });
+        u64::from(u32::MAX).saturating_add(generic)
+    }
     fn apply(self, base: [u32; 6], raw_generic: u64) -> Option<ManaCost> {
         let mut generic_reduction = self.generic;
         let mut colored = base;
@@ -609,7 +625,7 @@ impl Game {
         )
     }
 
-    fn spell_cost_subtypes(&self, id: CardId) -> GrantedSubtypes {
+    pub(super) fn spell_cost_subtypes(&self, id: CardId) -> GrantedSubtypes {
         let mut subtypes = GrantedSubtypes::default();
         if self.state.objects[id as usize].zone == Zone::Stack {
             subtypes.add_creature_types(self.cast_added_creature_types(self.object_ref(id)));
@@ -617,7 +633,7 @@ impl Game {
         subtypes
     }
 
-    fn spell_reduction_with_subtypes(
+    pub(super) fn spell_reduction_with_subtypes(
         &self,
         actor: Player,
         id: CardId,

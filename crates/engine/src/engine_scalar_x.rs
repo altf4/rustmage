@@ -4,6 +4,15 @@ use crate::cards::CastFilter;
 
 const SCALAR_X_END: u64 = u32::MAX as u64 + 1;
 
+fn representable_x_maximum(capacity: u64, fixed: u64, symbols: u32) -> Option<u32> {
+    let remaining = capacity.checked_sub(fixed)?;
+    Some(if symbols == 0 {
+        u32::MAX
+    } else {
+        (remaining / u64::from(symbols)).min(u64::from(u32::MAX)) as u32
+    })
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CastFilter {
     pub(super) fn add_scalar_x_cuts(self, card: Card, cuts: &mut Vec<u64>) {
@@ -173,6 +182,35 @@ impl Game {
         if ordinary_library {
             cast_origins::add_library_spell_value_cuts(self, actor, card, &mut cuts);
         }
+        // Current reductions can switch at printed mana-value thresholds.
+        // Split only at those declared expressions, then solve each scalar
+        // capacity inequality directly; no mana/payment execution is searched.
+        for rule in card.cost_reductions() {
+            rule.filter.add_scalar_x_cuts(card, &mut cuts);
+        }
+        for &source in &self.state.static_sources {
+            for rule in self.state.objects[source as usize].card.cost_reductions() {
+                rule.filter.add_scalar_x_cuts(card, &mut cuts);
+            }
+        }
+        let known_base = current
+            .filter(|a| {
+                // These declarations may still replace/reduce the base. Do
+                // not invent a future choice to narrow X prematurely. Their
+                // eventual supplied total uses checked transactional locking.
+                !a.needs_mana_cost()
+                    && !(a.cost.is_none() && card.has_hybrid_cost())
+                    && !a.needs_evidence()
+                    && !a.needs_bargain()
+                    && !(a.item.cast.is_some_and(|c| c.method.is_harmonize())
+                        && a.harmonizer.is_none())
+                    && !(a.sacrifice_discount_count().is_none()
+                        && a.printed_additional_cost().is_some_and(|cost| {
+                            cost.kind == EffectChoiceKind::SacrificeForGenericReduction
+                        }))
+                    && card.target_cost_reduction().is_none()
+            })
+            .map(Self::announcement_base_cost);
         cuts.sort_unstable();
         cuts.dedup();
         let mut intervals: Vec<XInterval> = Vec::new();
@@ -188,7 +226,49 @@ impl Game {
             {
                 continue;
             }
-            let maximum = (ends[1] - 1) as u32;
+            let mut maximum = (ends[1] - 1) as u32;
+            if let (Some(a), Some(base)) = (current, known_base) {
+                let Some(base) =
+                    Self::with_additional_target_mana(base, card, a.item.targets.len())
+                else {
+                    continue;
+                };
+                let reduction = self.spell_reduction_with_subtypes(
+                    actor,
+                    id,
+                    card.fixed_mana_value() + symbols * u64::from(minimum),
+                    card,
+                    self.spell_cost_subtypes(id),
+                );
+                let optional = Self::announcement_optional_reduction(a).saturating_add(
+                    a.harmonizer.flatten().map_or(0, |object| {
+                        self.harmonizer_discount(&a.item, object).unwrap_or(0)
+                    }),
+                );
+                let capacity =
+                    reduction.raw_generic_capacity(base.colored, ManaCost::ZERO, optional);
+                let Some(fixed) = u64::from(base.generic)
+                    .checked_add(self.spell_generic_tax(actor, id, card))
+                    .and_then(|total| {
+                        total.checked_add(self.target_spell_increase(
+                            actor,
+                            id,
+                            card,
+                            &a.item.targets,
+                        ))
+                    })
+                else {
+                    continue;
+                };
+                let Some(bound) = representable_x_maximum(capacity, fixed, a.payment_x_symbols())
+                else {
+                    continue;
+                };
+                maximum = maximum.min(bound);
+            }
+            if maximum < minimum {
+                continue;
+            }
             if let Some(last) = intervals.last_mut()
                 && u64::from(last.maximum) + 1 == u64::from(minimum)
             {
@@ -203,16 +283,45 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = a.item.kind else {
             unreachable!("activation X announcement")
         };
-        vec![XInterval {
-            minimum: a
-                .item
-                .source
-                .expect("activation source")
+        let source = a.item.source.expect("activation source");
+        let minimum = source.card.activation(ability).minimum_x();
+        let mut maximum = u32::MAX;
+        if !a.needs_mana_cost()
+            && source.card.activation_target_reduction(ability).is_none()
+            && source
                 .card
-                .activation(ability)
-                .minimum_x(),
-            maximum: u32::MAX,
-        }]
+                .activation_target_counter_discount(ability)
+                .is_none()
+            && source.card.activation_target_color_discount(ability) == 0
+        {
+            let choice = a.raw_activation_choice();
+            let discounts = self.item_activation_discount(&a.item);
+            let excess = (0..6)
+                .map(|i| {
+                    u64::from(choice.reduction.colored[i].saturating_sub(choice.base.colored[i]))
+                })
+                .sum::<u64>();
+            let capacity = u64::from(u32::MAX)
+                .saturating_add(discounts.ordinary)
+                .saturating_add(u64::from(choice.reduction.generic))
+                .saturating_add(excess)
+                .saturating_add(discounts.leave_one);
+            let fixed = u64::from(choice.base.generic) + u64::from(a.activation_generic_increase);
+            let symbols = if choice.route == ActivationCostRoute::Printed {
+                source.card.activation_x_symbols(ability)
+            } else {
+                0
+            };
+            let Some(bound) = representable_x_maximum(capacity, fixed, symbols) else {
+                return Vec::new();
+            };
+            maximum = bound;
+        }
+        if minimum > maximum {
+            Vec::new()
+        } else {
+            vec![XInterval { minimum, maximum }]
+        }
     }
     fn life_x_intervals(&self, _a: &Announcement) -> Vec<XInterval> {
         vec![XInterval {
