@@ -337,6 +337,12 @@ impl Game {
             }
             if let Some(contributions) = a.convoke.as_ref() {
                 total = contributions.remaining;
+            } else {
+                let goal = self.funding_goal(a);
+                total = ManaCost {
+                    colored: goal.required,
+                    generic: goal.generic,
+                };
             }
             // All required selections are supplied. A source counter/tap or
             // other resource shared by two components cannot pay both. This
