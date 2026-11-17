@@ -15,19 +15,13 @@ impl Game {
         mode < 64 && bits & (1u64 << mode) != 0
     }
 
-    pub(super) fn blight_intent_fundable(&self, pay: bool) -> bool {
+    pub(super) fn blight_intent_fundable(&self, _pay: bool) -> bool {
         let Some(a) = self.state.announcing.as_ref() else {
             return false;
         };
         a.item
             .source
             .is_some_and(|source| source.card.blight().is_some())
-            && (!pay
-                || self.state.objects.iter().enumerate().any(|(id, object)| {
-                    object.zone == Zone::Battlefield
-                        && object.controller == a.item.controller
-                        && self.is_creature(id as CardId)
-                }))
     }
     pub(super) fn choose_blight(&mut self, pay: bool) {
         let improvise = improvise::potential(

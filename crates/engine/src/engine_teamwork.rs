@@ -23,29 +23,13 @@ impl Game {
         };
         mode < 64 && bits & (1u64 << mode) != 0
     }
-    pub(super) fn teamwork_intent_fundable(&self, announcement: &Announcement, pay: bool) -> bool {
-        let Some(source) = announcement.item.source else {
-            return false;
-        };
-        let Some(spec) = source.card.teamwork() else {
-            return false;
-        };
-        if !pay {
-            return true;
-        }
-        self.state
-            .objects
-            .iter()
-            .enumerate()
-            .filter(|(id, object)| {
-                object.zone == Zone::Battlefield
-                    && object.controller == announcement.item.controller
-                    && !object.tapped
-                    && self.is_creature(*id as CardId)
-            })
-            .take(usize::from(spec.minimum))
-            .count()
-            >= usize::from(spec.minimum)
+    pub(super) fn teamwork_intent_fundable(&self, announcement: &Announcement, _pay: bool) -> bool {
+        // This declares an optional cost before the mana window. The supplied
+        // teammates' total power is checked when that cost is paid.
+        announcement
+            .item
+            .source
+            .is_some_and(|source| source.card.teamwork().is_some())
     }
     pub(super) fn choose_teamwork(&mut self, pay: bool) {
         let improvise = improvise::potential(
