@@ -203,6 +203,21 @@ fn failed_cast_can_keep_or_reverse_the_completed_counter_removal_with_its_mana()
     act(&mut game, Action::ChooseCastCost { clause });
     let object = game.object_ref(silver);
     act(&mut game, Action::ChooseAuraAttachment { object });
+    let clause = game
+        .observe(p)
+        .cast_costs
+        .unwrap()
+        .clauses
+        .iter()
+        .position(|row| !row.paid && matches!(row.clause, CastCostClause::Casualty(_)))
+        .unwrap() as u16;
+    act(&mut game, Action::ChooseCastCost { clause });
+    assert!(
+        !game
+            .legal_actions()
+            .iter()
+            .any(|action| matches!(action, Action::PayCasualty { .. }))
+    );
     if game.legal_actions().contains(&Action::EndManaWindow) {
         act(&mut game, Action::EndManaWindow);
     }
@@ -213,6 +228,7 @@ fn failed_cast_can_keep_or_reverse_the_completed_counter_removal_with_its_mana()
     for keep in [false, true] {
         let mut raw = game.clone();
         let mut indexed = game.clone();
+        raw.restore(&saved).unwrap();
         indexed.restore(&saved).unwrap();
         let action = Action::ChooseManaRollback { keep };
         let index = indexed

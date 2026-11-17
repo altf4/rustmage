@@ -104,12 +104,23 @@ fn fate_discounts_only_a_tapped_creature_and_destroys_it() {
     admit(&game, Action::AnnounceCast { card: spell });
     game.state.objects[creature as usize].tapped = true;
     act(&mut game, Action::AnnounceCast { card: spell });
+    let mut undiscounted = game.clone();
+    target(&mut undiscounted, artifact);
+    assert_eq!(undiscounted.observe(p).payment_request.unwrap().generic, 4);
     reject(
-        &mut game,
-        Action::ChooseTarget {
-            target: Target::Card(artifact),
+        &mut undiscounted,
+        Action::PayCosts {
+            payment: [1, 0, 0, 0, 0, 2],
         },
     );
+    act(&mut undiscounted, Action::EndManaWindow);
+    act(&mut undiscounted, Action::SubmitAttempt);
+    assert_eq!(
+        undiscounted.last_attempt_outcome_view(p).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
+    assert_eq!(undiscounted.object_view(spell).zone, Zone::Hand);
+    assert_eq!(undiscounted.object_view(artifact).zone, Zone::Battlefield);
     target(&mut game, creature);
     pay(&mut game);
     assert_eq!(game.state.players[p.index()].mana, [0; 6]);

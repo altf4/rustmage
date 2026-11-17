@@ -470,7 +470,18 @@ fn is_craft_choice(view: &Observation) -> bool {
     })
 }
 
-fn preferred_action(view: &Observation, cover: &Coverage, prefer_hand: bool) -> Option<usize> {
+fn preferred_action(view: &Observation, cover: &Coverage, prefer_hand: bool) -> usize {
+    let smoke = policy::smoke_index_from_observation(view, &view.actions);
+    if matches!(view.actions[smoke], Action::PlayLand { .. })
+        || (view.attempt.is_none()
+            && view.decision == "priority"
+            && view.last_attempt_outcome.is_some_and(|outcome| {
+                outcome.turn == u64::from(view.turn)
+                    && outcome.outcome == rustmage::AttemptOutcome::Failed
+            }))
+    {
+        return smoke;
+    }
     if prefer_hand
         && !cover.mechanics.contains_key("Discover to hand")
         && view
@@ -482,7 +493,7 @@ fn preferred_action(view: &Observation, cover: &Coverage, prefer_hand: bool) -> 
             .iter()
             .position(|action| *action == Action::FinishResolutionCasts)
     {
-        return Some(index);
+        return index;
     }
     if !cover.mechanics.contains_key("Treasure spent on a spell")
         && let Some(spell) = view
@@ -499,7 +510,7 @@ fn preferred_action(view: &Observation, cover: &Coverage, prefer_hand: bool) -> 
                     })))
         })
     {
-        return Some(index);
+        return index;
     }
     if is_craft_choice(view)
         && let Some(index) = view.actions.iter().position(|action| {
@@ -507,29 +518,32 @@ fn preferred_action(view: &Observation, cover: &Coverage, prefer_hand: bool) -> 
                 exact(view, *object).is_some_and(|card| card.zone == Zone::Graveyard))
         })
     {
-        return Some(index);
+        return index;
     }
-    view.actions.iter().position(|action| {
-        let card_id = match *action {
-            Action::AnnounceActivate { card, ability, .. }
-            | Action::Activate { card, ability, .. }
-            | Action::BeginActivate { card, ability, .. } => (card, ability),
-            _ => return false,
-        };
-        object(view, card_id.0).is_some_and(|object| {
-            (!cover.mechanics.contains_key("Map sacrificed to explore")
-                && object.has_subtype("Map"))
-                || (!cover
-                    .mechanics
-                    .contains_key("Craft returned transformed with its exact material")
-                    && object.card.back_face().is_some()
-                    && object
-                        .card
-                        .activations()
-                        .get(usize::from(card_id.1))
-                        .is_some_and(|a| a.cost.exile_self))
+    view.actions
+        .iter()
+        .position(|action| {
+            let card_id = match *action {
+                Action::AnnounceActivate { card, ability, .. }
+                | Action::Activate { card, ability, .. }
+                | Action::BeginActivate { card, ability, .. } => (card, ability),
+                _ => return false,
+            };
+            object(view, card_id.0).is_some_and(|object| {
+                (!cover.mechanics.contains_key("Map sacrificed to explore")
+                    && object.has_subtype("Map"))
+                    || (!cover
+                        .mechanics
+                        .contains_key("Craft returned transformed with its exact material")
+                        && object.card.back_face().is_some()
+                        && object
+                            .card
+                            .activations()
+                            .get(usize::from(card_id.1))
+                            .is_some_and(|a| a.cost.exile_self))
+            })
         })
-    })
+        .unwrap_or(smoke)
 }
 
 fn evidence(directory: Option<&Path>, name: &str, data: Value) {
@@ -590,9 +604,7 @@ fn lci_standard_games_exercise_the_mechanics_and_replay_to_natural_outcomes() {
                 let actor = game.actor().unwrap();
                 let before = game.observe(actor);
                 check_privacy(&before, actor);
-                let index = preferred_action(&before, &cover, run.seed == 7).unwrap_or_else(|| {
-                    policy::smoke_index_from_observation(&before, &before.actions)
-                });
+                let index = preferred_action(&before, &cover, run.seed == 7);
                 let action = before.actions[index].clone();
                 assert_ne!(action, Action::Concede);
                 let private = private_choice(&before);
@@ -636,10 +648,14 @@ fn lci_standard_games_exercise_the_mechanics_and_replay_to_natural_outcomes() {
                 &format!("{label}.json"),
                 json!({
                     "catalogue": CATALOGUE_VERSION, "config": config, "decks": [left_name, right_name],
+                    "action_contract": rustmage::ACTION_CONTRACT,
+                    "observation_schema": rustmage::OBSERVATION_SCHEMA,
+                    "primitive_decision_limit": MAX_DECISIONS,
                     "actions": journal, "outcome": game.outcome(), "spell_colors": cover.colors,
                     "actual_casts": cover.casts, "cast_names": cover.cast_names, "mechanics": cover.mechanics,
                     "owned_branches": cover.branches, "owned_public_branches": cover.public_branches,
                     "owned_private_branches": cover.private_branches,
+                    "stalled_observation": game.outcome().is_none().then(|| game.observe(game.actor().unwrap())),
                 }),
             );
             assert!(

@@ -114,10 +114,10 @@ fn the_bearer_pays_only_its_exact_controlled_grantor() {
         assert!(stolen.legal_actions().contains(&announce(other_grantor)));
 
         game.state.objects[own as usize].gained_keywords = Keywords::CANT_BE_SACRIFICED;
-        admit(&game, announce(grantor));
+        reject(&mut game, announce(grantor));
         game.state.objects[own as usize].gained_keywords = Keywords::NONE;
         game.state.objects[creature as usize].summoning_sick = true;
-        admit(&game, announce(grantor));
+        reject(&mut game, announce(grantor));
         game.state.objects[creature as usize].summoning_sick = false;
 
         act(&mut game, announce(grantor));
