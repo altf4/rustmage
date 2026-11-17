@@ -233,7 +233,7 @@ fn auditor_keeps_the_look_private_and_observes_only_its_controllers_case_solves(
     let lion = put(&mut game, player, "Savannah Lions", Zone::Hand);
     let colorless = [0, 0, 0, 0, 0, 2];
     game.state.players[player.index()].mana = colorless;
-    reject(&mut game, Action::AnnounceCast { card: lion });
+    admit(&game, Action::AnnounceCast { card: lion });
     act(
         &mut game,
         Action::Cast {

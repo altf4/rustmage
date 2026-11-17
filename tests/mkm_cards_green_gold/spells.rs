@@ -408,7 +408,9 @@ fn doppelgang_charges_three_per_x_and_copies_only_surviving_targets() {
     let creature_definition = game.object_view(creature).card;
     let land_definition = game.object_view(land).card;
     act(&mut game, Action::AnnounceCast { card: spell });
-    reject(&mut game, Action::ChooseX { value: 3 });
+    let mut declared = game.clone();
+    act(&mut declared, Action::ChooseX { value: 3 });
+    assert_eq!(declared.state.announcing.as_ref().unwrap().item.x, Some(3));
     let mut zero = game.clone();
     act(&mut zero, Action::ChooseX { value: 0 });
     act(

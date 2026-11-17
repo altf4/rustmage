@@ -48,7 +48,7 @@ fn akul_requires_three_other_creatures_and_an_exact_optional_hand_choice() {
     let land = put(&mut game, player, "Forest", Zone::Hand);
     let from_hand = put(&mut game, player, "Daring Thunder-Thief", Zone::Hand);
     let action = activation(akul, 0);
-    reject(&mut game, action.clone());
+    admit(&game, action.clone());
     let third = put(&mut game, player, "Ankle Biter", Zone::Battlefield);
     assert!(
         game.keywords(akul)

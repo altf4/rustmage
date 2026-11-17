@@ -351,7 +351,7 @@ fn fast_mana_sacrifices_enable_history_guarded_mana_during_funding() {
             counter_payment: Counters::default(),
             production,
         };
-        reject(&mut game, announce.clone());
+        admit(&game, announce.clone());
         let fuel = if treasure {
             game.create_tokens(player, Card::from_catalogue_id(5302), 1, false);
             game.controlled_token_ids(player).next().unwrap()

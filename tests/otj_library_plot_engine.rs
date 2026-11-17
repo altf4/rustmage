@@ -64,8 +64,8 @@ fn library_plot_prices_are_separate_and_hand_reduction_does_not_apply() {
     assert!(game.observe(player.other()).known_library_top[player.index()].is_none());
     game.state.players[player.index()].mana = [0, 0, 0, 0, 1, 1];
     assert!(game.legal_actions().contains(&hand_plot));
-    reject(&mut game, printed_plot.clone());
-    reject(&mut game, mana_cost_plot.clone());
+    admit(&game, printed_plot.clone());
+    admit(&game, mana_cost_plot.clone());
 
     game.state.players[player.index()].mana = [0, 0, 0, 0, 1, 3];
     let checkpoint = game.snapshot();
@@ -134,7 +134,7 @@ fn library_plot_uses_actual_mana_symbols_and_ignores_an_inset_face() {
     assert!(game.legal_actions().contains(&fully_colored));
     assert!(game.legal_actions().contains(&fully_generic));
     game.state.players[player.index()].mana = [0, 1, 1, 0, 1, 0];
-    reject(&mut game, fully_generic);
+    admit(&game, fully_generic);
     act(&mut game, fully_colored);
     pay_plot(&mut game);
 
@@ -174,11 +174,24 @@ fn choosing_x_for_the_special_action_does_not_carry_it_into_the_later_spell() {
         choice.intervals,
         vec![XInterval {
             minimum: 0,
-            maximum: 3
+            maximum: u32::MAX
         }]
     );
     assert!(game.observe(player.other()).x_choice.is_none());
-    reject(&mut game, Action::ChooseX { value: 4 });
+    let mut unpaid = game.clone();
+    act(&mut unpaid, Action::ChooseX { value: 4 });
+    reject(
+        &mut unpaid,
+        Action::PayPlot {
+            payment: [0, 2, 0, 0, 0, 3],
+        },
+    );
+    act(&mut unpaid, Action::EndManaWindow);
+    act(&mut unpaid, Action::SubmitAttempt);
+    assert_eq!(
+        unpaid.last_attempt_outcome_view(player).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
     act(&mut game, Action::ChooseX { value: 3 });
     pay_plot(&mut game);
     assert_eq!(game.state.players[player.index()].mana, [0; 6]);

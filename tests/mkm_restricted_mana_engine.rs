@@ -54,7 +54,7 @@ fn restricted_lots_fund_disguise_from_an_untapped_source_and_reject_face_up_spel
         let shock = put(&mut game, player, "Shock", Zone::Hand);
         game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 1];
 
-        reject(&mut game, Action::AnnounceCast { card: shock });
+        admit(&game, Action::AnnounceCast { card: shock });
         let announce = Action::AnnounceDisguise { card: disguise };
         let snapshot = game.snapshot();
         let mut indexed = game.clone();
@@ -85,7 +85,7 @@ fn restricted_lots_fund_disguise_from_an_untapped_source_and_reject_face_up_spel
 
         indexed.restore(&snapshot).unwrap();
         act(&mut indexed, activate(producer));
-        reject(&mut indexed, Action::AnnounceCast { card: shock });
+        admit(&indexed, Action::AnnounceCast { card: shock });
         reject(
             &mut indexed,
             Action::Cast {

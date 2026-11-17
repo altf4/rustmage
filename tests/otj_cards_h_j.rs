@@ -173,7 +173,7 @@ fn hollow_marauder_reduces_cost_by_own_graveyard_creatures_and_checks_discard_va
         let discard = put(&mut game, player.other(), discard_name, Zone::Hand);
         let marauder = put(&mut game, player, "Hollow Marauder", Zone::Hand);
         game.state.players[player.index()].mana = [0, 0, 1, 0, 0, 3];
-        reject(&mut game, Action::AnnounceCast { card: marauder });
+        admit(&game, Action::AnnounceCast { card: marauder });
         game.state.players[player.index()].mana[5] += 1;
         cast(&mut game, marauder, None);
         choose_when_ready(
@@ -294,7 +294,7 @@ fn intrepid_stablemaster_makes_unrestricted_green_or_two_matching_restricted_man
     };
     reject(&mut game, split);
     tap_for(&mut game, stablemaster, 1, [0, 2, 0, 0, 0, 0]);
-    reject(&mut game, Action::AnnounceCast { card: opt });
+    admit(&game, Action::AnnounceCast { card: opt });
     cast(&mut game, schooner, None);
     resolve(&mut game);
     assert_eq!(game.object_view(schooner).zone, Zone::Battlefield);
@@ -447,7 +447,7 @@ fn hellspur_brute_counts_each_controlled_outlaw_only_once() {
     );
     let brute = put(&mut game, player, "Hellspur Brute", Zone::Hand);
     game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 1];
-    reject(&mut game, Action::AnnounceCast { card: brute });
+    admit(&game, Action::AnnounceCast { card: brute });
     game.state.players[player.index()].mana[5] += 1;
     cast(&mut game, brute, None);
     resolve(&mut game);

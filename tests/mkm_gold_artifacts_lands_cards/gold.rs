@@ -137,8 +137,8 @@ fn officious_interrogation_locks_surcharges_and_investigates_the_live_count() {
     one.state.players[player.index()].mana = [1, 1, 0, 0, 0, 0];
     act(&mut one, Action::AnnounceCast { card: spell });
     target(&mut one, Target::Player(opponent));
-    reject(
-        &mut one,
+    admit(
+        &one,
         Action::ChooseTarget {
             target: Target::Player(player),
         },
@@ -499,7 +499,7 @@ fn treacherous_greed_pays_with_the_creature_that_actually_dealt_damage() {
     let dealer = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
     let idle = put(&mut game, player, "Bear Cub", Zone::Battlefield);
     let greed = put(&mut game, player, "Treacherous Greed", Zone::Hand);
-    reject(&mut game, Action::AnnounceCast { card: greed });
+    admit(&game, Action::AnnounceCast { card: greed });
     combat_with_attackers(&mut game, &[dealer]);
     until(&mut game, |g| g.state.step == Step::CombatDamage);
     assert_eq!(game.state.players[opponent.index()].life, 18);
@@ -621,7 +621,7 @@ fn melek_counts_actual_instant_and_sorcery_cards_and_reduces_only_the_first_cast
     settle(&mut game);
     assert_eq!(game.stats(melek).power, 6);
     game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 0];
-    reject(&mut game, Action::AnnounceCast { card: second });
+    admit(&game, Action::AnnounceCast { card: second });
 
     game.state.step = Step::End;
     pass_pair(&mut game);

@@ -413,7 +413,7 @@ fn fugitive_codebreaker_reduces_the_turn_up_cost_only_and_draws_after_discarding
     put(&mut game, player, "Hill Giant", Zone::Graveyard);
     put(&mut game, player.other(), "Shock", Zone::Graveyard);
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
-    reject(&mut game, Action::AnnounceDisguise { card });
+    admit(&game, Action::AnnounceDisguise { card });
     game.state.players[player.index()].mana[5] = 3;
     let exact = cast_down(&mut game, card);
     let card = exact.card;
@@ -452,7 +452,7 @@ fn goblin_maskmakers_stack_attack_discounts_on_face_down_spells_this_turn() {
     settle(&mut game);
     enter_step(&mut game, Step::Main2);
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 1];
-    reject(&mut game, Action::AnnounceCast { card: disguised });
+    admit(&game, Action::AnnounceCast { card: disguised });
     let mut expired = game.clone();
     enter_step(&mut expired, Step::End);
     pass_pair(&mut expired);
@@ -460,7 +460,7 @@ fn goblin_maskmakers_stack_attack_discounts_on_face_down_spells_this_turn() {
     expired.state.priority = player;
     enter_step(&mut expired, Step::Main1);
     expired.state.players[player.index()].mana = [0, 0, 0, 0, 0, 1];
-    reject(&mut expired, Action::AnnounceDisguise { card: disguised });
+    admit(&expired, Action::AnnounceDisguise { card: disguised });
 
     let exact = cast_down(&mut game, disguised);
     assert_eq!(game.state.players[player.index()].mana, [0; 6]);

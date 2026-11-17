@@ -312,7 +312,7 @@ fn actual_damage_gives_its_recipient_controller_normal_plays_until_their_next_cl
     game.move_object(spell, Zone::Exile);
     assert_ne!(game.object_ref(spell), exact);
     game.state.players[beneficiary.index()].mana = [0, 3, 0, 0, 0, 0];
-    reject(&mut game, Action::AnnounceExile { card: spell });
+    admit(&game, Action::AnnounceExile { card: spell });
     advance_until(&mut game, |g| g.state.step == Step::End);
     let exact_land = game.object_ref(land);
     assert!(
