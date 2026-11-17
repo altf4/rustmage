@@ -12,6 +12,9 @@ pub(super) struct CastRollback {
     pub(super) parent: Option<Box<CastRollback>>,
     pub(super) attempt_id: u64,
     pub(super) context: Option<u64>,
+    pub(super) source: Option<ObjectRef>,
+    pub(super) ability: Option<u16>,
+    pub(super) turn: u64,
     pub(super) mana_closed: bool,
     pub(super) contributions_sealed: bool,
     pub(super) special: bool,
@@ -44,6 +47,9 @@ impl CastRollback {
             parent: None,
             attempt_id: 0,
             context: None,
+            source: None,
+            ability: None,
+            turn: 0,
             mana_closed: false,
             contributions_sealed: false,
             special: false,
@@ -244,6 +250,7 @@ impl Game {
             && let Some(card) = self.attempt_action_card(action)
         {
             self.open_attempt_checkpoint(actor, card);
+            self.capture_attempt_origin(action);
             return;
         }
         if let Some(rollback) = &mut self.state.cast_rollback {
@@ -296,6 +303,7 @@ impl Game {
         }
         if let Some(card) = self.attempt_action_card(action) {
             self.open_attempt_checkpoint(actor, card);
+            self.capture_attempt_origin(action);
             if card != CardId::MAX
                 && self.state.objects[card as usize].zone == Zone::Hand
                 && !matches!(
@@ -415,12 +423,56 @@ impl Game {
         let parent = self.state.cast_rollback.take();
         let mut rollback = CastRollback::new(self.state.clone(), actor, spell);
         rollback.parent = parent;
+        rollback.turn = u64::from(self.state.turn);
+        rollback.source = (spell != CardId::MAX).then(|| self.object_ref(spell));
         rollback.attempt_id = self
             .revision
             .checked_add(1)
             .capacity("attempt identity exhausted");
         self.state.cast_rollback = Some(Box::new(rollback));
         self.state.last_attempt_outcome = None;
+    }
+    fn capture_attempt_origin(&mut self, action: &Action) {
+        let (source, ability) = match *action {
+            Action::AnnounceActivate { card, ability, .. }
+            | Action::AnnounceMana { card, ability, .. }
+            | Action::AnnounceBorrowedAbility { card, ability, .. }
+            | Action::AnnounceBorrowedMana { card, ability, .. }
+            | Action::AnnounceGraveyardBorrowedAbility { card, ability, .. }
+            | Action::AnnounceGraveyardBorrowedMana { card, ability, .. }
+            | Action::Activate { card, ability, .. }
+            | Action::ActivateMana { card, ability, .. }
+            | Action::ActivateBorrowedMana { card, ability, .. }
+            | Action::ActivateGraveyardBorrowedMana { card, ability, .. }
+            | Action::BeginActivate { card, ability, .. } => {
+                (Some(self.object_ref(card)), Some(ability))
+            }
+            Action::AnnounceGrantedMana { card, .. } => (Some(self.object_ref(card)), None),
+            Action::AnnounceSourceGrant { source, ability }
+            | Action::AnnounceGrantedManaTemplate {
+                source, ability, ..
+            }
+            | Action::AnnouncePlaneswalkerGrant {
+                source, ability, ..
+            }
+            | Action::AnnounceArtifactFood {
+                source, ability, ..
+            }
+            | Action::AnnounceCreatureGrant {
+                source, ability, ..
+            } => (Some(source), Some(ability)),
+            Action::AnnounceSelfGrantedAbility { source, .. }
+            | Action::AnnounceSelfGrantedMana { source, .. }
+            | Action::AnnounceRetainedCopyAbility { source }
+            | Action::AnnounceEmbalm { source, .. }
+            | Action::AnnounceInheritedAbility { source, .. }
+            | Action::AnnounceInheritedMana { source, .. }
+            | Action::ActivateInheritedMana { source, .. } => (Some(source), None),
+            _ => return,
+        };
+        let attempt = self.state.cast_rollback.as_mut().unwrap();
+        attempt.source = source;
+        attempt.ability = ability;
     }
     pub(super) fn mark_foreign_cast_choice(&mut self) {
         if let Some(r) = &mut self.state.cast_rollback {
@@ -527,9 +579,21 @@ impl Game {
                     .flat_map(|frames| frames.iter().map(|frame| &frame.announcement)),
             )
             .find(|a| !a.trigger && !before_contains(a.item.id))
-            .map(|a| a.item.id);
-        if let Some(id) = owned {
-            self.state.cast_rollback.as_mut().unwrap().context = Some(id);
+            .map(|a| {
+                (
+                    a.item.id,
+                    a.item.source.map(|source| source.object),
+                    match a.item.kind {
+                        StackKind::ActivatedAbility { ability } => Some(ability),
+                        _ => None,
+                    },
+                )
+            });
+        if let Some((id, source, ability)) = owned {
+            let attempt = self.state.cast_rollback.as_mut().unwrap();
+            attempt.context = Some(id);
+            attempt.source = attempt.source.or(source);
+            attempt.ability = attempt.ability.or(ability);
             return;
         }
         // Special actions retain their historical checkpoints and controls.
@@ -547,6 +611,9 @@ impl Game {
             self.state.last_attempt_outcome = Some(AttemptOutcomeView {
                 attempt_id: rollback.attempt_id,
                 player: rollback.player,
+                source: rollback.source,
+                ability: rollback.ability,
+                turn: rollback.turn,
                 outcome: attempts::AttemptOutcome::Completed,
                 reason: None,
             });
@@ -602,6 +669,9 @@ impl Game {
             self.state.last_attempt_outcome = Some(AttemptOutcomeView {
                 attempt_id: rollback.attempt_id,
                 player: rollback.player,
+                source: rollback.source,
+                ability: rollback.ability,
+                turn: rollback.turn,
                 outcome: attempts::AttemptOutcome::Failed,
                 reason: Some(reason),
             });

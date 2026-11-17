@@ -37,6 +37,9 @@ pub enum AttemptOutcome {
 pub struct AttemptOutcomeView {
     pub attempt_id: u64,
     pub player: Player,
+    pub source: Option<ObjectRef>,
+    pub ability: Option<u16>,
+    pub turn: u64,
     pub outcome: AttemptOutcome,
     pub reason: Option<AttemptFailureReason>,
 }
@@ -142,7 +145,8 @@ impl Game {
         if let Some(request) = self.plot_payment() {
             return Some((request.controller, request.cost));
         }
-        self.state.room_unlock_payment()
+        self.state
+            .room_unlock_payment()
             .map(|request| (request.controller, request.cost))
     }
 
@@ -232,10 +236,16 @@ impl Game {
         let attempt = self.state.cast_rollback.as_mut().unwrap();
         let id = attempt.attempt_id;
         let player = attempt.player;
+        let source = attempt.source;
+        let ability = attempt.ability;
+        let turn = attempt.turn;
         let Some(reason) = reason else {
             self.state.last_attempt_outcome = Some(AttemptOutcomeView {
                 attempt_id: id,
                 player,
+                source,
+                ability,
+                turn,
                 outcome: AttemptOutcome::Incomplete,
                 reason: Some(AttemptFailureReason::IncompletePayment),
             });
@@ -247,6 +257,9 @@ impl Game {
             self.state.last_attempt_outcome = Some(AttemptOutcomeView {
                 attempt_id: id,
                 player,
+                source,
+                ability,
+                turn,
                 outcome: AttemptOutcome::Recovering,
                 reason: Some(reason),
             });
