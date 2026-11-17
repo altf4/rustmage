@@ -3,6 +3,8 @@ use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct SaddlePayment {
+    /// Exact announcement that owns this provisional selection.
+    pub context: u64,
     pub source: ObjectRef,
     pub actor: Player,
     pub minimum: u16,
@@ -282,7 +284,13 @@ impl Game {
     }
     pub fn saddle_choice(&self) -> Option<SaddleChoiceView> {
         let f = self.state.saddle_payment.as_ref()?;
-        if self.semantic_actor() != Some(f.actor) {
+        if self.semantic_actor() != Some(f.actor)
+            || self
+                .state
+                .announcing
+                .as_ref()
+                .is_none_or(|a| a.item.id != f.context)
+        {
             return None;
         }
         let sum = self.saddle_sums(false);
@@ -345,6 +353,7 @@ impl Game {
             return false;
         }
         self.state.saddle_payment = Some(Box::new(SaddlePayment {
+            context: a.item.id,
             source: a.item.source.expect("Saddle source").object,
             actor: a.item.controller,
             minimum,
