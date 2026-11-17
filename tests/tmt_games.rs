@@ -188,14 +188,19 @@ fn tmt_five_color_set_only_natural_games_and_owned_replay() {
                             serde_json::to_value(game.observe(viewer)).unwrap()
                         );
                     }
-                    let after = game.snapshot();
-                    game.restore(&before).unwrap();
+                    // Exercise restore on a disposable branch so the journal's game
+                    // and its later fresh replay allocate the same attempt IDs.
+                    let mut restored = game.clone();
+                    restored.restore(&before).unwrap();
+                    assert_eq!(restored.snapshot(), before);
                     assert_eq!(
-                        game.apply_index(actor, revision, index),
+                        restored.apply_index(actor, revision, index),
                         Err(Error::StaleRevision)
                     );
-                    game.apply(actor, action.clone()).unwrap();
-                    assert_eq!(game.snapshot(), after);
+                    let mut replay = restored.clone();
+                    replay.apply_index(actor, replay.revision(), index).unwrap();
+                    restored.apply(actor, action.clone()).unwrap();
+                    assert_eq!(restored.snapshot(), replay.snapshot());
                     evidence.branches += 1;
                 } else {
                     game.apply(actor, action.clone()).unwrap();

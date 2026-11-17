@@ -302,11 +302,13 @@ fn prove_owned_branch(game: &Game, actor: Player, actions: &[Action], selected: 
         sibling.apply_index(actor, revision, selected),
         Err(Error::StaleRevision)
     );
+    let mut replay = sibling.clone();
+    replay.apply(actor, actions[selected].clone()).unwrap();
     sibling
         .apply_index(actor, sibling.revision(), selected)
         .unwrap();
-    assert_eq!(sibling.snapshot(), raw.snapshot());
-    assert_eq!(views(&sibling), views(&raw));
+    assert_eq!(sibling.snapshot(), replay.snapshot());
+    assert_eq!(views(&sibling), views(&replay));
     true
 }
 

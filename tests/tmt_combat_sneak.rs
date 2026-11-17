@@ -52,12 +52,15 @@ fn checked_branch(g: &mut Game, action: Action) {
         );
     }
     g.restore(&snapshot).unwrap();
+    assert_eq!(g.snapshot(), snapshot);
     assert_eq!(
         g.apply_index(actor, revision, index),
         Err(Error::StaleRevision)
     );
+    let mut replay = g.clone();
+    replay.apply_index(actor, replay.revision(), index).unwrap();
     act(g, action);
-    assert_eq!(g.snapshot(), child.snapshot());
+    assert_eq!(g.snapshot(), replay.snapshot());
 }
 
 fn finish_simple_sneak(g: &mut Game, attacker: ObjectRef) {
