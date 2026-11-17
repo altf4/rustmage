@@ -80,7 +80,8 @@ fn rhino_rampage_queues_its_artifact_target_only_after_excess_fight_damage() {
         game.state.players[player.index()].mana[color] = 1;
         act(&mut game, Action::AnnounceCast { card: spell });
         let cost = game
-            .spell_cost_choices()
+            .observe(player)
+            .cost_choices
             .into_iter()
             .find(|choice| choice.cost.colored[color] == 1 && choice.cost.generic == 0)
             .unwrap()
