@@ -219,7 +219,7 @@ fn warp_x_payment_preserves_printed_mana_value_and_exact_exile_recast() {
         raw.restore(&snapshot).unwrap();
         indexed.restore(&snapshot).unwrap();
         act(&mut raw, action.clone());
-        act(&mut indexed, action);
+        act(&mut indexed, action.clone());
         for child in [&mut raw, &mut indexed] {
             pay(child);
             let cast = child.state.stack.last().unwrap();
