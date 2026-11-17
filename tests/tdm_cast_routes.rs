@@ -380,10 +380,7 @@ fn granted_harmonize_uses_printed_colored_cost_exact_card_and_independent_durati
         g.move_object(source, Zone::Exile);
         let helper = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
-        assert!(
-            !g.legal_actions().contains(&granted(spell)),
-            "generic cannot replace U"
-        );
+        admit(&g, granted(spell));
         g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
         assert!(
             !g.legal_actions().contains(&granted(other)),
@@ -436,10 +433,7 @@ fn granted_and_intrinsic_harmonize_costs_remain_separate_and_countered_spell_is_
     let spell = put(&mut g, p, "Wild Ride", Zone::Graveyard);
     grant(&mut g, p, spell);
     g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 0];
-    assert!(
-        !g.legal_actions()
-            .contains(&Action::AnnounceHarmonize { card: spell })
-    );
+    admit(&g, Action::AnnounceHarmonize { card: spell });
     act(&mut g, granted(spell));
     act(&mut g, Action::ChooseHarmonizer { object: None });
     let target = g
@@ -483,17 +477,23 @@ fn granted_harmonize_preserves_hybrid_and_twobrid_symbols() {
         let source = grant(&mut g, p, spell);
         g.move_object(source, Zone::Exile); // Keep this table independent of creature discounts.
         g.state.players[p.index()].mana = pool;
-        assert_eq!(
-            g.legal_actions().contains(&granted(spell)),
-            should_work,
-            "{name} {pool:?}"
-        );
+        admit(&g, granted(spell));
         if !should_work {
             continue;
         }
         act(&mut g, granted(spell));
         if matches!(g.state.pending, Pending::SpellCost { .. }) {
-            choose(&mut g, |a| matches!(a, Action::ChooseSpellCost { .. }));
+            let cost = named(name)
+                .cost_options()
+                .position(|cost| {
+                    (0..6).all(|i| pool[i] >= cost.colored[i])
+                        && (0..6)
+                            .map(|i| u64::from(pool[i] - cost.colored[i]))
+                            .sum::<u64>()
+                            >= u64::from(cost.generic)
+                })
+                .unwrap() as u16;
+            act(&mut g, Action::ChooseSpellCost { cost });
         }
         act(&mut g, Action::ChooseHarmonizer { object: None });
         pay(&mut g);
@@ -533,10 +533,10 @@ fn x_in_printed_or_harmonize_cost_is_chosen_paid_and_does_not_change_printed_val
         let expected_max = if intrinsic { 3 } else { 5 };
         assert_eq!(
             g.x_choice().unwrap().intervals.last().unwrap().maximum,
-            expected_max
+            u32::MAX
         );
-        reject(
-            &mut g,
+        admit(
+            &g,
             Action::ChooseX {
                 value: expected_max + 1,
             },
@@ -594,15 +594,22 @@ fn harmonize_keeps_power_wide_until_tax_and_x_costs_are_reduced() {
             let expected_x = if surplus == 1 { u32::MAX - 1 } else { u32::MAX };
             assert_eq!(
                 g.x_choice().unwrap().intervals.last().unwrap().maximum,
-                expected_x
+                u32::MAX
             );
             if surplus == 1 {
-                reject(&mut g, Action::ChooseX { value: u32::MAX });
+                admit(&g, Action::ChooseX { value: u32::MAX });
             }
             act(&mut g, Action::ChooseX { value: expected_x });
             let sacrifice = artifact.map(|id| g.object_ref(id));
             act(&mut g, Action::ChooseBargain { sacrifice });
-            reject(&mut g, Action::ChooseHarmonizer { object: None });
+            let before = g.snapshot();
+            let revision = g.revision();
+            assert!(matches!(
+                g.apply(p, Action::ChooseHarmonizer { object: None }),
+                Err(Error::CapacityExceeded(_))
+            ));
+            assert_eq!(g.snapshot(), before);
+            assert_eq!(g.revision(), revision);
             let object = g.object_ref(helper);
             act(
                 &mut g,
@@ -645,10 +652,7 @@ fn delve_pays_only_generic_and_commits_exact_graveyard_cards() {
         let second = put(&mut g, p, "Forest", Zone::Graveyard);
         let enemy = put(&mut g, p.other(), "Forest", Zone::Graveyard);
         g.state.players[p.index()].mana = [0; 6];
-        assert!(
-            !g.legal_actions()
-                .contains(&Action::AnnounceCast { card: spell })
-        );
+        admit(&g, Action::AnnounceCast { card: spell });
         g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
         act(&mut g, Action::AnnounceCast { card: spell });
         start_delve(&mut g);
@@ -753,11 +757,7 @@ fn sacrificed_mana_producer_can_be_delved_but_a_departed_grant_cannot_supply_del
     }
     let spell = put(&mut g, p, "Quick Study", Zone::Hand);
     g.state.players[p.index()].mana = [0; 6];
-    assert!(
-        !g.legal_actions()
-            .contains(&Action::AnnounceCast { card: spell }),
-        "sacrificing the only provider for U removes delve before payment"
-    );
+    admit(&g, Action::AnnounceCast { card: spell });
 }
 
 #[test]
@@ -774,10 +774,7 @@ fn additional_graveyard_cost_and_delve_reserve_distinct_cards_in_either_order() 
         let second = put(&mut g, p, "Forest", Zone::Graveyard);
         let spell = put(&mut g, p, "Quick Study", Zone::Hand);
         g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
-        assert!(
-            !g.legal_actions()
-                .contains(&Action::AnnounceCast { card: spell })
-        );
+        admit(&g, Action::AnnounceCast { card: spell });
         let third = put(&mut g, p, "Forest", Zone::Graveyard);
         act(&mut g, Action::AnnounceCast { card: spell });
         act(&mut g, Action::BeginOrderedCosts);
@@ -891,7 +888,7 @@ fn delve_provider_can_leave_in_a_later_cost_after_mana_is_paid() {
         .iter()
         .position(|row| row.clause == CastCostClause::Additional)
         .unwrap() as u16;
-    reject(&mut g, Action::ChooseCastCost { clause: index });
+    admit(&g, Action::ChooseCastCost { clause: index });
     clause(&mut g, CastCostClause::Mana);
     delver(&mut g, first);
     delver(&mut g, second);
@@ -967,7 +964,7 @@ fn mana_child_must_preserve_its_ancestors_distinct_delve_resources() {
             assert_eq!(g.object_view(fuel[2]).zone, Zone::Exile);
             assert!(g.state.mana_announcement_stack.is_none());
         } else {
-            reject(&mut g, child);
+            admit(&g, child);
         }
         start_delve(&mut g);
         delver(&mut g, fuel[0]);
@@ -993,10 +990,7 @@ fn granted_harmonize_recomputes_the_cost_of_an_existing_selected_spell_face() {
     let grantor = grant(&mut g, p, spell);
     g.move_object(grantor, Zone::Exile);
     g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 1];
-    assert!(
-        !g.legal_actions().contains(&granted(spell)),
-        "front face costs 5W"
-    );
+    admit(&g, granted(spell));
     act(
         &mut g,
         Action::AnnounceGrantedHarmonize {
@@ -1099,10 +1093,7 @@ fn delve_cannot_pay_a_required_colorless_symbol() {
         .collect();
     let spell = put(&mut g, p, "Quick Study", Zone::Hand);
     g.state.players[p.index()].mana = [0; 6];
-    assert!(
-        !g.legal_actions()
-            .contains(&Action::AnnounceCast { card: spell })
-    );
+    admit(&g, Action::AnnounceCast { card: spell });
     g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
     act(&mut g, Action::AnnounceCast { card: spell });
     if matches!(g.state.pending, Pending::SpellCost { .. }) {
@@ -1142,10 +1133,7 @@ fn delve_obeys_a_live_graveyard_exile_prohibition() {
     let second = put(&mut g, p, "Forest", Zone::Graveyard);
     let spell = put(&mut g, p, "Quick Study", Zone::Hand);
     g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
-    assert!(
-        !g.legal_actions()
-            .contains(&Action::AnnounceCast { card: spell })
-    );
+    admit(&g, Action::AnnounceCast { card: spell });
     g.move_object(blocker, Zone::Exile);
     act(&mut g, Action::AnnounceCast { card: spell });
     start_delve(&mut g);
@@ -1180,10 +1168,7 @@ fn a_proposed_graveyard_spell_cannot_pay_a_mana_childs_graveyard_cost() {
             .map(|_| put(&mut g, p, "Forest", Zone::Graveyard))
             .collect();
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, if delve { 1 } else { 3 }];
-        assert!(
-            !g.legal_actions().contains(&granted(spell)),
-            "the proposed spell has left the graveyard before a mana child's exile cost; delve={delve}"
-        );
+        admit(&g, granted(spell));
         let material = put(&mut g, p, "Forest", Zone::Graveyard);
         act(&mut g, granted(spell));
         act(&mut g, Action::ChooseHarmonizer { object: None });
