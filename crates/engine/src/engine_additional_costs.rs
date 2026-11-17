@@ -788,15 +788,16 @@ impl Game {
     }
 
     /// A fixed mandatory life payment is an immediate condition. An unchosen
-    /// discard-or-life route remains open, and an explicitly chosen mana
-    /// alternative may replace the printed additional cost.
+    /// discard-or-life route remains open. An independent printed mana option
+    /// also keeps the initial declaration open; its actual route is chosen later.
     pub(super) fn spell_immediate_cost_available(
         &self,
         actor: Player,
         definition: Card,
         cost: ManaCost,
     ) -> bool {
-        definition.mana_alternative_replaces_additional(cost)
+        definition.explicit_additional_mana().is_some()
+            || definition.mana_alternative_replaces_additional(cost)
             || definition
                 .additional_cost()
                 .is_none_or(|spec| match spec.kind {
