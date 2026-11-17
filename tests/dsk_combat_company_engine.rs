@@ -65,9 +65,13 @@ fn two_restricted_attackers_can_attack_different_defenders() {
     );
     game.add_counter(walker, CounterKind::Loyalty, 6);
     attacks(&mut game);
-    reject(&mut game, attack(first));
+    act(&mut game, attack(first));
+    reject(&mut game, Action::FinishAttackers);
+    act(&mut game, Action::CancelAttackDeclaration);
     let solo_walker = attack_walker(&game, first, walker);
-    reject(&mut game, solo_walker);
+    act(&mut game, solo_walker);
+    reject(&mut game, Action::FinishAttackers);
+    act(&mut game, Action::CancelAttackDeclaration);
     assert!(game.legal_actions().contains(&Action::FinishAttackers));
 
     let other = put(&mut game, player, TOKEN, Zone::Battlefield);
@@ -134,7 +138,9 @@ fn attack_requirements_count_company_and_the_defender_capacity() {
     settle(&mut game);
     attacks(&mut game);
     assert!(game.legal_actions().contains(&Action::FinishAttackers));
-    reject(&mut game, attack(restricted));
+    act(&mut game, attack(restricted));
+    reject(&mut game, Action::FinishAttackers);
+    act(&mut game, Action::CancelAttackDeclaration);
 
     let companion = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
     let walker = put(
@@ -147,7 +153,11 @@ fn attack_requirements_count_company_and_the_defender_capacity() {
     reject(&mut game, Action::FinishAttackers);
     // Maximum Carnage also requires an attack on the opponent when able.
     let inferior = attack_walker(&game, restricted, walker);
-    reject(&mut game, inferior);
+    act(&mut game, inferior);
+    let also_walker = attack_walker(&game, companion, walker);
+    act(&mut game, also_walker);
+    reject(&mut game, Action::FinishAttackers);
+    act(&mut game, Action::CancelAttackDeclaration);
     let mut limited = game.clone();
     for creature in [restricted, companion] {
         limited.add_counter(creature, CounterKind::Flying, 1);
@@ -169,7 +179,11 @@ fn attack_requirements_count_company_and_the_defender_capacity() {
     reject(&mut limited, attack(restricted));
     reject(&mut limited, attack(companion));
     let unsupported = attack_walker(&limited, restricted, walker);
-    reject(&mut limited, unsupported);
+    act(&mut limited, unsupported);
+    let occupied = attack_walker(&limited, companion, walker);
+    reject(&mut limited, occupied);
+    reject(&mut limited, Action::FinishAttackers);
+    act(&mut limited, Action::CancelAttackDeclaration);
     reject(&mut limited, Action::FinishAttackers);
     let single = attack_walker(&limited, companion, walker);
     act(&mut limited, single);
@@ -184,7 +198,7 @@ fn attack_requirements_count_company_and_the_defender_capacity() {
 }
 
 #[test]
-fn a_taxed_companion_must_leave_enough_mana_after_the_attackers_tap() {
+fn a_taxed_declaration_can_be_recovered_when_the_attackers_leave_insufficient_mana() {
     let _rules = fixture_rules::activate(&[(token(), &COMPANY)]);
     let player = Player::P1;
     let mut game = scenario(player);
@@ -198,8 +212,24 @@ fn a_taxed_companion_must_leave_enough_mana_after_the_attackers_tap() {
     );
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 1];
     attacks(&mut game);
-    reject(&mut game, attack(restricted));
+    act(&mut game, attack(restricted));
     assert!(game.legal_actions().contains(&attack(elf)));
+    reject(&mut game, Action::FinishAttackers);
+    act(&mut game, attack(elf));
+    act(&mut game, Action::FinishAttackers);
+    assert_eq!(game.observe(player).attack_payment.unwrap().generic, 2);
+    assert!(game.object_view(elf).tapped);
+    reject(&mut game, Action::TapMana { card: elf });
+    reject(
+        &mut game,
+        Action::PayAttackCost {
+            payment: [0, 0, 0, 0, 0, 1],
+        },
+    );
+    act(&mut game, Action::AbortAttackPayment);
+    assert!(!game.object_view(elf).tapped);
+    assert!(game.state.attackers.is_empty());
+    act(&mut game, Action::CancelAttackDeclaration);
     assert!(game.legal_actions().contains(&Action::FinishAttackers));
 
     let forest = put(&mut game, player, "Forest", Zone::Battlefield);
@@ -232,12 +262,17 @@ fn the_required_block_can_use_a_companion_blocking_another_attacker() {
     let ordinary = put(&mut game, player, "Hill Giant", Zone::Battlefield);
     let restricted = put(&mut game, defender, TOKEN, Zone::Battlefield);
     choose_blockers(&mut game, &[required, ordinary]);
-    reject(&mut game, block(restricted, required));
+    act(&mut game, block(restricted, required));
+    reject(&mut game, Action::FinishBlockers);
+    act(&mut game, Action::CancelBlockDeclaration);
     assert!(game.legal_actions().contains(&Action::FinishBlockers));
 
     let companion = put(&mut game, defender, "Grizzly Bears", Zone::Battlefield);
     reject(&mut game, Action::FinishBlockers);
-    reject(&mut game, block(restricted, ordinary));
+    act(&mut game, block(restricted, ordinary));
+    act(&mut game, block(companion, ordinary));
+    reject(&mut game, Action::FinishBlockers);
+    act(&mut game, Action::CancelBlockDeclaration);
     reject(&mut game, block(companion, required));
     act(&mut game, block(restricted, required));
     reject(&mut game, Action::FinishBlockers);
@@ -266,8 +301,22 @@ fn block_tax_accounts_for_the_companions_entire_menace_assignment() {
     let second = put(&mut game, defender, "Bear Cub", Zone::Battlefield);
     choose_blockers(&mut game, &[archangel, menace]);
     game.state.players[defender.index()].mana = [0, 0, 0, 0, 0, 2];
-    reject(&mut game, block(restricted, archangel));
+    act(&mut game, block(restricted, archangel));
     assert!(game.legal_actions().contains(&block(first, menace)));
+    act(&mut game, block(first, menace));
+    reject(&mut game, Action::FinishBlockers);
+    act(&mut game, block(second, menace));
+    act(&mut game, Action::FinishBlockers);
+    assert_eq!(game.observe(defender).block_payment.unwrap().generic, 3);
+    reject(
+        &mut game,
+        Action::PayBlockCost {
+            payment: [0, 0, 0, 0, 0, 2],
+        },
+    );
+    act(&mut game, Action::AbortBlockPayment);
+    assert!(game.state.blocks.is_empty());
+    act(&mut game, Action::CancelBlockDeclaration);
 
     game.state.players[defender.index()].mana = [0, 0, 0, 0, 0, 3];
     act(&mut game, block(restricted, archangel));

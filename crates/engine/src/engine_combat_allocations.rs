@@ -919,18 +919,4 @@ impl Game {
             .sum::<usize>();
         Some(achieved + creature_requirements) == self.maximum_block_requirements(&[])
     }
-    pub(super) fn block_requirements_preserved(&self, blocker: CardId, attacker: CardId) -> bool {
-        if !self.has_creature_block_requirements()
-            && !self
-                .state
-                .attackers
-                .iter()
-                .any(|a| self.block_requirement_weight(a.card) > 0)
-        {
-            return true;
-        }
-        let mut selected = self.state.selected_blocks.clone();
-        selected.push((blocker, attacker));
-        self.maximum_block_requirements(&selected) == self.maximum_block_requirements(&[])
-    }
 }

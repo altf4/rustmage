@@ -1,4 +1,4 @@
-//! Actual provenance allocations and fixed-output guided payment continuations.
+//! Actual provenance choices and fixed-output staged payment continuations.
 //! Immutable overlays preserve every fixture's physical identity, types and costs.
 use crate::support::*;
 use rustmage as _;
@@ -432,17 +432,38 @@ fn start_parent(g: &mut Game, parent: CardId) {
     assert_eq!(cost.colored, RG);
     assert_eq!(cost.generic, 0);
 }
-fn complete_forced_child(g: &mut Game, child: Child, p: Player) {
-    // Singleton guided bounds may commit automatically. No legal branch may
-    // spend the only ordinary G while preserving an unusable restricted G.
-    assert!(
-        !g.legal_actions()
-            .contains(&Action::ChooseManaLotSpend { amount: 0 })
-    );
-    reject(g, Action::ChooseManaLotSpend { amount: 0 });
-    if matches!(g.state.pending, Pending::ManaLotSpend { .. }) {
-        act(g, Action::ChooseManaLotSpend { amount: 1 });
+fn complete_child_spending_restricted_mana(g: &mut Game, child: Child, parent: CardId, p: Player) {
+    assert!(matches!(g.state.pending, Pending::ManaLotSpend { .. }));
+    for amount in [0, 1] {
+        assert!(
+            g.legal_actions()
+                .contains(&Action::ChooseManaLotSpend { amount })
+        );
     }
+    // This concrete child payment is legal even when it leaves only restricted
+    // green for the parent. The caller can close and recover the failed cast.
+    let mut stranded = g.clone();
+    act(&mut stranded, Action::ChooseManaLotSpend { amount: 0 });
+    assert!(stranded.object_view(child.source).tapped);
+    assert_eq!(stranded.state.players[p.index()].mana, RG);
+    assert_eq!(stranded.available_mana(p, mana_lots::Purpose::Other), RED);
+    reject(&mut stranded, Action::PayCosts { payment: RG });
+    act(&mut stranded, Action::EndManaWindow);
+    act(&mut stranded, Action::SubmitAttempt);
+    while matches!(stranded.state.pending, Pending::ManaRollback { .. }) {
+        act(&mut stranded, Action::ChooseManaRollback { keep: false });
+    }
+    assert_eq!(
+        stranded.last_attempt_outcome_view(p).unwrap().outcome,
+        AttemptOutcome::Failed
+    );
+    assert!(stranded.state.announcing.is_none());
+    assert_eq!(stranded.object_view(parent).zone, Zone::Hand);
+    assert!(!stranded.object_view(child.source).tapped);
+    assert_eq!(stranded.state.players[p.index()].mana, [0, 0, 0, 0, 2, 0]);
+    assert_eq!(stranded.available_mana(p, mana_lots::Purpose::Other), GREEN);
+
+    act(g, Action::ChooseManaLotSpend { amount: 1 });
     assert!(g.object_view(child.source).tapped);
     assert_eq!(g.state.players[p.index()].mana, RG);
     assert_eq!(g.available_mana(p, mana_lots::Purpose::Other), RG);
@@ -462,14 +483,14 @@ fn complete_parent(g: &mut Game, parent: CardId, p: Player, spare: u32, spent_lo
 }
 
 #[test]
-fn direct_borrowed_mana_battlefield_and_graveyard_routes_preserve_the_only_viable_lot_plan() {
+fn direct_borrowed_mana_routes_allow_stranding_and_selected_successful_lot_payments() {
     for route in [Route::ExileBorrowed, Route::GraveyardBorrowed] {
         let _rules = scope(route);
         for p in [Player::P0, Player::P1] {
             let (mut g, child, parent) = setup(route, p, 0);
             start_parent(&mut g, parent);
             act(&mut g, child.borrowed_direct());
-            complete_forced_child(&mut g, child, p);
+            complete_child_spending_restricted_mana(&mut g, child, parent, p);
             complete_parent(&mut g, parent, p, 0, 1);
         }
     }
@@ -515,7 +536,7 @@ fn concrete_borrowed_mana_uses_current_lots_without_solving_its_parent() {
 }
 
 #[test]
-fn nested_native_indexed_granted_acquired_and_borrowed_payments_keep_only_complete_lot_plans() {
+fn nested_native_indexed_granted_acquired_and_borrowed_payments_allow_both_lot_choices() {
     for &route in ROUTES {
         let _rules = scope(route);
         for p in [Player::P0, Player::P1] {
@@ -525,7 +546,7 @@ fn nested_native_indexed_granted_acquired_and_borrowed_payments_keep_only_comple
             act(&mut g, start);
             assert!(matches!(g.state.pending, Pending::PayCosts { .. }));
             pay(&mut g);
-            complete_forced_child(&mut g, child, p);
+            complete_child_spending_restricted_mana(&mut g, child, parent, p);
             complete_parent(&mut g, parent, p, 0, 1);
         }
     }
@@ -840,7 +861,7 @@ fn fixed_announced_output_owns_the_guided_resume_across_raw_index_parent_disposa
 }
 
 #[test]
-fn converging_suffixes_keep_both_valid_provenance_plans_for_a_double_red_parent() {
+fn both_current_lot_choices_can_be_followed_by_a_second_red_activation() {
     const ABILITY_RESTRICTED: CardRules = CardRules {
         effect: Effect::Creature(1, 3),
         activated: &[ability(
@@ -896,7 +917,7 @@ fn converging_suffixes_keep_both_valid_provenance_plans_for_a_double_red_parent(
             assert!(
                 g.legal_actions()
                     .contains(&Action::ChooseManaLotSpend { amount }),
-                "both prefixes converge to an identical RR suffix, so one plan cannot prune the other"
+                "both allocations pay the current child; the second activation is a later caller decision"
             );
         }
         let saved = g.snapshot();

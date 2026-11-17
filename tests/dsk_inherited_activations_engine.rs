@@ -419,7 +419,20 @@ fn land_type_and_attachment_mana_use_the_inheritor_in_actual_and_projected_payme
         let action = Action::AnnounceCast { card: spell };
         let mut absent = game.clone();
         absent.move_object(donor, Zone::Exile);
-        reject(&mut absent, action.clone());
+        act(&mut absent, action.clone());
+        if let Some(target) = target {
+            act(&mut absent, Action::ChooseTarget { target });
+        }
+        assert!(absent.mana_payment_domain().is_none());
+        act(&mut absent, Action::EndManaWindow);
+        act(&mut absent, Action::SubmitAttempt);
+        assert_eq!(
+            absent.last_attempt_outcome_view(PLAYER).unwrap().outcome,
+            AttemptOutcome::Failed
+        );
+        assert_eq!(absent.object_view(spell).zone, Zone::Hand);
+        assert!(absent.state.announcing.is_none());
+        assert_eq!(absent.state.players[PLAYER.index()].mana, ZERO);
         act(&mut game, action);
         if let Some(target) = target {
             act(&mut game, Action::ChooseTarget { target });
