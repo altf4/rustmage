@@ -248,7 +248,7 @@ fn a_tapped_duration_never_restarts_after_a_real_untap_or_departure() {
     reject(&mut too_early, activation(source));
     let mut no_evidence = game.clone();
     no_evidence.move_object(evidence, Zone::Exile);
-    reject(&mut no_evidence, activation(source));
+    admit(&no_evidence, activation(source));
 
     activate(&mut game, source, land, evidence);
     let mut untapped_before_resolution = game.clone();

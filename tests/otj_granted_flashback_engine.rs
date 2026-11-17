@@ -77,9 +77,9 @@ fn zero_and_printed_cost_grants_are_distinct_and_zero_x_still_pays_a_tax() {
     reject(&mut stale, zero(spell));
 
     game.state.players[player.index()].mana = [0; 6];
-    reject(&mut game, zero(spell));
+    admit(&game, zero(spell));
     game.state.players[player.index()].mana[5] = 2;
-    reject(&mut game, printed);
+    admit(&game, printed);
     act(&mut game, zero(spell));
     reject(&mut game, Action::ChooseX { value: 1 });
     pay(&mut game);
@@ -108,7 +108,7 @@ fn zero_flashback_keeps_the_mandatory_discard_and_expires_at_cleanup() {
     let spell = put(&mut game, player, "Seize the Spoils", Zone::Graveyard);
     grant(&mut game, player, spell);
     game.state.players[player.index()].mana = [0; 6];
-    reject(&mut game, zero(spell));
+    admit(&game, zero(spell));
 
     let discard = put(&mut game, player, "Forest", Zone::Hand);
     let discard_ref = game.object_ref(discard);

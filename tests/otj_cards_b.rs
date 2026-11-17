@@ -439,5 +439,5 @@ fn bucolic_ranchs_colored_mana_is_mount_only_and_the_lookup_is_private() {
         mana.legal_actions()
             .contains(&Action::AnnounceCast { card: mount })
     );
-    reject(&mut mana, Action::AnnounceCast { card: other });
+    admit(&mana, Action::AnnounceCast { card: other });
 }

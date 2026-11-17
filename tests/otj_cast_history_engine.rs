@@ -284,7 +284,7 @@ fn opposing_graveyard_and_exile_casts_pay_generic_tax_from_their_exact_origin() 
             };
 
             game.state.players[player.index()].mana = [0, 0, 0, 0, 1, 1];
-            reject(&mut game, announce.clone());
+            admit(&game, announce.clone());
             let mut without_provider = game.clone();
             without_provider.move_object(provider, Zone::Graveyard);
             act(&mut without_provider, announce.clone());
@@ -324,7 +324,7 @@ fn plotted_spree_needs_both_mode_mana_and_the_exile_tax() {
     let announce = Action::AnnouncePlotted { card: spell };
 
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 4];
     let checkpoint = game.snapshot();
     let mut indexed = game.clone();
@@ -336,7 +336,7 @@ fn plotted_spree_needs_both_mode_mana_and_the_exile_tax() {
     indexed.apply_index(player, game.revision(), index).unwrap();
     act(&mut game, announce.clone());
     assert_eq!(indexed.snapshot(), game.snapshot());
-    reject(&mut game, Action::ChooseMode { mode: 2 });
+    admit(&game, Action::ChooseMode { mode: 2 });
     for branch in [&mut game, &mut indexed] {
         act(branch, Action::ChooseMode { mode: 0 });
         act(

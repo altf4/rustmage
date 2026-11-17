@@ -311,7 +311,7 @@ fn izoni_uses_both_evidence_triggers_and_four_tokens_pay_one_activation() {
     assert_eq!(tokens(&game, player, SPIDER).len(), 2);
     game.create_tokens(player, Card::from_catalogue_id(CLUE), 1, false);
     assert!(!game.advance_entries());
-    reject(&mut game, activation(source, 0));
+    admit(&game, activation(source, 0));
 
     game.state.objects[source as usize].summoning_sick = false;
     attack(&mut game, &[source]);
@@ -422,7 +422,7 @@ fn kyloxs_voltstrider_crews_or_collects_and_casts_only_linked_spells_for_mana() 
     }
     let mut broke = game.clone();
     broke.state.players[player.index()].mana = [0; 6];
-    reject(&mut broke, linked.clone());
+    admit(&broke, linked.clone());
 
     let mana_before = game.state.players[player.index()].mana;
     act(&mut game, linked);

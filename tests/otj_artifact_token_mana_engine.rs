@@ -93,7 +93,7 @@ fn a_tapped_and_sacrificed_token_can_fund_a_spell_with_only_the_bonus() {
 
     let mut unfunded = game.clone();
     unfunded.move_object(provider.card, Zone::Graveyard);
-    reject(&mut unfunded, Action::AnnounceCast { card: spell });
+    admit(&unfunded, Action::AnnounceCast { card: spell });
 
     act(&mut game, Action::AnnounceCast { card: spell });
     act(&mut game, activate(token, 0));

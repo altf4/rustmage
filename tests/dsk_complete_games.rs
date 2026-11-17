@@ -296,7 +296,7 @@ fn workload_index(view: &Observation) -> usize {
     }
     if view.last_attempt_outcome.is_some_and(|outcome| {
         outcome.player == view.actor.unwrap()
-            && outcome.turn == view.turn
+            && outcome.turn == u64::from(view.turn)
             && outcome.outcome == rustmage::AttemptOutcome::Failed
     }) {
         return smoke;

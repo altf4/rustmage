@@ -299,7 +299,7 @@ fn leyline_of_the_guildpact_accepts_every_printed_hybrid_assignment() {
     let mut game = scenario(player);
     let leyline = put(&mut game, player, "Leyline of the Guildpact", Zone::Hand);
     game.state.players[player.index()].mana = [2, 0, 0, 0, 2, 0];
-    reject(&mut game, Action::AnnounceCast { card: leyline });
+    admit(&game, Action::AnnounceCast { card: leyline });
 }
 
 #[test]

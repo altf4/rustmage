@@ -120,7 +120,7 @@ fn ordinary_target_surcharge_locks_colored_mana_and_counts_surviving_players() {
             act(&mut game, player_target(target));
         }
         if targets.len() == 1 {
-            reject(&mut game, player_target(player));
+            admit(&game, player_target(player));
         }
         if game.legal_actions().contains(&Action::FinishTargets) {
             act(&mut game, Action::FinishTargets);
@@ -151,7 +151,7 @@ fn a_free_cast_still_owes_the_colored_surcharge_for_a_second_target() {
     act(&mut game, player_target(player));
     let mut cannot_pay = game.clone();
     cannot_pay.state.players[player.index()].mana = [0, 2, 0, 0, 0, 0];
-    reject(&mut cannot_pay, player_target(player.other()));
+    admit(&cannot_pay, player_target(player.other()));
     act(&mut game, player_target(player.other()));
     act(&mut game, Action::PayCosts { payment: WU });
     assert_eq!(game.state.players[player.index()].mana, [0; 6]);

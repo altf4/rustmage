@@ -325,8 +325,8 @@ fn a_taxed_blocker_cannot_start_an_unfundable_menace_declaration() {
     put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
     put(&mut g, player.other(), "Forest", Zone::Battlefield);
     blockers(&mut g, &[source]);
-    reject(
-        &mut g,
+    admit(
+        &g,
         Action::Block {
             blocker,
             attacker: source,

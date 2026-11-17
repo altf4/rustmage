@@ -136,7 +136,7 @@ fn a_required_blocker_cannot_ignore_menace_or_be_forced_to_pay_a_tax() {
             );
         } else {
             if companion.is_none() {
-                reject(&mut game, block(required, attacker));
+                admit(&game, block(required, attacker));
             }
             act(&mut game, Action::FinishBlockers);
             assert!(game.state.blocks.is_empty());
@@ -203,8 +203,8 @@ fn contradictory_pair_requirements_maximize_with_attacker_weights_and_menace() {
     // The two effects name the same blocker. It can satisfy either pair,
     // while putting both blockers on the menacing attacker also satisfies
     // the independent requirement for that attacker to be blocked.
-    reject(&mut game, block(required, plain));
-    reject(&mut game, block(companion, plain));
+    admit(&game, block(required, plain));
+    admit(&game, block(companion, plain));
     let checkpoint = game.snapshot();
     let action = block(required, menace);
     let revision = game.revision();

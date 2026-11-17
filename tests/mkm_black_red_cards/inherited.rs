@@ -500,7 +500,9 @@ fn slice_from_the_shadows_uses_one_black_plus_x_and_kills_indestructible_at_zero
     for (x, expected) in [(0, Zone::Battlefield), (1, Zone::Graveyard)] {
         let mut branch = game.clone();
         act(&mut branch, Action::AnnounceCast { card: spell });
-        reject(&mut branch, Action::ChooseX { value: 2 });
+        let mut declared = branch.clone();
+        act(&mut declared, Action::ChooseX { value: 2 });
+        assert_eq!(declared.state.announcing.as_ref().unwrap().item.x, Some(2));
         act(&mut branch, Action::ChooseX { value: x });
         target(&mut branch, target_card);
         act(

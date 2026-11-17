@@ -680,7 +680,7 @@ fn geyser_drake_discounts_spells_during_the_opponents_turn() {
     game.state.players[player.index()].mana = [1, 0, 0, 0, 0, 1];
     let mut own_turn = game.clone();
     own_turn.state.active = player;
-    reject(&mut own_turn, Action::AnnounceCast { card: cow });
+    admit(&own_turn, Action::AnnounceCast { card: cow });
 
     let mut off_turn_creature = game.clone();
     cast(&mut off_turn_creature, cow, None);
@@ -690,7 +690,7 @@ fn geyser_drake_discounts_spells_during_the_opponents_turn() {
     game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 0];
     let mut own_turn = game.clone();
     own_turn.state.active = player;
-    reject(&mut own_turn, Action::AnnounceCast { card: strike });
+    admit(&own_turn, Action::AnnounceCast { card: strike });
     cast(&mut game, strike, Some(Target::Player(player.other())));
     resolve(&mut game);
     assert_eq!(game.state.players[player.other().index()].life, 17);

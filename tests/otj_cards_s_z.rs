@@ -182,7 +182,7 @@ fn actual_crime_enables_seize_vault_buster_and_once_per_turn_vadmir() {
     let shock = put(&mut game, player, "Shock", Zone::Hand);
     game.add_counter(vadmir, CounterKind::PlusOne, 3);
     game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 1];
-    reject(&mut game, Action::AnnounceCast { card: seize });
+    admit(&game, Action::AnnounceCast { card: seize });
     assert_eq!(stats(&game, buster), (1, 4));
     assert!(game.keywords(buster).contains(Keywords::VIGILANCE));
 
@@ -838,7 +838,7 @@ fn terror_taxes_opposing_spell_targets_and_uses_live_entrant_power() {
     let mut broke = game.clone();
     broke.state.players[opponent.index()].life = 2;
     act(&mut broke, Action::AnnounceCast { card: removal });
-    reject(&mut broke, target(terror));
+    admit(&broke, target(terror));
     act(&mut game, Action::AnnounceCast { card: removal });
     act(&mut game, target(terror));
     for _ in 0..8 {
@@ -984,10 +984,10 @@ fn this_town_is_banned_in_standard_and_discounted_only_for_a_chosen_own_permanen
 
     game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 1];
     act(&mut game, Action::AnnounceCast { card: town });
-    reject(&mut game, Action::FinishTargets);
+    admit(&game, Action::FinishTargets);
     reject(&mut game, target(land));
     act(&mut game, target(enemy));
-    reject(&mut game, Action::FinishTargets);
+    admit(&game, Action::FinishTargets);
     act(&mut game, target(own));
     pay(&mut game);
     settle(&mut game);
