@@ -114,10 +114,7 @@ fn a_tapped_and_sacrificed_token_can_fund_a_spell_with_only_the_bonus() {
     );
     // The bonus color is a caller choice. Artifact-restricted blue mana still
     // cannot pay for Opt when that choice supplies only unrestricted colorless.
-    reject(
-        &mut wrong_color,
-        Action::PayCosts { payment: BLUE },
-    );
+    reject(&mut wrong_color, Action::PayCosts { payment: BLUE });
     let choice = Action::ChooseMana { production: BLUE };
     let saved = game.snapshot();
     let index = game
