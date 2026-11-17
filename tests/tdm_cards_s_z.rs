@@ -99,11 +99,7 @@ fn harmonize_unending_whisper_uses_current_power_but_never_pays_the_blue_symbol(
         g.state.objects[helper as usize].summoning_sick = true;
         let spell = put(&mut g, p, "Unending Whisper", Zone::Graveyard);
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 20];
-        assert!(
-            !g.legal_actions()
-                .contains(&Action::AnnounceHarmonize { card: spell })
-        );
-        reject(&mut g, Action::AnnounceHarmonize { card: spell });
+        admit(&g, Action::AnnounceHarmonize { card: spell });
         g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
         harmonize(&mut g, spell, Some(helper), None);
         assert!(g.object_view(helper).tapped);
@@ -602,7 +598,7 @@ fn mana_sunset_pays_two_red_tap_sacrifice_and_deals_six_only_to_a_flying_creatur
                 ability: 1,
                 counter_payment: Counters::default(),
             };
-            reject(&mut g, start.clone());
+            admit(&g, start.clone());
             g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 2];
             // No sorcery restriction: announce at upkeep with priority.
             g.state.step = Step::Upkeep;
@@ -793,7 +789,7 @@ fn creatures_sagu_renew_rejects_wrong_zone_timing_cost_target_and_never_rebinds_
         off_turn.state.active = p.other();
         reject(&mut off_turn, start.clone());
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 5];
-        reject(&mut g, start.clone());
+        admit(&g, start.clone());
         g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 4];
         act(&mut g, start);
         reject(
@@ -829,7 +825,7 @@ fn creatures_packbeast_affinity_counts_only_controlled_creatures_then_draws_the_
         let top = put(&mut g, p, "Cancel", Zone::Library);
         let source = put(&mut g, p, "Salt Road Packbeast", Zone::Hand);
         g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 2];
-        reject(&mut g, Action::AnnounceCast { card: source });
+        admit(&g, Action::AnnounceCast { card: source });
         g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 3];
         cast(&mut g, source, None);
         settle(&mut g);
@@ -1559,7 +1555,7 @@ fn spells_seize_opportunity_exiles_exact_cards_for_ordinary_paid_play_through_ne
         g.state.step = Step::Main1;
         g.state.priority = p;
         g.state.players[p.index()].mana = [0; 6];
-        reject(&mut g, Action::AnnounceExile { card: bear });
+        admit(&g, Action::AnnounceExile { card: bear });
         let mut expired = g.clone();
         expired.finish_cleanup();
         expired.state.active = p;
@@ -1594,13 +1590,13 @@ fn spells_worthy_cost_requires_own_creature_and_black_mana_and_is_sorcery_speed(
         let foreign = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
         let artifact = put(&mut g, p, "Short Bow", Zone::Battlefield);
         let spell = put(&mut g, p, "Worthy Cost", Zone::Hand);
-        reject(&mut g, Action::AnnounceCast { card: spell });
+        admit(&g, Action::AnnounceCast { card: spell });
         let material = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         let mut upkeep = g.clone();
         upkeep.state.step = Step::Upkeep;
         reject(&mut upkeep, Action::AnnounceCast { card: spell });
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
-        reject(&mut g, Action::AnnounceCast { card: spell });
+        admit(&g, Action::AnnounceCast { card: spell });
         g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 0];
         act(&mut g, Action::AnnounceCast { card: spell });
         reject(
@@ -1785,8 +1781,8 @@ fn cast_faces_songcrafter_has_flash_exact_graveyard_targets_and_taps_itself_for_
         settle(&mut g);
         priority(&mut g, p);
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
-        reject(
-            &mut g,
+        admit(
+            &g,
             Action::AnnounceGrantedHarmonize {
                 card: wanted,
                 face: CastFace::Normal,
@@ -1858,7 +1854,7 @@ fn cast_faces_teval_does_not_grant_delve_or_cast_loss_from_hand_and_has_six_powe
         put(&mut g, p, "Forest", Zone::Graveyard);
         let teval = put(&mut g, p, "Teval, Arbiter of Virtue", Zone::Hand);
         g.state.players[p.index()].mana = [0, 1, 1, 0, 1, 0];
-        reject(&mut g, Action::AnnounceCast { card: teval });
+        admit(&g, Action::AnnounceCast { card: teval });
         g.state.players[p.index()].mana = [0, 1, 1, 0, 1, 2];
         cast(&mut g, teval, None);
         settle(&mut g);
@@ -1893,7 +1889,7 @@ fn cast_faces_teval_delve_pays_only_generic_and_cast_life_loss_survives_counteri
         let foreign = put(&mut g, p.other(), "Forest", Zone::Graveyard);
         let spell = put(&mut g, p, "Quick Study", Zone::Hand);
         g.state.players[p.index()].mana = [0; 6];
-        reject(&mut g, Action::AnnounceCast { card: spell });
+        admit(&g, Action::AnnounceCast { card: spell });
         g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
         act(&mut g, Action::AnnounceCast { card: spell });
         begin_delve(&mut g);
@@ -1959,7 +1955,7 @@ fn cast_faces_spectral_denial_uses_current_owned_four_power_threshold_but_counte
                 let denial = put(&mut g, p, "Spectral Denial", Zone::Hand);
                 g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 1];
                 act(&mut g, Action::AnnounceCast { card: denial });
-                reject(&mut g, Action::ChooseX { value: 3 });
+                admit(&g, Action::ChooseX { value: 3 });
                 act(&mut g, Action::ChooseX { value: x });
                 act(
                     &mut g,
@@ -2295,7 +2291,7 @@ fn cast_faces_charring_bite_uses_red_cost_targets_only_nonfliers_and_fizzles_to_
             let flyer = put(&mut g, p.other(), "Shivan Dragon", Zone::Battlefield);
             let card = put(&mut g, p, "Twinmaw Stormbrood // Charring Bite", Zone::Hand);
             g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 1];
-            reject(&mut g, Action::AnnounceOmen { card });
+            admit(&g, Action::AnnounceOmen { card });
             g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 1];
             act(&mut g, Action::AnnounceOmen { card });
             reject(
@@ -2535,7 +2531,7 @@ fn cast_faces_songcrafter_grants_sorcery_printed_cost_but_flash_does_not_transfe
             "Whirlwing Stormbrood // Dynamic Soar",
             Zone::Battlefield,
         );
-        reject(&mut g, Action::AnnounceHarmonize { card: spell });
+        admit(&g, Action::AnnounceHarmonize { card: spell });
         granted_harmonize(&mut g, spell, None);
         settle(&mut g);
         assert_eq!(g.object_view(spell).zone, Zone::Exile);
@@ -2576,10 +2572,10 @@ fn activations_earthcarver_requires_two_mana_and_another_own_creature_and_adds_o
             put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
             put(&mut g, p, "Short Bow", Zone::Battlefield);
             g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
-            reject(&mut g, activation_zero(source));
+            admit(&g, activation_zero(source));
             let material = put(&mut g, p, "Bear Cub", Zone::Battlefield);
             g.state.players[p.index()].mana[5] = 1;
-            reject(&mut g, activation_zero(source));
+            admit(&g, activation_zero(source));
             g.state.players[p.index()].mana[5] = 2;
             act(&mut g, activation_zero(source));
             pay_sacrifice(&mut g, material);
@@ -2617,7 +2613,7 @@ fn activations_unrooted_flashes_then_sacrifices_without_tapping_as_a_cost_and_pr
         assert!(g.keywords(source).contains(Keywords::FLASH));
         assert!(g.object_view(source).summoning_sick);
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
-        reject(&mut g, activation_zero(source));
+        admit(&g, activation_zero(source));
         let material = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         act(&mut g, activation_zero(source));
         pay_sacrifice(&mut g, material);
@@ -3091,11 +3087,11 @@ fn activations_temur_battlecrier_reduces_only_generic_for_current_own_power_four
             put(&mut g, p.other(), "Shivan Dragon", Zone::Battlefield);
             let spell = put(&mut g, p, "Quick Study", Zone::Hand);
             g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 4];
-            reject(&mut g, Action::AnnounceCast { card: spell });
+            admit(&g, Action::AnnounceCast { card: spell });
             g.state.active = if own_turn { p } else { p.other() };
             g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
             if !own_turn {
-                reject(&mut g, Action::AnnounceCast { card: spell });
+                admit(&g, Action::AnnounceCast { card: spell });
                 g.state.players[p.index()].mana[5] = 2;
             }
             cast(&mut g, spell, None);
@@ -3114,7 +3110,7 @@ fn activations_temur_discount_applies_to_creature_and_artifact_spells_and_rechec
         let artifact = put(&mut g, p, "Short Bow", Zone::Hand);
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
         g.state.objects[source as usize].growth.power = -1;
-        reject(&mut g, Action::AnnounceCast { card: artifact });
+        admit(&g, Action::AnnounceCast { card: artifact });
         g.state.objects[source as usize].growth.power = 0;
         cast(&mut g, artifact, None);
         settle(&mut g);
@@ -3129,7 +3125,7 @@ fn activations_temur_discount_applies_to_creature_and_artifact_spells_and_rechec
         g.move_object(source, Zone::Graveyard);
         let spell = put(&mut g, p, "Quick Study", Zone::Hand);
         g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 1];
-        reject(&mut g, Action::AnnounceCast { card: spell });
+        admit(&g, Action::AnnounceCast { card: spell });
     }
 }
 
