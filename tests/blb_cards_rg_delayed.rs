@@ -176,7 +176,17 @@ fn common_good_spends_two_per_x_and_grants_indestructible_to_all_current_tokens(
     let common = put(&mut game, player, "For the Common Good", Zone::Hand);
     game.state.players[player.index()].mana = [0, 0, 0, 0, 1, 4];
     act(&mut game, Action::AnnounceCast { card: common });
-    reject(&mut game, Action::ChooseX { value: 3 });
+    let mut too_large = game.clone();
+    act(&mut too_large, Action::ChooseX { value: 3 });
+    act(&mut too_large, target(original));
+    assert!(too_large.mana_payment_domain().is_none());
+    act(&mut too_large, Action::EndManaWindow);
+    act(&mut too_large, Action::SubmitAttempt);
+    assert_eq!(
+        too_large.last_attempt_outcome_view(player).unwrap().outcome,
+        AttemptOutcome::Failed
+    );
+    assert_eq!(too_large.object_view(common).zone, Zone::Hand);
     act(&mut game, Action::ChooseX { value: 2 });
     act(&mut game, target(original));
     pay(&mut game);
