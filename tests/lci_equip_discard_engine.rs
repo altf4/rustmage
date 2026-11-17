@@ -140,9 +140,11 @@ fn discard_route_owns_the_hand_choice_and_commits_as_one_activation() {
         );
         assert_eq!(game.object_view(first.card).zone, Zone::Hand);
         assert!(!game.state.players[player.index()].equip_activated_this_turn);
-        // The discard is provisional; the still-open mana window permits
-        // generating mana even when this route needs none.
-        admit(&game, Action::TapMana { card: land });
+        // This selected replacement cost requires no mana, so it offers no
+        // payment mana action even while the discard remains provisional.
+        let request = game.observe(player).payment_request.unwrap();
+        assert_eq!((request.required, request.generic), ([0; 6], 0));
+        reject(&mut game, Action::TapMana { card: land });
 
         let pay = Action::PayCosts { payment: [0; 6] };
         let revision = game.revision();
