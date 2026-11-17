@@ -208,6 +208,19 @@ fn caller_allows(view: &Observation, action: &Action) -> bool {
             }
         }
     }
+    if let Action::AnnounceActivate { card, ability, .. }
+    | Action::BeginActivate { card, ability, .. }
+    | Action::Activate { card, ability, .. } = action
+        && let Some(object) = view.objects.iter().find(|object| object.id == *card)
+        && *ability == 0
+        && object.used_abilities & 1 != 0
+        && object.has_subtype("Vehicle")
+    {
+        // These workload Vehicles have Crew as ability zero. Its first use
+        // already supplies this turn's animation.
+        // Repeating it before that stack item resolves only consumes more crew.
+        return false;
+    }
     if let Some(item) = &view.announcing
         && let StackKind::ActivatedAbility { ability } = item.kind
         && let Some((source, definition)) = item.source_identity()
@@ -255,7 +268,14 @@ fn decision(view: &Observation, actions: &[Action], seek_back_face: bool) -> usi
             .find(|object| object.id == *card)
             .and_then(|object| object.card.back_face())
             .is_some_and(|back| back.fixed_mana_value() <= budget),
-        Action::AnnounceLibraryLife { .. } | Action::AnnounceWebSlinging { .. } => true,
+        Action::AnnounceLibraryLife { .. }
+        | Action::AnnounceWebSlinging { .. }
+        | Action::AnnounceExile { .. } => true,
+        Action::AnnounceCast { card } => view.objects.iter().any(|object| {
+            object.id == *card
+                && object.card.name() == "Araña, Heart of the Spider"
+                && object.card.fixed_mana_value() <= budget
+        }),
         _ => false,
     }) {
         return index;

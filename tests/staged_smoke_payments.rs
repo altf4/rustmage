@@ -77,21 +77,24 @@ fn an_offered_contribution_is_committed_before_final_mana_payment() {
         let mut game = scenario(player);
         let spell = put(&mut game, player, "Web of Life and Destiny", Zone::Hand);
         let creature = put(&mut game, player, "Bear Cub", Zone::Battlefield);
-        game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 8];
+        game.state.players[player.index()].mana = [0, 0, 0, 0, 2, 6];
         act(&mut game, Action::AnnounceCast { card: spell });
+        let request = game.observe(player).payment_request.unwrap();
+        assert_eq!(request.required, [0, 0, 0, 0, 2, 0]);
+        assert_eq!(request.generic, 6);
+        assert!(game.mana_payment_domain().is_some());
         act(&mut game, Action::BeginConvoke);
-        assert!(
-            matches!(smoke_step(&mut game), Action::ChooseConvoker { object, .. }
-            if object.card == creature)
-        );
+        assert!(matches!(smoke_step(&mut game), Action::ChooseConvoker {
+                object, contribution: ConvokeContribution::Green
+            } if object.card == creature));
         assert_eq!(
             smoke_step(&mut game),
             Action::PayCosts {
-                payment: [0, 0, 0, 0, 0, 7]
+                payment: [0, 0, 0, 0, 1, 6]
             }
         );
         assert!(game.object_view(creature).tapped);
         assert_eq!(game.object_view(spell).zone, Zone::Stack);
-        assert_eq!(game.state.players[player.index()].mana, [0, 0, 0, 0, 0, 1]);
+        assert_eq!(game.state.players[player.index()].mana, [0, 0, 0, 0, 1, 0]);
     }
 }

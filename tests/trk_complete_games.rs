@@ -379,17 +379,40 @@ fn record_mechanics(
 }
 
 fn decision(view: &Observation, actions: &[Action]) -> usize {
-    if let Some(index) = actions
+    let opening_lands = view
+        .objects
         .iter()
-        .position(|action| *action == Action::Mulligan)
-        && !view.objects.iter().any(|object| {
+        .filter(|object| {
             object.owner == view.actor.unwrap()
                 && object.zone == Zone::Hand
                 && object.card.is_land()
         })
+        .count();
+    if let Some(index) = actions
+        .iter()
+        .position(|action| *action == Action::Mulligan)
+        && opening_lands < 3
     {
-        // Keeping a landless seven prevented the exploration deck from ever
-        // establishing its quest permanent in either starting seat.
+        // The midrange workloads need a current three-land opening, rather
+        // than spending their early turns attempting three-mana spells on two.
+        return index;
+    }
+    if let Some((index, _, _)) = actions
+        .iter()
+        .enumerate()
+        .filter_map(|(index, action)| {
+            let Action::Bottom { card } = action else {
+                return None;
+            };
+            let object = view.objects.iter().find(|object| object.id == *card)?;
+            Some((
+                index,
+                object.card.is_land() == (opening_lands > 3),
+                object.card.fixed_mana_value(),
+            ))
+        })
+        .max_by_key(|&(_, preferred, value)| (preferred, value))
+    {
         return index;
     }
     let smoke = policy::smoke_index_from_observation(view, actions);
