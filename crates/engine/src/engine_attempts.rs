@@ -142,7 +142,7 @@ impl Game {
         if let Some(request) = self.plot_payment() {
             return Some((request.controller, request.cost));
         }
-        self.room_unlock_payment()
+        self.state.room_unlock_payment()
             .map(|request| (request.controller, request.cost))
     }
 

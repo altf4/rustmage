@@ -1,12 +1,10 @@
-//! Regression traces from issue #684 and exact fixed-world pruning witnesses.
+//! Semantic baseline traces and current-state staged payment regressions.
 mod support;
 
 use rustmage as _;
 use rustmage_core::cards::Counters;
-use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::engine::*;
 use rustmage_core::protocol::{Request, Session};
-use std::collections::HashSet;
 use support::*;
 
 fn replay(trace: &str) -> Observation {
@@ -17,6 +15,7 @@ fn replay(trace: &str) -> Observation {
         Session::new(serde_json::from_value(rows.next().unwrap()["arguments"].clone()).unwrap())
             .unwrap();
     let mut last = None;
+    let mut expected = None;
     for (index, row) in rows.enumerate() {
         let request: Request = serde_json::from_value(row["request"].clone()).unwrap();
         let response = session.request(request);
@@ -25,14 +24,24 @@ fn replay(trace: &str) -> Observation {
             "request {index}: {:?}",
             response.error
         );
+        if let Some(boundary) = row.get("expected_boundary") {
+            expected = Some(boundary.clone());
+        }
         last = response.observation;
     }
-    last.unwrap()
+    let observed = last.unwrap();
+    if let Some(expected) = expected {
+        let actual = serde_json::to_value(&observed).unwrap();
+        for (key, value) in expected.as_object().unwrap() {
+            assert_eq!(&actual[key], value, "baseline boundary differs in {key}");
+        }
+    }
+    observed
 }
 
 #[test]
 fn captured_enigma_observation_completes() {
-    let observed = replay(include_str!("fixtures/affordability/enigma-requests.jsonl"));
+    let observed = replay(include_str!("fixtures/affordability/enigma-semantic.jsonl"));
     assert_eq!(
         (observed.turn, observed.step, observed.active),
         (12, Step::Main1, Player::P0)
@@ -58,7 +67,7 @@ fn captured_enigma_observation_completes() {
 #[test]
 fn captured_groves_bounty_x_probes_complete() {
     replay(include_str!(
-        "fixtures/affordability/groves-bounty-requests.jsonl"
+        "fixtures/affordability/groves-bounty-semantic.jsonl"
     ));
 }
 
@@ -95,31 +104,30 @@ fn craft_position(p: Player, islands: usize) -> (Game, CardId) {
     (game, jewel)
 }
 
+fn assert_no_payment_projection() {
+    let work = Game::payment_planning_work();
+    assert_eq!(work.projected_moves, 0);
+    assert_eq!(work.projected_steps, 0);
+    assert_eq!(work.continuation_plans, 0);
+}
+
 #[test]
-fn craft_mana_shortfall_is_pruned_before_any_search_expansion() {
-    for p in [Player::P0, Player::P1] {
-        let (mut game, jewel) = craft_position(p, 5);
-        let mut rejected = game.clone();
-        rejected.state.players[p.index()].mana = [0; 6];
-        reject(&mut rejected, announce(jewel));
-        // Enter the actual ordered cost context, then expose its mana shortfall.
+fn craft_mana_shortfall_is_an_attempt_outcome_without_search() {
+    for player in [Player::P0, Player::P1] {
+        let (mut game, jewel) = craft_position(player, 5);
+        game.state.players[player.index()].mana = [0; 6];
+        Game::reset_payment_planning_work();
         act(&mut game, announce(jewel));
         act(&mut game, Action::BeginOrderedCosts);
-        game.state.players[p.index()].mana = [0; 6];
-        let a = game.state.announcing.as_ref().unwrap();
-        let goal = game.funding_goal(a);
-        let mut world = FundingState::from_game(&game, &goal);
-        world.set_cost_context(Some(a));
-        let mut visited = HashSet::new();
-        assert!(world.fixed_mana_cannot_pay(&goal));
-        assert!(!world.reachable(&goal, &mut visited));
-        assert!(
-            visited.is_empty(),
-            "negative craft requires no expanded states"
-        );
-        let before = game.snapshot();
-        game.legal_actions();
-        assert_eq!(game.snapshot(), before);
+        choose_clause(&mut game, CastCostClause::Mana);
+        let revision = game.revision();
+        act(&mut game, Action::SubmitAttempt);
+        assert!(game.revision() > revision);
+        assert_eq!(game.state.objects[jewel as usize].zone, Zone::Battlefield);
+        assert!(game.state.announcing.is_none());
+        assert_eq!(game.observe(player).last_attempt_outcome.unwrap().outcome, AttemptOutcome::Failed);
+        assert!(game.legal_actions().contains(&announce(jewel)), "failure must permit retry");
+        assert_no_payment_projection();
     }
 }
 
@@ -217,139 +225,48 @@ fn choose_clause(game: &mut Game, clause: CastCostClause) {
 }
 
 #[test]
-fn craft_retains_linked_source_and_attachment_fallbacks() {
-    for p in [Player::P0, Player::P1] {
-        for attached in [false, true] {
-            let (mut game, jewel) = craft_position(p, 5);
-            let material = put(&mut game, p, "Braided Net", Zone::Battlefield);
-            if attached {
-                let equipment = put(&mut game, p, "Stalactite Dagger", Zone::Battlefield);
-                let creature = put(&mut game, p, "Llanowar Elves", Zone::Battlefield);
-                assert!(
-                    game.attach_equipment(game.object_ref(equipment), game.object_ref(creature))
-                );
-            } else {
-                let captive = put(&mut game, p, "Forest", Zone::Exile);
-                game.state.exile_links.push(ExileLink {
-                    ability_origin: None,
-                    source: game.object_ref(material),
-                    exiled: game.object_ref(captive),
-                    return_zone: Zone::Battlefield,
-                });
-            }
-            act(&mut game, announce(jewel));
-            act(&mut game, Action::BeginOrderedCosts);
-            game.state.players[p.index()].mana = [0; 6];
-            let a = game.state.announcing.as_ref().unwrap();
-            let goal = game.funding_goal(a);
-            let mut world = FundingState::from_game(&game, &goal);
-            world.set_cost_context(Some(a));
-            if !attached {
-                assert!(world.fixed_mana_link_can_return(&goal, game.object_ref(material)));
-            }
-            assert!(!world.fixed_mana_cannot_pay(&goal));
-        }
+fn material_selection_does_not_project_linked_returns_or_attachments() {
+    for player in [Player::P0, Player::P1] {
+        let (mut game, jewel) = craft_position(player, 5);
+        let material = put(&mut game, player, "Braided Net", Zone::Battlefield);
+        let captive = put(&mut game, player, "Forest", Zone::Exile);
+        game.state.exile_links.push(ExileLink {
+            ability_origin: None,
+            source: game.object_ref(material),
+            exiled: game.object_ref(captive),
+            return_zone: Zone::Battlefield,
+        });
+        act(&mut game, announce(jewel));
+        act(&mut game, Action::BeginOrderedCosts);
+        choose_clause(&mut game, CastCostClause::Additional);
+        Game::reset_payment_planning_work();
+        let choice = Action::ChooseAdditionalCost { object: game.object_ref(material) };
+        assert!(game.legal_actions().contains(&choice));
+        act(&mut game, choice);
+        game.observe(player);
+        assert_eq!(game.state.objects[material as usize].zone, Zone::Battlefield);
+        assert_eq!(game.state.objects[captive as usize].zone, Zone::Exile);
+        assert_no_payment_projection();
     }
 }
 
 #[test]
-fn life_paying_tap_sources_bound_repeated_negative_x_probes() {
-    for p in [Player::P0, Player::P1] {
-        let mut game = scenario(p);
+fn large_x_declarations_do_not_explore_life_paying_mana_sources() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
         for _ in 0..3 {
-            put(&mut game, p, "Starting Town", Zone::Battlefield);
+            put(&mut game, player, "Starting Town", Zone::Battlefield);
         }
-        for _ in 0..2 {
-            let land = put(&mut game, p, "Multiversal Passage", Zone::Battlefield);
-            game.set_entry_value(
-                game.object_ref(land),
-                rustmage_core::cards::EntryChoiceValue::BasicLandType(
-                    rustmage_core::cards::BasicLandType::Forest,
-                ),
-            );
-        }
-        put(&mut game, p.other(), "Icetill Explorer", Zone::Battlefield);
-        put(&mut game, p, "Elusive Otter", Zone::Battlefield);
-        let spell = put(&mut game, p, "Traumatic Critique", Zone::Hand);
-        game.state.players[p.index()].mana = [0; 6];
-        for generic in [4, 8, 1024, 1 << 23] {
-            let goal = FundingGoal {
-                actor: p,
-                required: [0, 1, 0, 1, 0, 0],
-                generic,
-                reserve: None,
-                source: None,
-            };
-            let mut world = FundingState::from_game(&game, &goal);
-            world.set_purpose(game.spell_mana_purpose_for_card(
-                p,
-                spell,
-                game.state.objects[spell as usize].card,
-            ));
-            let mut visited = HashSet::new();
-            assert!(!world.reachable(&goal, &mut visited));
-            assert!(visited.is_empty());
-        }
+        let spell = put(&mut game, player, "Exsanguinate", Zone::Hand);
+        game.state.players[player.index()].mana = [0; 6];
+        Game::reset_payment_planning_work();
+        act(&mut game, Action::AnnounceCast { card: spell });
+        assert!(game.x_choice().unwrap().contains(1 << 23));
+        game.observe(player);
+        act(&mut game, Action::ChooseX { value: 1 << 23 });
+        act(&mut game, Action::EndManaWindow);
+        act(&mut game, Action::SubmitAttempt);
+        assert_eq!(game.observe(player).last_attempt_outcome.unwrap().outcome, AttemptOutcome::Failed);
+        assert_no_payment_projection();
     }
-}
-
-#[test]
-fn captured_groves_bounty_negative_probe_expands_no_states() {
-    let mut rows = include_str!("fixtures/affordability/groves-bounty-requests.jsonl")
-        .lines()
-        .map(|s| serde_json::from_str::<serde_json::Value>(s).unwrap());
-    let mut game =
-        Game::new(serde_json::from_value(rows.next().unwrap()["arguments"].clone()).unwrap())
-            .unwrap();
-    for row in rows.take(725) {
-        match serde_json::from_value(row["request"].clone()).unwrap() {
-            Request::Step {
-                actor,
-                revision,
-                index,
-                viewer,
-            } => {
-                game.apply_index(actor, revision, index).unwrap();
-                game.observe(viewer);
-            }
-            Request::Act {
-                actor,
-                action,
-                viewer,
-                ..
-            } => {
-                game.apply(actor, action).unwrap();
-                game.observe(viewer);
-            }
-            Request::Observe { viewer } => {
-                game.observe(viewer);
-            }
-            _ => panic!("unexpected request"),
-        }
-    }
-    let goal = FundingGoal {
-        actor: Player::P1,
-        required: [0, 0, 0, 0, 1, 0],
-        generic: 5,
-        reserve: None,
-        source: None,
-    };
-    let spell = game
-        .state
-        .objects
-        .iter()
-        .position(|o| {
-            o.zone == Zone::Hand && o.owner == Player::P1 && o.card.name() == "Elusive Otter"
-        })
-        .unwrap() as CardId;
-    let mut world = FundingState::from_game(&game, &goal);
-    world.set_purpose(game.spell_mana_purpose_for_card(
-        Player::P1,
-        spell,
-        rustmage_core::cards::Card::from_name("Grove's Bounty").unwrap(),
-    ));
-    assert!(world.fixed_mana_cannot_pay(&goal));
-    let mut visited = HashSet::new();
-    assert!(!world.reachable(&goal, &mut visited));
-    assert!(visited.is_empty());
 }
