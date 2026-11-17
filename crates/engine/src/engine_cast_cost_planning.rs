@@ -1040,7 +1040,6 @@ impl FundingState<'_> {
             world.visit_death_exile_gains(gains, &mut |next| next.visit_linked_returns(emit))
         })
     }
-    #[cfg(feature = "test-support")]
     pub(super) fn project_nonbattlefield_move(
         &mut self,
         before: ObjectRef,
@@ -1065,7 +1064,6 @@ impl FundingState<'_> {
         self.project_resource_nonbattlefield_move(index, before, zone, meld_front)
     }
 
-    #[cfg(feature = "test-support")]
     pub(super) fn project_resource_nonbattlefield_move(
         &mut self,
         index: usize,
