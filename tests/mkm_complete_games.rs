@@ -228,6 +228,15 @@ fn workload_index(view: &Observation) -> usize {
     if matches!(view.actions[smoke], Action::PlayLand { .. }) {
         return smoke;
     }
+    // Establish the Case before building its board condition. The broader
+    // declaration menu otherwise lets repeated face-down attempts postpone
+    // these cheap enchantments until the late game.
+    if let Some(index) = view.actions.iter().position(|action| {
+        matches!(action, Action::AnnounceCast { card }
+            if view.objects.iter().any(|object| object.id == *card && object.has_subtype("Case")))
+    }) {
+        return index;
+    }
     // Keep the three artifacts needed to solve Filched Falcon at the end step,
     // instead of spending each new Clue immediately. This uses public objects.
     let own_permanents = view
