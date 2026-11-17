@@ -618,6 +618,12 @@ impl Game {
         if matches!(self.state.pending, Pending::ManaRollback { .. }) {
             return;
         }
+        // Mandatory output and tap-bonus choices belong to this mana child.
+        // The recording hook clears its capture only after the whole event is
+        // complete; popping now would discard the unfinished receipt.
+        if rollback.capture.is_some() {
+            return;
+        }
         let before_contains = |id| {
             rollback
                 .before
