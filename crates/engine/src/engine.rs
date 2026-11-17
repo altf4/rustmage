@@ -1051,6 +1051,7 @@ define_actions! {
     ChooseBargain {
         sacrifice: Option<ObjectRef>,
     },
+    DeclareBargain { pay: bool },
     ChooseX { value: u32 },
     ChooseSourceCounterAmount { amount: u64 },
     ChooseKicker {
@@ -7647,7 +7648,14 @@ impl Game {
                 return self.visit_casualty_payments(&mut emit);
             }
             Pending::Bargain { .. } => {
-                return self.visit_bargain_choices(s.announcing.as_ref().unwrap(), |sacrifice| {
+                let a = s.announcing.as_ref().unwrap();
+                for pay in [false, true] {
+                    if self.bargain_intent_available(a, pay) && emit(Action::DeclareBargain { pay })
+                    {
+                        return true;
+                    }
+                }
+                return self.visit_bargain_choices(a, |sacrifice| {
                     emit(Action::ChooseBargain { sacrifice })
                 });
             }
@@ -9557,6 +9565,7 @@ impl Game {
             Action::ChooseCastCost { clause } => self.choose_cast_cost(clause),
             Action::PayCasualty { object } => self.pay_casualty_clause(object),
             Action::ChooseBargain { sacrifice } => self.choose_bargain(sacrifice),
+            Action::DeclareBargain { pay } => self.declare_bargain(pay),
             Action::ChooseMobilizeDefender { defender } => self.choose_mobilize_defender(defender),
             Action::ChooseBlight { pay } => self.choose_blight(pay),
             Action::PayBlight { object } => self.pay_blight(object),

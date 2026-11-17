@@ -626,6 +626,137 @@ fn optional_material_costs_can_be_declared_before_materials_exist() {
     }
 }
 
+#[test]
+fn bargain_declares_before_material_selection_and_missing_materials_fail() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let creature = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+        let target = put(
+            &mut game,
+            player.other(),
+            "Gigantosaurus",
+            Zone::Battlefield,
+        );
+        let target_object = game.object_ref(target);
+        let spell = put(&mut game, player, "Candy Grapple", Zone::Hand);
+        game.state.players[player.index()].mana = [0; 6];
+        Game::reset_payment_planning_work();
+        act(&mut game, Action::AnnounceCast { card: spell });
+        assert!(
+            game.legal_actions()
+                .contains(&Action::ChooseBargain { sacrifice: None })
+        );
+        let mut declined = game.clone();
+        act(&mut declined, Action::DeclareBargain { pay: false });
+        assert_eq!(
+            declined
+                .state
+                .announcing
+                .as_ref()
+                .unwrap()
+                .item
+                .cast
+                .unwrap()
+                .bargain,
+            Some(false)
+        );
+        let declaration = Action::DeclareBargain { pay: true };
+        let checkpoint = game.snapshot();
+        let mut indexed = game.clone();
+        let index = indexed
+            .legal_actions()
+            .iter()
+            .position(|action| action == &declaration)
+            .unwrap();
+        indexed
+            .apply_index(player, indexed.revision(), index)
+            .unwrap();
+        act(&mut game, declaration.clone());
+        assert_eq!(game.snapshot(), indexed.snapshot());
+        indexed.restore(&checkpoint).unwrap();
+        act(&mut indexed, declaration);
+        assert_eq!(game.snapshot(), indexed.snapshot());
+        assert_eq!(game.state.announcing.as_ref().unwrap().additional, None);
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        assert_eq!(game.state.pending, Pending::AdditionalCost { player });
+        assert!(game.attempt_view(player).unwrap().can_end_mana_window);
+        let mut failed = game.clone();
+        act(&mut failed, Action::EndManaWindow);
+        act(&mut failed, Action::SubmitAttempt);
+        let outcome = failed.last_attempt_outcome_view(player).unwrap();
+        assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+        assert_eq!(
+            outcome.reason,
+            Some(AttemptFailureReason::UnsatisfiedMaterial)
+        );
+        assert_eq!(failed.object_view(spell).zone, Zone::Hand);
+        assert_eq!(failed.object_ref(target), target_object);
+        assert!(!failed.object_view(creature).tapped);
+        assert_eq!(failed.state.players[player.index()].mana, [0; 6]);
+
+        let offering = put(&mut failed, player, "Candy Trail", Zone::Battlefield);
+        let object = failed.object_ref(offering);
+        failed.state.players[player.index()].mana = [0, 0, 2, 0, 0, 0];
+        act(&mut failed, Action::AnnounceCast { card: spell });
+        for shortcut in [false, true] {
+            let mut retry = failed.clone();
+            act(
+                &mut retry,
+                if shortcut {
+                    Action::ChooseBargain {
+                        sacrifice: Some(object),
+                    }
+                } else {
+                    Action::DeclareBargain { pay: true }
+                },
+            );
+            assert_eq!(
+                retry.state.announcing.as_ref().unwrap().additional,
+                shortcut.then_some(object)
+            );
+            act(
+                &mut retry,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            act(&mut retry, Action::EndManaWindow);
+            if !shortcut {
+                act(&mut retry, Action::ChooseAdditionalCost { object });
+            }
+            assert!(
+                retry.on_battlefield(offering),
+                "bargain material stays provisional until payment"
+            );
+            assert_eq!(
+                retry.state.announcing.as_ref().unwrap().additional,
+                Some(object)
+            );
+            reject(&mut retry, Action::PayCosts { payment: [0; 6] });
+            act(
+                &mut retry,
+                Action::PayCosts {
+                    payment: [0, 0, 2, 0, 0, 0],
+                },
+            );
+            assert_eq!(retry.object_view(offering).zone, Zone::Graveyard);
+            assert_eq!(retry.state.players[player.index()].mana, [0; 6]);
+            assert_eq!(
+                retry.state.stack.last().unwrap().cast.unwrap().bargain,
+                Some(true)
+            );
+            settle(&mut retry);
+            assert_eq!(stats(&retry, target), (5, 5));
+        }
+        no_projection_work();
+    }
+}
+
 const TAP_AND_WATERBEND: CardRules = CardRules {
     effect: Effect::Creature(2, 2),
     activated: &[ActivatedAbility {
