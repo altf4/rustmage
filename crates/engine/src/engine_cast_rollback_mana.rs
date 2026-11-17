@@ -5,6 +5,36 @@ use additional_costs::ManaCostObjects;
 use cast_rollback::CastRollback;
 use std::collections::VecDeque;
 use zone_replacements::{ZoneMoveCompletion, ZoneShuffle};
+/// Rollback retention exploration is deliberately measured separately from
+/// current-action validation and the removed funding-completion search.
+#[cfg(feature = "test-support")]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct RollbackPlanningWork {
+    pub suffix_entries: u64,
+    pub replay_branches: u64,
+}
+#[cfg(feature = "test-support")]
+thread_local! {
+    static ROLLBACK_WORK: std::cell::Cell<RollbackPlanningWork> = const {
+        std::cell::Cell::new(RollbackPlanningWork { suffix_entries: 0, replay_branches: 0 })
+    };
+}
+#[cfg(feature = "test-support")]
+pub fn reset_rollback_planning_work() {
+    ROLLBACK_WORK.set(RollbackPlanningWork::default());
+}
+#[cfg(feature = "test-support")]
+pub fn rollback_planning_work() -> RollbackPlanningWork {
+    ROLLBACK_WORK.get()
+}
+#[cfg(feature = "test-support")]
+fn count_rollback_branch() {
+    ROLLBACK_WORK.update(|mut work| {
+        work.replay_branches = work.replay_branches.saturating_add(1);
+        work
+    });
+}
+
 type FrozenZoneMove = (
     ObjectRef,
     Zone,
@@ -329,6 +359,8 @@ impl Game {
         if !keep && event.irreversible {
             return false;
         }
+        #[cfg(feature = "test-support")]
+        count_rollback_branch();
         let mut branch = Game {
             state: self.state.clone(),
             revision: self.revision,
@@ -337,6 +369,11 @@ impl Game {
             && branch.mana_rollback_suffix(&rollback.events[replay.index + 1..])
     }
     fn mana_rollback_suffix(&self, events: &[ManaEvent]) -> bool {
+        #[cfg(feature = "test-support")]
+        ROLLBACK_WORK.update(|mut work| {
+            work.suffix_entries = work.suffix_entries.saturating_add(1);
+            work
+        });
         // Every reversible suffix can be declined immediately. Only future
         // irreversible activations constrain earlier retention decisions.
         if !events.iter().any(|e| e.irreversible) {
@@ -348,6 +385,8 @@ impl Game {
         if !event.irreversible && self.mana_rollback_suffix(rest) {
             return true;
         }
+        #[cfg(feature = "test-support")]
+        count_rollback_branch();
         let mut branch = Game {
             state: self.state.clone(),
             revision: self.revision,

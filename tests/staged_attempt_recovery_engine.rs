@@ -147,6 +147,7 @@ fn failing_nested_mana_restores_parent_and_retains_selected_completed_events() {
             act(&mut g, Action::TapMana { card: first });
             close_and_submit(&mut g);
             assert!(matches!(g.state.pending, Pending::ManaRollback { .. }));
+            cast_rollback_mana::reset_rollback_planning_work();
             let saved = g.snapshot();
             let mut indexed = g.clone();
             indexed.restore(&saved).unwrap();
@@ -156,6 +157,9 @@ fn failing_nested_mana_restores_parent_and_retains_selected_completed_events() {
                 .iter()
                 .position(|a| *a == action)
                 .unwrap();
+            let rollback_work = cast_rollback_mana::rollback_planning_work();
+            assert!(rollback_work.suffix_entries > 0);
+            assert!(rollback_work.replay_branches > 0);
             act(&mut g, action);
             let revision = indexed.revision();
             indexed.apply_index(p, revision, index).unwrap();
@@ -342,4 +346,153 @@ fn optional_draw_reveal_waits_for_recovery_and_resumes_original_priority() {
     act(&mut g, Action::DeclineMiracle);
     assert_eq!(g.state.pending, Pending::Priority);
     assert_eq!(g.state.priority, p);
+}
+
+const OVERLAPPING_COUNTERS: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    activated: &[
+        ActivatedAbility {
+            cost: ActivationCost {
+                generic: 1,
+                mana_component: true,
+                remove: Some((Some(CounterKind::PlusOne), 1)),
+                additional: Some(AdditionalCost {
+                    kind: EffectChoiceKind::RemoveCreatureCounter(CounterKind::PlusOne),
+                    filter: SacrificeFilter {
+                        kinds: 1,
+                        source_only: false,
+                        other: false,
+                        nonland: false,
+                        tokens: None,
+                        subtype: None,
+                        keywords: Keywords::NONE,
+                        artifact_enchantment_or_token: false,
+                    },
+                }),
+                ..ActivationCost::ZERO
+            },
+            program: &[Instruction::GainLife(PlayerSet::Controller, 1)],
+            ..FILTER.activated[0]
+        },
+        ActivatedAbility {
+            cost: ActivationCost {
+                remove: Some((Some(CounterKind::PlusOne), 1)),
+                ..ActivationCost::ZERO
+            },
+            program: &[Instruction::AddMana(ManaProduction::Fixed([
+                0, 0, 0, 0, 0, 1,
+            ]))],
+            ..FILTER.activated[0]
+        },
+    ],
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn overlapping_current_costs_can_edit_an_unpaid_selection_or_fail_with_owned_branches() {
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &OVERLAPPING_COUNTERS)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let source = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+    let helper = put(&mut g, p, "Goblin Piker", Zone::Battlefield);
+    g.state.objects[source as usize].counters.plus_one = 2;
+    g.state.objects[helper as usize].counters.plus_one = 1;
+    g.state.players[0].mana = [0, 0, 0, 0, 0, 1];
+    act(
+        &mut g,
+        Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::of(CounterKind::PlusOne, 1),
+        },
+    );
+    let object = g.object_ref(source);
+    act(
+        &mut g,
+        Action::ChooseCreatureCounterCost {
+            object,
+            counter: CounterKind::PlusOne,
+        },
+    );
+    act(
+        &mut g,
+        Action::AnnounceMana {
+            card: source,
+            ability: 1,
+            counter_payment: Counters::of(CounterKind::PlusOne, 1),
+            production: [0, 0, 0, 0, 0, 1],
+        },
+    );
+    act(&mut g, Action::PayCosts { payment: [0; 6] });
+    assert!(g.mana_payment_domain().is_none());
+    act(&mut g, Action::EndManaWindow);
+    let saved = g.snapshot();
+    let mut raw = g.clone();
+    let mut indexed = g.clone();
+    indexed.restore(&saved).unwrap();
+    let index = indexed
+        .legal_actions()
+        .iter()
+        .position(|a| *a == Action::ResetCostSelection)
+        .unwrap();
+    let revision = indexed.revision();
+    act(&mut raw, Action::ResetCostSelection);
+    indexed.apply_index(p, revision, index).unwrap();
+    assert_eq!(raw.snapshot(), indexed.snapshot());
+    assert_eq!(g.snapshot(), saved);
+    assert_eq!(
+        raw.state.objects[source as usize].counters.plus_one, 1,
+        "editing a provisional selection retains the completed nested mana ability"
+    );
+    assert_eq!(raw.state.players[0].mana[5], 2);
+    assert!(raw.attempt_view(p).unwrap().mana_window_closed);
+    let helper_object = raw.object_ref(helper);
+    act(
+        &mut raw,
+        Action::ChooseCreatureCounterCost {
+            object: helper_object,
+            counter: CounterKind::PlusOne,
+        },
+    );
+    act(
+        &mut raw,
+        Action::PayCosts {
+            payment: [0, 0, 0, 0, 0, 1],
+        },
+    );
+    assert_eq!(raw.state.objects[source as usize].counters.plus_one, 0);
+    assert_eq!(raw.state.objects[helper as usize].counters.plus_one, 0);
+    assert_eq!(raw.state.stack.len(), 1);
+
+    let mut failed_raw = g.clone();
+    let mut failed_indexed = g.clone();
+    failed_indexed.restore(&saved).unwrap();
+    let index = failed_indexed
+        .legal_actions()
+        .iter()
+        .position(|a| *a == Action::SubmitAttempt)
+        .unwrap();
+    let revision = failed_indexed.revision();
+    act(&mut failed_raw, Action::SubmitAttempt);
+    failed_indexed.apply_index(p, revision, index).unwrap();
+    assert_eq!(failed_raw.snapshot(), failed_indexed.snapshot());
+    assert_eq!(
+        failed_raw.last_attempt_outcome_view(p).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMaterial)
+    );
+    assert!(matches!(
+        failed_raw.state.pending,
+        Pending::ManaRollback { .. }
+    ));
+    act(&mut failed_raw, Action::ChooseManaRollback { keep: false });
+    assert!(failed_raw.state.announcing.is_none());
+    assert_eq!(
+        failed_raw.state.objects[source as usize].counters.plus_one,
+        2
+    );
+    assert_eq!(
+        failed_raw.state.objects[helper as usize].counters.plus_one,
+        1
+    );
+    assert_eq!(failed_raw.state.players[0].mana[5], 1);
 }
