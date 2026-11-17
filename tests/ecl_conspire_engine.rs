@@ -505,6 +505,8 @@ fn conspire_large_mixed_color_board_has_linear_choices_and_owned_atomic_payments
     for _ in 0..100 {
         let id = put(&mut g, p, "Fog Bank", Zone::Battlefield);
         g.state.objects[id as usize].copy_kind = CopyKind::Token;
+        let recipe = CopyRecipe::new(g.state.objects[id as usize].card);
+        g.set_copy_recipe(g.object_ref(id), recipe);
         g.state.objects[id as usize].summoning_sick = true;
         eligible.push(g.object_ref(id));
     }
@@ -520,8 +522,18 @@ fn conspire_large_mixed_color_board_has_linear_choices_and_owned_atomic_payments
         let object = &mut g.state.objects[id as usize];
         object.copy_kind = CopyKind::Token;
         object.tapped = index % 4 == 3;
+        let recipe = CopyRecipe::new(object.card);
+        g.set_copy_recipe(g.object_ref(id), recipe);
         ineligible.push(g.object_ref(id));
     }
+    // Runtime copy tokens own their copiable recipe by exact incarnation;
+    // marking a plain card as a token alone is not a valid scenario object.
+    assert!(
+        eligible
+            .iter()
+            .chain(&ineligible)
+            .all(|object| { g.object_view(object.card).token.is_some() })
+    );
     let spell = put(&mut g, p, "Divination", Zone::Hand);
     act(&mut g, Action::AnnounceCast { card: spell });
     act(&mut g, Action::ChooseConspire { pay: true });
