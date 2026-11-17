@@ -296,6 +296,8 @@ fn forage_can_use_a_graveyard_card_created_during_its_mana_window() {
                 route: ForageRoute::ExileThree,
             },
         );
+        assert_eq!(game.state.pending, Pending::Forage { player });
+        assert!(!game.attempt_view(player).unwrap().mana_window_closed);
         assert_eq!(game.observe(player).forage.unwrap().candidates.len(), 2);
         let make_material = Action::ActivateMana {
             card: mana_source,
@@ -304,6 +306,15 @@ fn forage_can_use_a_graveyard_card_created_during_its_mana_window() {
             counter_payment: Counters::default(),
             production: [0, 0, 0, 0, 2, 0],
         };
+        assert!(game.legal_actions().contains(&Action::AnnounceMana {
+            card: mana_source,
+            ability: 0,
+            counter_payment: Counters::default(),
+            production: [0, 0, 0, 0, 2, 0],
+        }));
+        let mut closed = game.clone();
+        act(&mut closed, Action::EndManaWindow);
+        reject(&mut closed, make_material.clone());
         let checkpoint = game.snapshot();
         let mut indexed = game.clone();
         let index = indexed
@@ -317,8 +328,20 @@ fn forage_can_use_a_graveyard_card_created_during_its_mana_window() {
         act(&mut game, make_material.clone());
         assert_eq!(game.snapshot(), indexed.snapshot());
         indexed.restore(&checkpoint).unwrap();
-        act(&mut indexed, make_material);
-        assert_eq!(game.snapshot(), indexed.snapshot());
+        assert_eq!(indexed.snapshot(), checkpoint);
+        // Restore retains monotonic allocation history. Compare the replay
+        // against a fork with that same history, not the first child's IDs.
+        let mut replay = indexed.clone();
+        let index = indexed
+            .legal_actions()
+            .iter()
+            .position(|action| action == &make_material)
+            .unwrap();
+        indexed
+            .apply_index(player, indexed.revision(), index)
+            .unwrap();
+        act(&mut replay, make_material);
+        assert_eq!(replay.snapshot(), indexed.snapshot());
         assert_eq!(game.object_view(mana_source).zone, Zone::Graveyard);
         assert_ne!(game.object_ref(mana_source), old_mana_source);
         assert_eq!(game.state.players[player.index()].mana, [0, 0, 0, 0, 2, 0]);

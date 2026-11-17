@@ -270,7 +270,16 @@ impl Game {
                 }
             }
         }
-        false
+        // A declared route can still lack materials until actual mana abilities
+        // resolve. This is the announcement's open mana window, not a resolving
+        // forage instruction or the earlier route declaration.
+        !method
+            && self.state.announcing.as_ref().is_some_and(|a| {
+                a.total_cost.is_some_and(|cost| {
+                    cost.generic != 0 || cost.colored.into_iter().any(|amount| amount != 0)
+                })
+            })
+            && self.visit_local_mana_abilities(emit)
     }
     pub(super) fn choose_forage_route(&mut self, route: ForageRoute) {
         if matches!(self.state.pending, Pending::ForageMethod { .. }) {
