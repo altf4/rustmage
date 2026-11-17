@@ -796,10 +796,83 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                         .unwrap_or(70)
                 }
             }
-            Action::Attack { .. }
-            | Action::AttackPlaneswalker { .. }
-            | Action::AttackBattle { .. }
-            | Action::Block { .. } => 60,
+            Action::Block { blocker, attacker } => {
+                let minimum = observation
+                    .objects
+                    .iter()
+                    .find(|o| o.id == *attacker)
+                    .map_or(1, |o| {
+                        if o.keywords.contains(crate::Keywords::MIN_THREE_BLOCKERS) {
+                            3
+                        } else if o.keywords.contains(crate::Keywords::MENACE) {
+                            2
+                        } else {
+                            1
+                        }
+                    });
+                let current = observation
+                    .blocks
+                    .iter()
+                    .filter(|&&(_, a)| a == *attacker)
+                    .count();
+                let available = actions
+                    .iter()
+                    .filter(|a| matches!(a, Action::Block { attacker: a, .. } if a == attacker))
+                    .count();
+                let max_one = observation.objects.iter().any(|o| {
+                    o.id == *attacker && o.keywords.contains(crate::Keywords::MAX_ONE_BLOCKER)
+                });
+                let alone = observation
+                    .objects
+                    .iter()
+                    .find(|o| o.id == *blocker)
+                    .is_some_and(|o| {
+                        o.card
+                            .static_ability_groups()
+                            .iter()
+                            .flat_map(|g| g.fragments)
+                            .any(|f| {
+                                matches!(
+                                    f,
+                                    crate::cards::StaticAbilityFragment::CantAttackOrBlockAlone
+                                )
+                            })
+                    });
+                let companion = !observation.blocks.is_empty()
+                    || actions.iter().any(
+                        |a| matches!(a, Action::Block { blocker: other, .. } if other != blocker),
+                    );
+                // A caller preference, never an engine legality filter. Avoid
+                // immediately incomplete prefixes that would reset and repeat.
+                if current + available < minimum || max_one && minimum > 1 || alone && !companion {
+                    -10
+                } else {
+                    60
+                }
+            }
+            Action::Attack { card }
+            | Action::AttackPlaneswalker { card, .. }
+            | Action::AttackBattle { card, .. } => {
+                let alone = observation
+                    .objects
+                    .iter()
+                    .find(|o| o.id == *card)
+                    .is_some_and(|o| {
+                        o.card
+                            .static_ability_groups()
+                            .iter()
+                            .flat_map(|g| g.fragments)
+                            .any(|f| {
+                                matches!(
+                                    f,
+                                    crate::cards::StaticAbilityFragment::CantAttackOrBlockAlone
+                                        | crate::cards::StaticAbilityFragment::CantAttackAlone
+                                )
+                            })
+                    });
+                let companion = !observation.attackers.is_empty() || actions.iter().any(|a| matches!(a, Action::Attack { card: other } | Action::AttackPlaneswalker { card: other, .. } | Action::AttackBattle { card: other, .. } if other != card));
+                if alone && !companion { -10 } else { 60 }
+            }
             Action::AssignDamage { amount, .. } => 50 + *amount,
             Action::Bottom { .. } | Action::Discard { .. } => 50,
             Action::PutTrigger { .. } => 50,

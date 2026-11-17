@@ -281,7 +281,14 @@ impl Coverage {
 
 fn workload_index(view: &Observation) -> usize {
     let smoke = policy::smoke_index_from_observation(view, &view.actions);
-    if matches!(view.actions[smoke], Action::PlayLand { .. }) {
+    if matches!(view.actions[smoke], Action::PlayLand { .. })
+        || view.last_attempt_outcome.is_some_and(|outcome| {
+            outcome.outcome == rustmage::AttemptOutcome::Failed
+                && outcome.turn == u64::from(view.turn)
+        })
+    {
+        // The workload's Season preference honors the smoke caller's failed
+        // attempt policy. It must not keep overriding a priority pass forever.
         return smoke;
     }
     view.actions
