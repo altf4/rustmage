@@ -1044,6 +1044,8 @@ define_actions! {
     EndManaWindow,
     // Submit the current concrete attempt for completion or failed-action recovery.
     SubmitAttempt,
+    // Clear only unpaid provisional selections in the current attempt.
+    ResetCostSelection,
     ChooseConspireObject { object: ObjectRef },
     PayCasualty {object:ObjectRef},
     ChooseBargain {
@@ -3459,7 +3461,7 @@ struct State {
     outside_game: Option<Box<OutsideGameState>>,
     library_top: Option<Box<library_top::LibraryTopState>>,
     cast_rollback: Option<Box<cast_rollback::CastRollback>>,
-    last_attempt_outcome: Option<AttemptOutcomeView>,
+    last_attempt_outcome: [Option<AttemptOutcomeView>; 2],
     paradigm: Option<Box<paradigm::ParadigmState>>,
     linked_choices: Option<Box<linked_choices::ChoiceState>>,
     combat_rules: Option<Box<combat_allocations::CombatRulesState>>,
@@ -4950,7 +4952,7 @@ impl Game {
                 }),
                 library_top: None,
                 cast_rollback: None,
-                last_attempt_outcome: None,
+                last_attempt_outcome: [None; 2],
                 paradigm: None,
                 ending_turn: false,
                 turn_skips: None,
@@ -5558,6 +5560,11 @@ impl Game {
                     && self.state.room_unlock_payment().is_none()
                     && self.state.combat_payment.is_none()
                 {
+                    self.finish_cast_mana_action();
+                    self.clear_finished_cast_rollback();
+                    if self.miracle_choice_pending() {
+                        break;
+                    }
                     self.state_based_actions();
                     if self.state.entry_batch.is_some() {
                         continue;
@@ -7431,12 +7438,7 @@ impl Game {
                 {
                     return true;
                 }
-                if !s.selected_attackers.is_empty()
-                    && (self.global_attack_requirements() != [0; 2]
-                        || self.has_attack_tax_provider()
-                        || self.has_planeswalker_attack_limit_provider())
-                    && emit(Action::CancelAttackDeclaration)
-                {
+                if !s.selected_attackers.is_empty() && emit(Action::CancelAttackDeclaration) {
                     return true;
                 }
                 let company = self.has_combat_company_rule(actor);
@@ -7857,19 +7859,16 @@ impl Game {
                                 announcement.group,
                                 &announcement.item.targets,
                                 target,
-                            ) && self.shared_type_target_completion(announcement, target)
-                                && !announcement.item.targets.iter().any(|bound| {
-                                    bound.group == announcement.group && bound.target == target
-                                })
-                                && self.announcement_target_fundable(
-                                    announcement,
-                                    None,
-                                    None,
-                                    None,
-                                    Some(target),
-                                    false,
-                                )
-                                && emit(Action::ChooseTarget { target })
+                            ) && !announcement.item.targets.iter().any(|bound| {
+                                bound.group == announcement.group && bound.target == target
+                            }) && self.announcement_target_fundable(
+                                announcement,
+                                None,
+                                None,
+                                None,
+                                Some(target),
+                                false,
+                            ) && emit(Action::ChooseTarget { target })
                         },
                     );
                 }
@@ -9322,6 +9321,7 @@ impl Game {
             Action::ChooseManaRollback { keep } => self.choose_mana_rollback(keep),
             Action::EndManaWindow => self.end_attempt_mana_window(),
             Action::SubmitAttempt => self.submit_attempt(),
+            Action::ResetCostSelection => self.reset_attempt_cost_selection(),
             Action::ChooseConspireObject { object } => self.choose_conspire_object(object),
             Action::PayCosts { payment } => {
                 let a = self.state.announcing.as_mut().unwrap();
@@ -11950,6 +11950,7 @@ impl Game {
             source.additional_triggers = 0;
             self.queue_trigger(&source, usize::from(ability));
         }
+        self.record_attempt_library_move(id, before.zone, destination);
         ZoneChange {
             was_card,
             was_face_down: manifested_physical.is_some(),

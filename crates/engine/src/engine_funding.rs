@@ -7681,12 +7681,10 @@ impl Game {
         else {
             return false;
         };
-        choice.visit_output(bonus, |output| {
-            self.state.players[choice.player.index()]
-                .mana
-                .into_iter()
-                .zip(output.total)
-                .all(|(held, added)| held.checked_add(added).is_some())
-        })
+        self.state.players[choice.player.index()]
+            .mana
+            .into_iter()
+            .zip(bonus)
+            .all(|(held, added)| held.checked_add(added).is_some())
     }
 }

@@ -162,6 +162,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::ChooseManaRollback { keep } => i128::from(*keep),
             Action::EndManaWindow => -5,
             Action::SubmitAttempt => -6,
+            Action::ResetCostSelection => -7,
             Action::ChooseConspireObject { .. } => 50,
             Action::AssignLibraryPile { pile, .. } => {
                 let piles = observation.library_piles.as_ref().unwrap();

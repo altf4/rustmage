@@ -432,6 +432,7 @@ impl Game {
             self.complete_cast_rollback_restore(
                 &replay.current,
                 rollback.spell,
+                &rollback.library_moves,
                 &rollback.public_hand_cards,
                 &rollback.obscured_hand_cards,
                 &rollback.public_face_down,
