@@ -152,12 +152,17 @@ impl Game {
     }
 
     fn declaration_failure(&self) -> bool {
-        if !matches!(self.state.pending, Pending::Targets { .. }) {
-            return false;
-        }
         let Some(a) = self.state.announcing.as_ref().filter(|a| !a.trigger) else {
             return false;
         };
+        if matches!(self.state.pending, Pending::Modes { .. }) {
+            return a.item.modes().is_some_and(|modes| {
+                !(0..modes.len()).any(|index| self.mode_choice_fundable(a, index))
+            });
+        }
+        if !matches!(self.state.pending, Pending::Targets { .. }) {
+            return false;
+        }
         let selected = a
             .item
             .targets

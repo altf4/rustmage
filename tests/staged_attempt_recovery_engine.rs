@@ -217,6 +217,85 @@ fn restored_active_attempt_has_independent_raw_and_indexed_failure_continuations
 }
 
 #[test]
+fn optional_cost_intent_without_a_legal_mode_can_fail_and_retry_declined() {
+    for p in [Player::P0, Player::P1] {
+        for (name, target_name, intent, decline, destination) in [
+            (
+                "Pyrrhic Strike",
+                "Short Bow",
+                Action::ChooseBlight { pay: true },
+                Action::ChooseBlight { pay: false },
+                Zone::Graveyard,
+            ),
+            (
+                "Murdock's Crusade",
+                "Gigantosaurus",
+                Action::ChooseTeamwork { pay: true },
+                Action::ChooseTeamwork { pay: false },
+                Zone::Exile,
+            ),
+        ] {
+            let mut g = scenario(p);
+            let target = put(&mut g, p.other(), target_name, Zone::Battlefield);
+            let object = g.object_ref(target);
+            let spell = put(&mut g, p, name, Zone::Hand);
+            let mana = g.state.players[p.index()].mana;
+            Game::reset_payment_planning_work();
+            act(&mut g, Action::AnnounceCast { card: spell });
+            act(&mut g, intent);
+            assert_eq!(g.state.pending, Pending::Modes { player: p });
+            assert!(
+                !g.legal_actions()
+                    .iter()
+                    .any(|a| matches!(a, Action::ChooseMode { .. }))
+            );
+            let attempt = g.attempt_view(p).unwrap();
+            assert_eq!(attempt.stage, AttemptStage::Declare);
+            assert!(attempt.can_submit);
+            reject(&mut g, Action::EndManaWindow);
+            let saved = g.snapshot();
+            let mut indexed = g.clone();
+            let index = indexed
+                .legal_actions()
+                .iter()
+                .position(|a| *a == Action::SubmitAttempt)
+                .unwrap();
+            indexed.apply_index(p, indexed.revision(), index).unwrap();
+            act(&mut g, Action::SubmitAttempt);
+            assert_eq!(g.snapshot(), indexed.snapshot());
+            indexed.restore(&saved).unwrap();
+            act(&mut indexed, Action::SubmitAttempt);
+            assert_eq!(g.snapshot(), indexed.snapshot());
+            let outcome = g.last_attempt_outcome_view(p).unwrap();
+            assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+            assert_eq!(
+                outcome.reason,
+                Some(AttemptFailureReason::UnsatisfiedDeclaration)
+            );
+            assert_eq!(g.object_view(spell).zone, Zone::Hand);
+            assert_eq!(g.object_ref(target), object);
+            assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+            assert_eq!(g.state.players[p.index()].mana, mana);
+
+            act(&mut g, Action::AnnounceCast { card: spell });
+            assert!(g.attempt_view(p).unwrap().attempt_id > attempt.attempt_id);
+            act(&mut g, decline);
+            act(&mut g, Action::ChooseMode { mode: 0 });
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            pay(&mut g);
+            settle(&mut g);
+            assert_eq!(g.object_view(target).zone, destination);
+            assert_eq!(Game::payment_planning_work(), Default::default());
+        }
+    }
+}
+
+#[test]
 fn drawn_cards_stay_opaque_but_can_pay_unrestricted_discard_until_attempt_finishes() {
     const UNRESTRICTED: SacrificeFilter = SacrificeFilter {
         keywords: Keywords::NONE,
