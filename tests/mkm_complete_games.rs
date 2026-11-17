@@ -206,16 +206,56 @@ fn proves_owned_branch(game: &Game, view: &Observation, chosen: usize) -> bool {
 }
 
 fn workload_index(view: &Observation) -> usize {
+    // Exercise both face-down routes in this workload. The generic smoke
+    // policy's equal-score mode tie otherwise always chooses Vannifar's counters.
+    if let Some(mode) = view
+        .mode_choices
+        .iter()
+        .find(|choice| choice.text == "Cloak a card from your hand.")
+        && let Some(index) = view
+            .actions
+            .iter()
+            .position(|action| *action == Action::ChooseMode { mode: mode.mode })
+    {
+        return index;
+    }
     if view.last_attempt_outcome.is_some_and(|outcome| {
-        outcome.player == view.actor.unwrap()
-            && outcome.turn == u64::from(view.turn)
-            && outcome.outcome == rustmage::AttemptOutcome::Failed
+        outcome.turn == u64::from(view.turn) && outcome.outcome == rustmage::AttemptOutcome::Failed
     }) {
         return policy::smoke_index_from_observation(view, &view.actions);
     }
-    let smoke = policy::smoke_index_from_observation(view, &view.actions);
+    let mut smoke = policy::smoke_index_from_observation(view, &view.actions);
     if matches!(view.actions[smoke], Action::PlayLand { .. }) {
         return smoke;
+    }
+    // Keep the three artifacts needed to solve Filched Falcon at the end step,
+    // instead of spending each new Clue immediately. This uses public objects.
+    let own_permanents = view
+        .objects
+        .iter()
+        .filter(|object| object.zone == Zone::Battlefield && object.controller == view.viewer);
+    let unsolved_falcon = own_permanents.clone().any(|object| {
+        object.card.name() == "Case of the Filched Falcon"
+            && !view.solved_cases.iter().any(|case| case.card == object.id)
+    });
+    if unsolved_falcon
+        && own_permanents
+            .filter(|object| object.kinds & 16 != 0)
+            .count()
+            <= 3
+        && matches!(
+            view.actions[smoke],
+            Action::AnnounceActivate { card, .. }
+                | Action::Activate { card, .. }
+                | Action::BeginActivate { card, .. }
+                if view.objects.iter().any(|object| object.id == card && object.card == CLUE)
+        )
+        && let Some(pass) = view
+            .actions
+            .iter()
+            .position(|action| *action == Action::Pass)
+    {
+        smoke = pass;
     }
     view.actions
         .iter()
