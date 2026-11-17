@@ -246,9 +246,15 @@ fn huatli_pays_hybrid_to_return_as_a_saga_and_resolves_all_four_chapters() {
         .iter()
         .any(|action| matches!(action, Action::ChooseActivationCost { .. }))
     {
-        choose(&mut game, |action| {
-            matches!(action, Action::ChooseActivationCost { .. })
-        });
+        let cost = game
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .cost_options()
+            .position(|cost| cost.colored == [1, 0, 0, 1, 0, 0])
+            .unwrap() as u16;
+        act(&mut game, Action::ChooseActivationCost { cost });
     }
     pay(&mut game);
     settle(&mut game);

@@ -180,7 +180,7 @@ fn typecycling_can_find_each_printed_nonbasic_land_subtype() {
             let land = put(&mut game, player, land, Zone::Library);
             let invalid = put(&mut game, player, invalid, Zone::Library);
             game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 1];
-            reject(&mut game, activate(card, 0));
+            admit(&game, activate(card, 0));
             game.state.players[player.index()].mana[5] = 2;
             act(&mut game, activate(card, 0));
             pay(&mut game);

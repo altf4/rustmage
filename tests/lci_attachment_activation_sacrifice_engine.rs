@@ -115,10 +115,10 @@ fn the_bearer_pays_only_its_exact_controlled_grantor() {
         assert!(stolen.legal_actions().contains(&announce(other_grantor)));
 
         game.state.objects[own as usize].gained_keywords = Keywords::CANT_BE_SACRIFICED;
-        reject(&mut game, announce(grantor));
+        admit(&game, announce(grantor));
         game.state.objects[own as usize].gained_keywords = Keywords::NONE;
         game.state.objects[creature as usize].summoning_sick = true;
-        reject(&mut game, announce(grantor));
+        admit(&game, announce(grantor));
         game.state.objects[creature as usize].summoning_sick = false;
 
         act(&mut game, announce(grantor));
@@ -162,7 +162,7 @@ fn the_bearer_pays_only_its_exact_controlled_grantor() {
 }
 
 #[test]
-fn mana_funding_cannot_spend_the_reserved_grantor() {
+fn parent_payment_cannot_respend_the_grantor_consumed_for_mana() {
     let _rules = fixture_rules::activate(&[(named("Short Bow"), &FUNDING_HAMMER)]);
     for player in [Player::P0, Player::P1] {
         let mut game = scenario(player);
@@ -177,12 +177,17 @@ fn mana_funding_cannot_spend_the_reserved_grantor() {
         );
         let grantor = game.object_ref(gear);
         assert!(game.attach_equipment(grantor, game.object_ref(creature)));
-        reject(&mut game, announce(grantor));
+        admit(&game, announce(grantor));
 
         let fuel = put(&mut game, player, "Short Bow", Zone::Battlefield);
         act(&mut game, announce(grantor));
         act(&mut game, target(victim));
-        reject(&mut game, fund(gear));
+        admit(&game, fund(gear));
+        let mut consumed = game.clone();
+        act(&mut consumed, fund(gear));
+        assert_eq!(consumed.object_view(gear).zone, Zone::Graveyard);
+        reject(&mut consumed, Action::PayCosts { payment: MANA });
+        assert!(!consumed.object_view(creature).tapped);
         act(&mut game, fund(fuel));
         assert_eq!(game.object_view(fuel).zone, Zone::Graveyard);
         assert_eq!(game.object_view(gear).zone, Zone::Battlefield);

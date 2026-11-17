@@ -56,7 +56,7 @@ fn hidden_caves_enter_tapped_produce_their_colors_and_sacrifice_to_discover_four
         let mut wrong_color = game.clone();
         wrong_color.clear_step_mana(false, false);
         wrong_color.state.players[player.index()].mana = [0, 0, 0, 0, 0, 5];
-        reject(&mut wrong_color, discover.clone());
+        admit(&wrong_color, discover.clone());
         game.state.step = Step::Upkeep;
         reject(&mut game, discover.clone());
         game.state.step = Step::Main1;

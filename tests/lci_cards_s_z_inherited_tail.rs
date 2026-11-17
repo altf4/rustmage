@@ -423,7 +423,7 @@ fn enigma_jewel_funds_abilities_and_locus_uses_and_copies_each_borrowed_slot_sep
     reject(&mut game, generate.clone());
     game.untap_objects(&[jewel], untap_rules::UntapCause::Effect);
     act(&mut game, generate);
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    admit(&game, Action::AnnounceCast { card: spell });
     act(&mut game, announce(boots));
     act(&mut game, target(creature));
     pay(&mut game);

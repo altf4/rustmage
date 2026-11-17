@@ -261,7 +261,7 @@ fn envoy_of_okinec_ahau_pays_to_create_one_colorless_gnome_artifact_creature() {
     let source = put(&mut game, p, "Envoy of Okinec Ahau", Zone::Battlefield);
     game.state.step = Step::Upkeep;
     game.state.players[p.index()].mana = [0, 0, 0, 0, 0, 5];
-    reject(&mut game, activate(source));
+    admit(&game, activate(source));
     game.state.players[p.index()].mana = [1, 0, 0, 0, 0, 4];
     let token = game.state.objects.len() as CardId;
     act(&mut game, activate(source));
@@ -372,11 +372,11 @@ fn gargantuan_leech_reduces_only_generic_cost_for_controlled_and_graveyard_caves
     put(&mut game, p.other(), "Captivating Cave", Zone::Battlefield);
     game.state.objects[cave as usize].tapped = true;
     game.state.players[p.index()].mana = [0, 0, 0, 0, 0, 6];
-    reject(&mut game, Action::AnnounceCast { card: leech });
+    admit(&game, Action::AnnounceCast { card: leech });
     game.state.players[p.index()].mana = [0, 0, 1, 0, 0, 5];
     let mut too_few_caves = game.clone();
     too_few_caves.move_object(cave, Zone::Exile);
-    reject(&mut too_few_caves, Action::AnnounceCast { card: leech });
+    admit(&too_few_caves, Action::AnnounceCast { card: leech });
     cast(&mut game, leech, None);
     settle(&mut game);
     assert_eq!(game.object_view(leech).zone, Zone::Battlefield);

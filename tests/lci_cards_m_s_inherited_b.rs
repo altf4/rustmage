@@ -89,7 +89,7 @@ fn pirate_hat_has_two_equip_costs_and_its_bearer_draws_then_discards_on_attack()
         );
         let draw = put(&mut game, player, "Shock", Zone::Library);
         game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 1];
-        reject(&mut game, activate(hat, 1));
+        admit(&game, activate(hat, 1));
         let mut nonpirate = game.clone();
         nonpirate.state.players[player.index()].mana[5] = 2;
         act(&mut nonpirate, activate(hat, 1));
@@ -471,7 +471,7 @@ fn seeker_pays_two_and_green_to_explore_at_sorcery_speed() {
         upkeep.begin_step(Step::Upkeep);
         reject(&mut upkeep, activate(seeker, 0));
         game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
-        reject(&mut game, activate(seeker, 0));
+        admit(&game, activate(seeker, 0));
         game.state.players[player.index()].mana = [0, 0, 0, 0, 1, 2];
         act(&mut game, activate(seeker, 0));
         pay(&mut game);

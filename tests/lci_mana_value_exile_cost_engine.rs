@@ -129,7 +129,7 @@ fn open_additional_cost(game: &mut Game) {
 }
 
 #[test]
-fn only_fundable_graveyard_targets_offer_ordered_live_mana_value_payments() {
+fn graveyard_targets_are_declared_before_ordered_live_mana_value_payments() {
     let boots = definition("Swiftfoot Boots");
     let _rules = fixture_rules::activate(&[(definition("Short Bow"), &FOUNDRY), (boots, &FUNDER)]);
     let player = Player::P1;
@@ -143,7 +143,7 @@ fn only_fundable_graveyard_targets_offer_ordered_live_mana_value_payments() {
     let large = put(&mut game, player, "Solemn Simulacrum", Zone::Graveyard);
     let wrong_type = put(&mut game, player, "Grizzly Bears", Zone::Graveyard);
     game.state.players[player.index()].mana = TWO_GENERIC;
-    reject(&mut game, activate(source));
+    admit(&game, activate(source));
 
     let copied = put(&mut game, player, "Candy Trail", Zone::Battlefield);
     game.apply_temporary_copy(
@@ -157,11 +157,21 @@ fn only_fundable_graveyard_targets_offer_ordered_live_mana_value_payments() {
     game.state.step = Step::Main1;
     act(&mut game, activate(source));
     assert!(game.x_choice().is_none());
-    for invalid in [large, foe_target, wrong_type] {
+    admit(&game, target(large));
+    for invalid in [foe_target, wrong_type] {
         reject(&mut game, target(invalid));
     }
     act(&mut game, target(good));
-    reject(&mut game, mana(source));
+    admit(&game, mana(source));
+    let mut tapped = game.clone();
+    act(&mut tapped, mana(source));
+    reject(
+        &mut tapped,
+        Action::PayCosts {
+            payment: [1, 0, 0, 0, 0, 2],
+        },
+    );
+    assert_eq!(tapped.object_view(good).zone, Zone::Graveyard);
     act(&mut game, mana(copied));
     assert!(game.object_view(copied).tapped);
 
@@ -247,10 +257,10 @@ fn zero_mana_value_requires_a_material_that_survives_the_mana_window() {
     let mut game = scenario(player);
     let source = put(&mut game, player, "Short Bow", Zone::Battlefield);
     let zero = put(&mut game, player, "Mox Jasper", Zone::Graveyard);
-    reject(&mut game, activate(source));
+    admit(&game, activate(source));
     let token = game.create_token_batch_capture(player, TREASURE, 1, false, None, true)[0];
     game.state.players[player.index()].mana = TWO_GENERIC;
-    reject(&mut game, activate(source));
+    admit(&game, activate(source));
 
     game.state.players[player.index()].mana = [1, 0, 0, 0, 0, 2];
     act(&mut game, activate(source));

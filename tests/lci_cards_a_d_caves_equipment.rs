@@ -127,7 +127,7 @@ fn bloodthorn_flail_has_one_equip_ability_with_printed_and_private_discard_route
     let foreign = put(&mut root, player.other(), "Shock", Zone::Hand);
     let mut empty = root.clone();
     empty.state.players[player.index()].mana = [0; 6];
-    reject(&mut empty, activate(gear, 0));
+    admit(&empty, activate(gear, 0));
     let discard = put(&mut root, player, "Forest", Zone::Hand);
     act(&mut root, activate(gear, 0));
     for route in [
