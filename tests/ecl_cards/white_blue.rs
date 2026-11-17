@@ -2343,6 +2343,18 @@ fn animate_counter_rule_fixture(g: &mut Game, id: CardId) {
 }
 #[test]
 fn blossombind_counter_cost_is_forbidden_even_before_its_tap_trigger_resolves() {
+    const TAX: rustmage_core::cards::authored::CardRules =
+        rustmage_core::cards::authored::CardRules {
+            effect: Effect::Permanent,
+            static_groups: &[StaticAbilityGroup {
+                line: 0,
+                first_layer: AbilityLayer::Rule,
+                fragments: &[StaticAbilityFragment::NamedActivationGenericIncrease(2)],
+            }],
+            ..rustmage_core::cards::authored::CardRules::EMPTY
+        };
+    let tax_card = Card::from_name("Ghost Vacuum").unwrap();
+    let _rules = fixture_rules::activate(&[(tax_card, &TAX)]);
     let mut g = setup(Player::P0);
     let tome = cast_named(&mut g, Player::P0, "Mazemind Tome");
     animate_counter_rule_fixture(&mut g, tome);
@@ -2358,6 +2370,26 @@ fn blossombind_counter_cost_is_forbidden_even_before_its_tap_trigger_resolves() 
     assert!(!g.object_view(tome).tapped);
     reject_atomic(&mut g, activation.clone());
     assert_eq!(g.counter_count(tome, CounterKind::Page), 0);
+    // A positive total retains its mana window, without proving that a future
+    // mana ability can remove the Aura. This also applies to a taxed {0} cost.
+    admit(
+        &g,
+        Action::AnnounceActivate {
+            card: tome,
+            ability: 1,
+            counter_payment: Counters::default(),
+        },
+    );
+    let tax = spawn(&mut g, Player::P0, tax_card, Zone::Battlefield);
+    g.set_entry_value(
+        g.object_ref(tax),
+        EntryChoiceValue::CardName(rustmage_core::CardName::from_name("Mazemind Tome").unwrap()),
+    );
+    assert_eq!(g.named_activation_generic_increase(tome), 2);
+    admit(&g, activation.clone());
+    g.move_object(tax, Zone::Graveyard);
+    assert_eq!(g.named_activation_generic_increase(tome), 0);
+    reject_atomic(&mut g, activation.clone());
     spell(&mut g, Player::P0, "Disenchant", &[Target::Card(aura)]);
     checked(&mut g, Action::Pass);
     checked(&mut g, Action::Pass);
