@@ -276,13 +276,14 @@ fn leyline_of_the_guildpact_accepts_every_printed_hybrid_assignment() {
         payment[4] = 4 - mask.count_ones();
         game.state.players[player.index()].mana = payment;
         act(&mut game, Action::AnnounceCast { card: leyline });
-        if let Some(option) = game
-            .legal_actions()
+        let cost = game
+            .observe(player)
+            .cost_choices
             .into_iter()
-            .find(|action| matches!(action, Action::ChooseSpellCost { .. }))
-        {
-            act(&mut game, option);
-        }
+            .find(|choice| choice.cost.colored == payment && choice.cost.generic == 0)
+            .expect("every printed hybrid assignment has its own cost choice")
+            .index;
+        act(&mut game, Action::ChooseSpellCost { cost });
         if game
             .legal_actions()
             .iter()
