@@ -1,4 +1,4 @@
-//! Nonmana X is declared against complete projected mana and tap payments.
+//! Nonmana X is declared independently of future mana and tap payments.
 mod support;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardRules, one};
@@ -132,11 +132,12 @@ fn x_projects_artifact_mana_and_reserves_the_activated_lands_own_tap() {
         game.x_choice().unwrap().intervals,
         vec![XInterval {
             minimum: 0,
-            maximum: 1
+            maximum: u32::MAX
         }]
     );
     assert!(game.observe(player.other()).x_choice.is_none());
-    reject(&mut game, Action::ChooseX { value: 2 });
+    let mut larger = game.clone();
+    act(&mut larger, Action::ChooseX { value: 2 });
     let initial = game.snapshot();
     let mut zero = game.clone();
     let mut one = game.clone();
@@ -144,10 +145,15 @@ fn x_projects_artifact_mana_and_reserves_the_activated_lands_own_tap() {
     let index = game
         .legal_actions()
         .iter()
-        .position(|action| *action == one_action)
+        .position(|action| *action == Action::ChooseX { value: 0 })
         .unwrap();
-    one.apply_index(player, one.revision(), index).unwrap();
+    let mut indexed_zero = game.clone();
+    indexed_zero
+        .apply_index(player, game.revision(), index)
+        .unwrap();
     act(&mut zero, Action::ChooseX { value: 0 });
+    assert_eq!(indexed_zero.snapshot(), zero.snapshot());
+    act(&mut one, one_action);
     assert_eq!(game.snapshot(), initial);
 
     for branch in [&mut zero, &mut one] {

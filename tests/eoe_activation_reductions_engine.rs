@@ -151,7 +151,7 @@ fn positive_creature_counter_reduction_stays_locked_when_its_funder_leaves() {
     game.state.objects[noncreature as usize].counters.plus_one = 1;
     game.state.objects[opponent as usize].counters.plus_one = 1;
     game.state.players[player.index()].mana = [0; 6];
-    reject(&mut game, activate(source));
+    admit(&game, activate(source));
     game.state.objects[funder as usize].counters.plus_one = 2;
 
     let before = game.snapshot();
@@ -228,7 +228,7 @@ fn differently_named_lands_count_once_and_only_for_the_controller() {
     put(&mut game, player.other(), "Plains", Zone::Battlefield);
     let target = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 7];
-    reject(&mut game, activate(source));
+    admit(&game, activate(source));
     game.state.players[player.index()].mana[5] = 8;
     act(&mut game, activate(source));
     act(

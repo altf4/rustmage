@@ -172,7 +172,7 @@ fn thaumaton_torpedo_uses_a_spacecraft_declaration_after_the_attacker_leaves() {
     );
     game.add_counter(spacecraft, CounterKind::Charge, 6);
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
-    reject(&mut game, activate(torpedo, 0));
+    admit(&game, activate(torpedo, 0));
     game.state.step = Step::Attackers;
     game.state.pending = Pending::Attackers;
     act(&mut game, Action::Attack { card: spacecraft });

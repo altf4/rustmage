@@ -388,7 +388,8 @@ fn devastating_onslaught_pays_double_x_and_sacrifices_the_exact_hasty_copies() {
     g.add_counter(creature, CounterKind::PlusOne, 1);
     g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 4];
     act(&mut g, Action::AnnounceCast { card: spell });
-    reject(&mut g, Action::ChooseX { value: 3 });
+    let mut larger = g.clone();
+    act(&mut larger, Action::ChooseX { value: 3 });
     let mut zero = g.clone();
     act(&mut zero, Action::ChooseX { value: 0 });
     act(&mut zero, target(Target::Card(creature)));

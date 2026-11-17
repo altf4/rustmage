@@ -459,7 +459,7 @@ fn temporal_intervention_discounts_only_for_void_and_reveals_before_mandatory_no
     let artifact = put(&mut g, p, "Candy Trail", Zone::Battlefield);
     g.state.players[p.index()].mana = BLACK;
     g.move_object(land_witness, Zone::Graveyard);
-    reject(&mut g, Action::AnnounceCast { card: spell });
+    admit(&g, Action::AnnounceCast { card: spell });
     g.move_object(artifact, Zone::Graveyard);
     assert!(
         g.observe(p)

@@ -212,12 +212,12 @@ fn funding_reserves_the_grantor_but_can_sacrifice_a_same_named_permanent() {
     let _rules = fixture_rules::activate(&[(equipment(), &BRACELET_FUNDER)]);
     let player = Player::P1;
     let (mut game, _, grantor) = setup(player, player);
-    reject(&mut game, activation(grantor));
+    admit(&game, activation(grantor));
     let twin = put(&mut game, player, "Short Bow", Zone::Battlefield);
     act(&mut game, activation(grantor));
     act(&mut game, target(player.other()));
     assert_eq!(game.observe(player).payment_request.unwrap().generic, 12);
-    reject(&mut game, mana_action(grantor.card, 1));
+    admit(&game, mana_action(grantor.card, 1));
     act(&mut game, mana_action(twin, 1));
     pay(&mut game);
     assert_eq!(game.object_view(twin).zone, Zone::Graveyard);

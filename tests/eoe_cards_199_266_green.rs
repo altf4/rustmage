@@ -398,9 +398,14 @@ fn pinnacle_emissary_accepts_either_warp_color_and_triggers_on_artifact_cast() {
         game.state.players[player.index()].mana = [0; 6];
         game.state.players[player.index()].mana[color] = 1;
         act(&mut game, Action::AnnounceWarp { card: source });
-        choose(&mut game, |action| {
-            matches!(action, Action::ChooseSpellCost { .. })
-        });
+        let cost = game
+            .observe(player)
+            .cost_choices
+            .into_iter()
+            .find(|choice| choice.cost.colored[color] == 1)
+            .unwrap()
+            .index;
+        act(&mut game, Action::ChooseSpellCost { cost });
         pay(&mut game);
         assert_eq!(
             game.state.stack.last().unwrap().cast.unwrap().payment[color],

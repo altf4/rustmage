@@ -105,7 +105,7 @@ fn mental_modulation_locks_own_turn_cost_and_draws_for_a_tapped_target() {
         g.state.objects[artifact as usize].tapped = true;
         if !own {
             g.state.players[p.index()].mana = BLUE;
-            reject(&mut g, Action::AnnounceCast { card: spell });
+            admit(&g, Action::AnnounceCast { card: spell });
         }
         g.state.players[p.index()].mana = mana;
         cast(&mut g, spell, Some(Target::Card(artifact)));
@@ -162,7 +162,7 @@ fn mm_menon_looks_privately_and_two_artifacts_fund_an_offhand_spell() {
         restricted.observe(p).mana_lots[0].restriction,
         ManaRestrictionView::CastFromNonhand
     );
-    reject(&mut restricted, Action::AnnounceCast { card: hand });
+    admit(&restricted, Action::AnnounceCast { card: hand });
 
     act(&mut g, Action::AnnounceCast { card: artifact });
     act(&mut g, tap(a));
@@ -593,7 +593,7 @@ fn steelswarm_operator_uses_distinct_tap_routes_for_artifact_spells_and_abilitie
     activate_only.state.players[p.index()].mana = [0; 6];
     act(&mut activate_only, mana(1, TWO_BLUE));
     reject(&mut activate_only, mana(0, BLUE));
-    reject(&mut activate_only, Action::AnnounceCast { card: boots });
+    admit(&activate_only, Action::AnnounceCast { card: boots });
     act(&mut activate_only, activate(trail));
     pay(&mut activate_only);
     settle(&mut activate_only);
@@ -602,7 +602,7 @@ fn steelswarm_operator_uses_distinct_tap_routes_for_artifact_spells_and_abilitie
 
     g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
     act(&mut g, mana(0, BLUE));
-    reject(&mut g, activate(trail));
+    admit(&g, activate(trail));
     cast(&mut g, boots, None);
     settle(&mut g);
     assert_eq!(g.object_view(boots).zone, Zone::Battlefield);

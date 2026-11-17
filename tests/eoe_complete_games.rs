@@ -330,8 +330,14 @@ fn eoe_standard_games_reach_terminal_outcomes_and_replay_owned_choices() {
                         owned.apply_index(actor, revision, index),
                         Err(Error::StaleRevision)
                     );
+                    assert_eq!(owned.snapshot(), saved);
+                    // Replaying an announcement allocates a fresh monotonic attempt ID.
+                    let mut replayed = owned.clone();
                     owned.apply(actor, action.clone()).unwrap();
-                    assert_eq!(owned.snapshot(), result);
+                    replayed
+                        .apply_index(actor, replayed.revision(), index)
+                        .unwrap();
+                    assert_eq!(owned.snapshot(), replayed.snapshot());
                     evidence.verified_branches += 1;
                     evidence.private_choices += usize::from(sensitive);
                 } else {
