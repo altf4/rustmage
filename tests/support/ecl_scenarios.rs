@@ -70,14 +70,18 @@ pub(super) fn checked(g: &mut Game, action: Action) {
             );
         }
     }
-    let after = g.snapshot();
     g.restore(&before).unwrap();
+    assert_eq!(g.snapshot(), before);
     assert_eq!(
         g.apply_index(actor, revision, index),
         Err(Error::StaleRevision)
     );
+    // Replaying an announcement allocates a new attempt ID. Compare branches
+    // forked after restore, with the same nonrewinding allocation history.
+    let mut replay = g.clone();
+    replay.apply_index(actor, replay.revision(), index).unwrap();
     g.apply(actor, action).unwrap();
-    assert_eq!(g.snapshot(), after);
+    assert_eq!(g.snapshot(), replay.snapshot());
 }
 fn settle_on(g: &mut Game, chosen: Option<Target>) {
     g.prepare_triggers();
