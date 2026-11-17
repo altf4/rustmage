@@ -280,8 +280,8 @@ fn isolinear_mana_funds_only_artifact_spells_and_artifact_source_abilities() {
         game.observe(player).mana_lots[0].restriction,
         ManaRestrictionView::ArtifactSpellOrArtifactActivation
     );
-    reject(
-        &mut game,
+    admit(
+        &game,
         Action::AnnounceActivate {
             card: bear,
             ability: 0,

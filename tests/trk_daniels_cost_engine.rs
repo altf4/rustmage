@@ -51,7 +51,7 @@ fn graveyard_source_is_exact_bottom_cost_with_paid_timing_and_owned_rollback() {
         },
     );
     game.state.players[0].mana = [0; 6];
-    reject(&mut game, action.clone());
+    admit(&game, action.clone());
     assert_eq!(game.object_view(source).zone, Zone::Graveyard);
     game.state.players[0].mana = [8; 6];
 

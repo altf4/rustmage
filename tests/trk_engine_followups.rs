@@ -146,7 +146,7 @@ fn pet_sehlat_attacks_with_company_but_blocks_alone() {
     );
     attack_game.state.step = Step::Attackers;
     attack_game.state.pending = Pending::Attackers;
-    reject(&mut attack_game, Action::Attack { card: pet });
+    admit(&attack_game, Action::Attack { card: pet });
     let companion = put(
         &mut attack_game,
         Player::P0,
