@@ -847,6 +847,18 @@ fn kept_mana_rollback_preserves_exhaust_event_fact_and_exact_original_observer_p
         if g.legal_actions().contains(&Action::EndManaWindow) {
             act(&mut g, Action::EndManaWindow);
         }
+        // Select the now-unsatisfied casualty clause. Merely having an unpaid
+        // clause at the ordering boundary is an incomplete execution.
+        let clause = g
+            .observe(p)
+            .cast_costs
+            .unwrap()
+            .clauses
+            .iter()
+            .position(|row| matches!(row.clause, CastCostClause::Casualty(_)))
+            .unwrap() as u16;
+        act(&mut g, Action::ChooseCastCost { clause });
+        assert!(matches!(g.state.pending, Pending::CasualtyPayment { .. }));
         act(&mut g, Action::SubmitAttempt);
         assert!(matches!(g.state.pending, Pending::ManaRollback { .. }));
         act(&mut g, Action::ChooseManaRollback { keep });

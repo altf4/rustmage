@@ -120,7 +120,32 @@ fn the_cost_uses_three_exact_physical_cards_and_cannot_be_refunded_in_response()
     let second = put(&mut game, player, "Divination", Zone::Graveyard);
     let mut prohibited = game.clone();
     spawn(&mut prohibited, opponent, prohibitor, Zone::Battlefield);
-    reject(&mut prohibited, announce(source));
+    admit(&prohibited, announce(source));
+    act(&mut prohibited, announce(source));
+    assert!(
+        prohibited
+            .observe(player)
+            .additional_cost
+            .unwrap()
+            .candidates
+            .is_empty()
+    );
+    for card in [first, second] {
+        let object = prohibited.object_ref(card);
+        reject(&mut prohibited, Action::ChooseAdditionalCost { object });
+    }
+    act(&mut prohibited, Action::EndManaWindow);
+    act(&mut prohibited, Action::SubmitAttempt);
+    let failed = prohibited.last_attempt_outcome_view(player).unwrap();
+    assert_eq!(failed.outcome, AttemptOutcome::Failed);
+    assert_eq!(
+        failed.reason,
+        Some(AttemptFailureReason::UnsatisfiedMaterial)
+    );
+    for card in [source, first, second] {
+        assert_eq!(prohibited.object_ref(card), game.object_ref(card));
+        assert_eq!(prohibited.object_view(card).zone, Zone::Graveyard);
+    }
     game.state.step = Step::BeginCombat;
     reject(&mut game, announce(source));
     game.state.step = Step::Main1;

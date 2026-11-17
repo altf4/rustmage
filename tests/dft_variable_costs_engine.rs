@@ -656,7 +656,14 @@ fn a_departing_source_cannot_pay_a_second_distinct_departure_cost() {
     let extra = put(&mut g, p, "Soul-Guide Lantern", Zone::Battlefield);
     assert!(available(&g, source));
     begin(&mut g, source, None);
-    reject_selection(&mut g, source);
+    // The provisional group may name the source, but one incarnation cannot
+    // pay both departures in the supplied concrete transaction.
+    select(&mut g, source);
+    act(&mut g, Action::FinishAdditionalCostGroup);
+    reject(&mut g, Action::PayCosts { payment: [0; 6] });
+    assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+    assert_eq!(g.object_view(extra).zone, Zone::Battlefield);
+    act(&mut g, Action::ResetCostSelection);
     select(&mut g, extra);
     finish(&mut g);
     assert_eq!(g.object_view(source).zone, Zone::Graveyard);
