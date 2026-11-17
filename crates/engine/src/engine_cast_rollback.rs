@@ -411,6 +411,7 @@ impl Game {
             | Action::AnnounceArtifactFood { .. }
             | Action::AnnounceCreatureGrant { .. }
             | Action::AnnounceRetainedCopyAbility { .. }
+            | Action::AnnounceExiledCopyGrant { .. }
             | Action::AnnounceEmbalm { .. }
             | Action::AnnounceSourceGrant { .. }
             | Action::AnnounceSelfGrantedAbility { .. }
@@ -476,6 +477,7 @@ impl Game {
             Action::AnnounceSelfGrantedAbility { source, .. }
             | Action::AnnounceSelfGrantedMana { source, .. }
             | Action::AnnounceRetainedCopyAbility { source }
+            | Action::AnnounceExiledCopyGrant { source }
             | Action::AnnounceEmbalm { source, .. }
             | Action::AnnounceInheritedAbility { source, .. }
             | Action::AnnounceInheritedMana { source, .. }
