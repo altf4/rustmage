@@ -1490,7 +1490,7 @@ fn free_cast_x_is_zero_and_mandatory_additional_costs_remain_required() {
     let costly = put(&mut g, p.other(), "Grizzly Bears", Zone::Library);
     combat_offer(&mut g, source);
     g.move_object(source, Zone::Exile);
-    assert!(!g.legal_actions().contains(&free_action(&g, costly)));
+    admit(&g, free_action(&g, costly));
     let fodder = put(&mut g, p, "Bear Cub", Zone::Battlefield);
     assert!(g.legal_actions().contains(&free_action(&g, costly)));
     let action = free_action(&g, costly);

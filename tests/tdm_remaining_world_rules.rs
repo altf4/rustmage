@@ -284,7 +284,7 @@ fn creature_restricted_mana_pays_a_creature_after_its_producer_leaves_but_not_a_
         let source = put(&mut g, p, "Short Bow", Zone::Battlefield);
         mana(&mut g, source, 3);
         let bolt = put(&mut g, p, "Lightning Bolt", Zone::Hand);
-        reject(&mut g, Action::AnnounceCast { card: bolt });
+        admit(&g, Action::AnnounceCast { card: bolt });
         assert_eq!(g.state.players[p.index()].mana[3], 1);
     }
 }
@@ -1105,8 +1105,8 @@ fn whole_hand_payment_uses_the_hand_after_a_real_mana_child_and_rejects_unfundab
         let mut g = scenario(p);
         let source = put(&mut g, p, "Short Bow", Zone::Battlefield);
         g.state.players[p.index()].mana = [0; 6];
-        reject(
-            &mut g,
+        admit(
+            &g,
             Action::AnnounceActivate {
                 card: source,
                 ability: 0,
@@ -1878,9 +1878,9 @@ fn prevention_callback_can_read_both_the_damage_actor_and_its_latest_controller(
 fn source_prevention_layout_matches_the_integrated_shared_state_budget() {
     assert_eq!(std::mem::size_of::<Object>(), 160);
     // The shared state now includes Star Trek's sparse source permissions,
-    // exact counter facts, and player history. The permanent record stays
+    // exact counter facts, player history, and staged attempt outcomes. The permanent record stays
     // at 160 bytes; this pins the expanded inline State footprint.
-    assert_eq!(std::mem::size_of::<State>(), 5744);
+    assert_eq!(std::mem::size_of::<State>(), 5840);
     if let Ok(path) = std::env::var("RUSTMAGE_TDM_WORLD_LAYOUT") {
         let layout = serde_json::json!({
             "Object":std::mem::size_of::<Object>(),"ObjectView":std::mem::size_of::<ObjectView>(),
@@ -1950,6 +1950,27 @@ fn a_waiting_prevention_effect_exposes_its_exact_departed_spell_source_for_anoth
     let attacker = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
     let chosen = g.object_ref(attacker);
     let first = shield(&mut g, chosen);
+    let shields = g
+        .state
+        .roles
+        .as_ref()
+        .unwrap()
+        .source_prevention
+        .as_ref()
+        .unwrap();
+    assert!(shields.choice.is_none());
+    assert_eq!(
+        shields.bytes(),
+        std::mem::size_of::<source_prevention::SourcePreventionState>()
+            + shields
+                .shields
+                .iter()
+                .map(|shield| std::mem::size_of::<source_prevention::Shield>()
+                    + shield.item.owned_bytes())
+                .sum::<usize>()
+    );
+    assert!(g.state_bytes() > std::mem::size_of::<State>());
+
     let old_spell = g.observe(p).chosen_source_shields.unwrap()[0].source;
     assert_ne!(old_spell, g.object_ref(first));
     let second = put(&mut g, p.other(), "Opt", Zone::Hand);

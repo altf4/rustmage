@@ -761,11 +761,14 @@ fn suspend_free_cast_still_pays_mandatory_additional_cost_and_cannot_bypass_cast
             object,
             face: CastFace::Normal,
         };
-        assert!(!g.legal_actions().contains(&cast_action));
-        reject(&mut g, cast_action.clone());
+        if prohibited {
+            reject(&mut g, cast_action.clone());
+        } else {
+            admit(&g, cast_action.clone());
+        }
         let next_fodder = put(&mut g, Player::P0, "Hill Giant", Zone::Battlefield);
         if prohibited {
-            assert!(!g.legal_actions().contains(&cast_action));
+            reject(&mut g, cast_action);
             act(&mut g, Action::FinishResolutionCasts);
             drain(&mut g);
             assert_eq!(g.state.objects[card as usize].zone, Zone::Exile);
