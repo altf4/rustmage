@@ -37,8 +37,13 @@ fn checked(g: &mut Game, a: Action) {
     let index = g
         .legal_actions()
         .iter()
-        .position(|v| *v == a)
-        .unwrap_or_else(|| panic!("illegal {a:?}; {:?}", g.legal_actions()));
+        .position(|candidate| *candidate == a);
+    if index.is_none() {
+        let Action::ChooseX { value } = a else {
+            panic!("missing concrete action");
+        };
+        assert!(g.x_choice().is_some_and(|domain| domain.contains(value)));
+    }
     let before = g.snapshot();
     assert_eq!(g.apply(p.other(), a.clone()), Err(Error::WrongActor));
     assert_eq!(g.snapshot(), before);
@@ -46,7 +51,11 @@ fn checked(g: &mut Game, a: Action) {
         let parent = g.clone();
         parent.clone()
     };
-    child.apply_index(p, revision, index).unwrap();
+    if let Some(index) = index {
+        child.apply_index(p, revision, index).unwrap();
+    } else {
+        child.apply(p, a.clone()).unwrap();
+    }
     g.apply(p, a.clone()).unwrap();
     assert_eq!(g.snapshot(), child.snapshot());
     for viewer in [Player::P0, Player::P1] {
@@ -57,9 +66,16 @@ fn checked(g: &mut Game, a: Action) {
     }
     g.restore(&before).unwrap();
     assert_eq!(g.snapshot(), before);
-    assert_eq!(g.apply_index(p, revision, index), Err(Error::StaleRevision));
+    assert_eq!(
+        g.apply_index(p, revision, index.unwrap_or(0)),
+        Err(Error::StaleRevision)
+    );
     let mut replay = g.clone();
-    replay.apply_index(p, replay.revision(), index).unwrap();
+    if let Some(index) = index {
+        replay.apply_index(p, replay.revision(), index).unwrap();
+    } else {
+        replay.apply(p, a.clone()).unwrap();
+    }
     g.apply(p, a).unwrap();
     assert_eq!(g.snapshot(), replay.snapshot());
 }
