@@ -1014,7 +1014,7 @@ impl Game {
                             descriptor.definition,
                             descriptor.ability,
                             |production| {
-                                self.mana_packet_fundable(
+                                self.mana_packet_admissible(
                                     &packet,
                                     counter_payment.clone(),
                                     production,

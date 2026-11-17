@@ -180,6 +180,246 @@ fn tap_cost_reserves_source(goal: &FundingGoal, object: ObjectRef) -> bool {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    /// Validate only the supplied material set in the current world. A partial
+    /// set need not admit any completion and never enumerates unused objects.
+    pub(super) fn additional_selection_valid(
+        &self,
+        spec: AdditionalCost,
+        actor: Player,
+        source: ObjectRef,
+        selected: &[ObjectRef],
+        exact: bool,
+    ) -> bool {
+        self.additional_selection_valid_in_world(self, spec, actor, source, selected, exact)
+    }
+
+    pub(super) fn additional_selection_valid_in_world<
+        W: ability_world::CharacteristicWorld + ?Sized,
+    >(
+        &self,
+        world: &W,
+        spec: AdditionalCost,
+        actor: Player,
+        source: ObjectRef,
+        selected: &[ObjectRef],
+        exact: bool,
+    ) -> bool {
+        if selected.iter().enumerate().any(|(index, &object)| {
+            selected[..index].contains(&object)
+                || !self.additional_candidate_in_world(world, spec, actor, source, object, false)
+        }) {
+            return false;
+        }
+        if let Some(materials) = spec.kind.craft_materials() {
+            return craft::material_group_matches(world, materials, selected)
+                && (!exact || materials.accepts(selected.len()));
+        }
+        let count = selected.len();
+        match spec.kind.payment_kind() {
+            EffectChoiceKind::SacrificeDifferentNames(amount) => {
+                count <= usize::from(amount)
+                    && (!exact || count == usize::from(amount))
+                    && selected.iter().enumerate().all(|(index, object)| {
+                        selected[..index].iter().all(|other| {
+                            !crate::card_names::same_name(
+                                world.name(object.card),
+                                world.name(other.card),
+                            )
+                        })
+                    })
+            }
+            EffectChoiceKind::BeholdMany(amount)
+            | EffectChoiceKind::ExileGraveyardCards(amount) => {
+                count <= usize::from(amount) && (!exact || count == usize::from(amount))
+            }
+            EffectChoiceKind::SacrificePermanents(amount)
+            | EffectChoiceKind::TapPermanents(amount) => {
+                count <= amount as usize && (!exact || count == amount as usize)
+            }
+            EffectChoiceKind::SacrificeRange { minimum }
+            | EffectChoiceKind::ExileGraveyardRange { minimum } => {
+                !exact || count >= usize::from(minimum)
+            }
+            EffectChoiceKind::ExilePermanentsForTargetManaValue { minimum } => {
+                !exact || {
+                    !selected.is_empty()
+                        && minimum.is_some_and(|minimum| {
+                            selected
+                                .iter()
+                                .map(|object| u128::from(world.mana_value(object.card)))
+                                .sum::<u128>()
+                                >= u128::from(minimum)
+                        })
+                }
+            }
+            EffectChoiceKind::ExileGraveyardSymbols { color, minimum } => {
+                !exact || {
+                    selected
+                        .iter()
+                        .map(|object| {
+                            u128::from(world.definition(object.card).mana_symbols_of_color(color))
+                        })
+                        .sum::<u128>()
+                        >= u128::from(minimum)
+                }
+            }
+            _ => count <= 1 && (!exact || count == 1),
+        }
+    }
+
+    /// A sound current-clause dead end, never a statement about other cost
+    /// orders, future mana abilities, or the underlying spell's playability.
+    pub(super) fn current_material_cost_impossible(&self) -> bool {
+        let Some(a) = self.state.announcing.as_ref() else {
+            return false;
+        };
+        let source = a.item.source.expect("attempt source").object;
+        let actor = a.item.controller;
+        match self.state.pending {
+            Pending::ConspirePayment { instance, .. } => {
+                let row = &a.conspire.as_ref().unwrap()[usize::from(instance)];
+                row.first_object
+                    .is_some_and(|object| !self.conspire_object_available(object))
+                    || (0..self.state.objects.len())
+                        .filter(|&id| self.conspire_object_available(self.object_ref(id as CardId)))
+                        .take(2)
+                        .count()
+                        < 2
+            }
+            Pending::CasualtyPayment { .. } => !self.visit_casualty_payments(&mut |_| true),
+            Pending::SneakReturnCost { .. } => !self.visit_sneak_return_cost(&mut |_| true),
+            Pending::WebSlingingReturnCost { .. } => {
+                !self.visit_web_slinging_return_cost(&mut |_| true)
+            }
+            Pending::BeamMeUpReturnCost { .. } => !self.visit_beam_me_up_return_cost(&mut |_| true),
+            Pending::Evidence { .. } => a.evidence.as_ref().is_some_and(|e| {
+                let available = self
+                    .state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter_map(|(id, card)| {
+                        let object = self.object_ref(id as CardId);
+                        (Some(object) != e.excluded
+                            && !e.source_exiles.contains(&object)
+                            && a.cast_costs
+                                .as_ref()
+                                .is_none_or(|costs| !costs.paid_evidence.contains(&object))
+                            && graveyard_exile_card_matches(self, actor, object, None))
+                        .then_some(u128::from(card.card.fixed_mana_value()))
+                    })
+                    .sum::<u128>();
+                available < u128::from(e.threshold)
+            }),
+            Pending::Forage { .. } | Pending::ForageMethod { .. } => {
+                let selected = a
+                    .cast_costs
+                    .as_ref()
+                    .and_then(|c| c.origin_forage.as_ref())
+                    .or(a.forage.as_ref());
+                let route = selected.and_then(|choice| choice.route);
+                if route == Some(ForageRoute::Black)
+                    || a.additional_cost()
+                        .is_some_and(|spec| spec.kind == EffectChoiceKind::ForageOrBlack)
+                        && route.is_none()
+                {
+                    return false;
+                }
+                let food = (0..self.state.objects.len()).any(|id| {
+                    self.additional_candidate(
+                        forage::food_cost(),
+                        actor,
+                        source,
+                        self.object_ref(id as CardId),
+                    )
+                });
+                let graveyard = (0..self.state.objects.len())
+                    .filter(|&id| {
+                        let object = self.object_ref(id as CardId);
+                        object != source && graveyard_exile_card_matches(self, actor, object, None)
+                    })
+                    .take(3)
+                    .count()
+                    >= 3;
+                match route {
+                    Some(ForageRoute::Food) => !food,
+                    Some(ForageRoute::ExileThree) => !graveyard,
+                    None => !food && !graveyard,
+                    Some(ForageRoute::Black) => false,
+                }
+            }
+            Pending::AdditionalCost { .. } => {
+                let Some(spec) = a.additional_cost() else {
+                    return false;
+                };
+                if spec.kind == EffectChoiceKind::DiscardHand {
+                    return false;
+                }
+                if spec.kind.additional_life_payment().is_some_and(|amount| {
+                    self.state.players[actor.index()].life >= i128::from(amount)
+                }) {
+                    return false;
+                }
+                if let Some(requirement) = spec.kind.counter_requirement() {
+                    let available = (0..self.state.objects.len())
+                        .filter(|&id| {
+                            counter_cost_bearer(
+                                self,
+                                actor,
+                                self.object_ref(id as CardId),
+                                requirement.bearer_kinds,
+                            )
+                        })
+                        .map(|id| {
+                            CounterKind::ALL
+                                .into_iter()
+                                .filter(|&kind| {
+                                    requirement.kind.is_none_or(|required| required == kind)
+                                })
+                                .map(|kind| u128::from(self.counter_count(id as CardId, kind)))
+                                .sum::<u128>()
+                        })
+                        .sum::<u128>();
+                    return available < u128::from(requirement.amount);
+                }
+                let eligible: Vec<_> = (0..self.state.objects.len())
+                    .map(|id| self.object_ref(id as CardId))
+                    .filter(|&object| self.additional_candidate(spec, actor, source, object))
+                    .collect();
+                if let Some(materials) = spec.kind.craft_materials() {
+                    return eligible.len() < materials.minimum();
+                }
+                match spec.kind.payment_kind() {
+                    EffectChoiceKind::BeholdMany(n)
+                    | EffectChoiceKind::ExileGraveyardCards(n)
+                    | EffectChoiceKind::SacrificeDifferentNames(n) => {
+                        eligible.len() < usize::from(n)
+                    }
+                    EffectChoiceKind::SacrificePermanents(n)
+                    | EffectChoiceKind::TapPermanents(n) => eligible.len() < n as usize,
+                    EffectChoiceKind::SacrificeRange { minimum }
+                    | EffectChoiceKind::ExileGraveyardRange { minimum } => {
+                        eligible.len() < usize::from(minimum)
+                    }
+                    EffectChoiceKind::ExilePermanentsForTargetManaValue { minimum } => minimum
+                        .is_some_and(|minimum| {
+                            eligible.is_empty()
+                                || eligible
+                                    .iter()
+                                    .map(|object| u128::from(self.object_mana_value(object.card)))
+                                    .sum::<u128>()
+                                    < u128::from(minimum)
+                        }),
+                    EffectChoiceKind::ExileGraveyardSymbols { color, minimum } => {
+                        self.graveyard_symbol_total(&eligible, color) < u128::from(minimum)
+                    }
+                    _ => eligible.is_empty(),
+                }
+            }
+            _ => false,
+        }
+    }
+
     pub(super) fn craft_material_selection_complete(&self) -> bool {
         let Some(a) = self.state.announcing.as_ref() else {
             return false;
@@ -491,23 +731,8 @@ impl Game {
         cost: ManaCost,
         definition: Card,
     ) -> bool {
-        let skips_additional = definition.mana_alternative_replaces_additional(cost);
-        let Some(cost) = self.spell_total_for_definition(actor, card, cost, definition) else {
-            return false;
-        };
-        if skips_additional {
-            return self.can_fund_for(
-                FundingGoal {
-                    actor,
-                    required: cost.colored,
-                    generic: cost.generic,
-                    source: None,
-                    reserve: None,
-                },
-                self.spell_mana_purpose_for_card(actor, card, definition),
-            );
-        }
-        self.spell_can_fund_total_for_definition(actor, card, cost, None, definition)
+        self.spell_total_for_definition(actor, card, cost, definition)
+            .is_some()
     }
     pub(super) fn spell_can_fund_total(
         &self,
@@ -536,114 +761,16 @@ impl Game {
     }
     pub(super) fn spell_can_fund_total_at_value(
         &self,
-        actor: Player,
+        _actor: Player,
         card: CardId,
-        cost: ManaCost,
-        route: Option<ForageRoute>,
-        definition: Card,
-        mana_value: Option<u64>,
+        _cost: ManaCost,
+        _route: Option<ForageRoute>,
+        _definition: Card,
+        _mana_value: Option<u64>,
     ) -> bool {
-        let mut purpose = self.spell_mana_purpose_for_card(actor, card, definition);
-        if let (mana_lots::Purpose::Spell(source), Some(value)) = (&mut purpose, mana_value) {
-            source.mana_value = value;
-        }
-        let base = FundingGoal {
-            actor,
-            required: cost.colored,
-            generic: cost.generic,
-            source: None,
-            reserve: None,
-        };
-        if let Some(spec) = definition.additional_cost()
-            && spec.kind == EffectChoiceKind::SacrificeForGenericReduction
-        {
-            return (0..=self.sacrifice_discount_limit()).any(|count| {
-                let mut goal = base.clone();
-                goal.generic = goal.generic.saturating_sub(count);
-                self.preview_optional_cast_costs(
-                    goal,
-                    purpose,
-                    self.object_ref(card),
-                    (count != 0).then_some(AdditionalCost {
-                        kind: EffectChoiceKind::SacrificePermanents(count),
-                        ..spec
-                    }),
-                    None,
-                    &[],
-                    false,
-                    &[],
-                    &[CastCostClause::Mana],
-                )
-                .expect("a declared sacrifice discount always previews an ordered mana cost")
-            });
-        }
-        if let Some(result) = self.preview_optional_cast_costs(
-            base.clone(),
-            purpose,
-            self.object_ref(card),
-            definition.additional_cost(),
-            route,
-            &[],
-            false,
-            &[],
-            &[],
-        ) {
-            return result;
-        }
-        if convoke::potential(self, definition) {
-            return self.can_fund_convoke_for(base, purpose);
-        }
-        if improvise::potential(self, definition) {
-            return self.can_fund_contributions_for(base, purpose, false);
-        }
-        if definition
-            .additional_cost()
-            .is_some_and(|s| matches!(s.kind, EffectChoiceKind::OptionalBeholdType(_)))
-        {
-            return self.can_fund_for(base, purpose);
-        }
-        let Some(spec) = definition.additional_cost() else {
-            return self.can_fund_for(base, purpose);
-        };
-        if spec.kind.variable_cost_minimum().is_some() {
-            return self.variable_cost_group_fundable(
-                base,
-                purpose,
-                spec,
-                self.object_ref(card),
-                &[],
-                false,
-            );
-        }
-        if matches!(
-            spec.kind.payment_kind(),
-            EffectChoiceKind::BeholdMany(_)
-                | EffectChoiceKind::TapPermanents(_)
-                | EffectChoiceKind::ExileGraveyardCards(_)
-                | EffectChoiceKind::ExileGraveyardRange { .. }
-                | EffectChoiceKind::ExileGraveyardSymbols { .. }
-                | EffectChoiceKind::SacrificePermanents(_)
-        ) {
-            return self.group_cost_fundable(base, purpose, spec, self.object_ref(card), &[]);
-        }
-        if forage::is_forage_cost(spec) {
-            return if route == Some(ForageRoute::Black) {
-                self.can_fund_for(base, purpose)
-            } else {
-                self.forage_cost_fundable_for(base, spec, route, purpose)
-            };
-        }
-        self.state.objects.iter().enumerate().any(|(id, _)| {
-            let object = self.object_ref(id as CardId);
-            self.additional_candidate(spec, actor, self.object_ref(card), object)
-                && self.can_fund_for(
-                    FundingGoal {
-                        reserve: Some((object, spec)),
-                        ..base.clone()
-                    },
-                    purpose,
-                )
-        })
+        // Timing, origin and declaration-dependent permissions are checked by
+        // the announcing caller. An established cost needs no funding proof.
+        self.state.objects.get(card as usize).is_some()
     }
     pub(super) fn sacrifice_discount_limit(&self) -> u32 {
         let battlefield = self
@@ -666,79 +793,17 @@ impl Game {
     pub(super) fn group_cost_fundable(
         &self,
         goal: FundingGoal,
-        purpose: mana_lots::Purpose,
+        _purpose: mana_lots::Purpose,
         spec: AdditionalCost,
         source: ObjectRef,
         chosen: &[ObjectRef],
     ) -> bool {
-        if matches!(
-            spec.kind.payment_kind(),
-            EffectChoiceKind::ExileGraveyardSymbols { .. }
-        ) {
-            return self.can_fund_symbol_cost_group(goal, purpose, spec, source, chosen);
-        }
-        let amount = match spec.kind.payment_kind() {
-            EffectChoiceKind::BeholdMany(n) | EffectChoiceKind::ExileGraveyardCards(n) => {
-                usize::from(n)
-            }
-            EffectChoiceKind::TapPermanents(n) | EffectChoiceKind::SacrificePermanents(n) => {
-                n as usize
-            }
-            _ => unreachable!("group cost"),
-        };
-        let Some(needed) = amount.checked_sub(chosen.len()) else {
-            return false;
-        };
-        // This fallback enumerates current candidates, not future projected
-        // objects. Rule out an undersized candidate set before funding search.
-        let eligible = |r: ObjectRef| {
-            !chosen.contains(&r)
-                && self.additional_candidate(spec, goal.actor, source, r)
-                && (!matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
-                    || !tap_cost_reserves_source(&goal, r))
-        };
-        if needed > 0
-            && (0..self.state.objects.len())
-                .map(|id| self.object_ref(id as CardId))
-                .filter(|&r| eligible(r))
-                .take(needed)
-                .count()
-                < needed
-        {
-            return false;
-        }
-        if !self.can_fund_for(goal.clone(), purpose) {
-            return false;
-        }
-        self.group_cost_fundable_selected(goal, purpose, spec, source, chosen, amount)
+        chosen.iter().all(|&object| {
+            !matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
+                || !tap_cost_reserves_source(&goal, object)
+        }) && self.additional_selection_valid(spec, goal.actor, source, chosen, false)
     }
 
-    fn group_cost_fundable_selected(
-        &self,
-        goal: FundingGoal,
-        purpose: mana_lots::Purpose,
-        spec: AdditionalCost,
-        source: ObjectRef,
-        chosen: &[ObjectRef],
-        amount: usize,
-    ) -> bool {
-        if chosen.len() == amount {
-            return self.can_fund_cost_group(goal, purpose, spec, chosen);
-        }
-        (0..self.state.objects.len()).any(|id| {
-            let r = self.object_ref(id as CardId);
-            if chosen.contains(&r)
-                || !self.additional_candidate(spec, goal.actor, source, r)
-                || (matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
-                    && tap_cost_reserves_source(&goal, r))
-            {
-                return false;
-            }
-            let mut next = chosen.to_vec();
-            next.push(r);
-            self.group_cost_fundable_selected(goal.clone(), purpose, spec, source, &next, amount)
-        })
-    }
     pub(super) fn different_name_sacrifice_fundable(
         &self,
         goal: FundingGoal,
@@ -746,265 +811,57 @@ impl Game {
         amount: u16,
         chosen: &[ObjectRef],
     ) -> bool {
-        if chosen.len() == usize::from(amount) {
-            return self.can_fund_sacrifice_group(goal, spec, chosen);
-        }
-        let source = goal.source.as_ref().expect("activation source").0;
-        (0..self.state.objects.len()).any(|id| {
-            let object = self.object_ref(id as CardId);
-            if chosen.contains(&object)
-                || !self.additional_candidate(spec, goal.actor, source, object)
-                || chosen.iter().any(|r| {
-                    crate::card_names::same_name(
-                        self.object_view(r.card).name(),
-                        self.object_view(object.card).name(),
-                    )
-                })
-            {
-                return false;
-            }
-            let mut next = chosen.to_vec();
-            next.push(object);
-            self.different_name_sacrifice_fundable(goal.clone(), spec, amount, &next)
-        })
+        let Some((source, ..)) = goal.source.as_ref() else {
+            return false;
+        };
+        chosen.len() <= usize::from(amount)
+            && self.additional_selection_valid(spec, goal.actor, *source, chosen, false)
     }
     pub(super) fn activation_can_fund(
         &self,
         goal: FundingGoal,
-        spec: Option<AdditionalCost>,
+        _spec: Option<AdditionalCost>,
     ) -> bool {
-        let Some(spec) = spec else {
-            return self.can_fund(goal);
+        let Some((source, ability, counters, definition, borrowed_slot)) = goal.source else {
+            return self.state.players.get(goal.actor.index()).is_some();
         };
-        if matches!(spec.kind.payment_kind(), EffectChoiceKind::BlightCost(_)) {
-            return self.preview_blight_activation(goal, spec);
-        }
-        if spec.kind == EffectChoiceKind::ReturnTappedCreature {
-            return self.preview_ordered_activation_cost(goal, spec, false);
-        }
-        if spec.kind == EffectChoiceKind::DiscardHand {
-            // Mana abilities run before the whole-hand payment, so no current
-            // card is reserved: even an empty resulting hand is payable.
-            return self.can_fund(goal);
-        }
-        if spec.kind.variable_cost_minimum().is_some() {
-            let source = goal.source.as_ref().expect("activation source").0;
-            let current = self.state.announcing.as_ref().filter(|a| {
-                !a.additional_paid
-                    && a.item.controller == goal.actor
-                    && a.item.source.is_some_and(|s| s.object == source)
-                    && goal
-                        .source
-                        .as_ref()
-                        .is_some_and(|(_, index, _, definition, _)| {
-                            a.item.kind == StackKind::ActivatedAbility { ability: *index }
-                                && a.item.source.is_some_and(|s| s.card == *definition)
-                        })
-            });
-            let selected = current
-                .and_then(|a| a.additional_group.as_deref())
-                .map_or(&[][..], Vec::as_slice);
-            return self.variable_cost_group_fundable(
-                goal.clone(),
-                self.funding_purpose(&goal),
-                spec,
-                source,
-                selected,
-                current.is_some_and(|a| a.additional_group_complete),
-            );
-        }
-        if spec.kind.craft_materials().is_some() {
-            return self.preview_ordered_activation_cost(goal, spec, true);
-        }
-        let source = goal.source.as_ref().expect("activation source").0;
-        if spec.kind.counter_requirement().is_some() {
-            let purpose = self.funding_purpose(&goal);
-            let selected = self
-                .state
-                .announcing
-                .as_ref()
-                .filter(|a| {
-                    a.item
-                        .source
-                        .is_some_and(|identity| identity.object == source)
-                        && a.item.controller == goal.actor
-                })
-                .and_then(|a| a.creature_counter_cost.as_deref())
-                .map_or(&[][..], Vec::as_slice);
-            return self.counter_cost_fundable(goal, purpose, spec, selected);
-        }
-        if matches!(
-            spec.kind.payment_kind(),
-            EffectChoiceKind::BeholdMany(_)
-                | EffectChoiceKind::TapPermanents(_)
-                | EffectChoiceKind::ExileGraveyardCards(_)
-                | EffectChoiceKind::ExileGraveyardRange { .. }
-                | EffectChoiceKind::ExileGraveyardSymbols { .. }
-                | EffectChoiceKind::SacrificePermanents(_)
-        ) {
-            let purpose = self.funding_purpose(&goal);
-            return self.group_cost_fundable(goal, purpose, spec, source, &[]);
-        }
-        if let EffectChoiceKind::SacrificeDifferentNames(amount) = spec.kind.payment_kind() {
-            return self.different_name_sacrifice_fundable(goal, spec, amount, &[]);
-        }
-        if evidence::threshold(spec).is_some() {
-            return self.preview_ordered_activation_cost(goal, spec, false);
-        }
-        if forage::is_forage_cost(spec) {
-            return self.forage_cost_fundable(goal, spec, None);
-        }
-        self.state.objects.iter().enumerate().any(|(id, _)| {
-            let object = self.object_ref(id as CardId);
-            self.additional_candidate_for_funding(spec, goal.actor, source, object)
-                && self.can_fund(FundingGoal {
-                    reserve: Some((object, spec)),
-                    ..goal.clone()
-                })
-        })
-    }
-    pub(super) fn additional_choice_available(&self, object: ObjectRef) -> bool {
-        let a = self.state.announcing.as_ref().unwrap();
-        if !self.mana_parent_fundable(Some(object), None) {
+        if self.state.objects.get(source.card as usize).is_none()
+            || self.object_ref(source.card) != source
+        {
             return false;
         }
+        let mut packet = self.activation_packet(goal.actor, source.card, ability);
+        packet.set_source_definition(definition);
+        packet.borrowed_slot = borrowed_slot;
+        self.activation_packet_admissible(&self.payment_announcement(packet, counters, None, None))
+    }
+    pub(super) fn additional_choice_available(&self, object: ObjectRef) -> bool {
+        let Some(a) = self.state.announcing.as_ref() else {
+            return false;
+        };
         let Some(spec) = a.additional_cost() else {
             return false;
         };
-        if spec.kind.variable_cost_minimum().is_some() {
-            return self.variable_cost_candidate_available(a, spec, object);
-        }
-        if self.cast_costs_mana_paid() {
-            if !self.additional_candidate(
-                spec,
-                a.item.controller,
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .object,
-                object,
-            ) {
-                return false;
-            }
-            if spec.kind.craft_materials().is_some()
-                || matches!(
-                    spec.kind.payment_kind(),
-                    EffectChoiceKind::BeholdMany(_)
-                        | EffectChoiceKind::TapPermanents(_)
-                        | EffectChoiceKind::ExileGraveyardCards(_)
-                        | EffectChoiceKind::ExileGraveyardRange { .. }
-                        | EffectChoiceKind::ExileGraveyardSymbols { .. }
-                        | EffectChoiceKind::ExileCraftNonlands(_)
-                        | EffectChoiceKind::SacrificeDifferentNames(_)
-                        | EffectChoiceKind::SacrificePermanents(_)
-                )
-            {
-                let mut selected = a.additional_group.as_deref().cloned().unwrap_or_default();
-                if selected.contains(&object) {
-                    return false;
-                }
-                if matches!(
-                    spec.kind.payment_kind(),
-                    EffectChoiceKind::SacrificeDifferentNames(_)
-                ) && selected.iter().any(|r| {
-                    crate::card_names::same_name(
-                        self.object_name(r.card),
-                        self.object_name(object.card),
-                    )
-                }) {
-                    return false;
-                }
-                selected.push(object);
-                return self.cast_cost_group_fundable(&selected, false);
-            }
-            return self.cast_cost_object_fundable(object);
-        }
-        if let EffectChoiceKind::SacrificeDifferentNames(amount) = spec.kind.payment_kind() {
-            let mut selected = a
-                .additional_group
-                .as_ref()
-                .map_or_else(Vec::new, |g| g.to_vec());
-            if selected.contains(&object)
-                || selected.iter().any(|r| {
-                    crate::card_names::same_name(
-                        self.object_view(r.card).name(),
-                        self.object_view(object.card).name(),
-                    )
-                })
-                || !self.additional_candidate(
-                    spec,
-                    a.item.controller,
-                    a.item
-                        .source
-                        .expect("cost announcement has object source")
-                        .object,
-                    object,
-                )
-            {
-                return false;
-            }
-            selected.push(object);
-            return self.different_name_sacrifice_fundable(
-                self.funding_goal(a),
-                spec,
-                amount,
-                &selected,
-            );
-        }
-        if matches!(
-            spec.kind.payment_kind(),
-            EffectChoiceKind::BeholdMany(_)
-                | EffectChoiceKind::TapPermanents(_)
-                | EffectChoiceKind::ExileGraveyardCards(_)
-                | EffectChoiceKind::ExileGraveyardRange { .. }
-                | EffectChoiceKind::ExileGraveyardSymbols { .. }
-                | EffectChoiceKind::SacrificePermanents(_)
-        ) {
-            let mut selected = a
-                .additional_group
-                .as_ref()
-                .map_or_else(Vec::new, |g| g.to_vec());
-            if selected.contains(&object)
-                || !self.additional_candidate(
-                    spec,
-                    a.item.controller,
-                    a.item
-                        .source
-                        .expect("cost announcement has object source")
-                        .object,
-                    object,
-                )
-                || (matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
-                    && tap_cost_reserves_source(&self.funding_goal(a), object))
-            {
-                return false;
-            }
-            selected.push(object);
-            return self.group_cost_fundable(
-                self.funding_goal(a),
-                self.purpose_for_item(&a.item),
-                spec,
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .object,
-                &selected,
-            );
-        }
-        if !self.additional_candidate_for_funding(
-            spec,
-            a.item.controller,
-            a.item
-                .source
-                .expect("cost announcement has object source")
-                .object,
-            object,
-        ) {
+        if a.additional_group_complete {
             return false;
         }
-        let mut goal = self.funding_goal(a);
-        goal.reserve = Some((object, spec));
-        self.can_fund(goal)
+        let mut selected = a.additional_group.as_deref().cloned().unwrap_or_default();
+        if selected.contains(&object) {
+            return false;
+        }
+        if matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
+            && tap_cost_reserves_source(&self.funding_goal(a), object)
+        {
+            return false;
+        }
+        selected.push(object);
+        self.additional_selection_valid(
+            spec,
+            a.item.controller,
+            a.item.source.expect("cost source").object,
+            &selected,
+            false,
+        )
     }
     pub(super) fn additional_life_available(&self) -> bool {
         let Some(a) = self.state.announcing.as_ref() else {
@@ -1019,7 +876,7 @@ impl Game {
         if self.state.players[a.item.controller.index()].life < i128::from(amount) {
             return false;
         }
-        self.discard_or_life_route_fundable(a)
+        true
     }
     pub(super) fn choose_additional_life(&mut self) {
         let a = self.state.announcing.as_mut().unwrap();

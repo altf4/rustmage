@@ -1,5 +1,4 @@
-//! Explicit scalar declarations and complete interval domains. Work is bounded by
-//! immutable threshold breakpoints and at most 33 funding queries per segment, never X.
+//! Scalar declaration domains use rules and representation bounds, never payment search.
 use super::*;
 use crate::cards::CastFilter;
 
@@ -183,107 +182,28 @@ impl Game {
         if ordinary_library {
             cast_origins::add_library_spell_value_cuts(self, actor, card, &mut cuts);
         }
-        for rule in card.cost_reductions() {
-            rule.filter.add_scalar_x_cuts(card, &mut cuts);
-        }
-        for &source in &self.state.static_sources {
-            let o = &self.state.objects[source as usize];
-            if o.controller == actor {
-                for rule in o.card.cost_reductions() {
-                    rule.filter.add_scalar_x_cuts(card, &mut cuts);
-                }
-            }
-        }
-        if symbols > 0 {
-            let mut add_minimum = |minimum: u64| {
-                cuts.push(
-                    minimum
-                        .saturating_sub(card.fixed_mana_value())
-                        .div_ceil(symbols)
-                        .min(SCALAR_X_END),
-                )
-            };
-            if let Some(state) = &self.state.mana_lots {
-                for lot in &state.pools[actor.index()] {
-                    if let mana_lots::ManaRestrictionView::SpellManaValueAtLeast(minimum) =
-                        lot.quality.restriction
-                    {
-                        add_minimum(minimum);
-                    }
-                }
-            }
-            // A threshold also matters before the restricted producer has been tapped.
-            for object in &self.state.objects {
-                for ability in object.card.activations() {
-                    if let Some(ManaProduction::Tagged { quality, .. }) = ability.mana_production()
-                        && let crate::cards::ManaRestriction::SpellManaValueAtLeast(minimum) =
-                            quality.restriction
-                    {
-                        add_minimum(minimum);
-                    }
-                }
-            }
-        }
         cuts.sort_unstable();
         cuts.dedup();
-        let (colored, generic) = card.cost();
-        let base = ManaCost { colored, generic };
-        let fundable = |x| {
-            if let Some(a) = current {
-                let mut candidate = a.clone();
-                candidate.item.x = Some(x);
-                return candidate
-                    .cost_options()
-                    .any(|cost| self.announcement_cost_fundable(&candidate, cost));
-            }
-            self.scalar_x_total_for_definition(actor, id, base, x, card)
-                .is_some_and(|cost| {
-                    self.spell_can_fund_total_at_value(
-                        actor,
-                        id,
-                        cost,
-                        None,
-                        card,
-                        Some(card.fixed_mana_value() + symbols * u64::from(x)),
-                    )
-                })
-        };
         let mut intervals: Vec<XInterval> = Vec::new();
         for ends in cuts.windows(2) {
-            let lo = ends[0] as u32;
-            let hi = (ends[1] - 1) as u32;
+            let minimum = ends[0] as u32;
             if ordinary_library
                 && !cast_origins::library_spell_value_permission(
                     self,
                     actor,
                     card,
-                    card.fixed_mana_value() + symbols * u64::from(lo),
+                    card.fixed_mana_value() + symbols * u64::from(minimum),
                 )
             {
                 continue;
             }
-            if !fundable(lo) {
-                continue;
-            }
-            let (mut left, mut right) = (u64::from(lo), u64::from(hi));
-            while left < right {
-                let mid = left + (right - left).div_ceil(2);
-                if fundable(mid as u32) {
-                    left = mid;
-                } else {
-                    right = mid - 1;
-                }
-            }
-            let range = XInterval {
-                minimum: lo,
-                maximum: left as u32,
-            };
+            let maximum = (ends[1] - 1) as u32;
             if let Some(last) = intervals.last_mut()
-                && u64::from(last.maximum) + 1 == u64::from(range.minimum)
+                && u64::from(last.maximum) + 1 == u64::from(minimum)
             {
-                last.maximum = range.maximum;
+                last.maximum = maximum;
             } else {
-                intervals.push(range);
+                intervals.push(XInterval { minimum, maximum });
             }
         }
         intervals
@@ -292,63 +212,21 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = a.item.kind else {
             unreachable!("activation X announcement")
         };
-        let source = a.item.source.expect("activation source");
-        let definition = source.card.activation(ability);
-        let minimum = definition.minimum_x();
-        let tap_x = definition.tap_x_cost();
-        let fundable = |value: u32| {
-            let mut probe = a.clone();
-            probe.item.x = Some(value);
-            if tap_x && !self.item_targets_available(&probe.item, self.target_spec(&probe.item)) {
-                return false;
-            }
-            probe
-                .cost_options()
-                .any(|cost| self.announcement_cost_fundable(&probe, cost))
-        };
-        if !fundable(minimum) {
-            return Vec::new();
-        }
-        // Every possible tap contributor corresponds to a distinct object,
-        // including cards that could enter during an intervening mana ability.
-        let upper = if tap_x {
-            u32::try_from(self.state.objects.len()).unwrap_or(u32::MAX)
-        } else {
-            u32::MAX
-        };
-        let (mut low, mut high) = (minimum, upper);
-        while low < high {
-            let mid = low + (high - low).div_ceil(2);
-            if fundable(mid) {
-                low = mid;
-            } else {
-                high = mid - 1;
-            }
-        }
         vec![XInterval {
-            minimum,
-            maximum: low,
+            minimum: a
+                .item
+                .source
+                .expect("activation source")
+                .card
+                .activation(ability)
+                .minimum_x(),
+            maximum: u32::MAX,
         }]
     }
-    fn life_x_intervals(&self, a: &Announcement) -> Vec<XInterval> {
-        let goal = self.funding_goal(a);
-        let purpose = self.purpose_for_item(&a.item);
-        let fundable = |x| self.can_fund_life_cost(goal.clone(), purpose, x);
-        if !fundable(0) {
-            return Vec::new();
-        }
-        let (mut low, mut high) = (0u64, u64::from(u32::MAX));
-        while low < high {
-            let mid = low + (high - low).div_ceil(2);
-            if fundable(mid as u32) {
-                low = mid;
-            } else {
-                high = mid - 1;
-            }
-        }
+    fn life_x_intervals(&self, _a: &Announcement) -> Vec<XInterval> {
         vec![XInterval {
             minimum: 0,
-            maximum: low as u32,
+            maximum: u32::MAX,
         }]
     }
     pub(super) fn visit_x_actions(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
@@ -386,31 +264,16 @@ impl Game {
                     }],
                 });
             }
-            let mut lo = 0u64;
             let resolving = self.state.resolving.as_ref().unwrap();
-            let mut hi = match resolving.program.get(resolving.pc.saturating_sub(1)) {
-                Some(Instruction::PayXReflexiveLimited { maximum, .. }) => u64::from(*maximum) + 1,
-                _ => u64::from(u32::MAX) + 1,
+            let maximum = match resolving.program.get(resolving.pc.saturating_sub(1)) {
+                Some(Instruction::PayXReflexiveLimited { maximum, .. }) => *maximum,
+                _ => u32::MAX,
             };
-            while lo + 1 < hi {
-                let mid = lo + (hi - lo) / 2;
-                if self.can_fund(FundingGoal {
-                    actor: player,
-                    required: [0; 6],
-                    generic: mid as u32,
-                    reserve: None,
-                    source: None,
-                }) {
-                    lo = mid;
-                } else {
-                    hi = mid;
-                }
-            }
             return Some(XChoiceView {
                 card: self.state.resolving.as_ref()?.item.source?.object,
                 intervals: vec![XInterval {
                     minimum: 0,
-                    maximum: lo as u32,
+                    maximum,
                 }],
             });
         }

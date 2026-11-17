@@ -21,6 +21,9 @@ pub struct ConspireDeclaration {
     pub declared: bool,
     pub pay: bool,
     pub objects: Option<[ObjectRef; 2]>,
+    /// Provisional first member; neither member taps until the pair commits.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub first_object: Option<ObjectRef>,
     pub paid: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -63,6 +66,7 @@ impl Game {
                             declared: false,
                             pay: false,
                             objects: None,
+                            first_object: None,
                             paid: false,
                         });
                     }
@@ -89,6 +93,58 @@ impl Game {
         }
         let rows = self.conspire_grants(item.controller, item.source?.card);
         (!rows.is_empty()).then(|| Box::new(rows))
+    }
+    pub(super) fn conspire_object_available(&self, object: ObjectRef) -> bool {
+        let Some(a) = self.state.announcing.as_ref() else {
+            return false;
+        };
+        let Some(permanent) = self.state.objects.get(object.card as usize) else {
+            return false;
+        };
+        self.object_ref(object.card) == object
+            && permanent.zone == Zone::Battlefield
+            && permanent.controller == a.item.controller
+            && !permanent.tapped
+            && self.is_creature(object.card)
+            && ability_world::CharacteristicWorld::colors(self, object.card)
+                & ability_world::CharacteristicWorld::colors(self, a.item.source.unwrap().id)
+                != 0
+    }
+    pub(super) fn conspire_payment_valid(&self, objects: [ObjectRef; 2]) -> bool {
+        let Pending::ConspirePayment { instance, .. } = self.state.pending else {
+            return false;
+        };
+        let Some(a) = self.state.announcing.as_ref() else {
+            return false;
+        };
+        let Some(row) = a
+            .conspire
+            .as_ref()
+            .and_then(|rows| rows.get(usize::from(instance)))
+        else {
+            return false;
+        };
+        !row.paid
+            && objects[0].card < objects[1].card
+            && row
+                .first_object
+                .is_none_or(|first| objects.contains(&first))
+            && objects
+                .iter()
+                .all(|&object| self.conspire_object_available(object))
+    }
+    pub(super) fn choose_conspire_object(&mut self, object: ObjectRef) {
+        let Pending::ConspirePayment { instance, .. } = self.state.pending else {
+            unreachable!()
+        };
+        self.state
+            .announcing
+            .as_mut()
+            .unwrap()
+            .conspire
+            .as_mut()
+            .unwrap()[usize::from(instance)]
+        .first_object = Some(object);
     }
     pub(super) fn choose_conspire(&mut self, pay: bool) {
         let a = self.state.announcing.as_mut().unwrap();
