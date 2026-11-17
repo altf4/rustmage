@@ -5,6 +5,76 @@ use rustmage_core::engine::*;
 use support::*;
 
 #[test]
+fn an_independent_mana_additional_cost_keeps_low_life_declarations_available() {
+    for actor in [Player::P0, Player::P1] {
+        for route in 0..3 {
+            let mut game = scenario(actor);
+            let shot = put(&mut game, actor.other(), "Lightning Strike", Zone::Hand);
+            game.state.priority = actor.other();
+            cast(&mut game, shot, Some(Target::Player(actor)));
+            if game.actor() != Some(actor) {
+                act(&mut game, Action::Pass);
+            }
+            if route == 2 {
+                put(&mut game, actor, "Omniscience", Zone::Battlefield);
+            }
+            let card = put(
+                &mut game,
+                actor,
+                "Redirect Lightning",
+                if route == 1 { Zone::Exile } else { Zone::Hand },
+            );
+            let original = game.object_ref(card);
+            if route == 1 {
+                game.grant_exile_play_permission(actor, original, false);
+            }
+            game.state.players[actor.index()].life = 4;
+            game.state.players[actor.index()].mana = [0; 6];
+            let action = match route {
+                0 => Action::AnnounceCast { card },
+                1 => Action::AnnounceExile { card },
+                _ => Action::AnnounceFree {
+                    card,
+                    face: CastFace::Normal,
+                    flash_surcharge: false,
+                },
+            };
+            Game::reset_payment_planning_work();
+            admit(&game, action.clone());
+            act(&mut game, action);
+            // Life is still checked on the declared nonmana equivalent. The
+            // mana equivalent is allowed even when its actual pool is empty.
+            reject(&mut game, Action::ChooseSpellCost { cost: 0 });
+            admit(&game, Action::ChooseSpellCost { cost: 1 });
+            act(&mut game, Action::ChooseSpellCost { cost: 1 });
+            act(
+                &mut game,
+                Action::ChooseTarget {
+                    target: Target::Spell(shot),
+                },
+            );
+            reject(&mut game, Action::PayCosts { payment: [0; 6] });
+            act(&mut game, Action::EndManaWindow);
+            act(&mut game, Action::SubmitAttempt);
+            let failed = game.last_attempt_outcome_view(actor).unwrap();
+            assert_eq!(failed.outcome, AttemptOutcome::Failed);
+            assert_eq!(failed.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+            assert_eq!(game.object_ref(card), original);
+            assert_eq!(
+                game.object_view(card).zone,
+                if route == 1 { Zone::Exile } else { Zone::Hand }
+            );
+            assert_eq!(game.state.players[actor.index()].life, 4);
+            assert_eq!(game.state.players[actor.index()].mana, [0; 6]);
+            let work = Game::payment_planning_work();
+            assert_eq!(work.projected_moves, 0);
+            assert_eq!(work.projected_steps, 0);
+            assert_eq!(work.continuation_plans, 0);
+        }
+    }
+}
+
+#[test]
 fn known_route_life_is_checked_without_proving_future_mana_or_materials() {
     for actor in [Player::P0, Player::P1] {
         for (name, zone, warp) in [
