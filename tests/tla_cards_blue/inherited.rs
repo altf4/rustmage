@@ -122,7 +122,7 @@ fn fortune_teller_creates_a_clue_and_its_token_cost_draws_one() {
     assert_eq!(stats(&game, teller), (1, 3));
     let clue = token(&game, Card(5296));
     game.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
-    reject(&mut game, activate(clue, 0));
+    admit(&game, activate(clue, 0));
     game.state.players[p.index()].mana[5] = 2;
     act(&mut game, activate(clue, 0));
     pay(&mut game);

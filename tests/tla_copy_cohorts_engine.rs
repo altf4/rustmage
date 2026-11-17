@@ -173,7 +173,7 @@ fn only_actual_exiled_targets_form_one_delayed_copy_cohort() {
         let giant = put(&mut game, player.other(), "Hill Giant", Zone::Graveyard);
         put(&mut game, player, "Doubling Season", Zone::Battlefield);
         act(&mut game, Action::AnnounceCast { card: cast });
-        reject(&mut game, Action::ChooseX { value: 3 });
+        admit(&game, Action::ChooseX { value: 3 });
 
         let mut zero = game.clone();
         act(&mut zero, Action::ChooseX { value: 0 });

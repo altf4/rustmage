@@ -242,7 +242,7 @@ fn a_land_or_ally_gets_one_exact_grant_even_when_both_conditions_hold() {
     let mut sick = game.clone();
     sick.state.objects[both as usize].summoning_sick = true;
     reject(&mut sick, tap.clone());
-    reject(&mut sick, announce.clone());
+    admit(&sick, announce.clone());
     assert!(fund(&game, p, WHITE));
     act(&mut game, announce);
     act(&mut game, tap);

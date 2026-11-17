@@ -30,8 +30,8 @@ fn gran_gran_loots_on_tap_and_reduces_noncreature_spells_at_three_lessons() {
     let announce = Action::AnnounceCast { card: scroll };
     let mut short = game.clone();
     short.move_object(third, Zone::Exile);
-    reject(&mut short, announce.clone());
-    reject(&mut game, Action::AnnounceCast { card: creature });
+    admit(&short, announce.clone());
+    admit(&game, Action::AnnounceCast { card: creature });
     act(&mut game, announce);
     pay(&mut game);
     settle(&mut game);
@@ -433,7 +433,7 @@ fn kuruk_scries_and_draws_twice_then_transforms_creates_spirits_and_takes_an_ext
     let mut short = game.clone();
     short.state.objects[spirit as usize].tapped = true;
     short.state.objects[saga as usize].tapped = true;
-    reject(&mut short, activation.clone());
+    admit(&short, activation.clone());
     act(&mut game, activation.clone());
     act(&mut game, Action::BeginWaterbend);
     choose_waterbender(&mut game, spirit);

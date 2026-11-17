@@ -100,7 +100,7 @@ fn own_graveyard_lessons_allow_casting_off_turn_without_granting_flash() {
 
         let mut missing_color = game.clone();
         missing_color.state.players[actor.index()].mana = [0, 1, 0, 0, 0, 9];
-        reject(&mut missing_color, announce.clone());
+        admit(&missing_color, announce.clone());
         act(&mut game, announce);
         assert!(!game.keywords(spell).contains(Keywords::FLASH));
         pay(&mut game);

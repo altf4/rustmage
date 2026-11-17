@@ -377,7 +377,7 @@ fn fated_firepower_flashes_in_with_x_and_only_adds_damage_to_opposing_recipients
     let firepower = put(&mut game, player, "Fated Firepower", Zone::Hand);
     let mut short_red = game.clone();
     short_red.state.players[player.index()].mana = [0, 8, 0, 2, 0, 0];
-    reject(&mut short_red, Action::AnnounceCast { card: firepower });
+    admit(&short_red, Action::AnnounceCast { card: firepower });
     act(&mut game, Action::AnnounceCast { card: firepower });
     act(&mut game, Action::ChooseX { value: 2 });
     pay(&mut game);

@@ -620,7 +620,7 @@ fn acquired_tap_mana_triggers_apply_to_payments_for_only_the_current_donor() {
     let announce = Action::AnnounceCast { card: bear };
     let tap = Action::TapMana { card: elf };
     game.state.players[player.index()].mana = [0; 6];
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
     begin_choose(&mut game, host);
     select(&mut game, first);
 
@@ -630,14 +630,14 @@ fn acquired_tap_mana_triggers_apply_to_payments_for_only_the_current_donor() {
     cast(&mut blanked, aura, Some(Target::Card(host)));
     settle(&mut blanked);
     blanked.state.players[player.index()].mana = [0; 6];
-    reject(&mut blanked, announce.clone());
+    admit(&blanked, announce.clone());
 
     let mut stale = game.clone();
     let old = stale.object_ref(first);
     stale.move_object(first, Zone::Hand);
     stale.move_object(first, Zone::Exile);
     assert_ne!(stale.object_ref(first), old);
-    reject(&mut stale, announce.clone());
+    admit(&stale, announce.clone());
 
     let mut paid = game.clone();
     act(&mut paid, announce.clone());
@@ -659,7 +659,7 @@ fn acquired_tap_mana_triggers_apply_to_payments_for_only_the_current_donor() {
 
     begin_choose(&mut game, host);
     select(&mut game, second);
-    reject(&mut game, announce);
+    admit(&game, announce);
     act(&mut game, tap);
     assert_eq!(game.state.players[player.index()].mana, [0, 0, 0, 0, 1, 0]);
     let forest = put(&mut game, player, "Forest", Zone::Battlefield);

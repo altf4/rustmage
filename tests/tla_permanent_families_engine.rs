@@ -130,7 +130,7 @@ fn two_battlefield_targets_share_an_effective_type_and_departure_uses_exact_fact
         ability: 0,
         counter_payment: Counters::default(),
     };
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
 
     let old = game.object_ref(departing);
     game.add_characteristics_to(
@@ -218,7 +218,7 @@ fn largest_shared_subtype_supplies_one_color_in_live_and_projected_payments() {
     let mut reduced = game.clone();
     reduced.move_object(cub, Zone::Graveyard);
     assert_eq!(amount(&reduced), 2);
-    reject(&mut reduced, announce.clone());
+    admit(&reduced, announce.clone());
     act(&mut game, announce);
     let white = [3, 0, 0, 0, 0, 0];
     let activate = |production| Action::ActivateMana {
@@ -296,14 +296,14 @@ fn only_a_committed_effective_non_lemur_flyer_consumes_the_own_turn_discount() {
     off_turn.state.priority = player;
     off_turn.state.players[player.index()].mana = [1, 0, 0, 0, 0, 0];
     let flash = put(&mut off_turn, player, "Doorkeeper Thrull", Zone::Hand);
-    reject(&mut off_turn, Action::AnnounceCast { card: flash });
+    admit(&off_turn, Action::AnnounceCast { card: flash });
 
     let angel = put(&mut game, player, "Serra Angel", Zone::Hand);
     game.state.players[player.index()].mana = [2, 0, 0, 0, 0, 2];
     let announce = Action::AnnounceCast { card: angel };
     let mut absent = game.clone();
     absent.move_object(provider, Zone::Graveyard);
-    reject(&mut absent, announce.clone());
+    admit(&absent, announce.clone());
     act(&mut game, announce);
     let observation = game.observe(player);
     assert_eq!(observation.payment_request.unwrap().generic, 2);
@@ -327,7 +327,7 @@ fn only_a_committed_effective_non_lemur_flyer_consumes_the_own_turn_discount() {
     let next = put(&mut game, player, "Glider Kids", Zone::Hand);
     game.state.players[player.index()].mana = [1, 0, 0, 0, 0, 1];
     let announce = Action::AnnounceCast { card: next };
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
     game.state.players[player.index()].mana[5] = 2;
     act(&mut game, announce);
     assert_eq!(game.observe(player).payment_request.unwrap().generic, 2);

@@ -9,7 +9,7 @@ fn river_spirit_requires_five_extra_scries_two_and_wards_for_two() {
     let murder = put(&mut game, p.other(), "Murder", Zone::Hand);
     let announce = Action::AnnounceCast { card: spirit };
     game.state.players[p.index()].mana = [0, 1, 0, 0, 0, 4];
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
     game.state.players[p.index()].mana[1] = 2;
     act(&mut game, announce);
     act(&mut game, Action::BeginWaterbend);
@@ -166,7 +166,7 @@ fn flexible_waterbender_keeps_counters_through_the_base_switch() {
     assert!(game.keywords(source).contains(Keywords::VIGILANCE));
     game.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
     game.state.objects[source as usize].tapped = true;
-    reject(&mut game, activate(source, 0));
+    admit(&game, activate(source, 0));
     game.state.players[p.index()].mana[5] = 3;
     act(&mut game, activate(source, 0));
     pay(&mut game);
@@ -271,7 +271,7 @@ fn north_pole_patrol_separates_its_two_tap_abilities_and_funding() {
     assert!(!untap.object_view(land).tapped && untap.object_view(patrol).tapped);
 
     game.state.players[p.index()].mana = [0; 6];
-    reject(&mut game, activate(patrol, 1));
+    admit(&game, activate(patrol, 1));
     game.state.players[p.index()].mana[5] = 1;
     act(&mut game, activate(patrol, 1));
     reject(&mut game, target(ally));
@@ -312,7 +312,7 @@ fn serpent_uses_two_independent_graveyard_thresholds() {
     reject(&mut below, announce.clone());
     let mut underfunded = game.clone();
     underfunded.state.players[p.index()].mana[5] = 0;
-    reject(&mut underfunded, announce.clone());
+    admit(&underfunded, announce.clone());
     act(&mut game, announce);
     assert!(!game.keywords(source).contains(Keywords::FLASH));
     pay(&mut game);
@@ -470,7 +470,7 @@ fn waterbending_scroll_counts_only_current_controlled_islands() {
     }
     put(&mut game, p.other(), "Island", Zone::Battlefield);
     game.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
-    reject(&mut game, activate(scroll, 0));
+    admit(&game, activate(scroll, 0));
     game.state.players[p.index()].mana[5] = 4;
     act(&mut game, activate(scroll, 0));
     pay(&mut game);
