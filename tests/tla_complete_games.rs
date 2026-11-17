@@ -1,7 +1,7 @@
 //! Standard games and ownership checks using only Avatar release identities.
 use rustmage::{
-    Action, Card, CardId, CastMethod, Config, DeckRules, Error, Game, Observation, Outcome, Player,
-    StackKind, Step, policy,
+    Action, AttemptOutcome, Card, CardId, CastMethod, Config, DeckRules, Error, Game, Observation,
+    Outcome, Player, StackKind, Step, policy,
 };
 use serde::Deserialize;
 use serde_json::json;
@@ -196,6 +196,16 @@ fn workload_index(view: &Observation, activated: &BTreeSet<(u32, CardId)>) -> us
     if matches!(view.actions[smoke], Action::PlayLand { .. }) {
         return smoke;
     }
+    // The preferred casting routes are ordinary paid proposals. Preserve the
+    // smoke caller's failed-turn backoff before applying workload preferences.
+    if view.attempt.is_none()
+        && view.decision == "priority"
+        && view.last_attempt_outcome.is_some_and(|outcome| {
+            outcome.turn == u64::from(view.turn) && outcome.outcome == AttemptOutcome::Failed
+        })
+    {
+        return smoke;
+    }
     if let Some(index) = view.actions.iter().position(|action| {
         matches!(
             action,
@@ -289,7 +299,37 @@ fn avatar_only_standard_games_finish_and_replay_with_all_four_bends() {
             let mut activated = BTreeSet::new();
             let started = Instant::now();
             while let Some(actor) = game.actor() {
-                assert!(journal.len() < 4096, "{label} exceeded its decision limit");
+                if journal.len() >= 4096 {
+                    let trace_dir = directory.clone().unwrap_or_else(|| {
+                        std::env::var_os("HOME")
+                            .map(PathBuf::from)
+                            .unwrap_or_else(|| PathBuf::from("/tmp"))
+                            .join(".cache/rustmage-staged-tla-failures")
+                    });
+                    std::fs::create_dir_all(&trace_dir).unwrap();
+                    let path = trace_dir.join(format!("{label}-stalled.json"));
+                    let view = game.observe(actor);
+                    let next = workload_index(&view, &activated);
+                    std::fs::write(
+                        &path,
+                        serde_json::to_vec_pretty(&json!({
+                            "label": label,
+                            "seed": run.seed,
+                            "p0": pairing.p0,
+                            "p1": pairing.p1,
+                            "starting_player": run.starting_player,
+                            "decisions": journal.len(),
+                            "next_action": view.actions[next],
+                            "last_attempt_outcome": view.last_attempt_outcome,
+                            "attempt": view.attempt,
+                            "observations": PLAYERS.map(|player| game.observe(player)),
+                            "journal": journal,
+                        }))
+                        .unwrap(),
+                    )
+                    .unwrap();
+                    panic!("{label} exceeded 4096 decisions; trace {}", path.display());
+                }
                 let view = game.observe(actor);
                 evidence::check_privacy(&view, actor);
                 let index = workload_index(&view, &activated);
