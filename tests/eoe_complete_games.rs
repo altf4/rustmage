@@ -127,6 +127,19 @@ fn deck(members: &BTreeSet<Card>, lands: &[(&str, usize)], spells: &[&str]) -> V
 }
 
 fn decision(observation: &Observation) -> usize {
+    let smoke = rustmage::policy::smoke_index_from_observation(observation, &observation.actions);
+    if matches!(observation.actions[smoke], Action::PlayLand { .. })
+        || (observation.attempt.is_none()
+            && observation.decision == "priority"
+            && observation.last_attempt_outcome.is_some_and(|outcome| {
+                outcome.turn == u64::from(observation.turn)
+                    && outcome.outcome == rustmage::AttemptOutcome::Failed
+            }))
+    {
+        // Warp proposals no longer imply that their payment can finish. Honor
+        // the smoke caller's land preference and failed-attempt retry policy.
+        return smoke;
+    }
     // Explore the optional routes unique to this set when the engine offers them.
     if observation
         .entry_devour
@@ -147,7 +160,7 @@ fn decision(observation: &Observation) -> usize {
     }) {
         return index;
     }
-    rustmage::policy::smoke_index_from_observation(observation, &observation.actions)
+    smoke
 }
 
 fn private(view: &Observation) -> bool {
