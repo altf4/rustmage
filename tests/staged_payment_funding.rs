@@ -306,3 +306,175 @@ fn a_nested_payment_cannot_make_one_counter_pay_two_parent_costs() {
         },
     );
 }
+
+const LIFE_THEN_SACRIFICE: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[
+            Instruction::MayPayCosts {
+                costs: &[ResolutionCost {
+                    life: Some(AmountValue::Fixed(2)),
+                    objects: Some(ResolutionObjectCost {
+                        cost: AdditionalCost {
+                            kind: EffectChoiceKind::Sacrifice,
+                            filter: SacrificeFilter {
+                                kinds: 1,
+                                source_only: false,
+                                other: false,
+                                nonland: false,
+                                tokens: None,
+                                subtype: None,
+                                keywords: Keywords::NONE,
+                                artifact_enchantment_or_token: false,
+                            },
+                        },
+                        count: 1,
+                    }),
+                    ..ResolutionCost::FREE
+                }],
+                skip: 1,
+            },
+            Instruction::GainLife(PlayerSet::Controller, 3),
+        ],
+    ),
+    ..CardRules::EMPTY
+};
+
+const IMPLICIT_SOURCE_EXILE: CardRules = CardRules {
+    effect: Effect::Spell(TargetPlan::NONE, &[]),
+    activated: &[ActivatedAbility {
+        cost: ActivationCost {
+            generic: 1,
+            mana_component: true,
+            exile_self: true,
+            additional: Some(AdditionalCost {
+                kind: EffectChoiceKind::ExileSourceAndNamed {
+                    name: "Divination",
+                    amount: 1,
+                },
+                filter: SacrificeFilter {
+                    kinds: 0,
+                    source_only: false,
+                    other: false,
+                    nonland: false,
+                    tokens: None,
+                    subtype: None,
+                    keywords: Keywords::NONE,
+                    artifact_enchantment_or_token: false,
+                },
+            }),
+            ..ActivationCost::ZERO
+        },
+        program: &[Instruction::GainLife(PlayerSet::Controller, 1)],
+        origin: ActivationOrigin::Graveyard,
+        ..CONVERTER.activated[0]
+    }],
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn implicit_source_exile_cannot_pay_a_second_source_departure() {
+    let _rules = fixture_rules::activate(&[(Card::Divination, &IMPLICIT_SOURCE_EXILE)]);
+    let mut game = scenario(Player::P0);
+    let source = put(&mut game, Player::P0, "Divination", Zone::Graveyard);
+    let named = put(&mut game, Player::P0, "Divination", Zone::Graveyard);
+    game.state.players[0].mana = [0, 0, 0, 0, 0, 1];
+    act(
+        &mut game,
+        Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    let object = game.object_ref(named);
+    act(&mut game, Action::ChooseAdditionalCost { object });
+    assert!(game.mana_payment_domain().is_none());
+    reject(
+        &mut game,
+        Action::PayCosts {
+            payment: [0, 0, 0, 0, 0, 1],
+        },
+    );
+    assert_eq!(game.object_view(source).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(named).zone, Zone::Graveyard);
+}
+
+#[test]
+fn fixed_resolution_life_replacement_matches_execution_without_future_search() {
+    use rustmage_core::engine::ability_world::CharacteristicWorld;
+
+    struct ClearPrevention;
+    impl Drop for ClearPrevention {
+        fn drop(&mut self) {
+            zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|rule| rule.set(None));
+        }
+    }
+    let _clear = ClearPrevention;
+    let _rules = fixture_rules::activate(&[(Card::Divination, &LIFE_THEN_SACRIFICE)]);
+    for prevented in [false, true] {
+        let mut game = scenario(Player::P0);
+        let ashiok = put(
+            &mut game,
+            Player::P0,
+            "Ashiok, Wicked Manipulator",
+            Zone::Battlefield,
+        );
+        game.state.objects[ashiok as usize].counters.loyalty = 5;
+        let creature = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
+        let spell = put(&mut game, Player::P0, "Divination", Zone::Hand);
+        let top = game.state.players[0]
+            .library
+            .iter()
+            .rev()
+            .take(2)
+            .map(|&id| game.object_ref(id))
+            .collect::<Vec<_>>();
+        zone_replacements::TEST_PREVENT_ZONE_MOVE
+            .with(|rule| rule.set(prevented.then_some(top[0])));
+        Game::reset_payment_planning_work();
+        let world = game.project_resolution_life(Player::P0, 2);
+        assert_eq!(world.life(Player::P0), 20);
+        assert_eq!(
+            world.object(top[0].card).zone,
+            if prevented {
+                Zone::Library
+            } else {
+                Zone::Exile
+            }
+        );
+        assert_eq!(world.object(top[1].card).zone, Zone::Exile);
+        cast(&mut game, spell, None);
+        act(&mut game, Action::Pass);
+        act(&mut game, Action::Pass);
+        let object = game.object_ref(creature);
+        act(&mut game, Action::ChooseAdditionalCost { object });
+        let payment = Action::PayResolutionMana { payment: [0; 6] };
+        let mut indexed = game.clone();
+        let before = indexed.snapshot();
+        let index = indexed
+            .legal_actions()
+            .iter()
+            .position(|a| a == &payment)
+            .unwrap();
+        indexed
+            .apply_index(Player::P0, indexed.revision(), index)
+            .unwrap();
+        act(&mut game, payment);
+        assert_eq!(indexed.snapshot(), game.snapshot());
+        assert_eq!(game.state.players[0].life, 23);
+        assert_eq!(game.object_view(creature).zone, Zone::Graveyard);
+        assert_eq!(
+            game.object_view(top[0].card).zone,
+            if prevented {
+                Zone::Library
+            } else {
+                Zone::Exile
+            }
+        );
+        assert_eq!(game.object_view(top[1].card).zone, Zone::Exile);
+        indexed.restore(&before).unwrap();
+        assert_eq!(indexed.object_view(top[1].card).zone, Zone::Library);
+        no_projection_work();
+    }
+}
