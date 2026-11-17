@@ -394,7 +394,7 @@ impl Game {
                     return false;
                 }
                 if spec.kind.additional_life_payment().is_some_and(|amount| {
-                    self.state.players[actor.index()].life >= i128::from(amount)
+                    amount == 0 || self.state.players[actor.index()].life >= i128::from(amount)
                 }) {
                     return false;
                 }
@@ -418,7 +418,25 @@ impl Game {
                                 .sum::<u128>()
                         })
                         .sum::<u128>();
-                    return available < u128::from(requirement.amount);
+                    let selected = a
+                        .creature_counter_cost
+                        .as_ref()
+                        .map_or(0, |rows| rows.len());
+                    return available < u128::from(requirement.amount)
+                        || (selected < usize::from(requirement.amount)
+                            && !self.visit_distributed_counter_cost(&mut |_| true));
+                }
+                // A supplied prefix can exhaust its immediate extensions even
+                // when a simple total count overestimates the usable group:
+                // e.g. the remaining objects share a selected object's name.
+                // Inspect only the next choice, never combinations of suffixes.
+                let selected = a.additional_group.as_deref().map_or(&[][..], Vec::as_slice);
+                if !a.paying_origin_discard()
+                    && !self.additional_selection_valid(spec, actor, source, selected, true)
+                    && !(0..self.state.objects.len())
+                        .any(|id| self.additional_choice_available(self.object_ref(id as CardId)))
+                {
+                    return true;
                 }
                 let eligible: Vec<_> = (0..self.state.objects.len())
                     .map(|id| self.object_ref(id as CardId))
