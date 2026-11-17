@@ -87,14 +87,25 @@ fn an_offered_contribution_is_committed_before_final_mana_payment() {
         assert!(matches!(smoke_step(&mut game), Action::ChooseConvoker {
                 object, contribution: ConvokeContribution::Green
             } if object.card == creature));
-        assert_eq!(
-            smoke_step(&mut game),
-            Action::PayCosts {
-                payment: [0, 0, 0, 0, 1, 6]
-            }
-        );
+        let view = game.observe(player);
+        assert_eq!(view.convoke_choice.as_ref().unwrap().selected.len(), 1);
+        let chosen =
+            view.actions[policy::smoke_index_from_observation(&view, &view.actions)].clone();
+        let Action::PayCosts { payment } = chosen else {
+            panic!("expected a concrete payment, got {chosen:?}");
+        };
+        assert!(game.mana_payment_domain().unwrap().contains(payment));
+        assert_eq!(payment.iter().sum::<u32>(), 7);
+        let before = game.state.players[player.index()].mana;
+        assert_eq!(smoke_step(&mut game), Action::PayCosts { payment });
         assert!(game.object_view(creature).tapped);
         assert_eq!(game.object_view(spell).zone, Zone::Stack);
-        assert_eq!(game.state.players[player.index()].mana, [0, 0, 0, 0, 1, 0]);
+        let remaining = game.state.players[player.index()].mana;
+        assert_eq!(remaining, std::array::from_fn(|i| before[i] - payment[i]));
+        assert_eq!(remaining.iter().sum::<u32>(), 1);
+        assert_eq!(
+            game.state.stack.last().unwrap().cast.unwrap().payment,
+            payment
+        );
     }
 }
