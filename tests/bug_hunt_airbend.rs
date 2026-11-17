@@ -77,7 +77,33 @@ fn airbent_adventure_cannot_use_its_printed_mana_cost() {
 
     g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 0];
     let printed_cost = Action::AnnounceAdventure { card: sword };
-    reject(&mut g, airbend_adventure);
+    // The proposal is allowed, but the supplied red mana cannot pay airbend's {2}.
+    let mut short = g.clone();
+    act(&mut short, airbend_adventure);
+    act(
+        &mut short,
+        Action::ChooseTarget {
+            target: Target::Card(appa),
+        },
+    );
+    act(
+        &mut short,
+        Action::ChooseTarget {
+            target: Target::Player(p.other()),
+        },
+    );
+    if short.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut short, Action::FinishTargets);
+    }
+    assert!(short.mana_payment_domain().is_none());
+    act(&mut short, Action::EndManaWindow);
+    act(&mut short, Action::SubmitAttempt);
+    assert_eq!(
+        short.last_attempt_outcome_view(p).unwrap().outcome,
+        AttemptOutcome::Failed
+    );
+    assert_eq!(short.object_view(sword).zone, Zone::Exile);
+    assert_eq!(short.state.players[p.index()].mana, [0, 0, 0, 1, 0, 0]);
     reject(&mut g, printed_cost.clone());
 
     // A second, ordinary exile permission independently authorizes the same
