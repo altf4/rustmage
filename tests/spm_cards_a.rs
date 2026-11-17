@@ -60,13 +60,6 @@ fn activate(game: &mut Game, card: CardId, ability: u16, chosen: Option<Target>)
     }
 }
 
-fn normal_cast_available(game: &Game, card: CardId) -> bool {
-    game.legal_actions().into_iter().any(|action| {
-        matches!(action, Action::AnnounceCast { card: id } | Action::Cast { card: id, .. }
-            | Action::BeginCast { card: id, .. } if id == card)
-    })
-}
-
 fn start_attack(game: &mut Game, attackers: &[CardId]) {
     game.state.step = Step::Attackers;
     game.state.pending = Pending::Attackers;
