@@ -133,9 +133,12 @@ fn exact_funded_x_copies_and_recopies_without_resetting_the_source() {
             game.observe(player).x_choice.unwrap().intervals,
             [XInterval {
                 minimum: 0,
-                maximum: u32::MAX
+                maximum: 2
             }]
         );
+        // X is the mana value of a currently eligible graveyard target;
+        // no creature above two exists, independently of available mana.
+        reject(&mut game, Action::ChooseX { value: 3 });
         assert!(game.observe(player.other()).x_choice.is_none());
         let mut unfunded = game.clone();
         act(&mut unfunded, Action::ChooseX { value: 2 });

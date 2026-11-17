@@ -96,8 +96,15 @@ fn tmt_foot_ninjas_sneak_hybrid_routes_and_exact_entry() {
                     .iter()
                     .filter(|a| matches!(a, Action::ChooseSpellCost { .. }))
                     .count(),
-                1
+                2
             );
+            let cost = g
+                .spell_cost_choices()
+                .into_iter()
+                .find(|choice| choice.cost.colored[color] == 1)
+                .unwrap()
+                .index;
+            checked_branch(&mut g, Action::ChooseSpellCost { cost });
             finish_simple_sneak(&mut g, attacker);
             assert_eq!(g.state.objects[attacker.card as usize].zone, Zone::Hand);
             settle(&mut g);
@@ -177,12 +184,39 @@ fn tmt_ninja_teen_pays_distinct_departure_costs_in_either_order() {
                     );
                 } else {
                     choose_clause(&mut g, |clause| clause == CastCostClause::Additional);
-                    reject(
-                        &mut g,
-                        Action::ChooseAdditionalCost {
-                            object: attacker_ref,
-                        },
-                    );
+                    let reuse = Action::ChooseAdditionalCost {
+                        object: attacker_ref,
+                    };
+                    if return_first {
+                        // The returned incarnation is already in hand.
+                        reject(&mut g, reuse);
+                    } else {
+                        // Sacrificing the current attacker is a valid present cost,
+                        // but leaves this attempt without an unblocked returner.
+                        admit(&g, reuse.clone());
+                        let mut blocked = g.clone();
+                        act(&mut blocked, reuse);
+                        assert_eq!(blocked.object_view(attacker).zone, Zone::Graveyard);
+                        choose_clause(&mut blocked, |clause| {
+                            matches!(clause, CastCostClause::SneakReturn(_))
+                        });
+                        reject(
+                            &mut blocked,
+                            Action::PaySneakReturn {
+                                object: attacker_ref,
+                            },
+                        );
+                        act(&mut blocked, Action::SubmitAttempt);
+                        let outcome = blocked.last_attempt_outcome_view(player).unwrap();
+                        assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+                        assert_eq!(
+                            outcome.reason,
+                            Some(AttemptFailureReason::UnsatisfiedMaterial)
+                        );
+                        assert_eq!(blocked.object_ref(attacker), attacker_ref);
+                        assert_eq!(blocked.object_view(attacker).zone, Zone::Battlefield);
+                        assert_eq!(blocked.object_view(arbiter).zone, Zone::Graveyard);
+                    }
                     checked_branch(
                         &mut g,
                         Action::ChooseAdditionalCost {
