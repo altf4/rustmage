@@ -488,6 +488,13 @@ fn teamwork_two_accepts_one_two_power_creature_and_pays_the_exact_cost() {
             },
         );
         act(&mut game, Action::EndManaWindow);
+        reject(&mut game, Action::PayCosts { payment: [0; 6] });
+        act(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 0, 0, 1, 0, 3],
+            },
+        );
         select_cost_clause(&mut game, CastCostClause::Teamwork(2));
         reject(&mut game, Action::FinishTeamwork);
         let object = game.object_ref(helper);
@@ -515,15 +522,11 @@ fn teamwork_two_accepts_one_two_power_creature_and_pays_the_exact_cost() {
         assert!(!game.object_view(helper).tapped);
         act(&mut game, Action::FinishTeamwork);
         assert!(game.object_view(helper).tapped);
-        select_cost_clause(&mut game, CastCostClause::Mana);
-        reject(&mut game, Action::PayCosts { payment: [0; 6] });
-        act(
-            &mut game,
-            Action::PayCosts {
-                payment: [0, 0, 0, 1, 0, 3],
-            },
-        );
         assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+        assert_eq!(
+            game.state.stack.last().unwrap().cast.unwrap().payment,
+            [0, 0, 0, 1, 0, 3]
+        );
         assert_eq!(
             game.state.stack.last().unwrap().cast.unwrap().teamwork,
             Some(true)
@@ -574,6 +577,9 @@ fn optional_material_costs_can_be_declared_before_materials_exist() {
             );
             assert!(game.attempt_view(player).unwrap().can_end_mana_window);
             act(&mut game, Action::EndManaWindow);
+            if matches!(clause, CastCostClause::Teamwork(_)) {
+                pay(&mut game);
+            }
             select_cost_clause(&mut game, clause);
             let invalid = match clause {
                 CastCostClause::Teamwork(_) => Action::ChooseTeammate {
