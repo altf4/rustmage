@@ -2434,48 +2434,10 @@ impl FundingState<'_> {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(in crate::engine) fn cast_entry_action_fundable(&self, action: &Action) -> bool {
-        // A completed legal mana ability must finish its mandatory entry choices
-        // even when a foreign decision has already made its parent cast fail.
-        if self.foreign_cast_choice_pending()
-            && self
-                .state
-                .cast_rollback
-                .as_ref()
-                .is_some_and(|r| r.capture.is_some())
-        {
-            return true;
-        }
-        if !matches!(
-            action,
-            Action::ChooseEntryCopy { .. }
-                | Action::ChooseEntryExile { .. }
-                | Action::FinishEntryExile
-                | Action::ChooseEntryDevour { .. }
-                | Action::FinishEntryDevour
-                | Action::ChooseEntryRiot { .. }
-                | Action::ChooseEntryBehold { .. }
-                | Action::ChooseEntryValue { .. }
-                | Action::ChooseEntryLife { .. }
-                | Action::ChooseAuraAttachment { .. }
-                | Action::ChooseAuraPlayerAttachment { .. }
-                | Action::ChooseEntryReplacement { .. }
-                | Action::ChooseEntryTimestamp { .. }
-                | Action::ChooseReplacement { .. }
-                | Action::ChooseResolvedCounterReplacement { .. }
-        ) {
-            return true;
-        }
-        let caster = self
-            .state
-            .mana_announcement_stack
-            .as_ref()
-            .and_then(|v| v.first())
-            .map(|f| f.announcement.item.controller)
-            .or_else(|| self.state.announcing.as_ref().map(|a| a.item.controller));
-        if self.semantic_actor() != caster {
-            return true;
-        }
-        self.projected_cast_entries_fundable(Some(action))
+        // Entry/replacement visitors validate the actual choice. A completed
+        // mana ability must finish even if this choice strands its parent.
+        let _ = action;
+        true
     }
     /// Complete the current casting attempt after an entry decision, including
     /// outstanding entry choices and every suspended mana-payment ancestor.
@@ -2484,254 +2446,14 @@ impl Game {
         reason = "Consumed by the integrating foreign-entry rollback hook"
     )]
     pub(in crate::engine) fn current_cast_costs_fundable(&self) -> bool {
-        self.projected_cast_entries_fundable(None)
+        self.state
+            .announcing
+            .as_ref()
+            .is_none_or(|a| self.activation_packet_admissible(a))
     }
     fn projected_cast_entries_fundable(&self, action: Option<&Action>) -> bool {
-        let Some(a) = self.state.announcing.as_ref() else {
-            return true;
-        };
-        let transaction = a.cast_costs.as_ref().is_some_and(|c| c.mana_closed);
-        let nested = self
-            .state
-            .mana_announcement_stack
-            .as_deref()
-            .and_then(|frames| frames.split_last())
-            .filter(|_| a.production.is_some());
-        let (mut world, goal) = if a.mana_output.is_some() {
-            // The owned child has already paid. Its continuation is a frozen
-            // parent declaration or a non-announcement resume, never its costs.
-            (self.paid_mana_parent_world(a), None)
-        } else if transaction {
-            (self.cast_cost_world(a), None)
-        } else if let Some((parent, outer)) = nested {
-            let goal = self.funding_goal(&parent.announcement);
-            let mut world = FundingState::from_game_with_convoke(
-                self,
-                &goal,
-                parent.announcement.item.kind == StackKind::Spell
-                    && convoke::potential(
-                        self,
-                        parent
-                            .announcement
-                            .item
-                            .source
-                            .expect("cost announcement has object source")
-                            .card,
-                    ),
-            );
-            world.set_purpose(self.purpose_for_item(&parent.announcement.item));
-            world.set_payment_context(&parent.announcement);
-            world.set_funding_continuation(
-                &parent.announcement,
-                outer,
-                parent.quality.as_ref().map(|(_, q)| q),
-            );
-            (world, Some(goal))
-        } else {
-            let goal = self.funding_goal(a);
-            let mut world = FundingState::from_game_with_convoke(
-                self,
-                &goal,
-                a.item.kind == StackKind::Spell
-                    && convoke::potential(
-                        self,
-                        a.item
-                            .source
-                            .expect("cost announcement has object source")
-                            .card,
-                    ),
-            );
-            world.set_purpose(self.purpose_for_item(&a.item));
-            world.set_payment_context(a);
-            (world, Some(goal))
-        };
-        let mut complete = |w: &FundingState<'_>| {
-            if a.mana_output.is_some() {
-                w.visit_paid_mana_output(a, None, &mut |completed| {
-                    completed.paid_mana_parent_fundable(a)
-                })
-            } else if let Some(goal) = &goal {
-                w.visit_paid_mana_output(a, None, &mut |completed| {
-                    completed.reachable(goal, &mut HashSet::new())
-                })
-            } else {
-                w.cost_completion()
-            }
-        };
-        let Some(mut batch) = self.state.entry_batch.as_deref().cloned() else {
-            return complete(&world);
-        };
-        world.prepare_entry_projection();
-        let counter_choice = match action {
-            Some(Action::ChooseReplacement { source, ability }) => Some(
-                replacements::CounterReplacementId::Printed(*source, *ability),
-            ),
-            Some(Action::ChooseResolvedCounterReplacement { effect }) => {
-                Some(replacements::CounterReplacementId::Resolved(*effect))
-            }
-            _ => None,
-        };
-        world.entry_projection.as_mut().unwrap().counter =
-            self.projected_entry_counter(counter_choice);
-        match action {
-            Some(Action::ChooseEntryExile { object }) => {
-                let index = self.current_entry_exile_index().unwrap();
-                batch.moves[index]
-                    .exile_preparation
-                    .get_or_insert_default()
-                    .selected
-                    .push(*object);
-            }
-            Some(Action::FinishEntryExile) => {
-                let index = self.current_entry_exile_index().unwrap();
-                batch.moves[index]
-                    .exile_preparation
-                    .get_or_insert_default()
-                    .selection_closed = true;
-            }
-            Some(Action::ChooseEntryRiot { counter }) => {
-                let index = batch.current_riot().unwrap();
-                batch.moves[index].apply_riot(usize::from(*counter), usize::from(!*counter));
-            }
-            Some(Action::ChooseEntryDevour { object }) => {
-                let index = self.current_entry_devour_index().unwrap();
-                batch.moves[index]
-                    .devour_preparation
-                    .get_or_insert_default()
-                    .selected
-                    .push(*object);
-            }
-            Some(Action::FinishEntryDevour) => {
-                let index = self.current_entry_devour_index().unwrap();
-                batch.moves[index]
-                    .devour_preparation
-                    .get_or_insert_default()
-                    .closed = true;
-            }
-            Some(Action::ChooseEntryCopy { object }) => {
-                let index = batch
-                    .moves
-                    .iter()
-                    .enumerate()
-                    .filter(|(_, m)| entry_copies::needs_copy(m))
-                    .min_by_key(|(i, m)| (m.controller != self.state.active, *i))
-                    .map(|(i, _)| i)
-                    .expect("pending entry-copy choice");
-                if let Some(object) = object {
-                    let movement = &mut batch.moves[index];
-                    let choice = entry_copies::chosen_blueprint(
-                        &world,
-                        movement.before.card,
-                        *object,
-                        || entry_copies::blueprint_in_world(&world, object.card),
-                    );
-                    entry_copies::apply_choice(movement, *object, choice);
-                } else {
-                    batch.moves[index]
-                        .copy_preparation
-                        .get_or_insert_default()
-                        .done = true;
-                }
-            }
-            Some(Action::ChooseEntryValue { value }) => {
-                let i = self
-                    .current_entry_value_index()
-                    .expect("active entry choice");
-                let m = &mut batch.moves[i];
-                m.choice = Some(*value);
-                if let (Some(kind), EntryChoiceValue::CreatureType(typ)) =
-                    (m.before.card.chosen_entry_counters(), *value)
-                {
-                    let count = world
-                        .resources
-                        .iter()
-                        .filter(|r| {
-                            r.object.zone == Zone::Battlefield
-                                && r.object.controller == m.controller
-                                && CharacteristicWorld::kinds(&world, r.id) & 1 != 0
-                                && world.subtypes(r.id).has(r.object.card, typ.name())
-                        })
-                        .count() as u64;
-                    m.counters.add(kind, count);
-                }
-            }
-            Some(Action::ChooseAuraAttachment { object }) => {
-                batch.moves[batch.choices[batch.next]].attachment = Some(*object)
-            }
-            Some(Action::ChooseAuraPlayerAttachment { player }) => {
-                batch.moves[batch.choices[batch.next]].player_attachment = Some(*player)
-            }
-            Some(Action::ChooseEntryLife { pay }) => {
-                let payment = batch
-                    .tap_events
-                    .get(batch.tap_next)
-                    .and_then(|e| e.payment.map(|cost| (e.index, cost)));
-                let (index, cost) = payment.unwrap_or_else(|| {
-                    let i = batch.choices[batch.next];
-                    let EntryTapped::PayLife(cost) = batch.moves[i].before.card.entry_tapped()
-                    else {
-                        unreachable!()
-                    };
-                    (i, cost)
-                });
-                let entering = batch.moves.clone();
-                let m = &mut batch.moves[index];
-                m.life_paid = Some(*pay);
-                m.tapped |= !*pay;
-                if *pay {
-                    world.pay_projected_life(m.controller, cost, &entering)
-                }
-                if payment.is_some() {
-                    batch.tap_events[batch.tap_next].payment = None;
-                }
-            }
-            Some(Action::ChooseEntryBehold { object }) => {
-                let event = &mut batch.tap_events[batch.tap_next];
-                if event.behold.take().is_none() {
-                    return false;
-                }
-                if object.is_none() {
-                    batch.moves[event.index].tapped = true;
-                }
-            }
-            Some(Action::ChooseEntryReplacement { source, intrinsic }) => {
-                let event = &mut batch.tap_events[batch.tap_next];
-                let Some(i) = event
-                    .effects
-                    .iter()
-                    .position(|e| e.source == *source && e.intrinsic == *intrinsic)
-                else {
-                    return false;
-                };
-                let effect = event.effects.remove(i);
-                match effect.kind {
-                    entry_tap::EntryTapKind::Tapped => batch.moves[event.index].tapped = true,
-                    entry_tap::EntryTapKind::Untapped => batch.moves[event.index].tapped = false,
-                    entry_tap::EntryTapKind::PayLife(cost) => event.payment = Some(cost),
-                    entry_tap::EntryTapKind::Behold(subtype) => event.behold = Some(subtype),
-                }
-            }
-            Some(Action::ChooseEntryTimestamp { object }) => {
-                let Some(i) = batch
-                    .moves
-                    .iter()
-                    .position(|m| m.before.reference == *object)
-                else {
-                    return false;
-                };
-                batch.timestamp_order.push(i);
-            }
-            Some(
-                Action::ChooseReplacement { .. } | Action::ChooseResolvedCounterReplacement { .. },
-            ) => {
-                if world.entry_projection.as_ref().unwrap().counter.is_none() {
-                    return true;
-                }
-            }
-            None => {}
-            _ => return true,
-        }
-        world.visit_entry_moves(batch.moves.clone(), false, Some(&batch), &mut complete)
+        let _ = action;
+        self.current_cast_costs_fundable()
     }
 }
 
@@ -2813,6 +2535,7 @@ impl<'g> FundingState<'g> {
             },
         )
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn visit_applied(
         &self,
         step: &FundingMove,
@@ -2821,12 +2544,14 @@ impl<'g> FundingState<'g> {
         self.visit_applied_for(step, None, emit)
     }
 
+    #[cfg(feature = "test-support")]
     pub(super) fn visit_applied_for(
         &self,
         step: &FundingMove,
         goal: Option<&FundingGoal>,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
+        super::record_payment_projection(1);
         if step.output.as_ref().and_then(|o| o.deferred_cost).is_some() {
             return self.visit_deferred(step, emit);
         }
@@ -3202,9 +2927,11 @@ impl<'g> FundingState<'g> {
                 })
             });
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn complete_funding_continuation(&self, goal: &FundingGoal) -> bool {
         self.complete_funding_continuation_for(goal, None)
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn complete_funding_continuation_for(
         &self,
         goal: &FundingGoal,
@@ -3212,6 +2939,7 @@ impl<'g> FundingState<'g> {
     ) -> bool {
         self.visit_funding_continuation_plans(goal, forced_payment, false, &mut |_| true)
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn visit_funding_continuation_allocations(
         &self,
         goal: &FundingGoal,
@@ -3220,6 +2948,7 @@ impl<'g> FundingState<'g> {
     ) -> bool {
         self.visit_funding_continuation_plans(goal, forced_payment, true, emit)
     }
+    #[cfg(feature = "test-support")]
     fn visit_funding_continuation_plans(
         &self,
         goal: &FundingGoal,
@@ -3227,6 +2956,7 @@ impl<'g> FundingState<'g> {
         independent_plans: bool,
         emit: &mut dyn FnMut(&[[u64; 6]]) -> bool,
     ) -> bool {
+        super::record_payment_projection(2);
         if !independent_plans && let Some(query) = self.scoped_continuation_query() {
             return query.visit_funding_continuation_plans(goal, forced_payment, false, emit);
         }

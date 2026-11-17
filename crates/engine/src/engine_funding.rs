@@ -1,5 +1,5 @@
-//! Exact reachability for the admitted pure mana sources; no game-state clones,
-//! heuristics that discard legal plans, or mutation during action generation.
+//! Staged payment admission and exact concrete payment validation.
+//! Future payment sequences are caller decisions, never action-menu proofs.
 use super::*;
 use crate::cards::{ManaCounterFollowup, ReplacementFilter, StaticAbilityFragment};
 use ability_world::CharacteristicWorld;
@@ -23,6 +23,44 @@ pub mod funding_entry_exiles;
 #[doc(hidden)]
 #[path = "engine_funding_linked_copies.rs"]
 pub mod funding_linked_copies;
+
+/// Test-only accounting for retired hypothetical execution helpers. These
+/// helpers support projection fixtures; live action generation must never enter.
+#[cfg(feature = "test-support")]
+#[rustmage_test_access::fixture]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct PaymentPlanningWork {
+    pub projected_moves: u64,
+    pub projected_steps: u64,
+    pub continuation_plans: u64,
+}
+#[cfg(feature = "test-support")]
+thread_local! {
+    static PAYMENT_PLANNING_WORK: std::cell::Cell<PaymentPlanningWork> =
+        const { std::cell::Cell::new(PaymentPlanningWork { projected_moves: 0, projected_steps: 0, continuation_plans: 0 }) };
+}
+#[cfg(feature = "test-support")]
+fn record_payment_projection(kind: u8) {
+    PAYMENT_PLANNING_WORK.with(|value| {
+        let mut work = value.get();
+        match kind {
+            0 => work.projected_moves += 1,
+            1 => work.projected_steps += 1,
+            _ => work.continuation_plans += 1,
+        }
+        value.set(work);
+    });
+}
+#[cfg(feature = "test-support")]
+#[rustmage_test_access::fixture]
+impl Game {
+    pub fn reset_payment_planning_work() {
+        PAYMENT_PLANNING_WORK.with(|work| work.set(PaymentPlanningWork::default()));
+    }
+    pub fn payment_planning_work() -> PaymentPlanningWork {
+        PAYMENT_PLANNING_WORK.with(std::cell::Cell::get)
+    }
+}
 
 type FundingManaActivation = (
     u16,
@@ -2139,17 +2177,21 @@ impl<'g> FundingState<'g> {
                     }),
             )
     }
+    #[cfg(feature = "test-support")]
     fn moves(&self, goal: &FundingGoal) -> Vec<FundingMove> {
         self.mana_moves(goal, false, Some(false))
     }
+    #[cfg(feature = "test-support")]
     fn deferred_moves(&self, goal: &FundingGoal) -> Vec<FundingMove> {
         self.mana_moves(goal, false, Some(true))
     }
+    #[cfg(feature = "test-support")]
     fn action_moves(&self, goal: &FundingGoal) -> Vec<FundingMove> {
         self.mana_moves(goal, true, None)
     }
     /// An action can have several funding witnesses. Show it once after a
     /// witness succeeds, then let payment choose among the viable allocations.
+    #[cfg(feature = "test-support")]
     fn visit_distinct_actions(
         &self,
         goal: &FundingGoal,
@@ -2349,12 +2391,14 @@ impl<'g> FundingState<'g> {
             emit,
         )
     }
+    #[cfg(feature = "test-support")]
     fn mana_moves(
         &self,
         goal: &FundingGoal,
         late_fixed: bool,
         deferred_only: Option<bool>,
     ) -> Vec<FundingMove> {
+        record_payment_projection(0);
         // Neither an actual payment nor a proposal may invent mana activations
         // when its final total is zero. Positive totals retain the window even
         // when later Convoke/Delve choices can pay them without spending mana.
@@ -5079,8 +5123,18 @@ impl<'g> FundingState<'g> {
         }
         self.purpose
     }
+    /// Validate already supplied commitments, without a future payment proof.
+    fn current_funding_obligations(&self, goal: &FundingGoal) -> bool {
+        self.required_face_up.is_none_or(|object| {
+            self.reference(object.card) == object
+                && self.object(object.card).zone == Zone::Battlefield
+                && self.object(object.card).controller == goal.actor
+                && !manifest::face_up_prohibited(self, object)
+        }) && self.obligations(goal)
+    }
     fn reachable(&self, goal: &FundingGoal, visited: &mut HashSet<FundingKey>) -> bool {
-        self.reachable_with_evidence(goal, None, visited)
+        let _ = visited;
+        self.current_funding_obligations(goal)
     }
     fn reachable_with_evidence(
         &self,
@@ -5088,12 +5142,8 @@ impl<'g> FundingState<'g> {
         evidence: Option<u64>,
         visited: &mut HashSet<FundingKey>,
     ) -> bool {
-        if let Some(query) = self.scoped_continuation_query() {
-            return query.reachable_with_evidence(goal, evidence, visited);
-        }
-        self.reachable_with_completion(goal, evidence, visited, &mut |world| {
-            world.complete_funding_continuation(goal)
-        })
+        let _ = (evidence, visited);
+        self.current_funding_obligations(goal)
     }
     fn reachable_with_completion(
         &self,
@@ -5102,155 +5152,8 @@ impl<'g> FundingState<'g> {
         visited: &mut HashSet<FundingKey>,
         completion: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
-        if self.required_face_up.is_some_and(|object| {
-            self.reference(object.card) != object
-                || self.object(object.card).zone != Zone::Battlefield
-                || self.object(object.card).controller != goal.actor
-        }) {
-            return false;
-        }
-        if !self.obligations(goal) {
-            return false;
-        }
-        if self.additional_cost_deficit() || self.fixed_origin_counter_deficit() {
-            return false;
-        }
-        if self.pure_tap_teamwork_deficit(goal) {
-            return false;
-        }
-        let memoized = self.continuation_memo.is_some() && self.continuation_memo_safe();
-        if memoized {
-            let depth = self.continuation.as_ref().map_or(0, |c| c.outer.len());
-            let key = self.key(goal);
-            // Release the interior borrow before evaluating any continuation.
-            let fresh = self
-                .continuation_memo
-                .as_ref()
-                .unwrap()
-                .visited
-                .borrow_mut()
-                .insert((depth, key));
-            if !fresh {
-                return false;
-            }
-        }
-        let purpose = self.payment_purpose(goal);
-        let adjusted = cast_origins::payment_goal(self, goal, purpose);
-        if (if self.has_ordered_convoke() {
-            true
-        } else if self.has_contributions() {
-            convoke::payable_in(
-                self,
-                goal.actor,
-                purpose,
-                mana_lots::available(self.mana, &self.lots, purpose),
-                goal.required,
-                goal.generic,
-                &self.convoke_masks(),
-            )
-        } else {
-            payable(
-                mana_lots::available(self.mana, &self.lots, purpose),
-                adjusted.required,
-                adjusted.generic,
-            )
-        }) && evidence.is_none_or(|n| self.evidence_value() >= u128::from(n))
-            && activation_counter_placement_payable(self, goal)
-            && source_exile_payable(self, goal)
-            && goal.reserve.is_none_or(|(reference, spec)| {
-                spec.kind.craft_materials().is_none()
-                    || !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
-                        self,
-                        reference.card,
-                    )
-            })
-            && self.cost_group_ready()
-            && self.contributors.as_ref().is_none_or(|c| c.payable(self))
-            && self
-                .required_face_up
-                .is_none_or(|object| !manifest::face_up_prohibited(self, object))
-            && completion(self)
-        {
-            return true;
-        }
-        if evidence.is_some_and(|n| {
-            let upper = self.evidence_value()
-                + self
-                    .resources
-                    .iter()
-                    .filter(|r| {
-                        r.object.controller == self.actor
-                            && r.object.zone == Zone::Battlefield
-                            && !r.object.is_token()
-                            && self.mana_activations(r.id).any(|(_, a, _, _, _)| {
-                                a.cost.sacrifice
-                                    && (!a.cost.tap || !r.object.tapped)
-                                    && a.mana_production().is_some()
-                            })
-                    })
-                    .map(|r| u128::from(r.object.card.fixed_mana_value()))
-                    .sum::<u128>()
-                + self
-                    .active_melds()
-                    .flat_map(|row| row.entry.front_cards)
-                    .map(|card| u128::from(card.fixed_mana_value()))
-                    .sum::<u128>();
-            upper < u128::from(n)
-        }) || !self.optimistic(goal)
-        {
-            return false;
-        }
-        if !memoized && !visited.insert(self.key(goal)) {
-            return false;
-        }
-        // First try completing mana abilities that are payable now. Only a
-        // failed ordinary branch needs to freeze another ability before funding
-        // its cost. The second pass retains those exact nested plans without
-        // starting their child searches ahead of available ordinary steps.
-        for deferred in [false, true] {
-            let mut moves = if deferred {
-                self.deferred_moves(goal)
-            } else {
-                self.moves(goal)
-            };
-            // Prefer mana eligible for the final payment and colors that close
-            // its requirements. Retain every move: an ineligible lot can still
-            // fund an intermediate ability or change the projected world. Stable
-            // sorting preserves the order of equally useful moves.
-            let adjusted = cast_origins::payment_goal(self, goal, purpose);
-            let available = mana_lots::available(self.mana, &self.lots, purpose);
-            moves.sort_by_key(|step| {
-                let ineligible = step
-                    .quality
-                    .is_some_and(|quality| !quality.eligible(purpose));
-                let mut after = available;
-                if !ineligible {
-                    for (amount, produced) in after.iter_mut().zip(step.production) {
-                        *amount = amount.saturating_add(u128::from(produced));
-                    }
-                }
-                let missing =
-                    after
-                        .iter()
-                        .zip(adjusted.required)
-                        .fold(0u128, |sum, (&amount, required)| {
-                            sum.saturating_add(u128::from(required).saturating_sub(amount))
-                        });
-                (
-                    ineligible,
-                    !payable(after, adjusted.required, adjusted.generic),
-                    missing,
-                )
-            });
-            for step in moves {
-                if self.visit_applied_for(&step, Some(goal), &mut |next| {
-                    next.reachable_with_completion(goal, evidence, visited, completion)
-                }) {
-                    return true;
-                }
-            }
-        }
-        false
+        let _ = (evidence, visited);
+        self.current_funding_obligations(goal) && completion(self)
     }
     fn restore_payment_context(&mut self, parent: &Self) {
         self.purpose = parent.purpose;
@@ -5269,6 +5172,7 @@ impl<'g> FundingState<'g> {
         self.active_mana_keys = parent.active_mana_keys.clone();
         self.watched_sources = parent.watched_sources.clone();
     }
+    #[cfg(feature = "test-support")]
     fn visit_deferred(&self, step: &FundingMove, emit: &mut dyn FnMut(&Self) -> bool) -> bool {
         let output = step.output.as_ref().expect("deferred output");
         let cost = output.deferred_cost.expect("deferred cost");
@@ -5586,98 +5490,21 @@ impl Game {
         })
     }
     pub(super) fn can_fund_for(&self, goal: FundingGoal, purpose: mana_lots::Purpose) -> bool {
-        if self.contributor_requirement(&goal).is_some() {
-            let mut world = FundingState::from_game(self, &goal);
-            world.set_purpose(purpose);
-            if goal.required == [0; 6]
-                && goal.generic == 0
-                && goal
-                    .source
-                    .as_ref()
-                    .is_some_and(|(source, ability, _, definition, _)| {
-                        !definition.activation(*ability).cost.mana_component
-                            && self.named_activation_generic_increase(source.card) == 0
-                    })
-            {
-                return world.obligations(&goal)
-                    && world
-                        .contributors
-                        .as_ref()
-                        .is_none_or(|c| c.payable(&world));
-            }
-            return world.reachable(&goal, &mut HashSet::new());
-        }
-        if self.state.announcing.as_ref().is_some_and(|a| {
-            a.cast_costs.is_some()
-                || a.additional_cost()
-                    .is_some_and(|s| s.kind.variable_cost_minimum().is_some())
-        }) {
-            let mut world = FundingState::from_game(self, &goal);
-            world.set_purpose(purpose);
-            return world.reachable(&goal, &mut HashSet::new());
-        }
-        if let Some(result) = self.preview_optional_cast_costs(
-            goal.clone(),
-            purpose,
-            ObjectRef {
-                card: CardId::MAX,
-                generation: 0,
-            },
-            goal.reserve.map(|(_, spec)| spec),
-            None,
-            &goal.reserve.map(|(r, _)| r).into_iter().collect::<Vec<_>>(),
-            goal.reserve.is_some(),
-            &[],
-            &[],
-        ) {
-            return result;
-        }
-        if let Some(a) = &self.state.announcing
-            && !a.additional_paid
-            && let Some(spec) = a.counter_cost_spec()
-        {
-            return self.counter_cost_fundable(
-                goal,
-                purpose,
-                spec,
-                a.creature_counter_cost
-                    .as_ref()
-                    .map_or(&[], |v| v.as_slice()),
-            );
-        }
-        if let Some(a) = &self.state.announcing
-            && !a.additional_paid
-            && let Some(group) = &a.additional_group
-        {
-            let spec = a.additional_cost().expect("selected tap cost");
-            if !group.iter().all(|&r| {
-                self.additional_candidate(
-                    spec,
-                    a.item.controller,
-                    a.item
-                        .source
-                        .expect("cost announcement has object source")
-                        .object,
-                    r,
-                )
-            }) {
-                return false;
-            }
-        }
+        let _ = purpose;
         let object = goal
             .source
             .as_ref()
-            .and_then(|(r, _, _, _, _)| self.state.objects.get(r.card as usize));
+            .and_then(|(r, ..)| self.state.objects.get(r.card as usize));
         let reserve = goal
             .reserve
             .and_then(|(r, _)| self.state.objects.get(r.card as usize));
-        if !reserve_obligations(self, &goal, reserve, |card| self.keywords(card))
-            || !source_obligations(
+        reserve_obligations(self, &goal, reserve, |id| self.keywords(id))
+            && source_obligations(
                 &goal,
                 object,
                 goal.source
                     .as_ref()
-                    .map_or(CounterAmounts::default(), |(r, _, _, _, _)| {
+                    .map_or(CounterAmounts::default(), |(r, ..)| {
                         self.counter_amounts(r.card)
                     }),
                 object.map_or(0, |o| {
@@ -5695,30 +5522,6 @@ impl Game {
                 self.exhaust_reuse_authorized_for_goal(&goal),
                 self.self_granted_goal(&goal),
             )
-        {
-            return false;
-        }
-        let adjusted = cast_origins::payment_goal(self, &goal, purpose);
-        // The common prefunded path needs no resource graph or heap allocations.
-        if payable(
-            self.available_mana(goal.actor, purpose),
-            adjusted.required,
-            adjusted.generic,
-        ) && activation_counter_placement_payable(self, &goal)
-            && source_exile_payable(self, &goal)
-            && goal.reserve.is_none_or(|(reference, spec)| {
-                spec.kind.craft_materials().is_none()
-                    || !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
-                        self,
-                        reference.card,
-                    )
-            })
-        {
-            return true;
-        }
-        let mut state = FundingState::from_game(self, &goal);
-        state.set_purpose(purpose);
-        state.reachable(&goal, &mut HashSet::new())
     }
     // Numeric funding fixtures use the default-purpose convenience wrapper;
     // runtime spell callers always provide their actual face purpose.
@@ -5735,32 +5538,9 @@ impl Game {
         purpose: mana_lots::Purpose,
         convoke: bool,
     ) -> bool {
-        let artifact = matches!(purpose, mana_lots::Purpose::Spell(spell) if improvise::available(self, goal.actor, spell.card));
-        if convoke::payable_in(
-            self,
-            goal.actor,
-            purpose,
-            self.available_mana(goal.actor, purpose).map(u128::from),
-            goal.required,
-            goal.generic,
-            &improvise::masks(
-                self,
-                goal.actor,
-                match purpose {
-                    mana_lots::Purpose::Spell(spell) => {
-                        convoke::available(self, goal.actor, spell.card)
-                    }
-                    _ => convoke,
-                },
-                artifact,
-                &[],
-            ),
-        ) {
-            return true;
-        }
         let mut state = FundingState::from_game_with_convoke(self, &goal, convoke);
         state.set_purpose(purpose);
-        state.reachable(&goal, &mut HashSet::new())
+        state.current_funding_obligations(&goal)
     }
     pub(super) fn can_fund_evidence_for(
         &self,
@@ -5955,664 +5735,47 @@ impl Game {
     }
 
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
-        if a.independent_additional_mana().is_some()
-            && a.item
-                .cast
-                .is_some_and(|cast| cast.additional_cost_route.is_none())
-        {
-            // A total may be shared by two branches with different nonmana costs.
-            return a.cost_options().enumerate().any(|(index, amount)| {
-                amount == cost && self.announcement_cost_choice_fundable(a, index)
-            });
-        }
-        if a.item.kind == StackKind::Spell
-            && (a.sacrifice_discount_count().is_some()
-                || a.printed_additional_cost().is_some_and(|spec| {
-                    spec.kind == EffectChoiceKind::SacrificeForGenericReduction
-                }))
-        {
-            return a.sacrifice_discount_count().map_or_else(
-                || {
-                    (0..=self.sacrifice_discount_limit()).any(|count| {
-                        self.sacrifice_discount_announcement_fundable(a, Some(cost), count)
-                    })
-                },
-                |count| self.sacrifice_discount_announcement_fundable(a, Some(cost), count),
-            );
-        }
-        if a.item.kind == StackKind::Spell
-            && a.additional_cost().is_some_and(|s| {
-                matches!(
-                    s.kind,
-                    EffectChoiceKind::BeholdMany(_) | EffectChoiceKind::BeholdAndExile
-                )
-            })
-        {
-            return self.behold_announcement_fundable(a, cost);
-        }
-        if a.needs_behold() {
-            return self.behold_intent_fundable(a, false) || self.behold_intent_fundable(a, true);
-        }
-        if a.needs_waterbend_cost() {
-            return self.waterbend_cost_fundable(a, false) || self.waterbend_cost_fundable(a, true);
-        }
-        if a.item.kind == StackKind::Spell
-            && a.item.source.is_some_and(|source| {
-                self.cast_requires_target_payment(a.item.controller, source.card)
-            })
-        {
-            return self.target_payment_announcement_fundable(a, cost);
-        }
-        if !self.exact_x_targets_fundable(a, None, false) {
+        let Some(source) = a.item.source else {
+            return false;
+        };
+        if self.state.objects.get(source.id as usize).is_none() {
             return false;
         }
-        if a.item.kind == StackKind::Spell && a.tap_payment().is_some() {
-            let mut proposal = a.clone();
-            proposal.cost = Some(cost);
-            proposal.plan = self.target_spec(&proposal.item);
-            return self
-                .target_proposal_total(
-                    &proposal,
-                    Self::announcement_base_cost(&proposal),
-                    proposal.plan,
-                    None,
-                    false,
-                    Self::announcement_optional_reduction(&proposal),
-                )
-                .is_some_and(|total| self.waterbend_spell_total_fundable(&proposal, total));
-        }
-        if matches!(
-            a.item.kind,
-            StackKind::ActivatedAbility { ability }
-                if matches!(
-                    a.item.source.expect("activation source").card.activation(ability).program.first(),
-                    Some(Instruction::WaterbendXCost { .. }),
-                )
-        ) {
-            let mut proposal = a.clone();
-            proposal.total_cost = Some(cost);
-            return self.activation_packet_fundable(&proposal);
-        }
-        if a.source_mana_alternative().is_some() || a.independent_additional_mana().is_some() {
-            return self.behold_announcement_fundable(a, cost);
-        }
-        if a.blight_x_cost() {
-            return self.blight_x_cost_fundable(a, cost, a.item.x.unwrap_or(0));
-        }
-        if a.nonmana_x() {
-            let mut proposal = a.clone();
-            proposal.cost = Some(cost);
-            proposal.plan = self.target_spec(&proposal.item);
-            if proposal.item.x.is_none()
-                || !self.item_targets_available(&proposal.item, proposal.plan)
-            {
-                return false;
-            }
-            proposal.cast_costs.get_or_insert_with(Default::default);
-            proposal.initialize_cast_costs(false);
-            return self.activation_packet_fundable(&proposal);
-        }
-        if let StackKind::ActivatedAbility { ability } = a.item.kind
+        if a.item.kind == StackKind::Spell
             && a.item
-                .source
-                .expect("activation source")
-                .card
-                .activation(ability)
-                .life_x_cost()
-        {
-            let mut proposal = a.clone();
-            proposal.cost = Some(cost);
-            proposal.add_cast_cost_clause(CastCostClause::Life(a.item.x.unwrap_or(0)));
-            proposal.initialize_cast_costs(false);
-            return self.activation_packet_fundable(&proposal);
-        }
-        if matches!(
-            a.limited_cast_permission.as_deref(),
-            Some(
-                LimitedCastPermission::LinkedExilePaid(_) | LimitedCastPermission::PaidGraveyard(_)
-            )
-        ) {
-            let source = a.item.source.expect("linked cast source");
-            return (a.item.cast.unwrap().method != CastMethod::Normal
-                || self.spell_cost_option_available_for_definition(
-                    a.item.controller,
-                    source.id,
-                    cost,
-                    source.card,
-                ))
-                && self.behold_announcement_fundable(a, cost);
-        }
-        if a.item
-            .cast
-            .is_some_and(|cast| cast.method == CastMethod::Free)
-            || a.linked_origin_counter_cost().is_some()
-        {
-            // Source-linked counter payments supplement all other costs. The
-            // complete ordered context reserves them during initial preflight.
-            return self.behold_announcement_fundable(a, cost);
-        }
-        if a.item.cast.is_some_and(|cast| cast.kicker == Some(true))
-            && a.item
-                .source
-                .is_some_and(|source| source.card.kicker_additional_cost().is_some())
-        {
-            return self.behold_announcement_fundable(a, cost);
-        }
-        if a.self_graveyard_cast_cost().is_some() {
-            return self.self_graveyard_announcement_fundable(a, cost);
-        }
-        if a.exile_play_surcharge() > 0 {
-            let source = a.item.source.expect("surcharged spell source");
-            if a.item
                 .cast
                 .is_some_and(|cast| cast.method == CastMethod::Normal)
-                && !self.spell_cost_option_available(
-                    a.item.controller,
-                    source.id,
-                    a.cost_before_exile_play_surcharge(cost),
-                )
-            {
-                return false;
-            }
-            if source.card.has_target_cost_modifier() {
-                return self.announcement_target_fundable(a, None, Some(cost), None, None, false);
-            }
-        }
-        if a.exile_play_surcharge() > 0
-            || a.item
-                .cast
-                .is_some_and(|cast| cast.method == CastMethod::Warp)
-                && (a.payment_x_symbols() > 0
-                    || a.item
-                        .source
-                        .is_some_and(|source| source.card.mana_additional_alternative().is_some()))
-        {
-            let mut proposal = a.clone();
-            proposal.cost = Some(cost);
-            if let Some(x) = proposal.item.x {
-                let source = proposal.item.source.expect("warp spell source");
-                let Some(total) = self.scalar_x_total_with_symbols(
-                    proposal.item.controller,
-                    source.id,
-                    Self::announcement_base_cost(&proposal),
-                    x,
-                    source.card,
-                    proposal.payment_x_symbols(),
-                    &proposal.item.targets,
-                    Self::announcement_optional_reduction(&proposal),
-                ) else {
-                    return false;
-                };
-                proposal.total_cost = Some(total);
-            }
-            return self.behold_announcement_fundable(&proposal, cost);
-        }
-        if a.has_ordered_life_cost()
-            || matches!(
-                a.limited_cast_permission.as_deref(),
-                Some(LimitedCastPermission::LinkedExilePaid(grant)) if grant.spend_any_mana
-            )
-            || a.item.cast.is_some_and(|cast| {
-                cast.method.is_mayhem()
-                    || matches!(
-                        cast.method,
-                        CastMethod::Foretell | CastMethod::GrantedFixedFlashback(_)
-                    )
-            })
-        {
-            // These routes must preflight the actual alternative and its
-            // additional costs instead of inferring them from the printed cost.
-            return self.behold_announcement_fundable(a, cost);
-        }
-        if a.item.cast.is_some_and(|c| c.method.is_harmonize()) {
-            let mut selected = a.clone();
-            selected.cost = Some(cost);
-            if let Some(object) = selected.harmonizer {
-                return self.harmonize_choice_fundable(&selected, object);
-            }
-            if self.harmonize_choice_fundable(&selected, None) {
-                return true;
-            }
-            return (0..self.state.objects.len()).any(|id| {
-                self.harmonize_choice_fundable(&selected, Some(self.object_ref(id as CardId)))
-            });
-        }
-        if a.item.kind == StackKind::Spell
-            && a.item
-                .source
-                .expect("spell source")
-                .card
-                .behold_cast()
-                .is_some()
-        {
-            return self.behold_announcement_fundable(a, cost);
-        }
-        if let StackKind::ActivatedAbility { ability } = a.item.kind
-            && Self::activation_target_sensitive(
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .card,
-                ability,
-            )
-        {
-            let mut proposal = a.clone();
-            proposal.cost = Some(cost);
-            return self.announcement_activation_target_fundable(&proposal, None, false);
-        }
-        if a.item.kind == StackKind::Spell
-            && a.item
-                .source
-                .expect("spell source")
-                .card
-                .has_target_cost_modifier()
-        {
-            return self.announcement_target_fundable(a, None, Some(cost), None, None, false);
-        }
-        if a.item
-            .cast
-            .is_some_and(|c| c.method == CastMethod::Flashback)
-            && let Some(spec) = a
-                .item
-                .source
-                .expect("cost announcement has object source")
-                .card
-                .flashback_additional()
-        {
-            let Some(cost) = self.reduced_spell_cost(
+            && !self.spell_cost_option_available_for_definition(
                 a.item.controller,
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .id,
-                cost,
-            ) else {
-                return false;
-            };
-            let goal = FundingGoal {
-                actor: a.item.controller,
-                required: cost.colored,
-                generic: cost.generic,
-                reserve: None,
-                source: None,
-            };
-            let purpose = self.purpose_for_item(&a.item);
-            if matches!(
-                spec.kind.payment_kind(),
-                EffectChoiceKind::TapPermanents(_)
-                    | EffectChoiceKind::ExileGraveyardCards(_)
-                    | EffectChoiceKind::ExileGraveyardSymbols { .. }
-            ) {
-                return self.group_cost_fundable(
-                    goal,
-                    purpose,
-                    spec,
-                    a.item
-                        .source
-                        .expect("cost announcement has object source")
-                        .object,
-                    &[],
-                );
-            }
-            return self.state.objects.iter().enumerate().any(|(id, _)| {
-                let candidate = self.object_ref(id as CardId);
-                self.additional_candidate(
-                    spec,
-                    a.item.controller,
-                    a.item
-                        .source
-                        .expect("cost announcement has object source")
-                        .object,
-                    candidate,
-                ) && self.can_fund_for(
-                    FundingGoal {
-                        reserve: Some((candidate, spec)),
-                        ..goal.clone()
-                    },
-                    purpose,
-                )
-            });
-        }
-        if a.graveyard_origin_counter_cost().is_some() {
-            let Some(cost) = self.reduced_spell_cost(
-                a.item.controller,
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .id,
-                cost,
-            ) else {
-                return false;
-            };
-            return self.counter_cost_fundable(
-                FundingGoal {
-                    actor: a.item.controller,
-                    required: cost.colored,
-                    generic: cost.generic,
-                    reserve: None,
-                    source: None,
-                },
-                self.purpose_for_item(&a.item),
-                Self::creature_counter_spec(a.graveyard_origin_counter_cost().unwrap()),
-                a.creature_counter_cost
-                    .as_ref()
-                    .map_or(&[], |v| v.as_slice()),
-            );
-        }
-        if a.item.kind == StackKind::Spell
-            && a.item.cast.is_some_and(|c| {
-                matches!(
-                    c.method,
-                    CastMethod::Free
-                        | CastMethod::Plot
-                        | CastMethod::Miracle
-                        | CastMethod::Airbend
-                        | CastMethod::GrantedZeroFlashback
-                )
-            })
-        {
-            let definition = a
-                .item
-                .source
-                .expect("cost announcement has object source")
-                .card;
-            let base = Self::with_kicker_cost(
-                Self::with_offspring_cost(
-                    cost,
-                    definition,
-                    a.item.cast.is_some_and(|c| c.offspring == Some(true)),
-                ),
-                definition,
-                a.item.cast.is_some_and(|c| c.kicker == Some(true)),
-            );
-            if definition.has_bargain() {
-                return match a.item.cast.and_then(|c| c.bargain) {
-                    Some(true) => self.bargain_cost_fundable(
-                        a.item.controller,
-                        a.item
-                            .source
-                            .expect("cost announcement has object source")
-                            .id,
-                        base,
-                        a.additional,
-                    ),
-                    Some(false) => self.bargain_cost_fundable(
-                        a.item.controller,
-                        a.item
-                            .source
-                            .expect("cost announcement has object source")
-                            .id,
-                        base,
-                        None,
-                    ),
-                    None => self.initial_bargain_fundable(
-                        a.item.controller,
-                        a.item
-                            .source
-                            .expect("cost announcement has object source")
-                            .id,
-                        base,
-                    ),
-                };
-            }
-            if definition.collect_evidence_cost().is_some() {
-                return match a.item.cast.and_then(|c| c.evidence) {
-                    Some(collect) => self.evidence_cast_fundable(
-                        a.item.controller,
-                        a.item
-                            .source
-                            .expect("cost announcement has object source")
-                            .id,
-                        base,
-                        collect,
-                    ),
-                    None => {
-                        self.evidence_cast_fundable(
-                            a.item.controller,
-                            a.item
-                                .source
-                                .expect("cost announcement has object source")
-                                .id,
-                            base,
-                            false,
-                        ) || self.evidence_cast_fundable(
-                            a.item.controller,
-                            a.item
-                                .source
-                                .expect("cost announcement has object source")
-                                .id,
-                            base,
-                            true,
-                        )
-                    }
-                };
-            }
-            let Some(total) = self.spell_total_for_definition(
-                a.item.controller,
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .id,
-                base,
-                definition,
-            ) else {
-                return false;
-            };
-            if definition.mana_additional_alternative().is_some()
-                && Some(cost) != a.fixed_alternative_cost()
-            {
-                return self.can_fund_for(
-                    FundingGoal {
-                        actor: a.item.controller,
-                        required: total.colored,
-                        generic: total.generic,
-                        reserve: None,
-                        source: None,
-                    },
-                    self.purpose_for_item(&a.item),
-                );
-            }
-            return self.spell_can_fund_total_for_definition(
-                a.item.controller,
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .id,
-                total,
-                None,
-                definition,
-            );
-        }
-        if a.item.cast.is_some_and(|c| {
-            matches!(
-                c.method,
-                CastMethod::Sneak
-                    | CastMethod::WebSlinging
-                    | CastMethod::BeamMeUp
-                    | CastMethod::BeamMeUpGranted(_)
-            ) || c.method.pays_life_for_mana_value()
-        }) {
-            let mut proposal = a.clone();
-            proposal.cost = Some(cost);
-            proposal.cast_costs = Some(Box::default());
-            proposal.initialize_cast_costs(convoke::cost_potential(
-                self,
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .card,
-            ));
-            let goal = self.funding_goal(&proposal);
-            let mut world = FundingState::from_game_with_convoke(
-                self,
-                &goal,
-                convoke::potential(
-                    self,
-                    a.item
-                        .source
-                        .expect("cost announcement has object source")
-                        .card,
-                ),
-            );
-            world.set_purpose(self.purpose_for_item(&a.item));
-            world.set_payment_context(&proposal);
-            return world.reachable(&goal, &mut HashSet::new());
-        }
-        if a.item.kind == StackKind::Spell
-            && !self.spell_cost_option_available(
-                a.item.controller,
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .id,
-                cost,
+                source.id,
+                a.cost_before_exile_play_surcharge(cost),
+                source.card,
             )
         {
             return false;
         }
+        let mut candidate = a.clone();
+        candidate.cost = Some(cost);
+        // Check only the declared X and its representation. Undeclared choices
+        // remain caller decisions; never enumerate alternate routes or targets.
         if a.item.kind == StackKind::Spell
-            && a.item
-                .source
-                .expect("cost announcement has object source")
-                .card
-                .x_symbols()
-                > 0
+            && let Some(x) = a.item.x
         {
-            return a.item.x.is_some_and(|x| {
-                self.scalar_x_total(
-                    a.item.controller,
-                    a.item
-                        .source
-                        .expect("cost announcement has object source")
-                        .id,
-                    cost,
-                    x,
-                )
-                .is_some_and(|total| {
-                    self.spell_can_fund_total_at_value(
-                        a.item.controller,
-                        a.item
-                            .source
-                            .expect("cost announcement has object source")
-                            .id,
-                        total,
-                        None,
-                        a.item.source.unwrap().card,
-                        Some(a.item.mana_value()),
-                    )
-                })
-            });
-        }
-        if a.item
-            .source
-            .expect("cost announcement has object source")
-            .card
-            .has_target_cost_modifier()
-            && a.item.kind == StackKind::Spell
-        {
-            return self.announcement_target_fundable(a, None, Some(cost), None, None, false);
-        }
-        if a.item.kind == StackKind::Spell
-            && a.item
-                .source
-                .expect("cost announcement has object source")
-                .card
-                .collect_evidence_cost()
-                .is_some()
-        {
-            return self.evidence_cast_fundable(
+            let Some(total) = self.scalar_x_total_with_symbols(
                 a.item.controller,
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .id,
-                cost,
-                a.item.cast.is_some_and(|c| c.evidence == Some(true)),
-            );
+                source.id,
+                Self::announcement_base_cost(&candidate),
+                x,
+                source.card,
+                candidate.payment_x_symbols(),
+                &a.item.targets,
+                Self::announcement_optional_reduction(&candidate),
+            ) else {
+                return false;
+            };
+            candidate.total_cost = Some(total);
         }
-        if a.item.kind == StackKind::Spell
-            && a.item
-                .source
-                .expect("cost announcement has object source")
-                .card
-                .has_bargain()
-        {
-            return self.bargain_cost_fundable(
-                a.item.controller,
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .id,
-                cost,
-                a.additional,
-            );
-        }
-        match a.item.kind {
-            StackKind::Spell => self.spell_can_fund_for_definition(
-                a.item.controller,
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .id,
-                Self::with_kicker_cost(
-                    Self::with_offspring_cost(
-                        cost,
-                        a.item
-                            .source
-                            .expect("cost announcement has object source")
-                            .card,
-                        a.item.cast.is_some_and(|c| c.offspring == Some(true)),
-                    ),
-                    a.item
-                        .source
-                        .expect("cost announcement has object source")
-                        .card,
-                    a.item.cast.is_some_and(|c| c.kicker == Some(true)),
-                ),
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .card,
-            ),
-            StackKind::ActivatedAbility { ability } => self.activation_can_fund(
-                FundingGoal {
-                    reserve: None,
-                    actor: a.item.controller,
-                    required: cost.colored,
-                    generic: cost.generic,
-                    source: Some((
-                        a.item
-                            .source
-                            .expect("cost announcement has object source")
-                            .object,
-                        ability,
-                        a.counter_payment.clone(),
-                        a.item
-                            .source
-                            .expect("cost announcement has object source")
-                            .card,
-                        a.item.borrowed_slot,
-                    )),
-                },
-                a.additional_cost(),
-            ),
-            StackKind::TriggeredAbility { .. }
-            | StackKind::DecayedAttack
-            | StackKind::SuspendTick
-            | StackKind::SuspendCast
-            | StackKind::ReboundCast
-            | StackKind::CopyEndStepSacrifice
-            | StackKind::CopyEndStepConditionalSacrifice
-            | StackKind::CasualtyCopy
-            | StackKind::ConspireCopy
-            | StackKind::DelayedSacrifice
-            | StackKind::DelayedReturn
-            | StackKind::DelayedTokenCreation { .. }
-            | StackKind::DelayedManifestDread
-            | StackKind::DelayedWarpExile
-            | StackKind::InherentRule { .. }
-            | StackKind::SiegeDefeat => false,
-        }
+        self.activation_packet_admissible(&candidate)
     }
     pub(super) fn funding_goal(&self, announcement: &Announcement) -> FundingGoal {
         if announcement.activation_cost_route != ActivationCostRoute::Printed {
@@ -6774,13 +5937,6 @@ impl Game {
             if !self.tap_contributors_valid(a) {
                 return None;
             }
-            if a.cast_costs.is_some() {
-                let mut world = self.cast_cost_world(a);
-                world.mark_mana_clause_paid();
-                if !world.cost_completion() {
-                    return None;
-                }
-            }
             cast_origins::payment_requirements(
                 self,
                 a.item.controller,
@@ -6798,7 +5954,6 @@ impl Game {
                     .contributors
                     .as_ref()
                     .is_none_or(|c| c.payable(&state))
-                || !state.cost_completion()
                 || !activation_counter_placement_payable(&state, &goal)
                 || !source_exile_payable(&state, &goal)
                 || a.cast_costs.is_none() && a.evidence.as_ref().is_some_and(|e| !e.complete)
@@ -6884,68 +6039,38 @@ impl Game {
                 .is_some_and(|pending| self.guided_mana_goal(pending).is_some())
     }
     fn mana_total_parent_fundable(&self, child: &Announcement, payment: Option<Mana>) -> bool {
-        if !self.has_mana_parent(child) {
-            return true;
-        }
-        let frames = self
-            .state
-            .mana_announcement_stack
-            .as_deref()
-            .map_or(&[][..], |frames| frames.as_slice());
         let goal = self.funding_goal(child);
-        let quality = self
-            .state
-            .mana_lots
-            .as_ref()
-            .and_then(|m| m.announcement_quality.as_ref())
-            .map(|(_, q)| q);
         let mut state = FundingState::from_game(self, &goal);
         state.set_purpose(self.purpose_for_item(&child.item));
         state.set_payment_context(child);
-        state.set_funding_continuation(child, frames, quality);
-        if let Some(payment) = payment {
-            // This is completion of an existing CR602 announcement. It must not
-            // pass through moves(), which enumerates only new legal activations
-            // and correctly excludes every active mana-ability instance.
-            state.obligations(&goal)
+        if !state.current_funding_obligations(&goal) {
+            return false;
+        }
+        payment.is_none_or(|payment| {
+            let purpose = self.purpose_for_item(&child.item);
+            let adjusted = cast_origins::payment_goal(self, &goal, purpose);
+            ManaPaymentDomain {
+                available: self.available_mana(goal.actor, purpose),
+                required: adjusted.required,
+                generic: adjusted.generic,
+            }
+            .contains(payment)
                 && source_exile_payable(&state, &goal)
                 && activation_counter_placement_payable(&state, &goal)
-                && state.complete_funding_continuation_for(&goal, Some(payment))
-        } else {
-            state.reachable_with_evidence(
-                &goal,
-                child.evidence.as_ref().map(|e| e.threshold),
-                &mut HashSet::new(),
-            )
-        }
+        })
     }
     /// Initial acquired nonmana activations need the immutable packet's origin
     /// before any live announcement exists. Reuse the full cost context so
     /// source use, target totals and additional witnesses stay in one world.
-    pub(super) fn activation_packet_fundable(&self, candidate: &Announcement) -> bool {
+    pub(super) fn activation_packet_admissible(&self, candidate: &Announcement) -> bool {
         let goal = self.funding_goal(candidate);
         let mut world = FundingState::from_game(self, &goal);
         world.set_purpose(self.purpose_for_item(&candidate.item));
         world.set_payment_context(candidate);
-        if goal.generic == 0
-            && goal.required == [0; 6]
-            && candidate.activation_generic_increase == 0
-            && goal
-                .source
-                .as_ref()
-                .is_some_and(|(_, index, _, definition, _)| {
-                    !definition.activation(*index).cost.mana_component
-                })
-        {
-            // A full proposal still has no mana-ability window when its total
-            // contains only nonmana costs. Complete those costs in this world.
-            return world.obligations(&goal) && world.cost_completion();
-        }
-        world.reachable_with_evidence(
-            &goal,
-            candidate.evidence.as_ref().map(|row| row.threshold),
-            &mut HashSet::new(),
-        )
+        world.current_funding_obligations(&goal)
+    }
+    pub(super) fn activation_packet_fundable(&self, candidate: &Announcement) -> bool {
+        self.activation_packet_admissible(candidate)
     }
     pub(super) fn waterbend_cost_fundable(&self, announcement: &Announcement, pay: bool) -> bool {
         let mut proposal = announcement.clone();
@@ -6970,59 +6095,41 @@ impl Game {
         world.set_payment_context(&proposal);
         world.reachable(&goal, &mut HashSet::new())
     }
+    pub(super) fn mana_packet_admissible(
+        &self,
+        packet: &SpellView,
+        counters: Counters,
+        production: Mana,
+    ) -> bool {
+        if packet
+            .mana_activation_key()
+            .is_some_and(|key| self.active_mana_activation_keys().contains(&key))
+        {
+            return false;
+        }
+        let candidate = self.payment_announcement(packet.clone(), counters, Some(production), None);
+        self.activation_packet_admissible(&candidate)
+    }
     pub(super) fn mana_packet_fundable(
         &self,
         packet: &SpellView,
         counters: Counters,
         production: Mana,
     ) -> bool {
-        let quality = self.announced_mana_quality(packet, Some(production));
-        let candidate = self.payment_announcement(packet.clone(), counters, Some(production), None);
-        let parents = self.deferred_mana_parents();
-        if !parents.is_empty()
-            && candidate.additional_cost().is_some_and(|spec| {
-                matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
-            })
-        {
-            // During a parent payment, this family is enumerated by exact
-            // FundingMoves, including deferred mana components. An unselected
-            // packet has no external witness to project into its continuation;
-            // it must not invent output or spend an ancestor's reserved tap.
-            return false;
-        }
-        self.mana_cost_routes_fundable(candidate, &parents, quality.as_ref().map(|(_, q)| q))
+        self.mana_packet_admissible(packet, counters, production)
     }
     fn mana_cost_routes_fundable(
         &self,
-        mut candidate: Announcement,
+        candidate: Announcement,
         parents: &[mana_announcements::ManaAnnouncement],
         quality: Option<&mana_lots::Quality>,
     ) -> bool {
-        (0..candidate.cost_options().count()).any(|slot| {
-            candidate.select_cost(slot);
-            candidate
-                .untargeted_activation_totals()
-                .into_iter()
-                .flatten()
-                .any(|total| {
-                    candidate.total_cost = Some(total);
-                    if candidate
-                        .additional_cost()
-                        .is_some_and(|spec| spec.kind == EffectChoiceKind::Forage)
-                    {
-                        ForageRoute::MANA_COST_ROUTES.into_iter().any(|route| {
-                            candidate.forage = Some(Box::new(forage::ForageSelection {
-                                route: Some(route),
-                                selected: Vec::new(),
-                                skip_to: 0,
-                            }));
-                            self.deferred_mana_fundable(&candidate, parents, quality)
-                        })
-                    } else {
-                        self.deferred_mana_fundable(&candidate, parents, quality)
-                    }
-                })
-        })
+        let _ = (parents, quality);
+        self.activation_packet_admissible(&candidate)
+            && candidate
+                .item
+                .mana_activation_key()
+                .is_none_or(|key| !self.active_mana_activation_keys().contains(&key))
     }
     fn deferred_mana_fundable(
         &self,
@@ -7030,79 +6137,68 @@ impl Game {
         parents: &[mana_announcements::ManaAnnouncement],
         quality: Option<&mana_lots::Quality>,
     ) -> bool {
-        if candidate
-            .item
-            .mana_activation_key()
-            .is_some_and(|key| self.active_mana_activation_keys().contains(&key))
-        {
-            return false;
-        }
-        let goal = self.funding_goal(candidate);
-        // A payment cannot untap an exact source for an ancestor's pending
-        // tap cost. Reject this child before searching ways to pay for it.
-        if let Some((source, ..)) = goal.source.as_ref()
-            && goal.reserves_source_tap(*source)
-            && parents.iter().any(|frame| {
-                self.funding_goal(&frame.announcement)
-                    .reserves_source_tap(*source)
-            })
-        {
-            return false;
-        }
-        let mut world = FundingState::from_game(self, &goal);
-        world.set_purpose(self.purpose_for_item(&candidate.item));
-        world.set_payment_context(candidate);
-        world.set_funding_continuation(candidate, parents, quality);
-        world.reachable_with_evidence(
-            &goal,
-            candidate.evidence.as_ref().map(|row| row.threshold),
-            &mut HashSet::new(),
-        )
+        let _ = (parents, quality);
+        self.activation_packet_admissible(candidate)
+            && candidate
+                .item
+                .mana_activation_key()
+                .is_none_or(|key| !self.active_mana_activation_keys().contains(&key))
     }
-    fn visit_deferred_indexed_mana(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
+    /// Current mana abilities, with materials and allocations left to callers.
+    /// This visitor never constructs speculative FundingMove witnesses.
+    pub(super) fn visit_local_mana_abilities(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
+        // Resolution opens its own mana window even inside a suspended cast.
+        if !matches!(self.state.pending, Pending::ResolutionMana { .. })
+            && self.attempt_mana_window_closed()
+        {
+            return false;
+        }
         let Some(actor) = self.semantic_actor() else {
             return false;
         };
-        let parents = self.deferred_mana_parents();
-        if parents.is_empty() {
-            return false;
-        }
+        let mut seen = Vec::new();
+        let mut once = |action: Action| {
+            if seen.contains(&action) {
+                return false;
+            }
+            seen.push(action.clone());
+            emit(action)
+        };
         for (id, object) in self.state.objects.iter().enumerate() {
             let id = id as CardId;
-            if self.named_activation_generic_increase(id) != 0
-                && (self.visit_intrinsic_mana(id, actor, emit)
-                    || self.visit_granted_mana(id, actor, emit))
+            if self.visit_intrinsic_mana(id, actor, &mut once)
+                || self.visit_granted_mana(id, actor, &mut once)
+                || self.visit_borrowed_activations(id, actor, false, &mut |action| {
+                    matches!(
+                        action,
+                        Action::AnnounceBorrowedMana { .. }
+                            | Action::AnnounceGraveyardBorrowedMana { .. }
+                            | Action::AnnounceInheritedMana { .. }
+                    ) && once(action)
+                })
+                || self.visit_self_granted_activations(id, actor, false, &mut |action| {
+                    matches!(action, Action::AnnounceSelfGrantedMana { .. }) && once(action)
+                })
             {
-                return true;
-            }
-            if self.visit_borrowed_activations(id, actor, false, &mut |action| {
-                matches!(
-                    action,
-                    Action::AnnounceBorrowedMana { .. }
-                        | Action::AnnounceGraveyardBorrowedMana { .. }
-                        | Action::AnnounceInheritedMana { .. }
-                ) && emit(action)
-            }) || self.visit_self_granted_activations(id, actor, false, &mut |action| {
-                matches!(action, Action::AnnounceSelfGrantedMana { .. }) && emit(action)
-            }) {
                 return true;
             }
             for (index, ability) in object.card.activations().iter().enumerate() {
                 let Some(production) = ability.mana_production() else {
                     continue;
                 };
-                // Selected external costs retain the existing incremental route;
-                // this candidate path adds deferred payment of a mana component.
-                if (!ability.cost.mana_component && self.named_activation_generic_increase(id) == 0)
-                    || ability.cost.additional.is_some()
-                    || object.card.legacy_subtype_mana_activation(index as u16)
+                if object.card.legacy_subtype_mana_activation(index as u16)
                     || object.card.self_granted_activation_template(index as u16)
                     || !self.activation_cost_available(id, ability, index, actor, false)
                 {
                     continue;
                 }
                 let packet = self.activation_packet(actor, id, index as u16);
-                let quality = self.announced_mana_quality(&packet, None);
+                if packet
+                    .mana_activation_key()
+                    .is_some_and(|key| self.active_mana_activation_keys().contains(&key))
+                {
+                    continue;
+                }
                 if self.visit_activation_counter_payments(
                     actor,
                     ability,
@@ -7114,22 +6210,13 @@ impl Game {
                             object.card,
                             index as u16,
                             |produced| {
-                                let candidate = self.payment_announcement(
-                                    packet.clone(),
-                                    counters.clone(),
-                                    Some(produced),
-                                    None,
-                                );
-                                self.mana_cost_routes_fundable(
-                                    candidate,
-                                    &parents,
-                                    quality.as_ref().map(|(_, q)| q),
-                                ) && emit(Action::AnnounceMana {
-                                    card: id,
-                                    ability: index as u16,
-                                    counter_payment: counters.clone(),
-                                    production: produced,
-                                })
+                                self.mana_packet_admissible(&packet, counters.clone(), produced)
+                                    && once(Action::AnnounceMana {
+                                        card: id,
+                                        ability: index as u16,
+                                        counter_payment: counters.clone(),
+                                        production: produced,
+                                    })
                             },
                         )
                     },
@@ -7139,6 +6226,9 @@ impl Game {
             }
         }
         false
+    }
+    fn visit_deferred_indexed_mana(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
+        self.visit_local_mana_abilities(emit)
     }
     pub(super) fn visit_cost_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let announcement = self.state.announcing.as_ref().unwrap();
@@ -7154,10 +6244,7 @@ impl Game {
         let mut state = FundingState::from_game_with_convoke(self, &goal, convoke);
         state.set_tap_payment(announcement.tap_payment());
         let mut done = false;
-        let mut direct = state.clone();
-        direct.mark_mana_clause_paid();
         if state.obligations(&goal)
-            && direct.cost_completion()
             && (announcement.cast_costs.is_some()
                 || announcement.evidence.as_ref().is_none_or(|e| e.complete))
             && let Some(domain) = self.mana_payment_domain()
@@ -7233,7 +6320,6 @@ impl Game {
                 .cast_costs
                 .as_ref()
                 .is_some_and(|c| !c.mana_closed)
-            && state.cost_completion()
             && emit(Action::BeginOrderedCosts)
         {
             return true;
@@ -7266,20 +6352,8 @@ impl Game {
                 }
                 waterbend::TapPaymentKind::Creatures => None,
             });
-        if (convoke || artifact || delving || activation_tap.is_some())
-            && (if state.has_ordered_convoke() {
-                state.cost_completion()
-            } else {
-                convoke::payable_in(
-                    &state,
-                    goal.actor,
-                    state.live_mana_purpose(),
-                    mana_lots::available(state.mana, &state.lots, state.live_mana_purpose()),
-                    goal.required,
-                    goal.generic,
-                    &state.convoke_masks(),
-                )
-            })
+        if !self.attempt_contributions_sealed()
+            && (convoke || artifact || delving || activation_tap.is_some())
             && ((convoke && emit(Action::BeginConvoke))
                 || (artifact && emit(Action::BeginImprovise))
                 || (delving && emit(Action::BeginDelve))
@@ -7290,48 +6364,10 @@ impl Game {
         // This also gates deferred indexed activations, which are enumerated
         // outside FundingState::mana_moves. Printed mana components and source
         // presence do not decide whether the locked total requires mana.
-        if !state.mana_window_open(&goal) {
+        if !state.mana_window_open(&goal) || self.attempt_mana_window_closed() {
             return false;
         }
-        // Acquired abilities can appear in both the exact funding moves and
-        // the deferred packet fallback. Share one announcement set across the
-        // two visitors, while retaining distinct actions and fallback-only
-        // routes. Ordinary direct mana actions need no allocation here.
-        let mut announced = Vec::new();
-        let mut emit_once = |action: Action| {
-            if matches!(
-                action,
-                Action::AnnounceMana { .. }
-                    | Action::AnnounceGrantedMana { .. }
-                    | Action::AnnounceGrantedManaTemplate { .. }
-                    | Action::AnnounceBorrowedMana { .. }
-                    | Action::AnnounceGraveyardBorrowedMana { .. }
-                    | Action::AnnounceInheritedMana { .. }
-                    | Action::AnnounceSelfGrantedMana { .. }
-            ) {
-                if announced.contains(&action) {
-                    return false;
-                }
-                announced.push(action.clone());
-            }
-            emit(action)
-        };
-        if state.visit_distinct_actions(
-            &goal,
-            |step| {
-                state.visit_applied_for(step, Some(&goal), &mut |next| {
-                    next.reachable_with_evidence(
-                        &goal,
-                        announcement.evidence.as_ref().map(|e| e.threshold),
-                        &mut HashSet::new(),
-                    )
-                })
-            },
-            &mut emit_once,
-        ) {
-            return true;
-        }
-        self.visit_deferred_indexed_mana(&mut emit_once)
+        self.visit_local_mana_abilities(emit)
     }
 }
 
@@ -7369,15 +6405,7 @@ impl Game {
         {
             return true;
         }
-        state.visit_distinct_actions(
-            &goal,
-            |step| {
-                state.visit_applied_for(step, Some(&goal), &mut |next| {
-                    next.reachable(&goal, &mut HashSet::new())
-                })
-            },
-            emit,
-        )
+        self.visit_local_mana_abilities(emit)
     }
     pub(super) fn can_fund_room_unlock(&self, request: RoomUnlockPaymentView) -> bool {
         let goal = request.goal();
@@ -7411,17 +6439,7 @@ impl Game {
         ) {
             return true;
         }
-        world.visit_distinct_actions(
-            &goal,
-            |step| {
-                world.visit_applied_for(step, Some(&goal), &mut |next| {
-                    next.guided_mana_resume_fundable(&Pending::RoomUnlockPayment {
-                        player: request.controller,
-                    })
-                })
-            },
-            emit,
-        )
+        self.visit_local_mana_abilities(emit)
     }
 
     pub(super) fn plot_payment_fundable(&self, request: PlotPaymentView) -> bool {
@@ -7455,17 +6473,7 @@ impl Game {
         ) {
             return true;
         }
-        state.visit_distinct_actions(
-            &goal,
-            |step| {
-                state.visit_applied_for(step, Some(&goal), &mut |next| {
-                    next.guided_mana_resume_fundable(&Pending::PlotPayment {
-                        player: request.controller,
-                    })
-                })
-            },
-            emit,
-        )
+        self.visit_local_mana_abilities(emit)
     }
     pub(super) fn project_resolution_life(&self, payer: Player, amount: i128) -> FundingState<'_> {
         let goal = FundingGoal {
@@ -7552,45 +6560,25 @@ impl Game {
         if let Some(waterbend) = &request.waterbend {
             let payment = waterbend::TapPayment::waterbend(u64::from(waterbend.amount));
             let player = request.payer;
-            let pool = self
-                .available_mana(player, mana_lots::Purpose::Other)
-                .map(u128::from);
             let remaining = request.remaining_mana();
             if let Some(selected) = &waterbend.selected {
                 if remaining.generic == 0 || selected.len() as u64 == payment.cap() {
                     return false;
                 }
-                let mut excluded = selected.clone();
                 for id in 0..self.state.objects.len() {
                     let object = self.object_ref(id as CardId);
                     if selected.contains(&object) || !payment.eligible(self, player, object) {
                         continue;
                     }
-                    excluded.push(object);
-                    let mut masks = [0; 32];
-                    payment.add_exclusive_masks(
-                        self,
-                        player,
-                        &mut masks,
-                        (false, false),
-                        &excluded,
-                        excluded.len(),
-                    );
-                    if convoke::payable(pool, remaining.colored, remaining.generic - 1, &masks)
-                        && emit(Action::ChooseWaterbender { object })
-                    {
+                    if emit(Action::ChooseWaterbender { object }) {
                         return true;
                     }
-                    excluded.pop();
                 }
                 return false;
             }
             let mut masks = [0; 32];
             payment.add_exclusive_masks(self, player, &mut masks, (false, false), &[], 0);
-            if masks[0] != 0
-                && convoke::payable(pool, remaining.colored, remaining.generic, &masks)
-                && emit(Action::BeginWaterbend)
-            {
+            if masks[0] != 0 && emit(Action::BeginWaterbend) {
                 return true;
             }
         }
@@ -7608,187 +6596,19 @@ impl Game {
         let Some(goal) = goal else {
             return false;
         };
-        let mut state = FundingState::from_game(self, &goal);
-        // An explicit resolution request opens its own window independently of
-        // any suspended announcement's cost-payment phase.
-        state.set_cost_context(None);
-        state.set_tap_payment(
-            request
-                .waterbend
-                .as_ref()
-                .map(|payment| waterbend::TapPayment::waterbend(u64::from(payment.amount))),
-        );
-        state.visit_distinct_actions(&goal, |_| true, emit)
+        let _ = goal;
+        self.visit_local_mana_abilities(emit)
     }
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    /// A mana ability in an enclosing guided payment window must leave some
-    /// completion of that window. Reuse its exact resource search, retaining
-    /// complete plans so later scalar choices cannot mix incompatible prefixes.
+    /// Exact mana allocation is validated by the ordinary owned SpendRequest.
+    /// No enclosing payment completion guide is installed.
     pub(super) fn prepare_mana_allocations(&mut self, action: &Action) {
-        let payment = match action {
-            Action::ActivateMana { payment, .. }
-            | Action::ActivateBorrowedMana { payment, .. }
-            | Action::ActivateGraveyardBorrowedMana { payment, .. }
-            | Action::ActivateInheritedMana { payment, .. }
-            | Action::PayCosts { payment } => payment,
-            _ => return,
-        };
-        let Some(actor) = self.semantic_actor() else {
-            return;
-        };
-        if *payment == [0; 6]
-            || self.mana_lots(actor).is_empty()
-            || self
-                .state
-                .mana_lots
-                .as_ref()
-                .is_some_and(|state| state.replay.is_some())
-        {
-            return;
-        }
-        if matches!(action, Action::PayCosts { .. }) {
-            let Some(a) = self
-                .state
-                .announcing
-                .as_ref()
-                .filter(|a| a.production.is_some())
-            else {
-                return;
-            };
-            let frames = self
-                .state
-                .mana_announcement_stack
-                .as_deref()
-                .map_or(&[][..], |frames| frames.as_slice());
-            let terminal = a
-                .mana_output
-                .as_ref()
-                .and_then(|o| o.resume.as_deref())
-                .is_some_and(|pending| self.guided_mana_goal(pending).is_some());
-            if frames.is_empty() && !terminal {
-                return;
-            }
-            let goal = self.funding_goal(a);
-            let mut world = FundingState::from_game(self, &goal);
-            world.set_purpose(self.purpose_for_item(&a.item));
-            world.set_payment_context(a);
-            let quality = self
-                .state
-                .mana_lots
-                .as_ref()
-                .and_then(|m| m.announcement_quality.as_ref())
-                .map(|(_, q)| q);
-            world.set_funding_continuation(a, frames, quality);
-            let mut viable = Vec::new();
-            world.visit_funding_continuation_allocations(&goal, Some(*payment), &mut |plan| {
-                let allocation = plan
-                    .iter()
-                    .map(|row| row.map(|n| u32::try_from(n).expect("concrete action payment")))
-                    .collect::<Vec<_>>();
-                if !viable.contains(&allocation) {
-                    viable.push(allocation);
-                }
-                false
-            });
-            assert!(
-                !viable.is_empty(),
-                "validated mana payment has a completion"
-            );
-            self.state.mana_lots.as_mut().unwrap().prepared = Some(viable);
-            return;
-        }
-        let (goal, convoke, evidence, tap_payment) = match self.state.pending {
-            Pending::PayCosts { .. }
-            | Pending::Convoke { .. }
-            | Pending::Improvise { .. }
-            | Pending::Delve { .. }
-            | Pending::Waterbend { .. }
-            | Pending::CreatureTapPayment { .. } => {
-                let a = self.state.announcing.as_ref().unwrap();
-                (
-                    self.funding_goal(a),
-                    a.item.kind == StackKind::Spell
-                        && convoke::potential(
-                            self,
-                            a.item
-                                .source
-                                .expect("cost announcement has object source")
-                                .card,
-                        ),
-                    a.evidence.as_ref().map(|e| e.threshold),
-                    a.tap_payment(),
-                )
-            }
-            Pending::AttackPayment { .. } | Pending::BlockPayment { .. } => {
-                let request = self.state.combat_payment.as_ref().unwrap();
-                (
-                    FundingGoal {
-                        actor,
-                        required: [0; 6],
-                        generic: request.generic,
-                        reserve: None,
-                        source: None,
-                    },
-                    false,
-                    None,
-                    None,
-                )
-            }
-            Pending::PlotPayment { .. } => (self.plot_payment().unwrap().goal(), false, None, None),
-            Pending::RoomUnlockPayment { .. } => (
-                self.state
-                    .room_unlock_payment()
-                    .expect("Room unlock payment")
-                    .goal(),
-                false,
-                None,
-                None,
-            ),
-            Pending::FaceUpPayment { .. } => {
-                let request = self.face_up_payment().unwrap();
-                (
-                    FundingGoal {
-                        actor,
-                        required: request.cost.colored,
-                        generic: request.cost.generic,
-                        reserve: None,
-                        source: None,
-                    },
-                    false,
-                    None,
-                    None,
-                )
-            }
-            _ => return,
-        };
-        let mut world = FundingState::from_game_with_convoke(self, &goal, convoke);
-        world.set_tap_payment(tap_payment);
-        let mut viable = Vec::new();
-        for step in world.action_moves(&goal) {
-            if world.action(&step) != *action {
-                continue;
-            }
-            if world.visit_applied_for(&step, Some(&goal), &mut |next| {
-                next.reachable_with_evidence(&goal, evidence, &mut HashSet::new())
-            }) {
-                let allocation = step
-                    .allocation
-                    .iter()
-                    .map(|row| row.map(|n| u32::try_from(n).expect("concrete action payment")))
-                    .collect::<Vec<_>>();
-                if !viable.contains(&allocation) {
-                    viable.push(allocation)
-                }
-            }
-        }
-        assert!(
-            !viable.is_empty(),
-            "validated guided mana action has a completion"
-        );
-        self.state.mana_lots.as_mut().unwrap().prepared = Some(viable);
+        // SpendRequest already validates exact lot allocation incrementally.
+        // No prepared guide: never constrain it by an ancestor's future costs.
+        let _ = action;
     }
 }
 
@@ -8003,59 +6823,8 @@ impl FundingState<'_> {
         selected: &[(ObjectRef, CounterKind)],
         visited: &mut HashSet<CounterCostFundingKey>,
     ) -> bool {
-        if !self.obligations(goal) {
-            return false;
-        }
-        // Mana abilities are activated before paying this nonmana cost. The
-        // chosen counters remain reserved, rather than being removed before
-        // counter-dependent mana production has been evaluated.
-        let purpose = self.payment_purpose(goal);
-        let adjusted = cast_origins::payment_goal(self, goal, purpose);
-        if payable(
-            mana_lots::available(self.mana, &self.lots, purpose),
-            adjusted.required,
-            adjusted.generic,
-        ) && self.counter_payment_possible(goal, requirement, selected)
-        {
-            return true;
-        }
-        if !self.optimistic(goal) {
-            return false;
-        }
-        let facts = selected
-            .iter()
-            .map(|&(r, kind)| {
-                (
-                    r,
-                    kind,
-                    ability_world::CharacteristicWorld::counter_count(self, r.card, kind),
-                    additional_costs::counter_cost_bearer(
-                        self,
-                        self.actor,
-                        r,
-                        requirement.bearer_kinds,
-                    ),
-                )
-            })
-            .collect();
-        if !visited.insert((self.key(goal), facts)) {
-            return false;
-        }
-        for deferred in [false, true] {
-            let moves = if deferred {
-                self.deferred_moves(goal)
-            } else {
-                self.moves(goal)
-            };
-            for step in moves {
-                if self.visit_applied_for(&step, Some(goal), &mut |next| {
-                    next.fund_counter_cost(goal, requirement, selected, visited)
-                }) {
-                    return true;
-                }
-            }
-        }
-        false
+        let _ = visited;
+        self.obligations(goal) && self.counter_payment_possible(goal, requirement, selected)
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -8093,55 +6862,28 @@ impl Game {
         spec: AdditionalCost,
         selected: &[(ObjectRef, CounterKind)],
     ) -> bool {
-        let requirement = spec.kind.counter_requirement().unwrap();
-        if selected
-            .iter()
-            .any(|&(_, kind)| requirement.kind.is_some_and(|required| kind != required))
-        {
+        let _ = purpose;
+        let Some(requirement) = spec.kind.counter_requirement() else {
+            return false;
+        };
+        if selected.len() > usize::from(requirement.amount) {
             return false;
         }
-        if self
-            .state
-            .announcing
-            .as_ref()
-            .is_some_and(|a| a.cast_costs.as_ref().is_some_and(|c| c.mana_closed))
-        {
-            return self.cast_cost_counters_fundable(selected);
-        }
-        if self
-            .state
-            .announcing
-            .as_ref()
-            .is_some_and(|a| a.cast_costs.is_some())
-        {
-            if let Some(result) = self.preview_optional_cast_costs(
-                goal.clone(),
-                purpose,
-                ObjectRef {
-                    card: CardId::MAX,
-                    generation: 0,
-                },
-                Some(spec),
-                None,
-                &[],
-                false,
-                selected,
-                &[],
-            ) {
-                return result;
-            }
-            let mut world = FundingState::from_game(self, &goal);
-            world.set_purpose(purpose);
-            world.set_cost_counter_prefix(selected);
-            return world.reachable(&goal, &mut HashSet::new());
-        }
-        let mut world = FundingState::from_game_with_convoke(self, &goal, true);
-        world.convoke = false;
-        world.set_purpose(purpose);
-        if world.fixed_counter_cost_deficit(requirement, selected) {
-            return false;
-        }
-        world.fund_counter_cost(&goal, requirement, selected, &mut HashSet::new())
+        selected.iter().enumerate().all(|(i, &(object, kind))| {
+            self.state.objects.get(object.card as usize).is_some()
+                && requirement.kind.is_none_or(|required| required == kind)
+                && additional_costs::counter_cost_bearer(
+                    self,
+                    goal.actor,
+                    object,
+                    requirement.bearer_kinds,
+                )
+                && self.counter_amounts(object.card).get(kind)
+                    > selected[..i]
+                        .iter()
+                        .filter(|&&(previous, counter)| previous == object && counter == kind)
+                        .count() as u64
+        })
     }
 }
 
@@ -8175,15 +6917,7 @@ impl Game {
         ) {
             return true;
         }
-        state.visit_distinct_actions(
-            &goal,
-            |step| {
-                state.visit_applied_for(step, Some(&goal), &mut |next| {
-                    next.reachable(&goal, &mut HashSet::new())
-                })
-            },
-            emit,
-        )
+        self.visit_local_mana_abilities(emit)
     }
 }
 
@@ -8489,42 +7223,32 @@ impl Game {
     }
 
     pub(super) fn mana_split_output_may_fund(&self, upper: Mana) -> bool {
-        let Some(goal) = self.mana_output_parent_goal() else {
-            return true;
+        let Some(a) = self.state.announcing.as_ref() else {
+            return false;
         };
-        let a = self.state.announcing.as_ref().expect("paid split mana");
-        let output = a.mana_output.as_ref().expect("paid split output");
-        let mut world = self.paid_mana_parent_world(a);
-        let receipt = a.item.tap_mana_bonus(&world);
-        if receipt.has_trigger_bonuses() {
-            return true;
-        }
-        let Some(replaced) = receipt.replace_production(upper) else {
-            return true;
-        };
-        world.add_completed_mana(replaced, output.quality);
-        world.project_paid_mana_use(&a.item);
-        world.optimistic(&goal)
+        self.state.players[a.item.controller.index()]
+            .mana
+            .into_iter()
+            .zip(upper)
+            .all(|(held, added)| held.checked_add(added).is_some())
     }
 
     pub(super) fn mana_output_choice_fundable(&self, production: Mana) -> bool {
-        let a = self
-            .state
-            .announcing
-            .as_ref()
-            .expect("owned mana announcement");
-        // Free and optional resumes have no parent completion to constrain.
-        if self.state.mana_announcement_stack.is_none()
-            && a.mana_output
-                .as_ref()
-                .and_then(|o| o.resume.as_deref())
-                .is_none_or(|pending| self.guided_mana_goal(pending).is_none())
-        {
-            return true;
+        let Some(a) = self.state.announcing.as_ref() else {
+            return false;
+        };
+        if a.mana_output.is_none() {
+            return false;
         }
-        self.paid_mana_parent_world(a)
-            .visit_paid_mana_output(a, Some(production), &mut |next| {
-                next.paid_mana_parent_fundable(a)
+        a.item
+            .tap_mana_bonus(self)
+            .replace_production(production)
+            .is_none_or(|actual| {
+                self.state.players[a.item.controller.index()]
+                    .mana
+                    .into_iter()
+                    .zip(actual)
+                    .all(|(held, added)| held.checked_add(added).is_some())
             })
     }
 }
@@ -8532,69 +7256,20 @@ impl Game {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn tap_bonus_choice_fundable(&self, bonus: Mana) -> bool {
-        let choice = self
+        let Some(choice) = self
             .state
             .mana_lots
             .as_ref()
-            .unwrap()
-            .tap_bonus
-            .as_ref()
-            .unwrap();
-        if let Some(a) = &self.state.announcing {
-            let goal = self.funding_goal(a);
-            let mut world = FundingState::from_game_with_convoke(
-                self,
-                &goal,
-                a.item.kind == StackKind::Spell
-                    && convoke::potential(self, a.item.source.unwrap().card),
-            );
-            world.set_purpose(self.purpose_for_item(&a.item));
-            world.set_payment_context(a);
-            world.set_funding_continuation(
-                a,
-                self.state
-                    .mana_announcement_stack
-                    .as_deref()
-                    .map_or(&[], Vec::as_slice),
-                self.state
-                    .mana_lots
-                    .as_ref()
-                    .and_then(|m| m.announcement_quality.as_ref().map(|(_, q)| q)),
-            );
-            choice.visit_output(bonus, |output| {
-                if !world.completed_mana_fits([0; 6], output.total) {
-                    return false;
-                }
-                let mut completed = world.clone();
-                completed.add_funding_tap_bonus(output);
-                completed.reachable_with_evidence(
-                    &goal,
-                    a.evidence.as_ref().map(|e| e.threshold),
-                    &mut HashSet::new(),
-                )
-            })
-        } else if let Some(goal) = choice
-            .previous
-            .as_ref()
-            .and_then(|pending| self.guided_mana_goal(pending))
-        {
-            let world = FundingState::from_game(self, &goal);
-            choice.visit_output(bonus, |output| {
-                if !world.completed_mana_fits([0; 6], output.total) {
-                    return false;
-                }
-                let mut completed = world.clone();
-                completed.add_funding_tap_bonus(output);
-                completed.reachable_with_evidence(&goal, None, &mut HashSet::new())
-            })
-        } else {
-            choice.visit_output(bonus, |output| {
-                self.state.players[choice.player.index()]
-                    .mana
-                    .into_iter()
-                    .zip(output.total)
-                    .all(|(pool, addition)| pool.checked_add(addition).is_some())
-            })
-        }
+            .and_then(|m| m.tap_bonus.as_ref())
+        else {
+            return false;
+        };
+        choice.visit_output(bonus, |output| {
+            self.state.players[choice.player.index()]
+                .mana
+                .into_iter()
+                .zip(output.total)
+                .all(|(held, added)| held.checked_add(added).is_some())
+        })
     }
 }
