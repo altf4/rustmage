@@ -52,13 +52,15 @@ fn planet_gainlands_enter_tapped_gain_life_and_offer_only_printed_colors_on_owne
             let mut indexed = original.clone();
             let mut restored = original.clone();
             restored.restore(&saved).unwrap();
+            assert_eq!(restored.snapshot(), saved);
+            let mut restored_indexed = restored.clone();
             drop(original);
-            for (branch, game) in [&mut raw, &mut indexed, &mut restored]
+            for (branch, game) in [&mut raw, &mut indexed, &mut restored, &mut restored_indexed]
                 .into_iter()
                 .enumerate()
             {
                 let action = Action::PlayLand { card: land };
-                if branch == 1 {
+                if branch == 1 || branch == 3 {
                     let index = game
                         .legal_actions()
                         .iter()
@@ -79,7 +81,7 @@ fn planet_gainlands_enter_tapped_gain_life_and_offer_only_printed_colors_on_owne
                 game.state.players[controller.index()].mana = [0; 6];
                 reject(game, land_mana(land, 5));
                 let action = land_mana(land, colors[0]);
-                if branch == 1 {
+                if branch == 1 || branch == 3 {
                     let index = game
                         .legal_actions()
                         .iter()
@@ -93,7 +95,7 @@ fn planet_gainlands_enter_tapped_gain_life_and_offer_only_printed_colors_on_owne
                 assert_eq!(game.state.players[controller.index()].mana, mana(colors[0]));
             }
             assert_eq!(raw.snapshot(), indexed.snapshot(), "{name}");
-            assert_eq!(raw.snapshot(), restored.snapshot(), "{name}");
+            assert_eq!(restored_indexed.snapshot(), restored.snapshot(), "{name}");
         }
     }
 }

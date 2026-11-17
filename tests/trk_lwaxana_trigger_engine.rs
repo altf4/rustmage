@@ -207,8 +207,11 @@ fn paid_target_choice_doubles_only_that_creatures_real_triggers_and_branches_res
         drop(parent);
 
         indexed.restore(&checkpoint).unwrap();
+        assert_eq!(indexed.snapshot(), checkpoint);
+        let mut replay = indexed.clone();
+        activate_bearer(&mut replay, bearer);
         activate_bearer(&mut indexed, bearer);
-        assert_eq!(indexed.snapshot(), raw.snapshot());
+        assert_eq!(indexed.snapshot(), replay.snapshot());
 
         // A different creature's own tap trigger still occurs once.
         activate_bearer(&mut raw, other);

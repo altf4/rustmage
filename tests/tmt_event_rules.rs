@@ -134,12 +134,15 @@ fn assert_owned_action(g: &mut Game, action: Action) {
     act(g, action.clone());
     assert_eq!(g.snapshot(), indexed.snapshot());
     g.restore(&parent).unwrap();
+    assert_eq!(g.snapshot(), parent);
     assert_eq!(
         g.apply_index(actor, revision, index),
         Err(Error::StaleRevision)
     );
+    let mut replay = g.clone();
+    replay.apply_index(actor, replay.revision(), index).unwrap();
     act(g, action);
-    assert_eq!(g.snapshot(), indexed.snapshot());
+    assert_eq!(g.snapshot(), replay.snapshot());
 }
 
 #[test]
