@@ -355,6 +355,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                     0
                 }
             }
+            Action::DeclareBargain { pay } => i128::from(*pay) * 40,
             Action::ChooseCastCost { .. }
             | Action::PayCasualty { .. }
             | Action::PayConspire { .. }

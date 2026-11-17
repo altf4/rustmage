@@ -1,5 +1,4 @@
-//! Optional exact bargain resource declaration. Funding is pure and reserves the
-//! selected permanent against sacrifice-producing mana abilities.
+//! Optional bargain declarations and exact provisional sacrifice shortcuts.
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) const COST: AdditionalCost = AdditionalCost {
@@ -17,6 +16,12 @@ pub(super) const COST: AdditionalCost = AdditionalCost {
 };
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn bargain_intent_available(&self, a: &Announcement, pay: bool) -> bool {
+        a.item
+            .source
+            .is_some_and(|source| source.card.has_bargain())
+            && (pay || self.bargain_choice_fundable(a, None))
+    }
     pub(super) fn initial_bargain_fundable(
         &self,
         actor: Player,
@@ -45,8 +50,16 @@ impl Game {
     }
 
     pub(super) fn choose_bargain(&mut self, sacrifice: Option<ObjectRef>) {
+        self.set_bargain_declaration(sacrifice.is_some(), sacrifice);
+    }
+
+    pub(super) fn declare_bargain(&mut self, pay: bool) {
+        self.set_bargain_declaration(pay, None);
+    }
+
+    fn set_bargain_declaration(&mut self, pay: bool, sacrifice: Option<ObjectRef>) {
         let a = self.state.announcing.as_mut().unwrap();
-        a.item.cast.as_mut().unwrap().bargain = Some(sacrifice.is_some());
+        a.item.cast.as_mut().unwrap().bargain = Some(pay);
         a.additional = sacrifice;
         if a.item.source.unwrap().card.bargain_targets().is_some() {
             let item = a.item.clone();
