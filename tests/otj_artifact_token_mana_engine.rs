@@ -99,11 +99,24 @@ fn a_tapped_and_sacrificed_token_can_fund_a_spell_with_only_the_bonus() {
     act(&mut game, activate(token, 0));
     assert!(!game.on_battlefield(token));
     assert_eq!(game.observe(player).mana_tap_bonus_source, Some(provider));
-    reject(
-        &mut game,
+    admit(
+        &game,
         Action::ChooseMana {
             production: COLORLESS,
         },
+    );
+    let mut wrong_color = game.clone();
+    act(
+        &mut wrong_color,
+        Action::ChooseMana {
+            production: COLORLESS,
+        },
+    );
+    // The bonus color is a caller choice. Artifact-restricted blue mana still
+    // cannot pay for Opt when that choice supplies only unrestricted colorless.
+    reject(
+        &mut wrong_color,
+        Action::PayCosts { payment: BLUE },
     );
     let choice = Action::ChooseMana { production: BLUE };
     let saved = game.snapshot();

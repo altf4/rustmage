@@ -123,11 +123,13 @@ pub fn apply_raw_and_index(game: &mut Game, action: Action) {
         .position(|legal| legal == &action)
         .unwrap();
     let snapshot = game.snapshot();
-    let mut before = game.clone();
     let mut indexed = game.clone();
     indexed.apply_index(actor, revision, index).unwrap();
     act(game, action.clone());
     assert_eq!(game.snapshot(), indexed.snapshot());
+    // Restore both owned branches from the same external revision so any new
+    // attempt receives the same fresh identity on their replay.
+    let mut before = indexed.clone();
     indexed.restore(&snapshot).unwrap();
     assert_eq!(indexed.snapshot(), snapshot);
     assert_eq!(
