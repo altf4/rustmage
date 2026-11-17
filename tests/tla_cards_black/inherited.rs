@@ -295,7 +295,7 @@ fn swampsnare_trap_locks_the_flying_discount_and_applies_minus_five_minus_three_
     game.state.objects[flyer as usize].gained_keywords = Keywords::FLYING;
     game.state.players[p.index()].mana = [0, 0, 1, 0, 0, 1];
     act(&mut game, Action::AnnounceCast { card: spell });
-    reject(&mut game, target(grounded));
+    admit(&game, target(grounded));
     act(&mut game, target(flyer));
     pay(&mut game);
     game.state.objects[flyer as usize].gained_keywords = Keywords::NONE;

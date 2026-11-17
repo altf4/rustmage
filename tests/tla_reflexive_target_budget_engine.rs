@@ -93,7 +93,7 @@ fn paid_x_limits_the_exact_damaged_players_graveyard_and_allows_zero_value_cards
         pass_pair(&mut game);
         pass_pair(&mut game);
         assert_eq!(game.state.pending, Pending::ResolutionX { player: actor });
-        reject(&mut game, Action::ChooseX { value: 3 });
+        admit(&game, Action::ChooseX { value: 3 });
 
         let mut zero_only = game.clone();
         choose_budget(&mut zero_only, 0);

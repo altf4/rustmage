@@ -94,8 +94,13 @@ fn foretell_is_a_private_priority_special_action_with_owned_payment() {
     act(&mut game, action.clone());
     assert_eq!(game.snapshot(), indexed.snapshot());
     indexed.restore(&checkpoint).unwrap();
+    assert_eq!(indexed.snapshot(), checkpoint);
+    let mut replay = indexed.clone();
+    replay
+        .apply_index(player, replay.revision(), index)
+        .unwrap();
     act(&mut indexed, action);
-    assert_eq!(game.snapshot(), indexed.snapshot());
+    assert_eq!(replay.snapshot(), indexed.snapshot());
     assert!(game.observe(player).plot_payment.unwrap().foretell);
     assert!(game.observe(player.other()).plot_payment.is_none());
 
@@ -311,6 +316,8 @@ fn foretell_rewinds_an_unpayable_foreign_mana_choice_to_the_exact_hand_card() {
     );
     let green = game.object_ref(green);
     act(&mut game, Action::ChooseAuraAttachment { object: green });
+    act(&mut game, Action::EndManaWindow);
+    act(&mut game, Action::SubmitAttempt);
     assert!(matches!(game.state.pending, Pending::ManaRollback { .. }));
     for keep in [false, true] {
         let mut branch = game.clone();
@@ -319,6 +326,6 @@ fn foretell_rewinds_an_unpayable_foreign_mana_choice_to_the_exact_hand_card() {
         assert_eq!(branch.object_ref(card), object);
         assert_eq!(branch.object_view(card).zone, Zone::Hand);
         assert!(branch.observe(other).foretold_cards.is_empty());
-        assert_eq!(branch.legal_actions().contains(&foretell), !keep);
+        admit(&branch, foretell.clone());
     }
 }

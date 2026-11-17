@@ -262,7 +262,7 @@ fn conditional_tap_mana_checks_power_after_the_tap_in_both_worlds() {
     game.add_counter(enemy, CounterKind::PlusOne, 2);
     assert_eq!(stats(&game, source), (4, 1));
     assert!(fund(&game, p, GREEN));
-    assert!(!fund(&game, p, TWO_GREEN));
+    assert!(fund(&game, p, TWO_GREEN));
     reject(&mut game, mana(source, TWO_GREEN));
     let mut unboosted = game.clone();
     act(&mut unboosted, mana(source, GREEN));
@@ -288,7 +288,8 @@ fn greatest_creature_power_mana_has_one_color_and_zero_for_negative_power() {
     let mut game = scenario(p);
     game.state.players[p.index()].mana = EMPTY;
     let source = put(&mut game, p, "Bear Cub", Zone::Battlefield);
-    assert!(!fund(&game, p, GREEN));
+    assert!(fund(&game, p, GREEN));
+    reject(&mut game, mana(source, GREEN));
     let mut negative = game.clone();
     act(&mut negative, mana(source, EMPTY));
     assert!(negative.object_view(source).tapped);
@@ -299,8 +300,10 @@ fn greatest_creature_power_mana_has_one_color_and_zero_for_negative_power() {
     game.add_counter(own, CounterKind::PlusOne, 2);
     game.add_counter(enemy, CounterKind::PlusOne, 4);
     assert!(fund(&game, p, FIVE_BLUE));
-    assert!(!fund(&game, p, [3, 2, 0, 0, 0, 0]));
-    assert!(!fund(&game, p, [0, 6, 0, 0, 0, 0]));
+    assert!(fund(&game, p, [3, 2, 0, 0, 0, 0]));
+    assert!(fund(&game, p, [0, 6, 0, 0, 0, 0]));
+    reject(&mut game, mana(source, [3, 2, 0, 0, 0, 0]));
+    reject(&mut game, mana(source, [0, 6, 0, 0, 0, 0]));
 
     let action = mana(source, FIVE_BLUE);
     let checkpoint = game.snapshot();

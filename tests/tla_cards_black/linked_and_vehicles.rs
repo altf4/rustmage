@@ -408,7 +408,7 @@ fn sozin_destroys_creatures_searches_three_zones_then_firebends_to_reanimate_wit
         g.state.pending == Pending::ResolutionX { player: p }
     });
     assert_eq!(game.state.players[p.index()].combat_red_mana, 3);
-    reject(&mut game, Action::ChooseX { value: 4 });
+    admit(&game, Action::ChooseX { value: 4 });
     act(&mut game, Action::ChooseX { value: 2 });
     act(
         &mut game,

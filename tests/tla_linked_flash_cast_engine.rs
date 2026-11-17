@@ -275,8 +275,13 @@ fn linked_disguise_uses_the_proposed_creature_even_for_a_land_card() {
     indexed.apply_index(player, revision, index).unwrap();
     assert_eq!(game.snapshot(), indexed.snapshot());
     indexed.restore(&snapshot).unwrap();
+    assert_eq!(indexed.snapshot(), snapshot);
+    let mut replay = indexed.clone();
+    replay
+        .apply_index(player, replay.revision(), index)
+        .unwrap();
     act(&mut indexed, action);
-    assert_eq!(game.snapshot(), indexed.snapshot());
+    assert_eq!(replay.snapshot(), indexed.snapshot());
 
     pay(&mut game);
     settle(&mut game);

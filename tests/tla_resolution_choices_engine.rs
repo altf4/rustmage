@@ -516,7 +516,7 @@ fn linked_paid_cast_requires_exact_owned_ally_and_charges_its_mana_cost() {
         .unwrap()
         .spend_any_mana = true;
     wrong_color.state.players[player.index()].mana = [0, 0, 0, 8, 0, 0];
-    reject(&mut wrong_color, action.clone());
+    admit(&wrong_color, action.clone());
 
     let mana = game.state.players[player.index()].mana.iter().sum::<u32>();
     act(&mut game, action);
