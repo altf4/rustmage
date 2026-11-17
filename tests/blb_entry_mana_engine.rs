@@ -91,8 +91,49 @@ fn mana_pays_for_big_creatures_and_creature_x_even_when_chosen_x_is_zero() {
             production: [0, 0, 0, 0, 6, 0],
         },
     );
-    for card in [small, noncreature, x_noncreature] {
-        reject(&mut game, Action::AnnounceCast { card });
+    let lots = game.observe(player).mana_lots;
+    for (card, amount) in [(small, 1), (noncreature, 5), (x_noncreature, 3)] {
+        let mut restricted = game.clone();
+        let object = restricted.object_ref(card);
+        act(&mut restricted, Action::AnnounceCast { card });
+        if card == x_noncreature {
+            act(&mut restricted, Action::ChooseX { value: 0 });
+        }
+        assert!(restricted.mana_payment_domain().is_none());
+        reject(
+            &mut restricted,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, amount, 0],
+            },
+        );
+        act(&mut restricted, Action::EndManaWindow);
+        let mut indexed = restricted.clone();
+        let index = indexed
+            .legal_actions()
+            .iter()
+            .position(|action| *action == Action::SubmitAttempt)
+            .unwrap();
+        indexed
+            .apply_index(player, indexed.revision(), index)
+            .unwrap();
+        act(&mut restricted, Action::SubmitAttempt);
+        assert_eq!(restricted.snapshot(), indexed.snapshot());
+        assert_eq!(
+            restricted
+                .last_attempt_outcome_view(player)
+                .unwrap()
+                .outcome,
+            AttemptOutcome::Failed
+        );
+        assert_eq!(restricted.object_ref(card), object);
+        assert_eq!(restricted.object_view(card).zone, Zone::Hand);
+        assert!(restricted.object_view(source).tapped);
+        assert_eq!(
+            restricted.state.players[player.index()].mana,
+            [0, 0, 0, 0, 6, 0]
+        );
+        assert_eq!(restricted.observe(player).mana_lots, lots);
+        assert!(restricted.state.stack.is_empty());
     }
     let mut high = game.clone();
     cast(&mut high, big, None);
