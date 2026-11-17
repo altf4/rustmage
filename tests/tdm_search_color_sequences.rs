@@ -387,11 +387,15 @@ fn breaching_free_or_hand_offer_is_owned_raw_index_restore_and_source_can_leave(
     drain(&mut sibling);
     assert_eq!(sibling.object_view(found).zone, Zone::Hand);
     indexed.restore(&saved).unwrap();
-    act(&mut indexed, action);
-    pay(&mut indexed);
-    act(&mut indexed, Action::FinishResolutionCasts);
-    drain(&mut indexed);
-    assert_eq!(raw.snapshot(), indexed.snapshot());
+    assert_eq!(indexed.snapshot(), saved);
+    let mut replay = indexed.clone();
+    for branch in [&mut indexed, &mut replay] {
+        act(branch, action.clone());
+        pay(branch);
+        act(branch, Action::FinishResolutionCasts);
+        drain(branch);
+    }
+    assert_eq!(replay.snapshot(), indexed.snapshot());
 }
 #[test]
 fn breaching_dragon_entry_return_is_independent_and_does_not_rebind_after_blink() {
@@ -596,9 +600,13 @@ fn glacial_private_optional_discard_is_owned_and_rejects_wrong_actor_and_stale_h
     assert_eq!(raw.snapshot(), indexed.snapshot());
     assert_eq!(raw.object_view(nonland).zone, Zone::Hand);
     indexed.restore(&saved).unwrap();
-    act(&mut indexed, action);
-    drain(&mut indexed);
-    assert_eq!(raw.snapshot(), indexed.snapshot());
+    assert_eq!(indexed.snapshot(), saved);
+    let mut replay = indexed.clone();
+    for branch in [&mut indexed, &mut replay] {
+        act(branch, action.clone());
+        drain(branch);
+    }
+    assert_eq!(replay.snapshot(), indexed.snapshot());
 }
 #[test]
 fn lotus_private_search_allows_every_subset_and_reassigns_multicolor_roles() {
@@ -694,6 +702,7 @@ fn lotus_partial_role_selection_is_owned_raw_index_restore_and_remains_private()
     drain(&mut sibling);
     assert_eq!(sibling.object_view(green).zone, Zone::Library);
     indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.snapshot(), saved);
     act(&mut indexed, action);
     act(&mut indexed, Action::FinishSearch);
     drain(&mut indexed);
@@ -1130,6 +1139,7 @@ fn partial_public_color_choices_and_replacement_receipts_are_owned_raw_index_res
     drain(&mut child);
     assert_eq!(raw.snapshot(), child.snapshot());
     indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.snapshot(), saved);
     act(&mut indexed, action);
     for _ in 0..3 {
         color_pick(&mut indexed, id);
@@ -1363,6 +1373,7 @@ fn wide_scaled_division_action_round_trips_and_is_owned_raw_index_restore() {
     assert_eq!(raw.object_view(a).zone, Zone::Graveyard);
     assert_eq!(raw.object_view(b).damage, 1);
     indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.snapshot(), saved);
     act(&mut indexed, action);
     act(&mut indexed, Action::AllocateTargetAmount { amount: 1 });
     drain(&mut indexed);

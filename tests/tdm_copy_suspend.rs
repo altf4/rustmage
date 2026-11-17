@@ -465,6 +465,7 @@ fn optional_retarget_copy_policy_is_owned_transactional_and_restorable_after_par
     drain(&mut sibling);
     assert_eq!(sibling.state.players[1].life, 20);
     indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.snapshot(), saved);
     assert_eq!(
         indexed.apply_index(Player::P0, revision, index),
         Err(Error::StaleRevision)
@@ -910,15 +911,19 @@ fn suspend_optional_cast_is_public_owned_transactional_and_restorable_after_pare
     drain(&mut sibling);
     assert_eq!(sibling.state.objects[card as usize].zone, Zone::Exile);
     indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.snapshot(), saved);
     assert_eq!(
         indexed.apply_index(Player::P0, revision, index),
         Err(Error::StaleRevision)
     );
-    act(&mut indexed, action);
-    pay(&mut indexed);
-    act(&mut indexed, Action::FinishResolutionCasts);
-    drain(&mut indexed);
-    assert_eq!(raw.snapshot(), indexed.snapshot());
+    let mut replay = indexed.clone();
+    for branch in [&mut indexed, &mut replay] {
+        act(branch, action.clone());
+        pay(branch);
+        act(branch, Action::FinishResolutionCasts);
+        drain(branch);
+    }
+    assert_eq!(replay.snapshot(), indexed.snapshot());
 }
 
 #[test]

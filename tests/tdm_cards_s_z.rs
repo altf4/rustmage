@@ -339,6 +339,7 @@ fn harmonize_winternight_discard_choice_is_owned_raw_index_restorable_and_parent
         assert_eq!(raw.object_view(spell).zone, Zone::Exile);
         assert!(raw.object_view(helper).tapped);
         indexed.restore(&root).unwrap();
+        assert_eq!(indexed.snapshot(), root);
         assert_eq!(
             indexed.apply_index(p, revision, index),
             Err(Error::StaleRevision)
@@ -692,12 +693,16 @@ fn mana_devotee_color_choice_is_owned_raw_index_restorable_and_does_not_expose_a
             serde_json::to_value(indexed.observe(p.other())).unwrap()
         );
         indexed.restore(&root).unwrap();
+        assert_eq!(indexed.snapshot(), root);
         assert_eq!(
             indexed.apply_index(p, revision, index),
             Err(Error::StaleRevision)
         );
-        act(&mut indexed, action);
-        assert_eq!(raw.snapshot(), indexed.snapshot());
+        let mut replay = indexed.clone();
+        for branch in [&mut indexed, &mut replay] {
+            act(branch, action.clone());
+        }
+        assert_eq!(replay.snapshot(), indexed.snapshot());
     }
 }
 
@@ -927,6 +932,7 @@ fn creatures_outrider_departure_still_creates_exact_spirit_and_endure_branches_a
         assert_eq!(stats(&departed, spirits(&departed, p)[0]), (2, 2));
         assert_eq!(departed.object_view(left).zone, Zone::Graveyard);
         indexed.restore(&saved).unwrap();
+        assert_eq!(indexed.snapshot(), saved);
         assert_eq!(
             indexed.apply_index(p, revision, index),
             Err(Error::StaleRevision)
@@ -1315,6 +1321,7 @@ fn spells_twin_bolt_owned_allocations_never_redistribute_a_departed_targets_shar
         assert_eq!(sibling.object_view(victim).damage, 1);
         assert_eq!(raw.snapshot(), indexed.snapshot());
         indexed.restore(&saved).unwrap();
+        assert_eq!(indexed.snapshot(), saved);
         assert_eq!(
             indexed.apply_index(p, rev, index),
             Err(Error::StaleRevision)
@@ -2489,6 +2496,7 @@ fn cast_faces_actual_teval_delve_selection_is_owned_raw_index_restorable_and_doe
         assert_eq!(sibling.object_view(fuel[1]).zone, Zone::Graveyard);
         assert_eq!(raw.object_view(fuel[1]).zone, Zone::Exile);
         indexed.restore(&saved).unwrap();
+        assert_eq!(indexed.snapshot(), saved);
         assert_eq!(
             indexed.apply_index(p, revision, index),
             Err(Error::StaleRevision)
@@ -3179,6 +3187,7 @@ fn activations_underfoot_target_choice_is_owned_raw_index_restorable_and_keeps_s
         assert!(!raw.keywords(b).contains(Keywords::CANT_BE_BLOCKED));
         assert!(sibling.keywords(b).contains(Keywords::CANT_BE_BLOCKED));
         indexed.restore(&saved).unwrap();
+        assert_eq!(indexed.snapshot(), saved);
         assert_eq!(
             indexed.apply_index(p, revision, index),
             Err(Error::StaleRevision)
@@ -3588,6 +3597,7 @@ fn final_cards_windcrag_entry_choice_is_owned_raw_index_restorable_and_preserves
             Some(EntryChoiceValue::NamedMode(1))
         );
         indexed.restore(&saved).unwrap();
+        assert_eq!(indexed.snapshot(), saved);
         assert_eq!(
             indexed.apply_index(p, revision, index),
             Err(Error::StaleRevision)
