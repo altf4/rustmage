@@ -193,11 +193,31 @@ fn ecl_green_drum_taps_summoning_sick_creature_as_cost_and_adds_each_color_witho
             let drum = named(&mut g, p, "Springleaf Drum", Zone::Hand);
             cast(&mut g, drum, None, &[]);
             settle(&mut g);
-            assert!(
-                !g.legal_actions()
-                    .iter()
-                    .any(|a| matches!(a, Action::AnnounceMana { card, .. } if *card == drum))
+            let mut missing = g.clone();
+            checked(
+                &mut missing,
+                Action::AnnounceMana {
+                    card: drum,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                    production: [1, 0, 0, 0, 0, 0],
+                },
             );
+            assert!(
+                missing
+                    .observe(p)
+                    .additional_cost
+                    .unwrap()
+                    .candidates
+                    .is_empty()
+            );
+            checked(&mut missing, Action::EndManaWindow);
+            checked(&mut missing, Action::SubmitAttempt);
+            assert_eq!(
+                missing.last_attempt_outcome_view(p).unwrap().reason,
+                Some(AttemptFailureReason::UnsatisfiedMaterial)
+            );
+            assert!(!missing.object_view(drum).tapped);
             let creature = named(&mut g, p, "Bear Cub", Zone::Battlefield);
             g.state.objects[creature as usize].summoning_sick = true;
             let enemy = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
@@ -318,7 +338,10 @@ fn ecl_green_drum_funding_requires_distinct_untapped_creatures_and_resumes_outer
                 let announce = g
                     .legal_actions()
                     .into_iter()
-                    .find(|a| matches!(a, Action::AnnounceMana { .. }))
+                    .find(|a| {
+                        matches!(a, Action::AnnounceMana { production, .. }
+                        if *production == [0, 0, 0, 0, 1, 0])
+                    })
                     .unwrap();
                 checked(&mut g, announce);
                 let choose = g
@@ -335,7 +358,10 @@ fn ecl_green_drum_funding_requires_distinct_untapped_creatures_and_resumes_outer
                     let output = g
                         .legal_actions()
                         .into_iter()
-                        .find(|a| matches!(a, Action::ChooseMana { .. }))
+                        .find(|a| {
+                            matches!(a, Action::ChooseMana { production }
+                            if *production == [0, 0, 0, 0, 1, 0])
+                        })
                         .unwrap();
                     checked(&mut g, output);
                 }
@@ -471,13 +497,15 @@ fn ecl_green_brawler_paid_attack_elf_target_and_live_block_requirement() {
         checked(&mut g, Action::Pass);
         assert_eq!(g.block_requirement_weight(brawler), 1);
         reject(&mut g, Action::FinishBlockers);
-        reject(
-            &mut g,
+        let mut wrong_block = g.clone();
+        checked(
+            &mut wrong_block,
             Action::Block {
                 blocker: foe,
                 attacker: bear,
             },
         );
+        reject(&mut wrong_block, Action::FinishBlockers);
         checked(
             &mut g,
             Action::Block {
@@ -1154,8 +1182,29 @@ fn ecl_green_realms_constrained_choice_and_mana_restriction_survive_source_depar
         g.state.players[p.index()].mana = [0; 6];
         restricted_realms_mana(&mut g, land, 4);
         let wrong = named(&mut g, p, "Giant Growth", Zone::Hand);
-        named(&mut g, p, "Bear Cub", Zone::Battlefield);
-        reject(&mut g, Action::AnnounceCast { card: wrong });
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        admit(&g, Action::AnnounceCast { card: wrong });
+        let mut unpaid = g.clone();
+        checked(&mut unpaid, Action::AnnounceCast { card: wrong });
+        checked(
+            &mut unpaid,
+            Action::ChooseTarget {
+                target: Target::Card(bear),
+            },
+        );
+        reject(
+            &mut unpaid,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 1, 0],
+            },
+        );
+        checked(&mut unpaid, Action::EndManaWindow);
+        checked(&mut unpaid, Action::SubmitAttempt);
+        assert_eq!(
+            unpaid.last_attempt_outcome_view(p).unwrap().reason,
+            Some(AttemptFailureReason::UnsatisfiedMana)
+        );
+        assert_eq!(unpaid.object_view(wrong).zone, Zone::Hand);
         g.move_object(land, Zone::Exile);
         let elf = named(&mut g, p, "Llanowar Elves", Zone::Hand);
         cast(&mut g, elf, None, &[]);
