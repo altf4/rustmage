@@ -174,7 +174,25 @@ fn actual_casts_consume_the_discount_even_if_countered_or_before_the_provider_en
         let second = put(&mut game, player, "Opt", Zone::Hand);
         let free = cast_action(second, [0; 6]);
         reject(&mut game, free.clone());
-        reject(&mut game, Action::AnnounceCast { card: second });
+        act(&mut game, Action::AnnounceCast { card: second });
+        assert_eq!(
+            game.state.announcing.as_ref().unwrap().total_cost,
+            Some(ManaCost {
+                colored: BLUE,
+                generic: 0,
+            })
+        );
+        reject(&mut game, Action::PayCosts { payment: [0; 6] });
+        act(&mut game, Action::EndManaWindow);
+        act(&mut game, Action::SubmitAttempt);
+        let outcome = game.last_attempt_outcome_view(player).unwrap();
+        assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+        assert_eq!(outcome.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+        assert_eq!(game.object_view(second).zone, Zone::Hand);
+        assert_eq!(
+            game.state.players[player.index()].instant_sorcery_cast_this_turn,
+            1
+        );
 
         game.state.step = Step::End;
         act(&mut game, Action::Pass);
@@ -213,8 +231,47 @@ fn x_and_flashback_use_the_total_cost_of_the_chosen_route() {
         assert_eq!(from_graveyard.object_view(flashback).zone, Zone::Exile);
 
         act(&mut game, Action::AnnounceCast { card: x_spell });
-        reject(&mut game, Action::ChooseX { value: 4 });
+        assert_eq!(
+            game.x_choice().unwrap().intervals,
+            vec![XInterval {
+                minimum: 0,
+                maximum: u32::MAX,
+            }]
+        );
+        act(&mut game, Action::ChooseX { value: 4 });
+        assert_eq!(
+            game.state.announcing.as_ref().unwrap().total_cost,
+            Some(ManaCost {
+                colored: [0; 6],
+                generic: 3,
+            })
+        );
+        reject(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 2, 0],
+            },
+        );
+        act(&mut game, Action::EndManaWindow);
+        act(&mut game, Action::SubmitAttempt);
+        let outcome = game.last_attempt_outcome_view(player).unwrap();
+        assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+        assert_eq!(outcome.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+        assert_eq!(game.object_view(x_spell).zone, Zone::Hand);
+        assert_eq!(game.state.players[player.index()].mana, [0, 0, 0, 0, 2, 0]);
+        assert_eq!(
+            game.state.players[player.index()].instant_sorcery_cast_this_turn,
+            0
+        );
+        act(&mut game, Action::AnnounceCast { card: x_spell });
         act(&mut game, Action::ChooseX { value: 3 });
+        assert_eq!(
+            game.state.announcing.as_ref().unwrap().total_cost,
+            Some(ManaCost {
+                colored: [0; 6],
+                generic: 2,
+            })
+        );
         act(
             &mut game,
             Action::PayCosts {
