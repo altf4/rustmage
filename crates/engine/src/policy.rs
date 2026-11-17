@@ -365,7 +365,29 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::ChooseAdditionalCost { .. }
             | Action::ChooseAdditionalLife
             | Action::ChooseCreatureCounterCost { .. } => 60,
-            Action::ChooseForageRoute { .. } | Action::ChooseForage { .. } => 60,
+            Action::ChooseForageRoute { route } => {
+                let ready = match route {
+                    crate::ForageRoute::ExileThree => {
+                        observation
+                            .objects
+                            .iter()
+                            .filter(|object| {
+                                object.owner == actor && object.zone == Zone::Graveyard
+                            })
+                            .take(3)
+                            .count()
+                            == 3
+                    }
+                    crate::ForageRoute::Food => observation.objects.iter().any(|object| {
+                        object.controller == actor
+                            && object.zone == Zone::Battlefield
+                            && object.has_subtype("Food")
+                    }),
+                    crate::ForageRoute::Black => observation.players[actor.index()].mana[2] != 0,
+                };
+                if ready { 60 } else { -5 }
+            }
+            Action::ChooseForage { .. } => 60,
             Action::DeclineForage => -10,
             Action::ChooseConniver { .. } => 60,
             Action::PayResolutionMana { .. } | Action::PayResolutionLife => 100,
