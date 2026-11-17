@@ -18,6 +18,8 @@ pub(super) struct CastRollback {
     pub(super) mana_closed: bool,
     pub(super) contributions_sealed: bool,
     pub(super) special: bool,
+    pub(super) costs_complete: bool,
+    pub(super) deferred_draws: Vec<attempts::DeferredAttemptDraw>,
     pub(super) failure: Option<AttemptFailureReason>,
     pub(super) player: Player,
     pub(super) spell: CardId,
@@ -53,6 +55,8 @@ impl CastRollback {
             mana_closed: false,
             contributions_sealed: false,
             special: false,
+            costs_complete: false,
+            deferred_draws: Vec::new(),
             failure: None,
             player,
             spell,
@@ -70,6 +74,11 @@ impl CastRollback {
     pub(super) fn bytes(&self) -> usize {
         self.bytes
             + self.parent.as_ref().map_or(0, |parent| parent.bytes())
+            + self
+                .deferred_draws
+                .iter()
+                .map(attempts::DeferredAttemptDraw::bytes)
+                .sum::<usize>()
             + (self.public_hand_cards.len() + self.obscured_hand_cards.len())
                 * std::mem::size_of::<CardId>()
             + (self.public_face_down.len() + self.obscured_face_down.len())
@@ -83,6 +92,9 @@ impl CastRollback {
 impl Game {
     // Record public knowledge while the checkpoint incarnation is still in hand.
     pub(super) fn remember_public_hand(&mut self, reference: ObjectRef) {
+        if self.defer_attempt_draw_reveal(reference) {
+            return;
+        }
         if let Some(rollback) = &mut self.state.cast_rollback
             && rollback
                 .before
@@ -619,7 +631,9 @@ impl Game {
             });
         }
         let events = std::mem::take(&mut rollback.events);
+        let draws = std::mem::take(&mut rollback.deferred_draws);
         self.restore_attempt_parent(&mut rollback, events);
+        self.release_attempt_draws(draws);
     }
 
     /// Move completed/retained child receipts to their actual parent owner.
@@ -676,7 +690,9 @@ impl Game {
                 reason: Some(reason),
             });
         }
+        let draws = std::mem::take(&mut rollback.deferred_draws);
         self.restore_attempt_parent(rollback, retained);
+        self.release_attempt_draws(draws);
     }
     fn preserve_irreversible_cast_library_changes(&mut self, current: &State, spell: CardId) {
         let changed = current
@@ -700,22 +716,23 @@ impl Game {
         if !changed {
             return;
         }
-        // Supported irreversible cost movements are self-shuffles from hand or
-        // battlefield. Replay only their silent zone commits, using the normal
-        // exact-reference cleanup; never dispatch the undone cast's observers.
-        let retained =
-            current
-                .objects
-                .iter()
-                .enumerate()
-                .filter_map(|(id, o)| {
-                    (o.zone == Zone::Library
-                        && self.state.objects.get(id).is_some_and(|old| {
-                            old.zone != o.zone || old.generation != o.generation
-                        }))
-                    .then_some((id as CardId, o.clone()))
-                })
-                .collect::<Vec<_>>();
+        // Library movements and shuffles cannot be undone. Preserve both
+        // directions, including cards actually drawn during this attempt, with
+        // their frozen incarnations. The proposed spell itself is the exception.
+        // Silent zone commits never redispatch the undone proposal's observers.
+        let retained = current
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, o)| {
+                (id as CardId != spell
+                    && self.state.objects.get(id).is_some_and(|old| {
+                        (old.zone == Zone::Library || o.zone == Zone::Library)
+                            && (old.zone != o.zone || old.generation != o.generation)
+                    }))
+                .then_some((id as CardId, o.clone()))
+            })
+            .collect::<Vec<_>>();
         let restored_spell = self
             .state
             .players
@@ -736,10 +753,10 @@ impl Game {
         self.capture_source_quantities(before.iter());
         for (id, object) in retained {
             let before = self.object_view(id);
-            if before.zone != Zone::Library {
+            if before.zone != object.zone {
                 self.commit_planned_zone_move(
                     before,
-                    zone_replacements::Plan::unreplaced(Zone::Library),
+                    zone_replacements::Plan::unreplaced(object.zone),
                     false,
                     Counters::default(),
                     EntryIdentity::default(),
@@ -767,6 +784,9 @@ impl Game {
         }
         for (player, now) in self.state.players.iter_mut().zip(&current.players) {
             player.library = now.library.clone();
+            player.cards_drawn_this_turn = now.cards_drawn_this_turn;
+            player.drew_in_own_draw_step = now.drew_in_own_draw_step;
+            player.attempted_empty_draw = now.attempted_empty_draw;
         }
         // Library-to-stack casting can reverse even when a later shuffle cannot.
         // Preserve the restored spell's original library position (currently top).

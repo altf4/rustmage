@@ -364,3 +364,185 @@ impl Game {
             .filter(|outcome| self.shares_information(viewer, outcome.player))
     }
 }
+
+/// An opaque drawn card remains usable for an unrestricted discard without
+/// exposing its identity or pretending that it has printed characteristics.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct AttemptDrawView {
+    pub object: ObjectRef,
+    pub player: Player,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct DeferredAttemptDraw {
+    pub object: ObjectRef,
+    pub player: Player,
+    pub reveal: bool,
+    pub miracle: Vec<miracle::RevealChoice>,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl DeferredAttemptDraw {
+    pub(super) fn bytes(&self) -> usize {
+        std::mem::size_of::<Self>()
+            + self.miracle.len() * std::mem::size_of::<miracle::RevealChoice>()
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    /// CR121.8: track the actual drawn incarnation in every enclosing action
+    /// that is still being announced. A mana ability's own resolution is after
+    /// activation, but any suspended parent's announcement remains unfinished.
+    pub(super) fn record_attempt_draw(&mut self, object: ObjectRef) {
+        let player = self.state.objects[object.card as usize].owner;
+        let mut cursor = self.state.cast_rollback.as_deref_mut();
+        while let Some(attempt) = cursor {
+            if !attempt.special
+                && !attempt.costs_complete
+                && !attempt
+                    .deferred_draws
+                    .iter()
+                    .any(|draw| draw.object == object)
+            {
+                attempt.deferred_draws.push(DeferredAttemptDraw {
+                    object,
+                    player,
+                    reveal: false,
+                    miracle: Vec::new(),
+                });
+            }
+            cursor = attempt.parent.as_deref_mut();
+        }
+    }
+
+    /// Called at CR601.2i/602.2b, before a mana ability starts its immediate
+    /// resolution. Existing output continuations keep their checkpoint owner.
+    pub(super) fn mark_attempt_costs_complete(&mut self) {
+        if let Some(attempt) = self.state.cast_rollback.as_mut() {
+            attempt.costs_complete = true;
+        }
+    }
+
+    pub(super) fn attempt_draw_is_face_down(&self, object: ObjectRef) -> bool {
+        if self
+            .state
+            .objects
+            .get(object.card as usize)
+            .is_none_or(|card| card.zone != Zone::Hand || card.generation != object.generation)
+        {
+            return false;
+        }
+        let mut cursor = self.state.cast_rollback.as_deref();
+        while let Some(attempt) = cursor {
+            if !attempt.costs_complete
+                && attempt
+                    .deferred_draws
+                    .iter()
+                    .any(|draw| draw.object == object)
+            {
+                return true;
+            }
+            cursor = attempt.parent.as_deref();
+        }
+        false
+    }
+
+    pub fn attempt_draws_view(&self, viewer: Player) -> Vec<AttemptDrawView> {
+        let mut draws = Vec::new();
+        let mut cursor = self.state.cast_rollback.as_deref();
+        while let Some(attempt) = cursor {
+            for draw in &attempt.deferred_draws {
+                if self.attempt_draw_is_face_down(draw.object)
+                    && self.shares_information(viewer, draw.player)
+                    && !draws
+                        .iter()
+                        .any(|row: &AttemptDrawView| row.object == draw.object)
+                {
+                    draws.push(AttemptDrawView {
+                        object: draw.object,
+                        player: draw.player,
+                    });
+                }
+            }
+            cursor = attempt.parent.as_deref();
+        }
+        draws
+    }
+
+    pub(super) fn defer_attempt_draw_reveal(&mut self, object: ObjectRef) -> bool {
+        if !self.attempt_draw_is_face_down(object) {
+            return false;
+        }
+        let mut cursor = self.state.cast_rollback.as_deref_mut();
+        while let Some(attempt) = cursor {
+            for draw in &mut attempt.deferred_draws {
+                if draw.object == object {
+                    draw.reveal = true;
+                }
+            }
+            cursor = attempt.parent.as_deref_mut();
+        }
+        true
+    }
+
+    /// Store optional draw-reveal decisions at the outermost enclosing action,
+    /// retaining the original granting source even if costs later remove it.
+    pub(super) fn defer_attempt_miracle_reveals(
+        &mut self,
+        object: ObjectRef,
+        choices: &mut std::collections::VecDeque<miracle::RevealChoice>,
+    ) -> bool {
+        if !self.attempt_draw_is_face_down(object) {
+            return false;
+        }
+        fn store(
+            attempt: &mut cast_rollback::CastRollback,
+            object: ObjectRef,
+            choices: &mut std::collections::VecDeque<miracle::RevealChoice>,
+        ) -> bool {
+            if let Some(parent) = attempt.parent.as_mut()
+                && store(parent, object, choices)
+            {
+                return true;
+            }
+            if let Some(draw) = attempt
+                .deferred_draws
+                .iter_mut()
+                .find(|draw| draw.object == object)
+            {
+                draw.miracle.extend(choices.drain(..));
+                return true;
+            }
+            false
+        }
+        store(self.state.cast_rollback.as_mut().unwrap(), object, choices)
+    }
+
+    pub(super) fn release_attempt_draws(&mut self, draws: Vec<DeferredAttemptDraw>) {
+        let mut reveals = Vec::new();
+        for draw in draws {
+            if self
+                .state
+                .objects
+                .get(draw.object.card as usize)
+                .is_none_or(|card| {
+                    card.zone != Zone::Hand || card.generation != draw.object.generation
+                })
+            {
+                continue;
+            }
+            if draw.reveal {
+                self.remember_public_hand(draw.object);
+            }
+            if !draw.miracle.is_empty() {
+                let mut choices = draw.miracle.into_iter().collect();
+                if !self.defer_attempt_miracle_reveals(draw.object, &mut choices) {
+                    reveals.extend(choices);
+                }
+            }
+        }
+        self.resume_deferred_miracle_reveals(reveals);
+    }
+}
