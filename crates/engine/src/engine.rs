@@ -304,7 +304,10 @@ pub const OBSERVATION_SCHEMA: u32 = observation_schema::VERSION;
 pub const ACTION_CONTRACT: &str = "staged_attempts_v1";
 #[path = "engine_attempts.rs"]
 pub mod attempts;
-pub use attempts::{AttemptFailureReason, AttemptOutcome, AttemptOutcomeView, AttemptStage, AttemptView};
+pub use attempts::{
+    AttemptDrawView, AttemptFailureReason, AttemptOutcome, AttemptOutcomeView, AttemptStage,
+    AttemptView,
+};
 #[doc(hidden)]
 #[path = "engine_attack_trigger_observers.rs"]
 pub mod attack_trigger_observers;
@@ -4281,6 +4284,7 @@ pub struct Observation {
     pub action_contract: &'static str,
     pub attempt: Option<AttemptView>,
     pub last_attempt_outcome: Option<AttemptOutcomeView>,
+    pub attempt_draws: Vec<AttemptDrawView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub outside_choice: Option<outside_choices::OutsideChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5483,7 +5487,6 @@ impl Game {
             } else if let Action::PayCosts { payment } = &action {
                 self.mana_payment_domain()
                     .is_some_and(|d| d.contains(*payment))
-
             } else if let Action::PayAttackCost { payment } | Action::PayBlockCost { payment } =
                 &action
             {
@@ -6591,6 +6594,9 @@ impl Game {
                 }
                 for (i, obj) in s.objects.iter().enumerate() {
                     let card = i as CardId;
+                    if self.attempt_draw_is_face_down(self.object_ref(card)) {
+                        continue;
+                    }
                     // An opposing attachment can grant an ability to this
                     // actor's permanent. The grant checks the recipient's
                     // controller; ordinary source actions keep their own filter.
@@ -7219,6 +7225,9 @@ impl Game {
                             continue;
                         }
                         if completable
+                            && obj.card.cost_options().any(|cost| {
+                                self.spell_immediate_cost_available(actor, obj.card, cost)
+                            })
                             && !self.scalar_x_intervals(actor, card).is_empty()
                             && emit(if exile {
                                 Action::AnnounceExile { card }
@@ -7241,10 +7250,15 @@ impl Game {
                         .flatten();
                     let costs = costs.chain(impending_cost);
                     let reduction = self.direct_spell_reduction(
-                        actor, card, costs.clone().any(|cost| cost.generic != 0),
+                        actor,
+                        card,
+                        costs.clone().any(|cost| cost.generic != 0),
                     );
                     if completable
-                        && costs.clone().any(|cost| self.spell_cost_option_available(actor, card, cost))
+                        && costs.clone().any(|cost| {
+                            self.spell_cost_option_available(actor, card, cost)
+                                && self.spell_immediate_cost_available(actor, obj.card, cost)
+                        })
                         && emit(if flashback {
                             Action::AnnounceFlashback { card }
                         } else if exile {
@@ -10392,6 +10406,7 @@ impl Game {
             Some(id) => {
                 let event = self.move_object(id, Zone::Hand);
                 if event.moved && event.destination == Zone::Hand {
+                    self.record_attempt_draw(event.after);
                     self.card_drawn(p, event.after);
                     self.offer_miracle_reveal(p, id);
                     true
@@ -12963,7 +12978,8 @@ impl Game {
             .iter()
             .enumerate()
             .filter(|(i, o)| {
-                self.can_view_hideaway(viewer, self.object_ref(*i as CardId))
+                !self.attempt_draw_is_face_down(self.object_ref(*i as CardId))
+                    && self.can_view_hideaway(viewer, self.object_ref(*i as CardId))
                     && o.zone != Zone::Outside
                     && o.zone != Zone::Library
                     && (o.zone != Zone::Hand
@@ -12994,6 +13010,7 @@ impl Game {
             action_contract: ACTION_CONTRACT,
             attempt: self.attempt_view(viewer),
             last_attempt_outcome: self.last_attempt_outcome_view(viewer),
+            attempt_draws: self.attempt_draws_view(viewer),
             outside_choice: self.outside_choice_view(viewer),
             legendary_split_search: self.legendary_split_view(viewer),
             outside_entry_replacement: self.outside_entry_replacement_view(viewer),

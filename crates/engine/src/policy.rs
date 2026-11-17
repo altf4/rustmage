@@ -13,8 +13,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
 /// Score offered actions from the actor's observation, without observing twice.
 pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action]) -> usize {
     let actor = observation.actor.expect("nonterminal game");
-    // Fundable declarations are offered before any speculative mana activation.
-    // Preserve spare sources for later steps once those declarations are exhausted.
+    // Declarations are attempts. This deliberately simple smoke policy stops
+    // proposing paid actions for the turn after one failed attempt.
     let tap_for_payment = observation.announcing.is_some()
         || observation.plot_payment.is_some()
         || observation.room_unlock_payment.is_some()
@@ -132,6 +132,19 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
         if own == beneficial { 70 } else { -10 }
     };
     let score = |action: &Action| -> i128 {
+        if observation.attempt.is_none()
+            && observation.decision == "priority"
+            && observation.last_attempt_outcome.is_some_and(|outcome| {
+                outcome.turn == u64::from(observation.turn)
+                    && outcome.outcome == crate::AttemptOutcome::Failed
+            })
+            && !matches!(
+                action,
+                Action::Pass | Action::Concede | Action::PlayLand { .. }
+            )
+        {
+            return -10;
+        }
         // A smoke policy need not spend the whole turn re-equipping, including
         // legal zero-cost activations. The engine still offers those actions.
         if let Action::Activate { card, ability, .. }
@@ -257,7 +270,30 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 {
                     -100
                 } else {
-                    80 + i128::from((*value).min(20))
+                    // A policy estimate only: one mana per untapped land plus
+                    // the visible pool. It never changes the engine X domain.
+                    let budget: u64 = observation.players[actor.index()]
+                        .mana
+                        .iter()
+                        .map(|&n| u64::from(n))
+                        .sum::<u64>()
+                        + observation
+                            .objects
+                            .iter()
+                            .filter(|o| {
+                                o.zone == Zone::Battlefield
+                                    && o.controller == actor
+                                    && o.card.is_land()
+                                    && !o.tapped
+                            })
+                            .count() as u64;
+                    let fixed = observation
+                        .announcing
+                        .as_ref()
+                        .and_then(|a| a.source)
+                        .map_or(0, |source| source.card.fixed_mana_value());
+                    let preferred = budget.saturating_sub(fixed).min(20);
+                    100 - i128::from(u64::from(*value).abs_diff(preferred))
                 }
             }
             Action::ChooseBeholdType {

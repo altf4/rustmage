@@ -471,10 +471,10 @@ impl Game {
             self.item_improvise(&a.item) && improvise::eligible(self, a.item.controller, object)
         };
         let mut remaining = f.remaining;
-        eligible && contribution.unwrap_or(ConvokeContribution::Generic).apply(
-            ability_world::CharacteristicWorld::colors(self, object.card), &mut remaining,
-        )
+        eligible
+            && contribution.unwrap_or(ConvokeContribution::Generic).apply(
+                ability_world::CharacteristicWorld::colors(self, object.card),
+                &mut remaining,
+            )
     }
-
-
 }

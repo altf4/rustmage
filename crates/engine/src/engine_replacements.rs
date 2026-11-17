@@ -1366,6 +1366,7 @@ pub(super) struct CounterPreview {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    #[cfg(feature = "test-support")]
     pub(super) fn projected_entry_counter(
         &self,
         choice: Option<CounterReplacementId>,

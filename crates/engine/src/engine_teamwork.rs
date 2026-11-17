@@ -12,14 +12,6 @@ pub struct TeamworkChoiceView {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    pub(super) fn teamwork_initial_fundable(
-        &self,
-        actor: Player,
-        id: CardId,
-        base: ManaCost,
-    ) -> bool {
-        self.spell_cost_option_available(actor, id, base)
-    }
     pub(super) fn teamwork_mode_allowed(&self, item: &SpellView, mode: usize) -> bool {
         let Some(spec) = item.source.and_then(|source| source.card.teamwork()) else {
             return true;
@@ -32,15 +24,28 @@ impl Game {
         mode < 64 && bits & (1u64 << mode) != 0
     }
     pub(super) fn teamwork_intent_fundable(&self, announcement: &Announcement, pay: bool) -> bool {
-        let Some(source) = announcement.item.source else { return false; };
-        let Some(spec) = source.card.teamwork() else { return false; };
+        let Some(source) = announcement.item.source else {
+            return false;
+        };
+        let Some(spec) = source.card.teamwork() else {
+            return false;
+        };
         if !pay {
             return true;
         }
-        self.state.objects.iter().enumerate().filter(|(id, object)| {
-            object.zone == Zone::Battlefield && object.controller == announcement.item.controller
-                && !object.tapped && self.is_creature(*id as CardId)
-        }).take(usize::from(spec.minimum)).count() >= usize::from(spec.minimum)
+        self.state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, object)| {
+                object.zone == Zone::Battlefield
+                    && object.controller == announcement.item.controller
+                    && !object.tapped
+                    && self.is_creature(*id as CardId)
+            })
+            .take(usize::from(spec.minimum))
+            .count()
+            >= usize::from(spec.minimum)
     }
     pub(super) fn choose_teamwork(&mut self, pay: bool) {
         let improvise = improvise::potential(

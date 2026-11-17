@@ -56,6 +56,7 @@ pub(super) fn eligible<W: CharacteristicWorld + ?Sized>(
         && !world.graveyard_exile_prohibited(object.card)
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[cfg(feature = "test-support")]
 pub(super) fn count<W: CharacteristicWorld + ?Sized>(
     world: &W,
     player: Player,
@@ -125,10 +126,17 @@ impl Game {
     }
     pub(super) fn delver_fundable(&self, object: ObjectRef) -> bool {
         let a = self.state.announcing.as_ref().unwrap();
-        let Some(selection) = a.convoke.as_ref() else { return false; };
+        let Some(selection) = a.convoke.as_ref() else {
+            return false;
+        };
         selection.remaining.generic > 0
             && !selection.contains(object)
-            && delve::eligible(self, a.item.controller, object, a.item.source.map(|s| s.object))
+            && delve::eligible(
+                self,
+                a.item.controller,
+                object,
+                a.item.source.map(|s| s.object),
+            )
     }
     pub(super) fn pay_mana_contributors(&mut self, a: &mut Announcement) {
         let Some(frame) = &mut a.convoke else {

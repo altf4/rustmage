@@ -478,8 +478,12 @@ impl Game {
             }
             selected.push(object);
         }
-        selection.source_exiles.iter().all(|&object| self.source_exilable(object))
-            && self.evidence_selection_total(selection.player, selection.excluded, &selected)
+        selection
+            .source_exiles
+            .iter()
+            .all(|&object| self.source_exilable(object))
+            && self
+                .evidence_selection_total(selection.player, selection.excluded, &selected)
                 .is_some_and(|total| !exact || total >= u128::from(selection.threshold))
     }
 

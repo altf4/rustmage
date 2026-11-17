@@ -868,6 +868,7 @@ pub(super) fn available(pool: [u128; 6], lots: &[Lot], purpose: Purpose) -> [u12
 /// Remaining feasible interval when the preceding lots are already fixed.
 /// `ordinary` excludes every tagged lot, including ineligible lots.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[cfg(feature = "test-support")]
 pub(super) fn allocation_range(
     lots: &[Lot],
     ordinary: [u128; 6],
@@ -1355,6 +1356,7 @@ impl Game {
     }
 
     /// Project only differences that can change a later funding action.
+    #[cfg(feature = "test-support")]
     pub(super) fn funding_lot_key(&self, lots: &[Lot]) -> Vec<Lot> {
         group_lots(lots, |_| false)
             .0
@@ -1905,6 +1907,7 @@ fn lift_spending_allocation(
 /// Enumerate distinct funding allocations and retain one exact witness per
 /// spending group. The common empty-pool case emits without recursion.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[cfg(feature = "test-support")]
 pub(super) fn visit_allocations(
     pool: [u128; 6],
     lots: &[Lot],

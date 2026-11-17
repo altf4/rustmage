@@ -13,7 +13,6 @@ struct Completion<'a> {
     finished: bool,
 }
 
-
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     fn visit_opposing_target_life_costs(
@@ -111,16 +110,14 @@ impl Game {
         fees
     }
 
-
-
-
-
     pub(super) fn target_payment_announcement_fundable(
         &self,
         a: &Announcement,
         cost: ManaCost,
     ) -> bool {
-        let Some(source) = a.item.source else { return false; };
+        let Some(source) = a.item.source else {
+            return false;
+        };
         if let Some(index) = a.item.mode.map(usize::from)
             && (!self.item_mode_eligible(&a.item, index)
                 || !self.teamwork_mode_allowed(&a.item, index)
@@ -134,7 +131,10 @@ impl Game {
             || a.independent_additional_mana().is_some()
             || cast.flash_surcharge
             || self.spell_cost_option_available_for_definition(
-                a.item.controller, source.id, a.cost_before_exile_play_surcharge(cost), source.card,
+                a.item.controller,
+                source.id,
+                a.cost_before_exile_play_surcharge(cost),
+                source.card,
             )
     }
 
@@ -159,12 +159,14 @@ impl Game {
         }
         // Only declared targets affect the displayed provisional cost. No
         // hypothetical target is selected to obtain a discount or evade a tax.
-        Some(c.chosen.iter().any(|bound| {
-            self.same_target_object(*bound)
-                && self.cast_target_matches(rule, c.actor, c.source, c.definition, bound.target)
-        }) || c.extra.is_some_and(|target| {
-            self.cast_target_matches(rule, c.actor, c.source, c.definition, target)
-        }))
+        Some(
+            c.chosen.iter().any(|bound| {
+                self.same_target_object(*bound)
+                    && self.cast_target_matches(rule, c.actor, c.source, c.definition, bound.target)
+            }) || c.extra.is_some_and(|target| {
+                self.cast_target_matches(rule, c.actor, c.source, c.definition, target)
+            }),
+        )
     }
     fn completion_modifiers(&self, c: &Completion<'_>) -> Option<(bool, bool)> {
         let reduced = match c.definition.target_cost_reduction() {
@@ -372,13 +374,21 @@ impl Game {
         let Some(spec) = plan.group(a.group) else {
             return extra.is_none();
         };
-        let count = a.item.targets.iter().filter(|bound| bound.group == a.group).count()
+        let count = a
+            .item
+            .targets
+            .iter()
+            .filter(|bound| bound.group == a.group)
+            .count()
             + usize::from(extra.is_some());
         if count > spec.max || finished && count < usize::from(spec.min) {
             return false;
         }
         extra.is_none_or(|target| {
-            !a.item.targets.iter().any(|bound| bound.group == a.group && bound.target == target)
+            !a.item
+                .targets
+                .iter()
+                .any(|bound| bound.group == a.group && bound.target == target)
                 && self.item_target_matches(&a.item, spec.rule, target)
                 && self.target_group_compatible(spec.rule, a.group, &a.item.targets, target)
         })

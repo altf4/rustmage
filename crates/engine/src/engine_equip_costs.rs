@@ -39,6 +39,7 @@ impl Game {
             && emit(Counters::default()))
             || activations::counter_payments(ability.cost, available, emit)
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn activation_target_sensitive(definition: Card, ability: u16) -> bool {
         definition.activation(ability).is_equip()
             || definition

@@ -876,6 +876,7 @@ impl Game {
         }
         reduction
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn reduced_spell_cost(
         &self,
         actor: Player,
