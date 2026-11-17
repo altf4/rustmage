@@ -75,6 +75,9 @@ fn prove_branch(game: &Game, actor: Player, actions: &[Action], index: usize) ->
         if *candidate == action || matches!(candidate, Action::Concede) {
             return false;
         }
+        // Each candidate starts from the same allocator state; restoring a
+        // prior candidate would intentionally allocate a newer attempt ID.
+        sibling = game.clone();
         sibling.apply(actor, (*candidate).clone()).unwrap();
         if sibling.snapshot() != raw.snapshot() {
             return true;
@@ -95,11 +98,13 @@ fn prove_branch(game: &Game, actor: Player, actions: &[Action], index: usize) ->
         restored.apply_index(actor, revision, index),
         Err(Error::StaleRevision)
     );
+    let mut restored_raw = restored.clone();
+    restored_raw.apply(actor, action.clone()).unwrap();
     restored
         .apply_index(actor, restored.revision(), index)
         .unwrap();
-    assert_eq!(restored.snapshot(), raw.snapshot());
-    assert_eq!(views(&restored), views(&raw));
+    assert_eq!(restored.snapshot(), restored_raw.snapshot());
+    assert_eq!(views(&restored), views(&restored_raw));
     true
 }
 
@@ -255,7 +260,12 @@ fn verify_pairings(
                 let selected = offered
                     .iter()
                     .position(|action| {
-                        seek_back_face && matches!(action, Action::AnnounceBack { .. })
+                        seek_back_face
+                            && !observation.last_attempt_outcome.is_some_and(|outcome| {
+                                outcome.outcome == AttemptOutcome::Failed
+                                    && outcome.turn == u64::from(observation.turn)
+                            })
+                            && matches!(action, Action::AnnounceBack { .. })
                     })
                     .unwrap_or_else(|| {
                         policy::smoke_index_from_observation(&observation, &offered)

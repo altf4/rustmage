@@ -293,7 +293,7 @@ fn failed_cast_restores_the_exact_top_and_preserves_its_public_announcement() {
     settle(&mut game);
     let action = announce(top, CastFace::Normal);
     game.state.players[0].mana = [0; 6];
-    reject(&mut game, action.clone());
+    admit(&game, action.clone());
     game.state.players[0].mana[5] = 2;
     game.state.players[0].life = 1;
     reject(&mut game, action.clone());

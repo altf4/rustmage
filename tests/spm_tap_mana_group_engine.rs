@@ -99,7 +99,7 @@ fn two_summoning_sick_creatures_can_fund_the_only_cast_route_and_rollback_as_a_g
     let artifact = put(&mut game, player, "Swiftfoot Boots", Zone::Battlefield);
     let spell = put(&mut game, player, "Healer's Hawk", Zone::Hand);
     let announce = Action::AnnounceCast { card: spell };
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
     let witness = put(&mut game, player, "Hill Giant", Zone::Battlefield);
     game.state.objects[witness as usize].summoning_sick = true;
 
@@ -178,12 +178,20 @@ fn nested_tap_payment_preserves_the_enclosing_activations_source_tap() {
         ability: 0,
         counter_payment: Counters::default(),
     };
-    reject(&mut game, outer_activation.clone());
+    admit(&game, outer_activation.clone());
     let witness = put(&mut game, player, "Hill Giant", Zone::Battlefield);
     act(&mut game, outer_activation);
     begin_mana(&mut game, source);
-    let illegal = tap_choice(&game, outer);
-    reject(&mut game, illegal);
+    let outer_tap = tap_choice(&game, outer);
+    admit(&game, outer_tap.clone());
+    let mut conflicted = game.clone();
+    act(&mut conflicted, outer_tap);
+    let source_tap = tap_choice(&conflicted, source);
+    act(&mut conflicted, source_tap);
+    pay_mana_ability(&mut conflicted, player);
+    assert!(conflicted.object_view(outer).tapped);
+    reject(&mut conflicted, Action::PayCosts { payment: WHITE });
+    assert_eq!(conflicted.hand_count(player), 0);
     for id in [source, witness] {
         let choice = tap_choice(&game, id);
         act(&mut game, choice);
@@ -213,8 +221,8 @@ fn tap_group_sources_and_convoke_share_the_untapped_creature_pool() {
     put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
     let gwenom = put(&mut game, player, "Gwenom, Remorseless", Zone::Hand);
     let web = put(&mut game, player, "Web of Life and Destiny", Zone::Hand);
-    reject(&mut game, Action::AnnounceCast { card: gwenom });
-    reject(&mut game, Action::AnnounceCast { card: web });
+    admit(&game, Action::AnnounceCast { card: gwenom });
+    admit(&game, Action::AnnounceCast { card: web });
 
     put(&mut game, player, "Hill Giant", Zone::Battlefield);
     let legal = game.legal_actions();

@@ -142,7 +142,7 @@ fn private_hand_peek_branches_into_public_exact_source_choices_and_taxes_both_se
             };
             raw.state.players[seat.index()].mana = [0, 1, 0, 0, 0, 0];
             assert_eq!(raw.actor(), Some(seat));
-            assert!(!can_cast(&raw, own_spell));
+            admit_unfunded_cast(&raw, own_spell);
             raw.state.players[seat.index()].mana[5] = 1;
             assert!(can_cast(&raw, own_spell));
             if seat == player {
@@ -157,7 +157,7 @@ fn private_hand_peek_branches_into_public_exact_source_choices_and_taxes_both_se
         raw.restore(&saved).unwrap();
         act(&mut raw, type_choice(NoncreatureCardType::Artifact));
         raw.state.players[player.index()].mana = [0, 0, 0, 0, 0, 4];
-        assert!(!can_cast(&raw, artifact_creature));
+        admit_unfunded_cast(&raw, artifact_creature);
         raw.state.players[player.index()].mana[5] = 5;
         assert!(can_cast(&raw, artifact_creature));
         assert_eq!(
@@ -187,7 +187,7 @@ fn spell_tax_uses_proposed_face_and_only_the_available_ability() {
     // Creature and Adventure both cost {1}{U}. Only the proposed Instant is taxed.
     game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 1];
     assert!(can_cast(&game, adventure_card));
-    reject(&mut game, adventure.clone());
+    admit(&game, adventure.clone());
     game.state.players[player.index()].mana[5] = 2;
     assert!(game.legal_actions().contains(&adventure));
 
@@ -204,7 +204,7 @@ fn spell_tax_uses_proposed_face_and_only_the_available_ability() {
     assert_eq!(game.object_view(disable).zone, Zone::Graveyard);
     game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 1];
     assert!(can_cast(&game, adventure_card));
-    reject(&mut game, adventure);
+    admit(&game, adventure);
 }
 
 fn target_library(game: &mut Game, player: Player) -> CardId {
@@ -408,4 +408,13 @@ fn shorter_library_exiles_every_available_card() {
             assert_eq!(game.object_view(card).zone, Zone::Exile);
         }
     }
+}
+
+fn admit_unfunded_cast(game: &Game, card: CardId) {
+    admit(game, Action::AnnounceCast { card });
+    let mut unpaid = game.clone();
+    act(&mut unpaid, Action::AnnounceCast { card });
+    assert!(unpaid.mana_payment_domain().is_none());
+    let payment = unpaid.state.players[unpaid.actor().unwrap().index()].mana;
+    reject(&mut unpaid, Action::PayCosts { payment });
 }

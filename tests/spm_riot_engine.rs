@@ -327,7 +327,7 @@ fn private_riot_entry_preserves_hidden_origin_and_funding_uses_only_haste() {
     let mana = put(&mut game, player, "Short Bow", Zone::Battlefield);
     let spell = put(&mut game, player, "Grizzly Bears", Zone::Hand);
     let cast = Action::AnnounceCast { card: spell };
-    reject(&mut game, cast.clone());
+    admit(&game, cast.clone());
     let exiled = game.object_ref(elf);
     game.state.exile_links.push(ExileLink {
         ability_origin: None,
@@ -343,7 +343,7 @@ fn private_riot_entry_preserves_hidden_origin_and_funding_uses_only_haste() {
     riot(&game, player, exiled, 1);
     assert_eq!(game.object_view(mana).zone, Zone::Graveyard);
     assert_eq!(game.object_view(elf).zone, Zone::Exile);
-    reject(&mut game, Action::ChooseEntryRiot { counter: true });
+    admit(&game, Action::ChooseEntryRiot { counter: true });
     act(&mut game, Action::ChooseEntryRiot { counter: false });
     assert_eq!(game.object_view(elf).zone, Zone::Battlefield);
     assert_ne!(game.object_ref(elf), exiled);

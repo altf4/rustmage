@@ -156,7 +156,7 @@ fn alien_symbiosis_adds_its_aura_traits_and_discards_only_for_its_graveyard_perm
             },
         );
         let action = Action::AnnounceGraveyardAdditionalCosts { card: source };
-        reject(&mut game, action.clone());
+        admit(&game, action.clone());
         let discard = put(&mut game, P, "Forest", Zone::Hand);
         if graveyard {
             act(&mut game, action);
@@ -266,7 +266,7 @@ fn angry_rabble_checks_cast_mana_value_and_pays_for_two_counters() {
         assert_eq!(game.state.players[O.index()].life, life);
     }
     game.state.players[P.index()].mana = [0, 0, 0, 1, 0, 4];
-    reject(&mut game, announce_activation(source, 0));
+    admit(&game, announce_activation(source, 0));
     game.state.players[P.index()].mana[5] = 5;
     activate(&mut game, source, 0, None);
     settle(&mut game);
@@ -309,7 +309,7 @@ fn arachne_web_slings_then_peeks_privately_and_taxes_the_chosen_type_for_each_se
     let own_shock = put(&mut game, P, "Shock", Zone::Hand);
     let enemy_shock = put(&mut game, O, "Shock", Zone::Hand);
     game.state.players[P.index()].mana = WHITE;
-    reject(&mut game, Action::AnnounceCast { card: arachne });
+    admit(&game, Action::AnnounceCast { card: arachne });
     act(
         &mut game,
         Action::AnnounceWebSlinging {
@@ -822,8 +822,20 @@ fn daily_bugle_building_has_separate_colorless_filter_and_legendary_menace_costs
     assert!(!game.object_view(land).tapped);
     game.state.players[P.index()].mana = [0; 6];
     assert!(!game.legal_actions().iter().any(|action| matches!(
-        action, Action::ActivateMana { card, ability: 1, .. }
-            | Action::AnnounceMana { card, ability: 1, .. } if *card == land)));
+        action, Action::ActivateMana { card, ability: 1, .. } if *card == land)));
+    let unfunded = game
+        .legal_actions()
+        .into_iter()
+        .find(|action| {
+            matches!(
+        action, Action::AnnounceMana { card, ability: 1, .. } if *card == land)
+        })
+        .unwrap();
+    admit(&game, unfunded.clone());
+    let mut unpaid = game.clone();
+    act(&mut unpaid, unfunded);
+    reject(&mut unpaid, Action::PayCosts { payment: [0; 6] });
+    assert!(!unpaid.object_view(land).tapped);
     mana_ability(&mut game, land, 0, [0, 0, 0, 0, 0, 1]);
     assert_eq!(game.state.players[P.index()].mana, [0, 0, 0, 0, 0, 1]);
     game.state.objects[land as usize].tapped = false;
@@ -1336,7 +1348,7 @@ fn grow_extra_arms_costs_one_less_only_when_it_targets_a_spider() {
         game.state.players[P.index()].mana = [0, 0, 0, 0, 1, u32::from(!spider_target)];
         act(&mut game, Action::AnnounceCast { card: spell });
         if spider_target {
-            reject(&mut game, target_action(Target::Card(other)));
+            admit(&game, target_action(Target::Card(other)));
         }
         let recipient = if spider_target { spider } else { other };
         let (power, toughness) = stats(&game, recipient);
@@ -1672,10 +1684,14 @@ fn impostor_syndrome_copies_the_nontoken_dealer_using_last_known_copiable_values
 }
 
 fn choose_spell_cost_if_needed(game: &mut Game) {
-    let action = game
-        .legal_actions()
-        .into_iter()
-        .find(|action| matches!(action, Action::ChooseSpellCost { .. }));
+    let action = game.legal_actions().into_iter().find(|action| {
+        if !matches!(action, Action::ChooseSpellCost { .. }) {
+            return false;
+        }
+        let mut selected = game.clone();
+        act(&mut selected, action.clone());
+        selected.mana_payment_domain().is_some()
+    });
     if let Some(action) = action {
         act(game, action);
     }

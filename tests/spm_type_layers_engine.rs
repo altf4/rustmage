@@ -288,7 +288,7 @@ fn an_enchanted_land_grants_its_controller_a_sorcery_speed_activation() {
     game.state.priority = Player::P1;
     game.state.passes = 0;
     game.state.players[1].mana = [0; 6];
-    reject(&mut game, action.clone());
+    admit(&game, action.clone());
     game.state.players[1].mana[5] = 1;
 
     let before = game.snapshot();
