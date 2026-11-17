@@ -3368,6 +3368,11 @@ fn source_world_completion_reflexive_x_payment_does_not_keep_the_parent_entrants
         }) {
             break;
         }
+        if matches!(g.state.pending, Pending::ResolutionX { .. }) {
+            assert!(g.x_choice().unwrap().contains(1));
+            act(&mut g, Action::ChooseX { value: 1 });
+            continue;
+        }
         choose(&mut g, |a| {
             matches!(
                 a,
