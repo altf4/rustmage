@@ -734,3 +734,34 @@ fn recovery_retains_each_irreversible_library_transition_in_order() {
     assert_eq!(g.state.players[p.index()].descended_this_turn, 1);
     assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 1);
 }
+
+#[test]
+fn smoke_ends_a_parent_window_instead_of_repeating_a_failed_mana_child() {
+    let _scope = fixture_rules::activate(&[(Card::LlanowarElves, &FILTER)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    zero_pool(&mut g, p);
+    let spell = put(&mut g, p, "Bear Cub", Zone::Hand);
+    let source = put(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+    act(&mut g, Action::AnnounceCast { card: spell });
+    let child = Action::AnnounceMana {
+        card: source,
+        ability: 0,
+        counter_payment: Counters::default(),
+        production: GREEN,
+    };
+    act(&mut g, child.clone());
+    close_and_submit(&mut g);
+    assert!(g.attempt_view(p).is_some());
+    let actions = g.legal_actions();
+    assert!(
+        actions.contains(&child),
+        "the engine must keep retrying legal"
+    );
+    let index = rustmage_core::policy::smoke_index(&g, &actions);
+    assert_eq!(actions[index], Action::EndManaWindow);
+    act(&mut g, actions[index].clone());
+    act(&mut g, Action::SubmitAttempt);
+    assert!(g.attempt_view(p).is_none());
+    assert_eq!(g.object_view(spell).zone, Zone::Hand);
+}
