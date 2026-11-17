@@ -332,7 +332,9 @@ pub mod tiered;
 #[doc(hidden)]
 #[path = "engine_warp.rs"]
 pub mod warp;
-pub use cast_payments::{CastPaymentEvent, ManaPaymentDomain};
+pub use cast_payments::{
+    CastPaymentEvent, ManaPaymentAction, ManaPaymentChoice, ManaPaymentDomain,
+};
 pub use earthbend::EarthbendReturnView;
 pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView, OwnTurnDeadline};
 pub use plot::{ForetoldCardView, PlotPaymentView, PlottedCard};
@@ -4264,6 +4266,8 @@ pub struct LegalActionSpace {
     pub source_counter_choice: Option<SourceCounterChoiceView>,
     pub mana_lot_spend: Option<ManaLotSpendRange>,
     pub mana_payment: Option<ManaPaymentDomain>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub special_mana_payments: Vec<ManaPaymentChoice>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mana_split: Option<ManaSplitChoiceView>,
     pub choices: Vec<Action>,
@@ -4439,6 +4443,10 @@ pub struct Observation {
     pub copied_saga_lore: Option<CopiedSagaLoreView>,
     /// Complete exact numeric cost-payment space, visible only to its actor.
     pub mana_payment: Option<ManaPaymentDomain>,
+    /// Full face-up, Room, plot/foretell, or resolution allocation domains.
+    /// Visible only to the actor and players sharing their information.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub special_mana_payments: Vec<ManaPaymentChoice>,
     pub endure_choice: Option<EndureChoiceView>,
     pub convoke_choice: Option<ConvokeChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5295,6 +5303,7 @@ impl Game {
             source_counter_choice: self.source_counter_choice(),
             mana_lot_spend: self.mana_lot_spend_range(),
             mana_payment: self.mana_payment_domain(),
+            special_mana_payments: self.special_mana_payments(),
             mana_split: self.mana_split_choice(),
             choices: self.legal_actions(),
             x_choice: self.x_choice(),
@@ -5499,6 +5508,15 @@ impl Game {
                         && self
                             .mana_payment_domain()
                             .is_some_and(|d| d.contains(*payment))
+                })
+            } else if let Action::PayFaceUp { payment }
+            | Action::PayRoomUnlock { payment }
+            | Action::PayPlot { payment }
+            | Action::PayForetell { payment }
+            | Action::PayResolutionMana { payment } = &action
+            {
+                self.special_mana_payments().into_iter().any(|choice| {
+                    choice.action.action(*payment) == action && choice.domain.contains(*payment)
                 })
             } else if let Action::ChooseCounterRemoval { counters } = &action {
                 self.counter_removal_domain()
@@ -13159,6 +13177,11 @@ impl Game {
             inert_mana_copy_sources: self.inert_mana_copy_source_views(),
             mana_lot_spend: owns_choice.then(|| self.mana_lot_spend_range()).flatten(),
             mana_payment: owns_choice.then(|| self.mana_payment_domain()).flatten(),
+            special_mana_payments: if owns_choice {
+                self.special_mana_payments()
+            } else {
+                Vec::new()
+            },
             endure_choice: if owns_choice {
                 match s.pending {
                     Pending::Endure {

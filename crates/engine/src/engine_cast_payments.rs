@@ -12,8 +12,54 @@ pub struct ManaPaymentDomain {
     pub required: Mana,
     pub generic: u32,
 }
+
+/// The concrete action accepting a special payment's numeric domain.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ManaPaymentAction {
+    PayFaceUp,
+    PayRoomUnlock,
+    PayPlot,
+    PayForetell,
+    PayResolutionMana,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ManaPaymentAction {
+    pub fn action(self, payment: Mana) -> Action {
+        match self {
+            Self::PayFaceUp => Action::PayFaceUp { payment },
+            Self::PayRoomUnlock => Action::PayRoomUnlock { payment },
+            Self::PayPlot => Action::PayPlot { payment },
+            Self::PayForetell => Action::PayForetell { payment },
+            Self::PayResolutionMana => Action::PayResolutionMana { payment },
+        }
+    }
+}
+
+/// Full current allocation space for one selected special-payment requirement.
+/// Resolution payments can have multiple printed mana alternatives.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct ManaPaymentChoice {
+    pub action: ManaPaymentAction,
+    pub domain: ManaPaymentDomain,
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ManaPaymentDomain {
+    pub(super) fn payable(&self) -> bool {
+        (0..6).all(|i| self.available[i] >= self.required[i])
+            && self
+                .available
+                .into_iter()
+                .zip(self.required)
+                .map(|(held, required)| u64::from(held.saturating_sub(required)))
+                .sum::<u64>()
+                >= u64::from(self.generic)
+    }
+
     pub fn contains(&self, payment: Mana) -> bool {
         if (0..6).any(|i| payment[i] < self.required[i] || payment[i] > self.available[i]) {
             return false;
@@ -61,10 +107,123 @@ impl ManaPaymentDomain {
                 }
             }
         }
-        if (0..6).any(|i| self.available[i] < self.required[i]) {
+        if !self.payable() {
             return;
         }
         visit(self, 0, self.generic, self.required, &mut 0, &mut emit);
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    /// Exact special-payment domains, using only current source, selected cost
+    /// components, and eligible mana. No future mana or material choice is tried.
+    pub fn special_mana_payments(&self) -> Vec<ManaPaymentChoice> {
+        let mut choices = Vec::new();
+        let mut add = |action, actor, purpose, cost: ManaCost| {
+            let choice = ManaPaymentChoice {
+                action,
+                domain: ManaPaymentDomain {
+                    available: self.available_mana(actor, purpose),
+                    required: cost.colored,
+                    generic: cost.generic,
+                },
+            };
+            if choice.domain.payable() && !choices.contains(&choice) {
+                choices.push(choice);
+            }
+        };
+        match self.state.pending {
+            Pending::FaceUpPayment { .. } => {
+                if let Some(request) = self.face_up_payment()
+                    && request.x_symbols.is_none()
+                    && self.object_ref(request.object.card) == request.object
+                    && self.on_battlefield(request.object.card)
+                    && self.state.objects[request.object.card as usize].controller
+                        == request.controller
+                    && self.is_face_down(request.object)
+                    && !manifest::face_up_prohibited(self, request.object)
+                {
+                    add(
+                        ManaPaymentAction::PayFaceUp,
+                        request.controller,
+                        mana_lots::Purpose::face_up(self, request.object),
+                        request.cost,
+                    );
+                }
+            }
+            Pending::RoomUnlockPayment { .. } => {
+                if let Some(request) = self.state.room_unlock_payment()
+                    && request.source_is_current(self)
+                {
+                    add(
+                        ManaPaymentAction::PayRoomUnlock,
+                        request.controller,
+                        mana_lots::Purpose::UnlockDoor,
+                        request.cost,
+                    );
+                }
+            }
+            Pending::PlotPayment { .. } => {
+                if let Some(request) = self.plot_payment()
+                    && request.source_is_current(self)
+                {
+                    add(
+                        if request.foretell {
+                            ManaPaymentAction::PayForetell
+                        } else {
+                            ManaPaymentAction::PayPlot
+                        },
+                        request.controller,
+                        mana_lots::Purpose::Other,
+                        request.cost,
+                    );
+                }
+            }
+            Pending::ResolutionMana { .. } => {
+                if let Some(request) = self
+                    .state
+                    .resolving
+                    .as_ref()
+                    .and_then(|resolution| resolution.mana_payment.as_deref())
+                    && !request.discard_only
+                    && request.route_selected()
+                    && self.resolution_life_available(request.payer, request.life)
+                    && self.resolution_objects_ready(request)
+                {
+                    for cost in std::iter::once(request.remaining_mana())
+                        .chain(request.alternatives.iter().copied())
+                    {
+                        add(
+                            ManaPaymentAction::PayResolutionMana,
+                            request.payer,
+                            mana_lots::Purpose::Other,
+                            cost,
+                        );
+                    }
+                }
+            }
+            _ => {}
+        }
+        choices
+    }
+
+    pub(super) fn visit_special_mana_payments(
+        &self,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        for choice in self.special_mana_payments() {
+            let mut stopped = false;
+            choice.domain.representatives(|payment| {
+                if !stopped {
+                    stopped = emit(choice.action.action(payment));
+                }
+            });
+            if stopped {
+                return true;
+            }
+        }
+        false
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

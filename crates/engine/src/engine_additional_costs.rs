@@ -844,24 +844,6 @@ impl Game {
         // the announcing caller. An established cost needs no funding proof.
         self.state.objects.get(card as usize).is_some()
     }
-    pub(super) fn sacrifice_discount_limit(&self) -> u32 {
-        let battlefield = self
-            .state
-            .objects
-            .iter()
-            .filter(|object| object.zone == Zone::Battlefield)
-            .count();
-        // A mana ability may immediately return a linked permanent, or change
-        // the control or types of a permanent already on the battlefield.
-        let linked_returns = self
-            .state
-            .exile_links
-            .iter()
-            .filter(|link| link.return_zone == Zone::Battlefield)
-            .count();
-        u32::try_from(battlefield.saturating_add(linked_returns)).unwrap_or(u32::MAX)
-    }
-
     pub(super) fn activation_can_fund(
         &self,
         goal: FundingGoal,
