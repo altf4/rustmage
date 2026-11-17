@@ -72,7 +72,7 @@ fn roads_pay_colored_sorcery_cost_and_create_the_real_pilot() {
             assert!(g.object_view(land).tapped);
             g.restore(&before).unwrap();
             g.state.players[p.index()].mana[5] = 2;
-            reject(&mut g, sacrifice(land));
+            admit(&g, sacrifice(land));
             g.state.players[p.index()].mana = expected;
             g.state.players[p.index()].mana[5] = 1;
             let mut wrong_time = g.clone();

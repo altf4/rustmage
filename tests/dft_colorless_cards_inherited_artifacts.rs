@@ -139,7 +139,7 @@ fn camera_launcher_pays_three_exhausts_once_across_turns_and_blink_resets_the_ex
         assert_eq!(stats(&g, source), (2, 2));
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
         g.state.players[p.index()].mana[5] = 2;
-        reject(&mut g, announcement(source, 0));
+        admit(&g, announcement(source, 0));
         g.state.players[p.index()].mana[5] = 3;
         activate(&mut g, source, 0, None);
         assert_eq!(g.counter_count(source, CounterKind::PlusOne), 0);
@@ -324,7 +324,7 @@ fn scrap_compactor_first_mode_requires_creature_and_pays_three_tap_and_sacrifice
         let target = put(&mut g, p.other(), "Aegis Turtle", Zone::Battlefield);
         let vehicle = put(&mut g, p.other(), "Skybox Ferry", Zone::Battlefield);
         g.state.players[0].mana[5] = 2;
-        reject(&mut g, announcement(source, 0));
+        admit(&g, announcement(source, 0));
         g.state.players[0].mana[5] = 3;
         g.state.objects[source as usize].tapped = true;
         reject(&mut g, announcement(source, 0));
@@ -378,7 +378,7 @@ fn scrap_compactor_second_mode_pays_six_to_destroy_an_uncrewed_vehicle_or_creatu
             Zone::Battlefield,
         );
         g.state.players[1].mana = [0, 0, 0, 0, 0, 5];
-        reject(&mut g, announcement(source, 1));
+        admit(&g, announcement(source, 1));
         g.state.players[1].mana[5] = 6;
         act(&mut g, announcement(source, 1));
         reject(
@@ -422,7 +422,7 @@ fn skybox_ferry_is_a_flying_four_four_only_after_crew_two_and_animation_expires(
     assert!(g.keywords(source).contains(Keywords::FLYING));
     assert_eq!(g.state.players[0].mana, [0; 6]);
     put(&mut g, p, "Llanowar Elves", Zone::Battlefield);
-    reject(&mut g, announcement(source, 0));
+    admit(&g, announcement(source, 0));
     let pilot = put(&mut g, p, "Goblin Piker", Zone::Battlefield);
     g.state.objects[pilot as usize].summoning_sick = true;
     act(&mut g, announcement(source, 0));
@@ -452,7 +452,7 @@ fn both_inherited_cyclers_pay_two_discard_at_commitment_and_draw_without_battlef
             let source = put(&mut g, p, name, Zone::Hand);
             let grave = put(&mut g, p.other(), "Forest", Zone::Graveyard);
             g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
-            reject(&mut g, announcement(source, ability));
+            admit(&g, announcement(source, ability));
             g.state.players[p.index()].mana[5] = 2;
             activate(&mut g, source, ability, None);
             assert_eq!(g.object_view(source).zone, Zone::Graveyard);

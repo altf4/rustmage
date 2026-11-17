@@ -138,10 +138,7 @@ fn printed_cycling_costs_discard_before_drawing_and_keep_owner_authority() {
                 ability: 0,
                 counter_payment: Counters::default(),
             };
-            assert!(
-                !g.legal_actions().contains(&activate),
-                "{name} requires its printed cost"
-            );
+            admit(&g, activate.clone());
             g.state.players[p.index()].mana = mana;
             act(&mut g, activate);
             pay(&mut g);

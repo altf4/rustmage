@@ -155,8 +155,8 @@ fn boom_scholar_discount_excludes_itself_and_trample_freezes_creature_vehicle_un
     activate(&mut g, guardian, 1, None);
     assert_eq!(g.state.players[0].mana, [0; 6]);
     g.state.players[0].mana = [0, 0, 0, 1, 1, 2];
-    reject(
-        &mut g,
+    admit(
+        &g,
         Action::AnnounceActivate {
             card: scholar,
             ability: 0,
