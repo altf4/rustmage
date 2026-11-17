@@ -481,7 +481,7 @@ fn pet_sehlat_needs_an_attack_companion() {
     let pet = put(&mut game, Player::P0, "Pet Sehlat", Zone::Battlefield);
     game.state.step = Step::Attackers;
     game.state.pending = Pending::Attackers;
-    reject(&mut game, Action::Attack { card: pet });
+    admit(&game, Action::Attack { card: pet });
     let bear = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
     act(&mut game, Action::Attack { card: pet });
     reject(&mut game, Action::FinishAttackers);

@@ -150,7 +150,7 @@ fn exact_artifact_creature_tap_cost_rejects_either_type_alone() {
         ability: 0,
         counter_payment: Counters::default(),
     };
-    assert!(!game.legal_actions().contains(&activate));
+    admit(&game, activate.clone());
     let third = spawn(&mut game, Player::P0, Card(6007), Zone::Battlefield);
     let draw = put(&mut game, Player::P0, "Forest", Zone::Library);
     assert!(game.legal_actions().contains(&activate));

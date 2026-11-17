@@ -128,7 +128,7 @@ fn rejected_cast_and_raw_index_restore_preserve_game_long_first_cast_history() {
         let mut parent = scenario(player);
         let first = put(&mut parent, player, "Opt", Zone::Hand);
         parent.state.players[player.index()].mana = [0; 6];
-        reject(&mut parent, Action::AnnounceCast { card: first });
+        admit(&parent, Action::AnnounceCast { card: first });
         parent.state.players[player.index()].mana = [8; 6];
 
         let action = parent

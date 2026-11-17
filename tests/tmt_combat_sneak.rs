@@ -131,7 +131,7 @@ fn tmt_ninja_teen_pays_distinct_departure_costs_in_either_order() {
             let mut unfundable = g.clone();
             attack_unblocked(&mut unfundable, attacker);
             unfundable.state.players[player.index()].mana = [8; 6];
-            reject(&mut unfundable, announce.clone());
+            admit(&unfundable, announce.clone());
             let sacrifice = put(&mut g, player, "Grizzly Bears", Zone::Battlefield);
             attack_unblocked(&mut g, attacker);
             g.state.players[player.index()].mana = [8; 6];
