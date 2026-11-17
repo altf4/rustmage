@@ -110,7 +110,7 @@ fn a_live_power_limit_constrains_declarations_and_keeps_existing_blocks() {
             act(&mut game, first_block);
             reject(&mut game, Action::FinishBlockers);
             choose(&mut game, |action| {
-                matches!(action, Action::CancelBlock { .. })
+                matches!(action, Action::CancelBlockDeclaration)
             });
             act(&mut game, Action::FinishBlockers);
             continue;
