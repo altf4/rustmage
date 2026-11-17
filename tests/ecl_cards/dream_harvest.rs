@@ -179,7 +179,25 @@ fn ecl_dream_mandatory_discard_is_paid_by_caster_and_cannot_be_bypassed_for_free
         let thrill = named(&mut g, p.other(), "Thrill of Possibility", Zone::Library);
         paid(&mut g, p, 2);
         g.state.players[p.index()].mana = [0; 6];
-        reject(&mut g, free(thrill));
+        let exiled = g.object_ref(thrill);
+        let life = g.state.players[p.index()].life;
+        checked(&mut g, free(thrill));
+        assert!(g.observe(p).additional_cost.unwrap().candidates.is_empty());
+        reject(&mut g, Action::PayCosts { payment: [0; 6] });
+        checked(&mut g, Action::EndManaWindow);
+        checked(&mut g, Action::SubmitAttempt);
+        let outcome = g.last_attempt_outcome_view(p).unwrap();
+        assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+        assert_eq!(
+            outcome.reason,
+            Some(AttemptFailureReason::UnsatisfiedMaterial)
+        );
+        assert!(g.state.announcing.is_none());
+        assert_eq!(g.object_ref(thrill), exiled);
+        assert_eq!(g.object_view(thrill).zone, Zone::Exile);
+        assert_eq!(g.state.players[p.index()].life, life);
+        assert!(g.has_exile_free_permission(p, thrill));
+        assert!(!g.has_exile_free_permission(p.other(), thrill));
         let own = named(&mut g, p, "Forest", Zone::Hand);
         let foreign = named(&mut g, p.other(), "Forest", Zone::Hand);
         checked(&mut g, free(thrill));
