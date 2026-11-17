@@ -37,6 +37,7 @@ impl ManaSplitChoiceView {
 /// Try a closed range without materializing its individual choices. A range
 /// whose componentwise upper supplies cannot fund the goal can be discarded.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[cfg(feature = "test-support")]
 pub(super) fn visit_split_range(
     split: ManaSplit,
     minimum: u32,
@@ -184,6 +185,7 @@ impl ManaOutput {
             recipe => recipe.in_world_for_controller(world, source.card, self.controller),
         }
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn unselected_split<W: CharacteristicWorld + ?Sized>(
         &self,
         world: &W,
