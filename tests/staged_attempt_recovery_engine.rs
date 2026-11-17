@@ -746,6 +746,7 @@ fn smoke_ends_a_parent_window_instead_of_repeating_a_failed_mana_child() {
     zero_pool(&mut g, p);
     let spell = put(&mut g, p, "Bear Cub", Zone::Hand);
     let source = put(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+    let second = put(&mut g, p, "Llanowar Elves", Zone::Battlefield);
     act(&mut g, Action::AnnounceCast { card: spell });
     let child = Action::AnnounceMana {
         card: source,
@@ -760,6 +761,11 @@ fn smoke_ends_a_parent_window_instead_of_repeating_a_failed_mana_child() {
     assert!(
         actions.contains(&child),
         "the engine must keep retrying legal"
+    );
+    assert!(
+        actions
+            .iter()
+            .any(|action| matches!(action, Action::AnnounceMana { card, .. } if *card == second))
     );
     let index = rustmage_core::policy::smoke_index(&g, &actions);
     assert_eq!(actions[index], Action::EndManaWindow);
