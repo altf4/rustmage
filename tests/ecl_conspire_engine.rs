@@ -38,11 +38,54 @@ fn finish_cast(g: &mut Game) {
                 Action::PayCosts { .. }
                     | Action::BeginOrderedCosts
                     | Action::ChooseCastCost { .. }
+                    | Action::ChooseConspireObject { .. }
                     | Action::PayConspire { .. }
             )
         });
     }
     panic!("conspire payment bound");
+}
+fn select_conspire_cost(g: &mut Game) {
+    if g.legal_actions().contains(&Action::BeginOrderedCosts) {
+        act(g, Action::BeginOrderedCosts);
+    }
+    if !matches!(g.state.pending, Pending::ConspirePayment { .. }) {
+        let clause = g
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .cast_costs
+            .as_ref()
+            .unwrap()
+            .clauses
+            .iter()
+            .position(|row| !row.paid && matches!(row.clause, CastCostClause::Conspire(_)))
+            .unwrap() as u16;
+        act(g, Action::ChooseCastCost { clause });
+    }
+}
+fn fail_material_attempt(g: &mut Game) {
+    let player = g.actor().unwrap();
+    if g.attempt_view(player).unwrap().can_end_mana_window {
+        act(g, Action::EndManaWindow);
+    }
+    act(g, Action::SubmitAttempt);
+    for _ in 0..8 {
+        if !matches!(g.state.pending, Pending::ManaRollback { .. }) {
+            break;
+        }
+        act(g, Action::ChooseManaRollback { keep: false });
+    }
+    assert_eq!(
+        g.last_attempt_outcome_view(player).unwrap().outcome,
+        AttemptOutcome::Failed
+    );
+    assert_eq!(
+        g.last_attempt_outcome_view(player).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMaterial)
+    );
+    assert!(g.state.announcing.is_none());
 }
 fn finish(g: &mut Game) {
     for _ in 0..80 {
@@ -136,7 +179,18 @@ fn insufficient_creatures_offer_decline_and_creature_spells_receive_no_conspire(
         g.legal_actions()
             .contains(&Action::ChooseConspire { pay: false })
     );
-    reject(&mut g, Action::ChooseConspire { pay: true });
+    let mut failed = g.clone();
+    act(&mut failed, Action::ChooseConspire { pay: true });
+    select_conspire_cost(&mut failed);
+    act(
+        &mut failed,
+        Action::ChooseConspireObject { object: donors[1] },
+    );
+    assert!(!failed.object_view(donors[1].card).tapped);
+    fail_material_attempt(&mut failed);
+    assert_eq!(failed.object_view(source).zone, Zone::Hand);
+    assert!(failed.object_view(donors[0].card).tapped);
+    assert!(!failed.object_view(donors[1].card).tapped);
     act(&mut g, Action::ChooseConspire { pay: false });
     finish_cast(&mut g);
     finish(&mut g);
@@ -232,7 +286,25 @@ fn conspire_can_tap_a_creature_before_the_printed_sacrifice_cost_but_not_after()
         .iter()
         .position(|r| matches!(r.clause, CastCostClause::Additional))
         .unwrap() as u16;
-    reject(&mut g, Action::ChooseCastCost { clause: additional });
+    let mut failed = g.clone();
+    act(&mut failed, Action::ChooseCastCost { clause: additional });
+    if matches!(failed.state.pending, Pending::AdditionalCost { .. }) {
+        act(
+            &mut failed,
+            Action::ChooseAdditionalCost { object: donors[0] },
+        );
+    }
+    assert_eq!(failed.object_view(donors[0].card).zone, Zone::Graveyard);
+    select_conspire_cost(&mut failed);
+    reject(
+        &mut failed,
+        Action::PayConspire {
+            objects: [donors[0], donors[1]],
+        },
+    );
+    fail_material_attempt(&mut failed);
+    assert_eq!(failed.object_ref(donors[0].card), donors[0]);
+    assert_eq!(failed.object_view(donors[0].card).zone, Zone::Battlefield);
     act(&mut g, Action::ChooseCastCost { clause: conspire });
     act(
         &mut g,
@@ -324,13 +396,33 @@ fn convoke_and_conspire_cannot_spend_the_same_matching_creatures() {
         .position(|r| r.clause == CastCostClause::Mana)
         .unwrap() as u16;
     act(&mut g, Action::ChooseCastCost { clause: mana });
-    reject(
-        &mut g,
+    let mut failed = g.clone();
+    act(
+        &mut failed,
         Action::ChooseConvoker {
             object: donors[0],
             contribution: convoke::ConvokeContribution::Generic,
         },
     );
+    act(
+        &mut failed,
+        Action::ChooseConvoker {
+            object: donors[1],
+            contribution: convoke::ConvokeContribution::Generic,
+        },
+    );
+    assert!(donors.iter().all(|r| !failed.object_view(r.card).tapped));
+    pay(&mut failed);
+    assert!(donors.iter().all(|r| failed.object_view(r.card).tapped));
+    select_conspire_cost(&mut failed);
+    reject(
+        &mut failed,
+        Action::PayConspire {
+            objects: [donors[0], donors[1]],
+        },
+    );
+    fail_material_attempt(&mut failed);
+    assert!(donors.iter().all(|r| !failed.object_view(r.card).tapped));
     for id in [a, b] {
         let object = g.object_ref(id);
         act(
@@ -388,7 +480,13 @@ fn conspire_can_be_funded_by_mana_abilities_that_recolor_its_future_donors() {
         production,
         counter_payment: Counters::default(),
     };
-    reject(&mut g, action(first, [0, 0, 0, 1, 0, 0]));
+    let mut failed = g.clone();
+    act(&mut failed, action(first, [0, 0, 0, 1, 0, 0]));
+    act(&mut failed, action(second, [0, 1, 0, 0, 0, 0]));
+    select_conspire_cost(&mut failed);
+    fail_material_attempt(&mut failed);
+    assert_eq!(failed.object_view(spell).zone, Zone::Hand);
+    assert_eq!(failed.state.players[0].mana, [0, 0, 0, 0, 0, 3]);
     act(&mut g, action(first, [0, 1, 0, 0, 0, 0]));
     act(&mut g, action(second, [0, 1, 0, 0, 0, 0]));
     finish_cast(&mut g);
@@ -398,7 +496,7 @@ fn conspire_can_be_funded_by_mana_abilities_that_recolor_its_future_donors() {
 }
 
 #[test]
-fn conspire_large_mixed_color_board_enumerates_exact_pairs_and_owned_payments() {
+fn conspire_large_mixed_color_board_has_linear_choices_and_owned_atomic_payments() {
     let _rules = fixture_rules::activate(&[(Card::from_name("Short Bow").unwrap(), &GRANT)]);
     let p = Player::P0;
     let mut g = scenario(p);
@@ -441,25 +539,26 @@ fn conspire_large_mixed_color_board_enumerates_exact_pairs_and_owned_payments() 
         .position(|r| matches!(r.clause, CastCostClause::Conspire(_)))
         .unwrap() as u16;
     act(&mut g, Action::ChooseCastCost { clause });
+    Game::reset_payment_planning_work();
     let started = std::time::Instant::now();
     let actions = g.legal_actions();
     eprintln!(
         "200-token Conspire action enumeration: {:?}",
         started.elapsed()
     );
-    let pairs: Vec<_> = actions
+    let first_choices: Vec<_> = actions
         .iter()
         .filter_map(|a| match a {
-            Action::PayConspire { objects } => Some(*objects),
+            Action::ChooseConspireObject { object } => Some(*object),
             _ => None,
         })
         .collect();
-    assert_eq!(pairs.len(), 100 * 99 / 2);
-    assert!(pairs.iter().all(|pair| pair[0].card < pair[1].card
-        && eligible.contains(&pair[0])
-        && eligible.contains(&pair[1])));
-    let unique: std::collections::HashSet<_> = pairs.iter().copied().collect();
-    assert_eq!(unique.len(), pairs.len());
+    assert_eq!(first_choices, eligible);
+    assert!(
+        !actions
+            .iter()
+            .any(|a| matches!(a, Action::PayConspire { .. }))
+    );
     for invalid in ineligible.iter().step_by(25) {
         reject(
             &mut g,
@@ -493,11 +592,41 @@ fn conspire_large_mixed_color_board_enumerates_exact_pairs_and_owned_payments() 
     let action = Action::PayConspire {
         objects: [eligible[98], eligible[99]],
     };
-    let index = actions.iter().position(|a| *a == action).unwrap();
+    let first = Action::ChooseConspireObject {
+        object: eligible[98],
+    };
+    let index = actions.iter().position(|a| *a == first).unwrap();
     let saved = g.snapshot();
     let mut raw = g.clone();
     let mut indexed = g.clone();
+    let mut direct = g.clone();
     drop(g);
+    act(&mut direct, action.clone());
+    act(&mut raw, first.clone());
+    indexed.apply_index(p, indexed.revision(), index).unwrap();
+    assert_eq!(raw.snapshot(), indexed.snapshot());
+    assert!(eligible.iter().all(|r| !raw.object_view(r.card).tapped));
+    let actions = raw.legal_actions();
+    let pairs: Vec<_> = actions
+        .iter()
+        .filter_map(|a| match a {
+            Action::PayConspire { objects } => Some(*objects),
+            _ => None,
+        })
+        .collect();
+    assert_eq!(pairs.len(), 99);
+    assert!(pairs.iter().all(|pair| pair[0].card < pair[1].card
+        && pair.contains(&eligible[98])
+        && pair.iter().all(|r| eligible.contains(r))));
+    assert_eq!(
+        pairs
+            .iter()
+            .copied()
+            .collect::<std::collections::HashSet<_>>()
+            .len(),
+        pairs.len()
+    );
+    let index = actions.iter().position(|a| *a == action).unwrap();
     act(&mut raw, action.clone());
     indexed.apply_index(p, indexed.revision(), index).unwrap();
     assert_eq!(raw.snapshot(), indexed.snapshot());
@@ -506,6 +635,9 @@ fn conspire_large_mixed_color_board_enumerates_exact_pairs_and_owned_payments() 
     }
     finish_cast(&mut raw);
     finish(&mut raw);
+    finish_cast(&mut direct);
+    finish(&mut direct);
+    assert_eq!(raw.snapshot(), direct.snapshot());
     assert_eq!(raw.hand_count(p), 4);
     indexed.restore(&saved).unwrap();
     assert!(
@@ -513,10 +645,12 @@ fn conspire_large_mixed_color_board_enumerates_exact_pairs_and_owned_payments() 
             .iter()
             .all(|object| !indexed.state.objects[object.card as usize].tapped)
     );
+    act(&mut indexed, first);
     act(&mut indexed, action);
     finish_cast(&mut indexed);
     finish(&mut indexed);
     assert_eq!(raw.snapshot(), indexed.snapshot());
+    assert_eq!(Game::payment_planning_work(), Default::default());
 }
 
 #[test]
@@ -554,6 +688,14 @@ fn conspire_exact_pair_does_not_depend_on_mana_resource_insertion_order() {
         .unwrap() as u16;
     act(&mut g, Action::ChooseCastCost { clause });
     let objects = [g.object_ref(first), g.object_ref(second)];
+    assert_eq!(
+        g.legal_actions()
+            .into_iter()
+            .filter(|a| matches!(a, Action::ChooseConspireObject { .. }))
+            .collect::<Vec<_>>(),
+        objects.map(|object| Action::ChooseConspireObject { object })
+    );
+    act(&mut g, Action::ChooseConspireObject { object: objects[0] });
     let pairs: Vec<_> = g
         .legal_actions()
         .into_iter()
@@ -620,7 +762,32 @@ fn conspire_intent_preserves_the_selected_hybrid_cost_when_a_donor_can_make_othe
         act(&mut g, Action::ChooseSpellCost { cost });
         assert!(matches!(g.state.pending, Pending::Conspire { .. }));
         if pay_red {
-            reject(&mut g, Action::ChooseConspire { pay: true });
+            let mut failed = g.clone();
+            act(&mut failed, Action::ChooseConspire { pay: true });
+            act(
+                &mut failed,
+                Action::ActivateMana {
+                    card: producer,
+                    ability: 0,
+                    payment: [0; 6],
+                    counter_payment: Counters::default(),
+                    production: payment,
+                },
+            );
+            assert_eq!(
+                failed
+                    .state
+                    .announcing
+                    .as_ref()
+                    .unwrap()
+                    .cost
+                    .unwrap()
+                    .colored,
+                payment
+            );
+            select_conspire_cost(&mut failed);
+            fail_material_attempt(&mut failed);
+            assert_eq!(failed.object_view(spell).zone, Zone::Hand);
             act(&mut g, Action::ChooseConspire { pay: false });
             act(
                 &mut g,
