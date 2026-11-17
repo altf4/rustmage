@@ -143,7 +143,7 @@ fn aura_controller_cannot_activate_the_other_players_creatures_ability_and_cost_
         ability: 0,
     };
     g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 4];
-    admit(&mut g, action.clone());
+    admit(&g, action.clone());
     let mut unpaid = g.clone();
     act(&mut unpaid, action.clone());
     reject(

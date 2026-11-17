@@ -585,7 +585,7 @@ fn exact_defender_permission_is_paid_keeps_keyword_and_survives_control_or_text_
     assert!(!g.can_declare_attacker(Player::P0, wall));
     g.state.players[0].mana = [0; 6];
     admit(
-        &mut g,
+        &g,
         Action::AnnounceActivate {
             card: wall,
             ability: 0,
