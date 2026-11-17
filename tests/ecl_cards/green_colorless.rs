@@ -1,5 +1,6 @@
 //! Paid ECL rules scenarios, with raw/indexed branches and restore on every action.
 use crate::ecl_scenarios::{cast, checked, named, settle, setup};
+use crate::support::admit;
 use rustmage_core::cards::*;
 use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::engine::*;
@@ -295,9 +296,21 @@ fn ecl_green_drum_funding_requires_distinct_untapped_creatures_and_resumes_outer
             g.state.players[p.index()].mana = [0; 6];
             let spell = named(&mut g, p, "Bear Cub", Zone::Hand);
             let announce = Action::AnnounceCast { card: spell };
-            assert_eq!(g.legal_actions().contains(&announce), creatures == 2);
+            admit(&g, announce.clone());
             if creatures != 2 {
-                reject(&mut g, announce);
+                checked(&mut g, announce);
+                checked(&mut g, Action::EndManaWindow);
+                checked(&mut g, Action::SubmitAttempt);
+                let failure = g.last_attempt_outcome_view(p).unwrap();
+                assert_eq!(failure.outcome, AttemptOutcome::Failed);
+                assert_eq!(failure.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+                assert_eq!(g.object_view(spell).zone, Zone::Hand);
+                assert!(
+                    drums
+                        .iter()
+                        .chain(&witnesses)
+                        .all(|&id| !g.object_view(id).tapped)
+                );
                 continue;
             }
             checked(&mut g, announce);
@@ -2653,7 +2666,7 @@ fn ecl_green_wickermaw_color_change_enables_later_bloom_tender_in_same_guided_fu
         g.state.objects[bloom as usize].summoning_sick = false;
         let spell = named(&mut g, p, "Divination", Zone::Hand);
         g.state.players[p.index()].mana = [0; 6];
-        reject(&mut g, Action::AnnounceCast { card: spell });
+        admit(&g, Action::AnnounceCast { card: spell });
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
         checked(&mut g, Action::AnnounceCast { card: spell });
         let convert = g.legal_actions().into_iter().find(|action| matches!(action, Action::ActivateMana { card, production, .. } if *card == wicker && *production == [0,1,0,0,0,0])).unwrap();
@@ -2976,14 +2989,14 @@ fn ecl_green_lys_extra_mana_route_cannot_behold_source_and_free_cast_still_requi
                 Action::AnnounceCast { card: source }
             };
             g.state.players[p.index()].mana = if free { [0; 6] } else { [0, 0, 0, 0, 1, 1] };
-            reject(&mut g, action.clone());
+            admit(&g, action.clone());
             g.state.players[p.index()].mana = if free {
                 [0, 0, 0, 0, 0, 2]
             } else {
                 [0, 0, 0, 0, 1, 3]
             };
             checked(&mut g, action);
-            reject(&mut g, Action::ChooseSpellCost { cost: 0 });
+            admit(&g, Action::ChooseSpellCost { cost: 0 });
             checked(&mut g, Action::ChooseSpellCost { cost: 1 });
             assert!(g.observe(p).additional_cost.is_none());
             pay(&mut g);
@@ -3464,7 +3477,7 @@ fn ecl_green_reunion_optional_phase_always_exists_and_requires_two_distinct_crea
         let choose_elf = Action::ChooseBeholdType {
             creature_type: Some(rustmage_core::cards::CreatureType::from_name("Elf").unwrap()),
         };
-        reject(&mut g, choose_elf.clone());
+        admit(&g, choose_elf.clone());
         let second = named(&mut g, p, "Changeling Wayfinder", Zone::Hand);
         checked(&mut g, choose_elf);
         checked(&mut g, Action::ChooseX { value: 0 });

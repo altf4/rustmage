@@ -1,5 +1,6 @@
 //! Paid first-year student interactions with owned raw/index branching and restore.
 use crate::ecl_scenarios::{cast, checked, named, settle, setup};
+use crate::support::admit;
 use rustmage_core::cards::AnimationDuration;
 use rustmage_core::cards::*;
 use rustmage_core::engine::ability_world::CharacteristicWorld;
@@ -931,7 +932,7 @@ fn ecl_student_sanar_casts_require_mana_obey_timing_and_expire_with_exact_exile_
         checked(&mut g, Action::FinishLibrarySelection);
         settle(&mut g);
         g.state.players[p.index()].mana = [0; 6];
-        reject(&mut g, Action::AnnounceExile { card: ids[0] });
+        admit(&g, Action::AnnounceExile { card: ids[0] });
         g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
         checked(&mut g, Action::AnnounceExile { card: ids[0] });
         pay(&mut g);

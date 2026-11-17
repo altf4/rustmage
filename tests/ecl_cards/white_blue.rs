@@ -1,6 +1,7 @@
 //! Whole-card ECL rules scenarios using paid actions and owned indexed branches.
 use crate::ecl_scenarios::{checked, settle, setup};
 use crate::ecl_scenarios::{simple_cast as cast, spawn};
+use crate::support::admit;
 use rustmage_core::cards::ChoiceColor;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
@@ -1939,7 +1940,7 @@ fn wanderbrine_trapper_tapped_payment_is_illegal_and_invalid_target_does_not_ref
         ability: 0,
         counter_payment: Counters::default(),
     };
-    reject_atomic(&mut g, activation.clone());
+    admit(&g, activation.clone());
     g.untap_objects(&[witness], untap_rules::UntapCause::Effect);
     checked(&mut g, activation);
     checked(
@@ -2086,7 +2087,7 @@ fn kithkeeper_requires_three_distinct_untapped_creatures_and_can_repeat_after_un
         ability: 0,
         counter_payment: Counters::default(),
     };
-    reject_atomic(&mut g, activation.clone());
+    admit(&g, activation.clone());
     let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
     let token = kithkin_tokens(&g, Player::P0)[0];
     for round in 1..=2 {
@@ -2100,7 +2101,7 @@ fn kithkeeper_requires_three_distinct_untapped_creatures_and_can_repeat_after_un
         settle(&mut g);
         assert_eq!(g.stats(source).power, 3 + round * 3);
         assert!(g.keywords(source).contains(Keywords::FLYING));
-        reject_atomic(&mut g, activation.clone());
+        admit(&g, activation.clone());
         g.untap_objects(&[source, bear, token], untap_rules::UntapCause::Effect);
     }
 }
@@ -3974,10 +3975,10 @@ fn behold_white_blue_extra_two_route_and_free_casts_cannot_bypass_the_additional
                 } else {
                     [0, 1, 0, 0, 0, 1]
                 };
-                reject_atomic(&mut g, action.clone());
+                admit(&g, action.clone());
                 g.state.players[p.index()].mana[5] += 2;
                 checked(&mut g, action);
-                reject_atomic(&mut g, Action::ChooseSpellCost { cost: 0 });
+                admit(&g, Action::ChooseSpellCost { cost: 0 });
                 checked(&mut g, Action::ChooseSpellCost { cost: 1 });
                 finish_cast_choices(&mut g);
                 assert_eq!(g.state.players[p.index()].mana, [0; 6]);
@@ -4125,7 +4126,7 @@ fn champions_white_blue_countered_cast_does_not_return_cost_or_link_a_later_rean
             Card::from_name(name).unwrap(),
             Zone::Hand,
         );
-        reject_atomic(&mut g, Action::AnnounceCast { card: source });
+        admit(&g, Action::AnnounceCast { card: source });
         let witness = spawn(
             &mut g,
             Player::P0,
@@ -5181,7 +5182,7 @@ fn rhys_counter_activation_is_sorcery_speed_requires_tap_and_uses_exact_target_e
     g.state.active = Player::P0;
     let mana = g.state.players[0].mana;
     g.state.players[0].mana[0] = 0;
-    reject_atomic(&mut g, action.clone());
+    admit(&g, action.clone());
     g.state.players[0].mana = mana;
     let enemy = spawn(&mut g, Player::P1, Card::GrizzlyBears, Zone::Battlefield);
     checked(&mut g, action);
@@ -6003,7 +6004,7 @@ fn sunderflock_greatest_elemental_mana_value_reduces_only_generic_and_includes_k
             );
             let generic = 7u32.saturating_sub(u32::try_from(reduction).unwrap());
             g.state.players[p.index()].mana = [0, 1, 0, 0, 0, generic];
-            reject_atomic(&mut g, Action::AnnounceCast { card: id });
+            admit(&g, Action::AnnounceCast { card: id });
             g.state.players[p.index()].mana = [0, 2, 0, 0, 0, generic];
             checked(&mut g, Action::AnnounceCast { card: id });
             finish_cast_choices(&mut g);
