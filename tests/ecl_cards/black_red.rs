@@ -54,11 +54,13 @@ fn checked(g: &mut Game, a: Action) {
             serde_json::to_value(child.observe(viewer)).unwrap()
         );
     }
-    let after = g.snapshot();
     g.restore(&before).unwrap();
+    assert_eq!(g.snapshot(), before);
     assert_eq!(g.apply_index(p, revision, index), Err(Error::StaleRevision));
+    let mut replay = g.clone();
+    replay.apply_index(p, replay.revision(), index).unwrap();
     g.apply(p, a).unwrap();
-    assert_eq!(g.snapshot(), after);
+    assert_eq!(g.snapshot(), replay.snapshot());
 }
 fn reject(g: &mut Game, a: Action) {
     let before = g.snapshot();

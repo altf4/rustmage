@@ -154,13 +154,13 @@ fn checked(g: &mut Game, action: Action) {
         );
     }
     indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.snapshot(), saved);
     assert_eq!(
         indexed.apply_index(actor, rev, index),
         Err(Error::StaleRevision)
     );
-    act(&mut indexed, action.clone());
     act(g, action);
-    assert_eq!(g.snapshot(), indexed.snapshot());
+    assert_eq!(g.snapshot(), raw.snapshot());
 }
 
 fn start(g: &mut Game, player: Player, target: Option<Target>) -> CardId {
