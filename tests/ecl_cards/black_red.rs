@@ -95,19 +95,7 @@ fn settle(g: &mut Game) {
         {
             return;
         }
-        let actions = g.legal_actions();
-        let a = if g.state.pending == Pending::Priority {
-            Action::Pass
-        } else {
-            actions
-                .iter()
-                .find(|a| matches!(a, Action::PayCosts { .. }))
-                .or_else(|| actions.iter().find(|a| matches!(a, Action::FinishTargets)))
-                .or_else(|| actions.iter().find(|a| !matches!(a, Action::Concede)))
-                .unwrap()
-                .clone()
-        };
-        checked(g, a);
+        advance(g);
     }
     panic!("unsettled {:?}", g.state.pending);
 }
@@ -207,8 +195,25 @@ fn advance(g: &mut Game) {
             .iter()
             .find(|a| matches!(a, Action::PayCosts { .. }))
             .or_else(|| actions.iter().find(|a| matches!(a, Action::FinishTargets)))
-            .or_else(|| actions.iter().find(|a| !matches!(a, Action::Concede)))
-            .unwrap()
+            .or_else(|| {
+                actions.iter().find(|a| {
+                    matches!(a, Action::BeginOrderedCosts | Action::ChooseCastCost { .. })
+                })
+            })
+            // Success helpers continue supplied costs. Failure tests choose
+            // closure, submission and selection resets explicitly.
+            .or_else(|| {
+                actions.iter().find(|a| {
+                    !matches!(
+                        a,
+                        Action::Concede
+                            | Action::EndManaWindow
+                            | Action::SubmitAttempt
+                            | Action::ResetCostSelection
+                    )
+                })
+            })
+            .unwrap_or_else(|| panic!("no completing action: {:?}", g.observe(g.actor().unwrap())))
             .clone()
     };
     checked(g, a);
@@ -1449,9 +1454,17 @@ fn bogslither_or_additional_routes_preserve_mana_for_free_casts() {
                     let object = g.object_ref(witness);
                     pay_additional(&mut g, object);
                 }
-                while g.state.announcing.is_some() {
+                for _ in 0..8 {
+                    if g.state.announcing.is_none() {
+                        break;
+                    }
                     advance(&mut g);
                 }
+                assert!(
+                    g.state.announcing.is_none(),
+                    "unfinished Bogslither cost: free={free}, mana_route={mana_route}, {:?}",
+                    g.observe(p)
+                );
                 assert_eq!(g.state.players[p.index()].mana, [0; 6]);
                 if let Some(witness) = witness {
                     assert_eq!(g.state.objects[witness as usize].zone, Zone::Graveyard);
