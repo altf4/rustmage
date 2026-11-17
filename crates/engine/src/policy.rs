@@ -250,8 +250,36 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::ChooseImproviser { .. }
             | Action::ChooseDelver { .. }
             | Action::ChooseWaterbender { .. }
-            | Action::ChooseCreatureTapPayment { .. }
-            | Action::ChooseHarmonizer { .. } => 50,
+            | Action::ChooseCreatureTapPayment { .. } => {
+                // A declared contribution should be exercised before paying
+                // the unreduced amount. After one actual selection, prefer an
+                // available concrete payment over consuming more materials.
+                let first = match action {
+                    Action::ChooseConvoker { .. } => observation
+                        .convoke_choice
+                        .as_ref()
+                        .is_some_and(|choice| choice.selected.is_empty()),
+                    Action::ChooseImproviser { .. } => observation
+                        .improvise_choice
+                        .as_ref()
+                        .is_some_and(|choice| choice.selected.is_empty()),
+                    Action::ChooseDelver { .. } => observation
+                        .delve_choice
+                        .as_ref()
+                        .is_some_and(|choice| choice.selected.is_empty()),
+                    Action::ChooseWaterbender { .. } => observation
+                        .waterbend_choice
+                        .as_ref()
+                        .is_some_and(|choice| choice.selected.is_empty()),
+                    Action::ChooseCreatureTapPayment { .. } => observation
+                        .creature_tap_payment
+                        .as_ref()
+                        .is_some_and(|choice| choice.selected.is_empty()),
+                    _ => unreachable!(),
+                };
+                if first { 110 } else { 50 }
+            }
+            Action::ChooseHarmonizer { .. } => 50,
             Action::ChooseMobilizeDefender { .. }
             | Action::ChooseEntryAttackingDefender { .. }
             | Action::ChooseHandDefender { .. } => 50,
@@ -946,7 +974,8 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 }
             }
             Action::TapMana { card } => {
-                if observation.resolution_payment.is_some() {
+                if observation.resolution_payment.is_some() || observation.payment_request.is_some()
+                {
                     let mut production = [0; 6];
                     let object = observation.objects.iter().find(|o| o.id == *card).unwrap();
                     let color = if !object.card.is_land() && object.card.mana_color().is_some() {
@@ -961,7 +990,12 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                     }
                     .expect("legal mana action has a color");
                     production[color] = 1;
-                    return resolution_mana_score([0; 6], production);
+                    if observation.resolution_payment.is_some() {
+                        return resolution_mana_score([0; 6], production);
+                    }
+                    // Use a fixed color source before a flexible source when
+                    // they cover the same current declared requirement.
+                    return 21 + mana_score(observation, production);
                 }
                 if tap_for_payment { 10 } else { -20 }
             }
@@ -1009,6 +1043,19 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
 
 fn mana_score(observation: &crate::Observation, production: crate::Mana) -> i128 {
     let pool = observation.players[observation.viewer.index()].mana;
+    if let Some(request) = &observation.payment_request {
+        // A locked declaration may have different colors from its physical
+        // card or other cards in hand, including back faces and alternate costs.
+        return 4 * request
+            .required
+            .iter()
+            .zip(pool)
+            .zip(production)
+            .map(|((&required, available), produced)| {
+                i128::from(required.saturating_sub(available).min(produced))
+            })
+            .sum::<i128>();
+    }
     observation
         .objects
         .iter()

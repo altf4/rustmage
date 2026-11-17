@@ -47,6 +47,19 @@ fn decision(view: &Observation) -> usize {
         .iter()
         .enumerate()
         .filter(|(_, action)| match action {
+            Action::AnnounceActivate { card, ability, .. } => view
+                .objects
+                .iter()
+                .find(|object| object.id == *card)
+                .is_none_or(|object| {
+                    if object.zone != Zone::Hand {
+                        return true;
+                    }
+                    let cost = object.card.activations()[usize::from(*ability)].cost;
+                    u64::from(cost.generic)
+                        + cost.colored.iter().map(|&n| u64::from(n)).sum::<u64>()
+                        <= budget
+                }),
             Action::AnnounceCast { card } => view
                 .objects
                 .iter()

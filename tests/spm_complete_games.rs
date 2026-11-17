@@ -173,16 +173,40 @@ fn current_mana_budget(view: &Observation) -> u64 {
 
 fn caller_allows(view: &Observation, action: &Action) -> bool {
     let actor = view.actor.unwrap();
-    if view.decision == "priority"
-        && matches!(
+    if view.decision == "priority" {
+        let budget = current_mana_budget(view);
+        if let Action::AnnounceCast { card } = action
+            && view
+                .objects
+                .iter()
+                .find(|object| object.id == *card)
+                .is_some_and(|object| object.card.fixed_mana_value() > budget)
+        {
+            return false;
+        }
+        if matches!(
             action,
             Action::AnnounceActivate { .. }
                 | Action::BeginActivate { .. }
                 | Action::Activate { .. }
-        )
-        && (view.active != actor || !matches!(view.step, Step::Main1 | Step::Main2))
-    {
-        return false;
+        ) && (view.active != actor || !matches!(view.step, Step::Main1 | Step::Main2))
+        {
+            return false;
+        }
+        if let Action::AnnounceWebSlinging { cost, .. } = action {
+            let amount =
+                u64::from(cost.generic) + cost.colored.iter().map(|&n| u64::from(n)).sum::<u64>();
+            if amount > budget
+                || !view.objects.iter().any(|object| {
+                    object.controller == actor
+                        && object.zone == Zone::Battlefield
+                        && object.is_creature()
+                        && object.tapped
+                })
+            {
+                return false;
+            }
+        }
     }
     if let Some(item) = &view.announcing
         && let StackKind::ActivatedAbility { ability } = item.kind
@@ -231,7 +255,7 @@ fn decision(view: &Observation, actions: &[Action], seek_back_face: bool) -> usi
             .find(|object| object.id == *card)
             .and_then(|object| object.card.back_face())
             .is_some_and(|back| back.fixed_mana_value() <= budget),
-        Action::AnnounceLibraryLife { .. } => true,
+        Action::AnnounceLibraryLife { .. } | Action::AnnounceWebSlinging { .. } => true,
         _ => false,
     }) {
         return index;

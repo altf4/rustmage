@@ -379,6 +379,19 @@ fn record_mechanics(
 }
 
 fn decision(view: &Observation, actions: &[Action]) -> usize {
+    if let Some(index) = actions
+        .iter()
+        .position(|action| *action == Action::Mulligan)
+        && !view.objects.iter().any(|object| {
+            object.owner == view.actor.unwrap()
+                && object.zone == Zone::Hand
+                && object.card.is_land()
+        })
+    {
+        // Keeping a landless seven prevented the exploration deck from ever
+        // establishing its quest permanent in either starting seat.
+        return index;
+    }
     let smoke = policy::smoke_index_from_observation(view, actions);
     if view.decision != "priority"
         || matches!(actions[smoke], Action::PlayLand { .. })
