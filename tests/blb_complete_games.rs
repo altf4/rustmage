@@ -189,30 +189,40 @@ impl Coverage {
     }
 
     fn transition(&mut self, before: &Observation, action: &Action, after: &Observation) {
-        if let Action::ChooseForage { object } = action
-            && let Some(forage) = &before.forage
+        if let Some(forage) = before.forage.as_ref().filter(|f| !f.paid)
             && let Some(route) = forage.route
         {
+            let appended = if let Action::ChooseForage { object } = action {
+                Some(object)
+            } else {
+                None
+            };
+            let selected: Vec<_> = forage.selected.iter().chain(appended).copied().collect();
             match route {
                 ForageRoute::Food
-                    if !after
-                        .objects
-                        .iter()
-                        .any(|row| row.reference == *object && row.zone == Zone::Battlefield) =>
+                    if selected.len() == 1
+                        && before.objects.iter().any(|row| {
+                            row.reference == selected[0] && row.zone == Zone::Battlefield
+                        })
+                        && !after.objects.iter().any(|row| {
+                            row.reference == selected[0] && row.zone == Zone::Battlefield
+                        }) =>
                 {
-                    self.note("Food foraged");
+                    self.note("Food foraged")
                 }
                 ForageRoute::ExileThree
-                    if forage.selected.len() == 2
-                        && forage.selected.iter().chain([object]).all(|selected| {
-                            after.objects.iter().any(|row| {
+                    if selected.len() == 3
+                        && selected.iter().all(|selected| {
+                            before.objects.iter().any(|row| {
+                                row.reference == *selected && row.zone == Zone::Graveyard
+                            }) && after.objects.iter().any(|row| {
                                 row.id == selected.card
                                     && row.reference != *selected
                                     && row.zone == Zone::Exile
                             })
                         }) =>
                 {
-                    self.note("three cards foraged");
+                    self.note("three cards foraged")
                 }
                 _ => (),
             }
@@ -291,17 +301,42 @@ fn workload_index(view: &Observation) -> usize {
         // attempt policy. It must not keep overriding a priority pass forever.
         return smoke;
     }
+    let actor = view.actor.unwrap();
+    let mana_budget = view.players[actor.index()]
+        .mana
+        .iter()
+        .map(|&amount| u64::from(amount))
+        .sum::<u64>()
+        + view
+            .objects
+            .iter()
+            .filter(|object| {
+                object.controller == actor
+                    && object.zone == Zone::Battlefield
+                    && object.card.is_land()
+                    && !object.tapped
+            })
+            .count() as u64;
+    // The old exact menus made the Season preference implicitly affordable.
+    // Under staged admission, prefer a spell within this simple current total
+    // estimate. The engine still validates colors, restrictions and modifiers.
     view.actions
         .iter()
-        .position(|action| {
+        .enumerate()
+        .filter_map(|(index, action)| {
             let (Action::AnnounceCast { card } | Action::Cast { card, .. }) = action else {
-                return false;
+                return None;
             };
-            view.objects
-                .iter()
-                .any(|object| object.id == *card && object.card.name().starts_with("Season of "))
+            let object = view.objects.iter().find(|object| object.id == *card)?;
+            let value = object.card.fixed_mana_value();
+            (value <= mana_budget).then_some((
+                index,
+                object.card.name().starts_with("Season of "),
+                value,
+            ))
         })
-        .unwrap_or(smoke)
+        .max_by_key(|&(_, season, value)| (season, value))
+        .map_or(smoke, |(index, _, _)| index)
 }
 
 #[test]
