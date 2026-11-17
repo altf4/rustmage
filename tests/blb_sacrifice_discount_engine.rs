@@ -75,7 +75,8 @@ fn declare_more_sacrifices_than_generic_and_pay_in_either_order() {
         );
         let mut missing = root.clone();
         act(&mut missing, Action::ChooseX { value: 5 });
-        act(&mut missing, Action::EndManaWindow);
+        act(&mut missing, Action::BeginOrderedCosts);
+        select_clause(&mut missing, CastCostClause::Additional);
         act(&mut missing, Action::SubmitAttempt);
         assert_eq!(
             missing.last_attempt_outcome_view(p).unwrap().outcome,

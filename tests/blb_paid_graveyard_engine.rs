@@ -415,7 +415,8 @@ fn a_bargain_declaration_reserves_food_independently_of_the_origin_cost() {
         },
     );
     let object = game.object_ref(bargain_food);
-    reject(&mut game, Action::ChooseForage { object });
+    // This current payment can strand the other unpaid provisional selection.
+    admit(&game, Action::ChooseForage { object });
     let object = game.object_ref(origin_food);
     act(&mut game, Action::ChooseForage { object });
     choose_cost(&mut game, CastCostClause::Additional);
