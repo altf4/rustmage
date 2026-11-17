@@ -148,6 +148,103 @@ fn closing_the_mana_window_preserves_payment_but_hides_new_abilities() {
     no_projection_work();
 }
 
+#[test]
+fn completed_forage_with_missing_mana_fails_and_restores_the_exact_attempt() {
+    for player in [Player::P0, Player::P1] {
+        for route in [ForageRoute::ExileThree, ForageRoute::Food] {
+            let mut game = scenario(player);
+            let source = put(
+                &mut game,
+                player,
+                "Camellia, the Seedmiser",
+                Zone::Battlefield,
+            );
+            let squirrel = put(&mut game, player, "Barkform Harvester", Zone::Battlefield);
+            let food = put(&mut game, player, "Gingerbrute", Zone::Battlefield);
+            let grave = [(); 3].map(|_| put(&mut game, player, "Forest", Zone::Graveyard));
+            let source_object = game.object_ref(source);
+            let food_object = game.object_ref(food);
+            let grave_objects = grave.map(|card| game.object_ref(card));
+            let materials = match route {
+                ForageRoute::ExileThree => grave_objects.to_vec(),
+                ForageRoute::Food => vec![food_object],
+                _ => unreachable!(),
+            };
+            game.state.players[player.index()].mana = [0; 6];
+            Game::reset_payment_planning_work();
+            act(
+                &mut game,
+                Action::AnnounceActivate {
+                    card: source,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            act(&mut game, Action::ChooseForageRoute { route });
+            for &object in &materials[..materials.len() - 1] {
+                act(&mut game, Action::ChooseForage { object });
+            }
+            act(&mut game, Action::EndManaWindow);
+            act(&mut game, Action::SubmitAttempt);
+            assert_eq!(
+                game.last_attempt_outcome_view(player).unwrap().outcome,
+                AttemptOutcome::Incomplete
+            );
+            assert!(game.state.announcing.is_some());
+
+            // Completing the separate forage selection must expose the actual
+            // two-mana shortfall, rather than treating that selection as absent.
+            act(
+                &mut game,
+                Action::ChooseForage {
+                    object: *materials.last().unwrap(),
+                },
+            );
+            assert_eq!(game.state.pending, Pending::PayCosts { player });
+            let forage = game.observe(player).forage.unwrap();
+            assert_eq!(forage.selected, materials);
+            assert!(!forage.paid);
+            assert!(game.attempt_view(player).unwrap().mana_window_closed);
+            assert!(game.mana_payment_domain().is_none());
+            reject(&mut game, Action::PayCosts { payment: [0; 6] });
+            let checkpoint = game.snapshot();
+            let mut indexed = game.clone();
+            let index = indexed
+                .legal_actions()
+                .iter()
+                .position(|action| *action == Action::SubmitAttempt)
+                .unwrap();
+            indexed
+                .apply_index(player, indexed.revision(), index)
+                .unwrap();
+            act(&mut game, Action::SubmitAttempt);
+            assert_eq!(game.snapshot(), indexed.snapshot());
+            let outcome = game.last_attempt_outcome_view(player).unwrap();
+            assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+            assert_eq!(outcome.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+            assert_eq!(game.state.pending, Pending::Priority);
+            assert!(game.state.announcing.is_none());
+            assert!(game.state.stack.is_empty());
+            assert!(!game.legal_actions().contains(&Action::SubmitAttempt));
+            assert_eq!(game.object_ref(source), source_object);
+            assert_eq!(game.object_ref(food), food_object);
+            assert_eq!(game.object_view(food).zone, Zone::Battlefield);
+            for object in grave_objects {
+                assert_eq!(game.object_ref(object.card), object);
+                assert_eq!(game.object_view(object.card).zone, Zone::Graveyard);
+            }
+            assert_eq!(game.counter_count(squirrel, CounterKind::PlusOne), 0);
+            assert_eq!(game.controlled_token_ids(player).count(), 0);
+            assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+
+            indexed.restore(&checkpoint).unwrap();
+            act(&mut indexed, Action::SubmitAttempt);
+            assert_eq!(game.snapshot(), indexed.snapshot());
+            no_projection_work();
+        }
+    }
+}
+
 const TAP_AND_WATERBEND: CardRules = CardRules {
     effect: Effect::Creature(2, 2),
     activated: &[ActivatedAbility {

@@ -328,6 +328,10 @@ impl Game {
                 && a.additional.is_none()
                 && !a.additional_group_complete
                 && !a.additional_life
+                // Specialized selections keep their own completion state. The
+                // incomplete cases above already preserve their continuation.
+                && a.forage.is_none()
+                && a.evidence.is_none()
             {
                 return None;
             }
