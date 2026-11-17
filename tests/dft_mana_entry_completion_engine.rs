@@ -172,14 +172,21 @@ fn an_owned_entry_can_decline_copy_before_choosing_the_only_parent_funding_color
             assert!(matches!(branch.state.pending, Pending::EffectMana { .. }));
             // SBAs wait until the enclosing cast finishes, even for a 0/0.
             assert_eq!(branch.object_view(returning).zone, Zone::Battlefield);
-            assert_eq!(branch.observe(p).mana_choices, vec![[1, 0, 0, 0, 0, 0]]);
+            assert_eq!(branch.observe(p).mana_choices.len(), 5);
             assert!(branch.observe(p.other()).mana_choices.is_empty());
-            reject(
-                branch,
+            let mut stranded = branch.clone();
+            act(
+                &mut stranded,
                 Action::ChooseMana {
                     production: [0, 0, 0, 0, 1, 0],
                 },
             );
+            act(&mut stranded, Action::EndManaWindow);
+            act(&mut stranded, Action::SubmitAttempt);
+            assert!(matches!(
+                stranded.state.pending,
+                Pending::ManaRollback { .. }
+            ));
             let action = Action::ChooseMana {
                 production: [1, 0, 0, 0, 0, 0],
             };
@@ -252,9 +259,13 @@ fn nonzero_previews_neither_admit_lost_quantity_nor_hide_new_quantity_during_ent
                 .enumerate()
             {
                 for _ in 0..returns {
-                    reject(branch, entry_choice(None));
-                    let wrong = entry_choice(Some(branch.object_ref(parent)));
-                    reject(branch, wrong);
+                    // Each current entry choice is admissible independently
+                    // of whether its resulting mana can fund the parent.
+                    let mut declined = branch.clone();
+                    act(&mut declined, entry_choice(None));
+                    let mut giant = branch.clone();
+                    let wrong = entry_choice(Some(giant.object_ref(parent)));
+                    act(&mut giant, wrong);
                     let action = entry_choice(Some(branch.object_ref(druid)));
                     if i == 1 {
                         index(branch, action);
@@ -502,7 +513,20 @@ fn a_fixed_prefix_inside_a_root_plot_mana_child_cannot_exile_the_plotted_hand_su
             .into_iter()
             .enumerate()
         {
-            reject(branch, bad_prefix.clone());
+            let mut stranded = branch.clone();
+            act(&mut stranded, bad_prefix.clone());
+            pay(&mut stranded);
+            assert!(matches!(
+                stranded.state.pending,
+                Pending::PlotPayment { .. }
+            ));
+            reject(&mut stranded, Action::PayPlot { payment: RR });
+            act(&mut stranded, Action::EndManaWindow);
+            act(&mut stranded, Action::SubmitAttempt);
+            assert!(matches!(
+                stranded.state.pending,
+                Pending::ManaRollback { .. }
+            ));
             assert_eq!(branch.object_view(plotted).zone, Zone::Hand);
             let good = Action::TapMana { card: forest };
             if i == 1 {
