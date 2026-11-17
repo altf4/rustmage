@@ -499,6 +499,32 @@ fn overlapping_current_costs_can_edit_an_unpaid_selection_or_fail_with_owned_bra
 
 #[test]
 fn failure_reverses_discard_after_a_frozen_library_departure() {
+    const COST: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::NONE,
+            &[Instruction::Draw(PlayerSet::Controller, 2)],
+        ),
+        extras: &rustmage_core::cards::authored::CardExtras {
+            has_convoke: true,
+            additional_cost: Some(AdditionalCost {
+                kind: EffectChoiceKind::Discard,
+                filter: SacrificeFilter {
+                    kinds: 0,
+                    other: true,
+                    keywords: Keywords::NONE,
+                    source_only: false,
+                    nonland: false,
+                    tokens: None,
+                    artifact_enchantment_or_token: false,
+                    subtype: None,
+                },
+            }),
+            ..rustmage_core::cards::authored::CardExtras::EMPTY
+        },
+        ..CardRules::EMPTY
+    };
+    let _rules =
+        fixture_rules::activate(&[(Card::from_name("Thrill of Possibility").unwrap(), &COST)]);
     for draw in [false, true] {
         let p = Player::P0;
         let mut g = scenario(p);
@@ -512,7 +538,9 @@ fn failure_reverses_discard_after_a_frozen_library_departure() {
             g.move_object(card, Zone::Hand);
         }
         let frozen = g.object_ref(card);
-        act(&mut g, Action::ChooseAdditionalCost { object: frozen });
+        if matches!(g.state.pending, Pending::AdditionalCost { .. }) {
+            act(&mut g, Action::ChooseAdditionalCost { object: frozen });
+        }
         act(&mut g, Action::BeginOrderedCosts);
         let clause = g
             .state
@@ -532,6 +560,9 @@ fn failure_reverses_discard_after_a_frozen_library_departure() {
                 clause: clause as u16,
             },
         );
+        if matches!(g.state.pending, Pending::AdditionalCost { .. }) {
+            act(&mut g, Action::ChooseAdditionalCost { object: frozen });
+        }
         assert_eq!(g.object_view(card).zone, Zone::Graveyard);
         let saved = g.snapshot();
         let mut indexed = g.clone();
@@ -661,4 +692,32 @@ fn failed_attempt_preserves_shuffle_rng_even_for_an_unchanged_permutation() {
     close_and_submit(&mut g);
     assert_eq!(g.state.rng, frozen_rng);
     assert_eq!(g.state.players[p.index()].library, before_order);
+}
+
+#[test]
+fn recovery_retains_each_irreversible_library_transition_in_order() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    zero_pool(&mut g, p);
+    let spell = put(&mut g, p, "Bear Cub", Zone::Hand);
+    let card = put(&mut g, p, "Forest", Zone::Library);
+    act(&mut g, Action::AnnounceCast { card: spell });
+    g.move_object(card, Zone::Graveyard);
+    g.move_object(card, Zone::Library);
+    assert!(g.draw_one_unreplaced(p));
+    let object = g.object_ref(card);
+    assert_eq!(
+        g.state.players[p.index()].cards_library_to_graveyard_this_turn,
+        1
+    );
+    assert_eq!(g.state.players[p.index()].descended_this_turn, 1);
+    close_and_submit(&mut g);
+    assert_eq!(g.object_ref(card), object);
+    assert_eq!(g.object_view(card).zone, Zone::Hand);
+    assert_eq!(
+        g.state.players[p.index()].cards_library_to_graveyard_this_turn,
+        1
+    );
+    assert_eq!(g.state.players[p.index()].descended_this_turn, 1);
+    assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 1);
 }

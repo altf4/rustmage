@@ -85,6 +85,7 @@ impl CastRollback {
     pub(super) fn knowledge_object(&self, card: CardId) -> Option<&Object> {
         self.library_moves
             .iter()
+            .rev()
             .find(|row| row.card == card)
             .map(|row| &row.object)
             .or_else(|| self.before.objects.get(card as usize))
@@ -139,15 +140,7 @@ impl Game {
         let mut cursor = self.state.cast_rollback.as_deref_mut();
         while let Some(attempt) = cursor {
             if attempt.replay.is_none() {
-                if let Some(row) = attempt
-                    .library_moves
-                    .iter_mut()
-                    .find(|row| row.card == card)
-                {
-                    *row = frozen.clone();
-                } else {
-                    attempt.library_moves.push(frozen.clone());
-                }
+                attempt.library_moves.push(frozen.clone());
             }
             cursor = attempt.parent.as_deref_mut();
         }
