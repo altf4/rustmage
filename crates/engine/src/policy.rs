@@ -17,6 +17,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
     // proposing paid actions for the turn after one failed attempt.
     let tap_for_payment = observation.announcing.is_some()
         || observation.plot_payment.is_some()
+        || observation.face_up_payment.is_some()
         || observation.room_unlock_payment.is_some()
         || observation.payment_request.is_some()
         || observation.attack_payment.is_some()
