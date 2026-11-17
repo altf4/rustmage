@@ -6356,6 +6356,16 @@ impl Game {
                 }
             }
             Pending::AdditionalCost { .. } => {
+                // Nonmana materials may be created or made usable by an
+                // actual mana ability before the locked payment is committed.
+                if s.announcing.as_ref().is_some_and(|a| {
+                    a.total_cost.is_some_and(|cost| {
+                        cost.generic != 0 || cost.colored.into_iter().any(|amount| amount != 0)
+                    })
+                }) && self.visit_local_mana_abilities(&mut emit)
+                {
+                    return true;
+                }
                 if s.announcing.as_ref().unwrap().paying_origin_discard() {
                     return self.visit_origin_discard_cost(&mut emit);
                 }

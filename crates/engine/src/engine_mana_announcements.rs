@@ -30,6 +30,7 @@ impl Game {
         assert!(matches!(
             self.state.pending,
             Pending::PayCosts { .. }
+                | Pending::AdditionalCost { .. }
                 | Pending::Evidence { .. }
                 | Pending::Forage { .. }
                 | Pending::Crew { .. }

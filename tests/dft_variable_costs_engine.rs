@@ -517,7 +517,26 @@ fn graveyard_exile_prohibition_is_shared_by_funding_and_actual_payment() {
         g.state.players[p.index()].mana = [0; 6];
         assert!(available(&g, source));
         begin(&mut g, source, None);
+        assert_eq!(g.state.pending, Pending::AdditionalCost { player: p });
         reject_selection(&mut g, artifact);
+        let nested = Action::AnnounceMana {
+            card: blocker,
+            ability: 0,
+            counter_payment: Counters::default(),
+            production: [0, 1, 1, 0, 0, 2],
+        };
+        admit(&g, nested.clone());
+        let mut staged = g.clone();
+        act(&mut staged, nested);
+        pay(&mut staged);
+        assert_eq!(staged.state.pending, Pending::AdditionalCost { player: p });
+        assert_eq!(staged.object_view(blocker).zone, Zone::Graveyard);
+        select(&mut staged, artifact);
+        act(&mut staged, Action::FinishAdditionalCostGroup);
+        pay(&mut staged);
+        assert_eq!(staged.object_view(artifact).zone, Zone::Exile);
+        drain(&mut staged);
+        assert_eq!(staged.state.players[p.index()].life, 21);
         choose(
             &mut g,
             |a| matches!(a, Action::ActivateMana {card,..} if *card == blocker),
