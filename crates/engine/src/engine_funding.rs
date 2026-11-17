@@ -6045,8 +6045,8 @@ impl Game {
         let source_life = source_cost.map_or(0, |(_, rules)| rules.cost.life);
         if a.additional_life || matches!(spec.kind, EffectChoiceKind::PayLife(_)) {
             return spec.kind.additional_life_payment().is_some_and(|life| {
-                self.state.players[a.item.controller.index()].life
-                    >= i128::from(source_life) + i128::from(life)
+                let total = i128::from(source_life) + i128::from(life);
+                total == 0 || self.state.players[a.item.controller.index()].life >= total
             });
         }
         if spec.kind == EffectChoiceKind::DiscardHand {
@@ -6363,6 +6363,16 @@ impl Game {
     /// before any live announcement exists. Reuse the full cost context so
     /// source use, target totals and additional witnesses stay in one world.
     pub(super) fn activation_packet_admissible(&self, candidate: &Announcement) -> bool {
+        if let Some(AdditionalCost {
+            kind: EffectChoiceKind::PayLife(amount),
+            ..
+        }) = candidate.additional_cost()
+            && !candidate.additional_paid
+            && amount != 0
+            && self.state.players[candidate.item.controller.index()].life < i128::from(amount)
+        {
+            return false;
+        }
         let goal = self.funding_goal(candidate);
         let mut world = FundingState::from_game(self, &goal);
         world.set_purpose(self.purpose_for_item(&candidate.item));
