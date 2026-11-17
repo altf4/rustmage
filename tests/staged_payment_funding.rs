@@ -478,3 +478,119 @@ fn fixed_resolution_life_replacement_matches_execution_without_future_search() {
         no_projection_work();
     }
 }
+
+const HAND_MANA: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    activated: &[ActivatedAbility {
+        cost: ActivationCost {
+            exile_self: true,
+            ..ActivationCost::ZERO
+        },
+        origin: ActivationOrigin::Hand,
+        program: &[Instruction::AddMana(ManaProduction::Fixed([
+            0, 0, 0, 0, 1, 0,
+        ]))],
+        ..CONVERTER.activated[0]
+    }],
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn a_held_face_down_draw_cannot_reveal_its_hand_mana_ability() {
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &HAND_MANA)]);
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let spell = put(&mut game, player, "Bear Cub", Zone::Hand);
+        let drawn = put(&mut game, player, "Grizzly Bears", Zone::Library);
+        act(&mut game, Action::AnnounceCast { card: spell });
+        assert!(game.draw_one_unreplaced(player));
+        assert!(game.attempt_draw_is_face_down(game.object_ref(drawn)));
+        let announce = Action::AnnounceMana {
+            card: drawn,
+            ability: 0,
+            counter_payment: Counters::default(),
+            production: [0, 0, 0, 0, 1, 0],
+        };
+        let direct = Action::ActivateMana {
+            card: drawn,
+            ability: 0,
+            counter_payment: Counters::default(),
+            payment: [0; 6],
+            production: [0, 0, 0, 0, 1, 0],
+        };
+        for action in [&announce, &direct] {
+            assert!(!game.legal_actions().contains(action));
+            reject(&mut game, action.clone());
+        }
+        let mut indexed = game.clone();
+        let pay = game
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        let at = indexed
+            .legal_actions()
+            .iter()
+            .position(|a| a == &pay)
+            .unwrap();
+        indexed.apply_index(player, indexed.revision(), at).unwrap();
+        act(&mut game, pay);
+        assert_eq!(indexed.snapshot(), game.snapshot());
+        assert!(!game.attempt_draw_is_face_down(game.object_ref(drawn)));
+        assert!(game.legal_actions().contains(&announce));
+    }
+}
+
+#[test]
+fn combat_prefixes_wait_for_complete_declarations_without_suffix_search() {
+    const COMPANY: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        static_groups: &[StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::CantAttackOrBlockAlone],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &COMPANY)]);
+    for taxed in [false, true] {
+        let mut game = scenario(Player::P0);
+        let source = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
+        if taxed {
+            put(
+                &mut game,
+                Player::P1,
+                "Archangel of Tithes",
+                Zone::Battlefield,
+            );
+        }
+        game.state.players[0].mana = [0; 6];
+        game.state.step = Step::Attackers;
+        game.state.pending = Pending::Attackers;
+        let action = Action::Attack { card: source };
+        let mut indexed = game.clone();
+        let at = indexed
+            .legal_actions()
+            .iter()
+            .position(|a| a == &action)
+            .unwrap();
+        indexed
+            .apply_index(Player::P0, indexed.revision(), at)
+            .unwrap();
+        act(&mut game, action);
+        assert_eq!(indexed.snapshot(), game.snapshot());
+        reject(&mut game, Action::FinishAttackers);
+        act(&mut game, Action::CancelAttackDeclaration);
+        assert!(game.state.selected_attackers.is_empty());
+        let companion = put(&mut game, Player::P0, "Bear Cub", Zone::Battlefield);
+        act(&mut game, Action::Attack { card: source });
+        act(&mut game, Action::Attack { card: companion });
+        act(&mut game, Action::FinishAttackers);
+        if taxed {
+            assert_eq!(game.observe(Player::P0).attack_payment.unwrap().generic, 2);
+            assert_eq!(game.state.players[0].mana, [0; 6]);
+            reject(&mut game, Action::PayAttackCost { payment: [0; 6] });
+            act(&mut game, Action::AbortAttackPayment);
+        }
+    }
+}

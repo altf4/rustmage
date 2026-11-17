@@ -114,7 +114,7 @@ struct Resource {
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn activation_counter_placement_payable<W: CharacteristicWorld + ?Sized>(
+pub(super) fn activation_counter_placement_payable<W: CharacteristicWorld + ?Sized>(
     world: &W,
     goal: &FundingGoal,
 ) -> bool {
@@ -150,6 +150,7 @@ pub(super) struct FundingState<'g> {
     // Strict spell-only mana cannot pay any intermediate activated ability.
     // This fixed query bound includes all frozen ancestor payments and limits
     // only equivalent search-key amounts, never owned pools or allocations.
+    #[cfg(feature = "test-support")]
     spell_lot_demand: Option<u128>,
     purpose: mana_lots::Purpose,
     payment_source: Option<ObjectRef>,
@@ -163,6 +164,7 @@ pub(super) struct FundingState<'g> {
     life: i128,
     other_life: i128,
     life_replacement_possible: bool,
+    #[cfg(feature = "test-support")]
     inheritance_possible: bool,
     resources: Vec<Resource>,
     named_counters: live_counters::Rows,
@@ -188,6 +190,7 @@ pub(super) struct FundingState<'g> {
     continuation_memo: Option<Rc<ContinuationMemo>>,
     /// A projected completion removes only its resolved child from CR605.3c's
     /// active-instance chain; the real game's immutable active frames stay intact.
+    #[cfg(feature = "test-support")]
     active_mana_keys: Option<Vec<mana_announcements::ManaActivationKey>>,
     borrowed_uses: Vec<(ObjectRef, u64)>,
     self_grant_uses: Vec<(ObjectRef, u64)>,
@@ -777,7 +780,7 @@ fn reserve_obligations<W: CharacteristicWorld + ?Sized>(
 /// A source-exile cost must be legal in the final payment world. Do not reject
 /// the initial state: paying mana may first remove its prohibition provider.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn source_exile_payable<W: ability_world::CharacteristicWorld + ?Sized>(
+pub(super) fn source_exile_payable<W: ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
     goal: &FundingGoal,
 ) -> bool {
@@ -1105,6 +1108,7 @@ impl<'g> FundingState<'g> {
     fn from_game(game: &'g Game, goal: &FundingGoal) -> Self {
         Self::from_game_with_convoke(game, goal, false)
     }
+    #[cfg(feature = "test-support")]
     fn active_melds(&self) -> impl Iterator<Item = &meld::MeldedPermanent> {
         self.roles()
             .into_iter()
@@ -1453,6 +1457,7 @@ impl<'g> FundingState<'g> {
             continuation: None,
             #[cfg(feature = "test-support")]
             continuation_memo: None,
+            #[cfg(feature = "test-support")]
             active_mana_keys: None,
             cost_group: game
                 .state
@@ -1499,6 +1504,7 @@ impl<'g> FundingState<'g> {
                         .collect()
                 }),
             game,
+            #[cfg(feature = "test-support")]
             inheritance_possible,
             convoke,
             activation_tap_payment,
@@ -1535,6 +1541,7 @@ impl<'g> FundingState<'g> {
             active: game.state.active,
             mana: game.state.players[goal.actor.index()].mana.map(u128::from),
             lots: game.mana_lots(goal.actor).to_vec(),
+            #[cfg(feature = "test-support")]
             spell_lot_demand: Some(
                 goal.required.into_iter().map(u128::from).sum::<u128>() + u128::from(goal.generic),
             ),
@@ -1622,6 +1629,7 @@ impl<'g> FundingState<'g> {
         }
         result
     }
+    #[cfg(feature = "test-support")]
     fn cost_group_ready(&self) -> bool {
         self.cost_group.as_ref().is_none_or(|(spec, group)| {
             !matches!(
@@ -4274,6 +4282,7 @@ impl<'g> FundingState<'g> {
     }
     /// Plain materialized copies may remain fixed during a tap-only search.
     /// Any temporary layer must be bound to its own exact live incarnation.
+    #[cfg(feature = "test-support")]
     fn fixed_copy_recipes(&self) -> bool {
         let plain_live_copy = |reference: ObjectRef, recipe: CopyRecipe| {
             self.reference(reference.card) == reference
@@ -6311,6 +6320,7 @@ impl Game {
         world.set_payment_context(&proposal);
         world.reachable(&goal, &mut HashSet::new())
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn mana_parent_fundable(
         &self,
         external: Option<ObjectRef>,
@@ -6345,6 +6355,7 @@ impl Game {
         self.activation_packet_fundable(candidate)
             && (candidate.production.is_none() || self.mana_total_parent_fundable(candidate, None))
     }
+    #[cfg(feature = "test-support")]
     fn has_mana_parent(&self, child: &Announcement) -> bool {
         self.state.mana_announcement_stack.is_some()
             || child
@@ -6353,6 +6364,7 @@ impl Game {
                 .and_then(|o| o.resume.as_deref())
                 .is_some_and(|pending| self.guided_mana_goal(pending).is_some())
     }
+    #[cfg(feature = "test-support")]
     fn mana_total_parent_fundable(&self, child: &Announcement, payment: Option<Mana>) -> bool {
         let goal = self.funding_goal(child);
         let mut state = FundingState::from_game(self, &goal);
@@ -6496,6 +6508,9 @@ impl Game {
         };
         for (id, object) in self.state.objects.iter().enumerate() {
             let id = id as CardId;
+            if self.attempt_draw_is_face_down(self.object_ref(id)) {
+                continue;
+            }
             if self.visit_intrinsic_mana(id, actor, &mut once)
                 || self.visit_granted_mana(id, actor, &mut once)
                 || self.visit_borrowed_activations(id, actor, false, &mut |action| {
@@ -7545,6 +7560,7 @@ impl FundingState<'_> {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    #[cfg(feature = "test-support")]
     pub(super) fn guided_mana_goal(&self, pending: &Pending) -> Option<FundingGoal> {
         let (actor, required, generic) = match pending {
             Pending::PlotPayment { .. } => return Some(self.plot_payment()?.goal()),
