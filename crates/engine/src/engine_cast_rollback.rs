@@ -1,4 +1,4 @@
-//! Rare failed proposals caused by another player's mandatory entry choices.
+//! Owned spell and activation attempts, including nested mana announcements.
 //! The borrowed funding solver never owns this checkpoint or clones a Game.
 //! Failed proposals offer selective legal mana-ability reversal (CR733.1),
 //! preserving irreversible library actions and the completed events that remain.
@@ -8,6 +8,14 @@ use super::*;
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct CastRollback {
     pub(super) before: State,
+    /// Parents are taken out before the checkpoint is copied.
+    pub(super) parent: Option<Box<CastRollback>>,
+    pub(super) attempt_id: u64,
+    pub(super) context: Option<u64>,
+    pub(super) mana_closed: bool,
+    pub(super) contributions_sealed: bool,
+    pub(super) special: bool,
+    pub(super) failure: Option<AttemptFailureReason>,
     pub(super) player: Player,
     pub(super) spell: CardId,
     foreign_choice: bool,
@@ -33,6 +41,13 @@ impl CastRollback {
             checkpoint.state_bytes() + std::mem::size_of::<Self>() - std::mem::size_of::<State>();
         Self {
             before: checkpoint.state,
+            parent: None,
+            attempt_id: 0,
+            context: None,
+            mana_closed: false,
+            contributions_sealed: false,
+            special: false,
+            failure: None,
             player,
             spell,
             foreign_choice: false,
@@ -48,6 +63,7 @@ impl CastRollback {
     }
     pub(super) fn bytes(&self) -> usize {
         self.bytes
+            + self.parent.as_ref().map_or(0, |parent| parent.bytes())
             + (self.public_hand_cards.len() + self.obscured_hand_cards.len())
                 * std::mem::size_of::<CardId>()
             + (self.public_face_down.len() + self.obscured_face_down.len())
@@ -219,14 +235,17 @@ impl Game {
     }
     pub(super) fn begin_combat_rollback(&mut self, actor: Player) {
         assert!(self.state.cast_rollback.is_none());
-        self.state.cast_rollback = Some(Box::new(CastRollback::new(
-            self.state.clone(),
-            actor,
-            CardId::MAX,
-        )));
+        self.open_attempt_checkpoint(actor, CardId::MAX);
+        self.state.cast_rollback.as_mut().unwrap().special = true;
     }
     pub(super) fn prepare_cast_rollback(&mut self, actor: Player, action: &Action) {
         self.capture_public_hand_exiles();
+        if self.state.cast_rollback.is_some()
+            && let Some(card) = self.attempt_action_card(action)
+        {
+            self.open_attempt_checkpoint(actor, card);
+            return;
+        }
         if let Some(rollback) = &mut self.state.cast_rollback {
             if actor != rollback.player
                 && matches!(
@@ -258,20 +277,43 @@ impl Game {
             return;
         }
         if let Action::BeginFaceUp { object, .. } | Action::BeginFaceUpX { object, .. } = *action {
-            let mut rollback = CastRollback::new(self.state.clone(), actor, CardId::MAX);
+            self.open_attempt_checkpoint(actor, CardId::MAX);
+            let rollback = self.state.cast_rollback.as_mut().unwrap();
+            rollback.special = true;
             rollback.public_face_down.push(object);
-            self.state.cast_rollback = Some(Box::new(rollback));
             return;
         }
         if matches!(
             action,
-            Action::BeginRoomUnlock { .. } | Action::AnnounceForetell { .. }
+            Action::BeginRoomUnlock { .. }
+                | Action::AnnounceForetell { .. }
+                | Action::AnnouncePlot { .. }
+                | Action::AnnounceLibraryTopPlot { .. }
         ) {
-            let rollback = CastRollback::new(self.state.clone(), actor, CardId::MAX);
-            self.state.cast_rollback = Some(Box::new(rollback));
+            self.open_attempt_checkpoint(actor, CardId::MAX);
+            self.state.cast_rollback.as_mut().unwrap().special = true;
             return;
         }
-        let card = match *action {
+        if let Some(card) = self.attempt_action_card(action) {
+            self.open_attempt_checkpoint(actor, card);
+            if card != CardId::MAX
+                && self.state.objects[card as usize].zone == Zone::Hand
+                && !matches!(
+                    action,
+                    Action::AnnounceDisguise { .. } | Action::AnnounceDisguiseGraveyard { .. }
+                )
+            {
+                self.state
+                    .cast_rollback
+                    .as_mut()
+                    .unwrap()
+                    .public_hand_cards
+                    .push(card);
+            }
+        }
+    }
+    fn attempt_action_card(&self, action: &Action) -> Option<CardId> {
+        match *action {
             Action::AnnounceCast { card }
             | Action::AnnounceExile { card }
             | Action::AnnounceAirbend { card, .. }
@@ -340,20 +382,45 @@ impl Game {
             {
                 card
             }
-            _ => return,
-        };
-        // Foreign entry choices currently arise from immediate linked returns.
-        // Allocate no checkpoint when no opponent-owned return is possible.
-        if !self.state.exile_links.iter().any(|link| {
-            link.return_zone == Zone::Battlefield
-                && self.object_ref(link.exiled.card) == link.exiled
-                && self.state.objects[link.exiled.card as usize].zone == Zone::Exile
-                && self.state.objects[link.exiled.card as usize].owner != actor
-        }) {
-            return;
+            Action::AnnounceActivate { .. }
+            | Action::AnnounceMana { .. }
+            | Action::AnnounceGrantedMana { .. }
+            | Action::AnnounceGrantedManaTemplate { .. }
+            | Action::AnnounceAttachedAbility { .. }
+            | Action::AnnouncePlaneswalkerGrant { .. }
+            | Action::AnnounceArtifactFood { .. }
+            | Action::AnnounceCreatureGrant { .. }
+            | Action::AnnounceRetainedCopyAbility { .. }
+            | Action::AnnounceEmbalm { .. }
+            | Action::AnnounceSourceGrant { .. }
+            | Action::AnnounceSelfGrantedAbility { .. }
+            | Action::AnnounceSelfGrantedMana { .. }
+            | Action::AnnounceBorrowedAbility { .. }
+            | Action::AnnounceBorrowedMana { .. }
+            | Action::AnnounceGraveyardBorrowedAbility { .. }
+            | Action::AnnounceGraveyardBorrowedMana { .. }
+            | Action::AnnounceInheritedAbility { .. }
+            | Action::AnnounceInheritedMana { .. }
+            | Action::Activate { .. }
+            | Action::ActivateMana { .. }
+            | Action::ActivateBorrowedMana { .. }
+            | Action::ActivateGraveyardBorrowedMana { .. }
+            | Action::ActivateInheritedMana { .. }
+            | Action::BeginActivate { .. } => CardId::MAX,
+            _ => return None,
         }
-        self.state.cast_rollback =
-            Some(Box::new(CastRollback::new(self.state.clone(), actor, card)));
+        .into()
+    }
+    fn open_attempt_checkpoint(&mut self, actor: Player, spell: CardId) {
+        let parent = self.state.cast_rollback.take();
+        let mut rollback = CastRollback::new(self.state.clone(), actor, spell);
+        rollback.parent = parent;
+        rollback.attempt_id = self
+            .revision
+            .checked_add(1)
+            .capacity("attempt identity exhausted");
+        self.state.cast_rollback = Some(Box::new(rollback));
+        self.state.last_attempt_outcome = None;
     }
     pub(super) fn mark_foreign_cast_choice(&mut self) {
         if let Some(r) = &mut self.state.cast_rollback {
@@ -377,7 +444,8 @@ impl Game {
                 assert!(self.start_mana_rollback(rollback, current));
                 return;
             }
-            let current = std::mem::replace(&mut self.state, rollback.before);
+            let mut rollback = rollback;
+            let current = std::mem::replace(&mut self.state, rollback.before.clone());
             self.complete_cast_rollback_restore(
                 &current,
                 rollback.spell,
@@ -386,6 +454,7 @@ impl Game {
                 &rollback.public_face_down,
                 &rollback.obscured_face_down,
             );
+            self.finish_attempt_recovery(&mut rollback, Vec::new());
             return;
         }
         if let Some(r) = &mut self.state.cast_rollback {
@@ -425,34 +494,119 @@ impl Game {
         }
     }
     pub(super) fn clear_finished_cast_rollback(&mut self) {
-        if self.state.cast_rollback.is_none()
-            || matches!(self.state.pending, Pending::ManaRollback { .. })
-        {
+        let Some(rollback) = self.state.cast_rollback.as_ref() else {
+            return;
+        };
+        if matches!(self.state.pending, Pending::ManaRollback { .. }) {
             return;
         }
-        let casting = self
+        let before_contains = |id| {
+            rollback
+                .before
+                .announcing
+                .as_ref()
+                .is_some_and(|a| a.item.id == id)
+                || rollback
+                    .before
+                    .mana_announcement_stack
+                    .as_ref()
+                    .is_some_and(|frames| {
+                        frames.iter().any(|frame| frame.announcement.item.id == id)
+                    })
+        };
+        let owned = self
             .state
             .announcing
             .as_ref()
-            .is_some_and(|a| a.item.kind == StackKind::Spell)
-            || self
-                .state
-                .mana_announcement_stack
-                .as_ref()
-                .is_some_and(|frames| {
-                    frames
-                        .iter()
-                        .any(|f| f.announcement.item.kind == StackKind::Spell)
-                });
-        if (!casting
-            && self.state.combat_payment.is_none()
-            && self.face_up_payment().is_none()
-            && self.state.room_unlock_payment().is_none()
-            && !self.plot_payment().is_some_and(|request| request.foretell))
-            || self.outcome().is_some()
-        {
-            self.state.cast_rollback = None;
+            .into_iter()
+            .chain(
+                self.state
+                    .mana_announcement_stack
+                    .as_ref()
+                    .into_iter()
+                    .flat_map(|frames| frames.iter().map(|frame| &frame.announcement)),
+            )
+            .find(|a| !a.trigger && !before_contains(a.item.id))
+            .map(|a| a.item.id);
+        if let Some(id) = owned {
+            self.state.cast_rollback.as_mut().unwrap().context = Some(id);
+            return;
         }
+        // Special actions retain their historical checkpoints and controls.
+        if rollback.special
+            && self.outcome().is_none()
+            && (self.state.combat_payment.is_some()
+                || self.face_up_payment().is_some()
+                || self.state.room_unlock_payment().is_some()
+                || self.plot_payment().is_some())
+        {
+            return;
+        }
+        let mut rollback = self.state.cast_rollback.take().unwrap();
+        if rollback.attempt_id != 0 {
+            self.state.last_attempt_outcome = Some(AttemptOutcomeView {
+                attempt_id: rollback.attempt_id,
+                player: rollback.player,
+                outcome: attempts::AttemptOutcome::Completed,
+                reason: None,
+            });
+        }
+        let events = std::mem::take(&mut rollback.events);
+        self.restore_attempt_parent(&mut rollback, events);
+    }
+
+    /// Move completed/retained child receipts to their actual parent owner.
+    pub(super) fn restore_attempt_parent(
+        &mut self,
+        rollback: &mut CastRollback,
+        events: Vec<cast_rollback_mana::ManaEvent>,
+    ) {
+        if let Some(mut parent) = rollback.parent.take() {
+            for mut event in events {
+                event.id =
+                    u32::try_from(parent.events.len()).capacity("mana receipt sequence exhausted");
+                parent.events.push(event);
+            }
+            for card in &rollback.public_hand_cards {
+                if !parent.public_hand_cards.contains(card) {
+                    parent.public_hand_cards.push(*card);
+                }
+            }
+            for card in &rollback.obscured_hand_cards {
+                parent.public_hand_cards.retain(|known| known != card);
+                if !parent.obscured_hand_cards.contains(card) {
+                    parent.obscured_hand_cards.push(*card);
+                }
+            }
+            for object in &rollback.public_face_down {
+                if !parent.public_face_down.contains(object) {
+                    parent.public_face_down.push(*object);
+                }
+            }
+            for object in &rollback.obscured_face_down {
+                parent.public_face_down.retain(|known| known != object);
+                if !parent.obscured_face_down.contains(object) {
+                    parent.obscured_face_down.push(*object);
+                }
+            }
+            self.state.cast_rollback = Some(parent);
+        }
+    }
+
+    pub(super) fn finish_attempt_recovery(
+        &mut self,
+        rollback: &mut CastRollback,
+        retained: Vec<cast_rollback_mana::ManaEvent>,
+    ) {
+        if let Some(reason) = rollback.failure {
+            self.state.last_attempt_outcome = Some(AttemptOutcomeView {
+                attempt_id: rollback.attempt_id,
+                player: rollback.player,
+                outcome: attempts::AttemptOutcome::Failed,
+                reason: Some(reason),
+            });
+        }
+        self.restore_attempt_parent(rollback, retained);
     }
     fn preserve_irreversible_cast_library_changes(&mut self, current: &State, spell: CardId) {
         let changed = current

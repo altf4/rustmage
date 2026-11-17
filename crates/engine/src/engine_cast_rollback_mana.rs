@@ -173,12 +173,14 @@ pub(super) struct ManaReplay {
     current_bytes: usize,
     index: usize,
     active: Option<Box<ActiveManaReplay>>,
+    retained: Vec<ManaEvent>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ManaReplay {
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.current_bytes
+            + self.retained.iter().map(ManaEvent::bytes).sum::<usize>()
             + self.active.as_ref().map_or(0, |active| {
                 std::mem::size_of::<ActiveManaReplay>()
                     + active
@@ -250,6 +252,7 @@ impl Game {
             current_bytes,
             index: 0,
             active: None,
+            retained: Vec::new(),
         }));
         self.state = rollback.before.clone();
         self.restore_public_hand_knowledge(
@@ -365,6 +368,15 @@ impl Game {
                 self.replay_completed_mana_event(&event),
                 "validated frozen mana retention"
             );
+            self.state
+                .cast_rollback
+                .as_mut()
+                .unwrap()
+                .replay
+                .as_mut()
+                .unwrap()
+                .retained
+                .push(event);
         }
         self.state
             .cast_rollback
@@ -386,6 +398,7 @@ impl Game {
                 &rollback.public_face_down,
                 &rollback.obscured_face_down,
             );
+            self.finish_attempt_recovery(&mut rollback, replay.retained);
         }
     }
     fn prepare_frozen_mana_spend(
