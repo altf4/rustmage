@@ -893,6 +893,27 @@ impl Game {
         if exile_play_surcharge > 0 {
             Self::configure_taxed_exile_cast(&mut item, exile_play_surcharge);
         }
+        // These amounts are fixed by the selected route and spell face. X has
+        // not been declared yet, so do not add any speculative X-dependent fee.
+        // Check the mandatory life total before the scalar declaration shortcut.
+        let intrinsic_life = origin_additional_cost
+            .or_else(|| (method == CastMethod::GraveyardAdditionalCosts).then_some(object.card))
+            .and_then(Card::self_graveyard_cast_cost)
+            .map_or(0, |(life, _)| i128::from(life));
+        let origin_life = warp
+            .map(|spec| spec.life)
+            .filter(|&life| life != 0)
+            .or(origin_life_cost)
+            .map_or(0, i128::from);
+        let alternative_life = if method.pays_life_for_mana_value() {
+            i128::from(item.mana_value())
+        } else {
+            0
+        };
+        let known_life = intrinsic_life + origin_life + alternative_life;
+        if known_life != 0 && self.state.players[actor.index()].life < known_life {
+            return false;
+        }
         let fixed_x = source_alternative
             || matches!(
                 method,
