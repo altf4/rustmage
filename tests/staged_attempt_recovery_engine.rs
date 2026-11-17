@@ -277,8 +277,11 @@ fn drawn_cards_stay_opaque_but_can_pay_unrestricted_discard_until_attempt_finish
             source,
             object,
         ));
+        assert!(!hand_choices::behold_candidates(&g, p, "Bear", &[]).contains(&object));
         pay(&mut g);
+        assert_eq!(g.object_ref(drawn), object);
         assert!(!g.attempt_draw_is_face_down(object));
+        assert!(hand_choices::behold_candidates(&g, p, "Bear", &[]).contains(&object));
         assert!(g.attempt_draws_view(p).is_empty());
         assert!(
             g.observe(p)
