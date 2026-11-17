@@ -470,36 +470,17 @@ impl Game {
         true
     }
     fn evidence_selection_fundable(&self, extra: Option<ObjectRef>, exact: bool) -> bool {
-        let Some(a) = &self.state.announcing else {
-            let e = self.evidence_selection();
-            return e
-                .source_exiles
-                .iter()
-                .all(|&object| self.source_exilable(object))
-                && (!exact
-                    || self.evidence_selection_total(e.player, e.excluded, &e.selected)
-                        == Some(e.total));
-        };
-        if a.production.is_some() {
-            let mut proposal = a.clone();
-            let selection = proposal.evidence.as_mut().unwrap();
-            if let Some(object) = extra {
-                selection.selected.push(object);
-                selection.total += u128::from(
-                    self.state.objects[object.card as usize]
-                        .card
-                        .fixed_mana_value(),
-                );
+        let selection = self.evidence_selection();
+        let mut selected = selection.selected.clone();
+        if let Some(object) = extra {
+            if selected.contains(&object) || !self.evidence_card(selection.player, object) {
+                return false;
             }
-            selection.complete = exact;
-            return self.activation_total_fundable(&proposal);
+            selected.push(object);
         }
-        if !self.cast_costs_mana_paid() {
-            return true;
-        }
-        let mut selected = self.evidence_selection().selected.clone();
-        selected.extend(extra);
-        self.cast_cost_group_fundable(&selected, exact)
+        selection.source_exiles.iter().all(|&object| self.source_exilable(object))
+            && self.evidence_selection_total(selection.player, selection.excluded, &selected)
+                .is_some_and(|total| !exact || total >= u128::from(selection.threshold))
     }
 
     fn evidence_candidate(&self, r: ObjectRef) -> bool {

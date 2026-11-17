@@ -96,6 +96,7 @@ pub use rustmage_core::engine::{
     MeldedPermanentView, NoncombatDamageIncreaseView,
 };
 pub use rustmage_core::engine::{ExileZeroOrigin, ExileZeroUseView, PaidCastOrigin};
+pub use rustmage_core::engine::{ACTION_CONTRACT, AttemptFailureReason, AttemptOutcome, AttemptOutcomeView, AttemptStage, AttemptView};
 pub use rustmage_core::policy;
 pub use rustmage_core::protocol;
 pub use rustmage_core::{CapacityExceeded, CardName, PermanentType};

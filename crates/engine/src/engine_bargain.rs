@@ -67,10 +67,7 @@ impl Game {
         card: CardId,
         cost: ManaCost,
     ) -> bool {
-        self.bargain_cost_fundable(actor, card, cost, None)
-            || (0..self.state.objects.len()).any(|id| {
-                self.bargain_cost_fundable(actor, card, cost, Some(self.object_ref(id as CardId)))
-            })
+        self.spell_cost_option_available(actor, card, cost)
     }
     pub(super) fn visit_bargain_choices(
         &self,
@@ -83,42 +80,10 @@ impl Game {
     }
 
     fn bargain_choice_fundable(&self, a: &Announcement, sacrifice: Option<ObjectRef>) -> bool {
-        let source = a.item.source.expect("Bargain source");
-        let changes_targets = source.card.bargain_targets().is_some();
-        if changes_targets
-            || a.source_mana_alternative().is_some()
-            || a.has_ordered_origin_payment()
-            || a.has_ordered_life_cost()
-            || self.cast_requires_target_payment(a.item.controller, source.card)
-            || a.item.cast.is_some_and(|cast| cast.method.is_harmonize())
-            || source.card.behold_cast().is_some()
-        {
-            if sacrifice.is_some_and(|object| {
-                !self.additional_candidate(COST, a.item.controller, source.object, object)
-            }) {
-                return false;
-            }
-            let mut proposal = a.clone();
-            proposal.item.cast.as_mut().unwrap().bargain = Some(sacrifice.is_some());
-            proposal.additional = sacrifice;
-            if changes_targets {
-                proposal.plan = self.target_spec(&proposal.item);
-                // Targets are declared before the reserved permanent is sacrificed.
-                if !self.cast_definition_targets_available(
-                    proposal.plan,
-                    proposal.item.controller,
-                    source.object,
-                    source.card,
-                ) {
-                    return false;
-                }
-            }
-            return proposal
-                .cost_options()
-                .any(|cost| self.announcement_cost_fundable(&proposal, cost));
-        }
-        a.cost_options()
-            .any(|cost| self.bargain_cost_fundable(a.item.controller, source.id, cost, sacrifice))
+        let Some(source) = a.item.source else { return false; };
+        sacrifice.is_none_or(|object| {
+            self.additional_candidate(COST, a.item.controller, source.object, object)
+        })
     }
 
     pub(super) fn choose_bargain(&mut self, sacrifice: Option<ObjectRef>) {

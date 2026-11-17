@@ -213,219 +213,45 @@ impl Game {
         route: Option<ForageRoute>,
         purpose: mana_lots::Purpose,
     ) -> bool {
-        if let Some(result) = self.preview_optional_cast_costs(
-            goal.clone(),
-            purpose,
-            ObjectRef {
-                card: CardId::MAX,
-                generation: 0,
-            },
-            Some(spec),
-            route,
-            &[],
-            false,
-            &[],
-            &[],
-        ) {
-            return result;
+        let _ = purpose;
+        match route {
+            None => is_forage_cost(spec),
+            Some(ForageRoute::Black) => spec.kind == EffectChoiceKind::ForageOrBlack,
+            Some(ForageRoute::ExileThree) => self.forage_graveyard_count(goal.actor) >= 3,
+            Some(ForageRoute::Food) => self.state.objects.iter().enumerate().any(|(id, _)| {
+                let object = self.object_ref(id as CardId);
+                self.additional_candidate(food_cost(), goal.actor,
+                    goal.source.as_ref().map_or(object, |source| source.0), object)
+            }),
         }
-        if route.is_none_or(|r| r == ForageRoute::ExileThree)
-            && self.forage_graveyard_count(goal.actor) >= 3
-            && self.can_fund_for(goal.clone(), purpose)
-        {
-            return true;
-        }
-        if route.is_none_or(|r| r == ForageRoute::Food)
-            && self.state.objects.iter().enumerate().any(|(id, _)| {
-                let r = self.object_ref(id as CardId);
-                self.additional_candidate(
-                    food_cost(),
-                    goal.actor,
-                    goal.source.as_ref().map_or(r, |s| s.0),
-                    r,
-                ) && self.can_fund_for(
-                    FundingGoal {
-                        reserve: Some((r, food_cost())),
-                        ..goal.clone()
-                    },
-                    purpose,
-                )
-            })
-        {
-            return true;
-        }
-        if spec.kind == EffectChoiceKind::ForageOrBlack
-            && route.is_none_or(|r| r == ForageRoute::Black)
-        {
-            let mut black = goal;
-            black.required[2] = black.required[2]
-                .checked_add(1)
-                .capacity("forage alternative mana cost exhausted");
-            return self.can_fund_for(black, purpose);
-        }
-        false
     }
     fn forage_route_available(&self, route: ForageRoute) -> bool {
-        let p = self.semantic_actor().unwrap();
-        if let Some(a) = &self.state.announcing {
-            if a.cast_costs
-                .as_ref()
-                .is_some_and(|costs| costs.paying_origin_forage())
-            {
-                if route == ForageRoute::Black {
-                    return false;
-                }
-                let mut proposal = a.clone();
-                proposal
-                    .cast_costs
-                    .as_mut()
-                    .unwrap()
-                    .origin_forage
-                    .as_mut()
-                    .unwrap()
-                    .route = Some(route);
-                return self.cast_cost_world(&proposal).cost_completion();
-            }
-            if matches!(self.state.pending, Pending::ForageMethod { .. })
-                && (a.has_ordered_origin_payment() || a.has_ordered_life_cost())
-            {
-                if route == ForageRoute::Black
-                    && a.additional_cost().unwrap().kind != EffectChoiceKind::ForageOrBlack
-                {
-                    return false;
-                }
-                let mut proposal = a.clone();
-                proposal.forage = Some(Box::new(ForageSelection {
-                    route: Some(route),
-                    selected: Vec::new(),
-                    skip_to: 0,
-                }));
-                return proposal
-                    .cost_options()
-                    .any(|cost| self.announcement_cost_fundable(&proposal, cost));
-            }
-            if a.production.is_some()
-                && a.additional_cost()
-                    .is_some_and(|spec| spec.kind == EffectChoiceKind::Forage)
-            {
-                if route == ForageRoute::Black {
-                    return false;
-                }
-                let mut proposal = a.clone();
-                proposal.forage = Some(Box::new(ForageSelection {
-                    route: Some(route),
-                    selected: Vec::new(),
-                    skip_to: 0,
-                }));
-                return proposal
-                    .untargeted_activation_totals()
-                    .into_iter()
-                    .flatten()
-                    .any(|total| {
-                        proposal.total_cost = Some(total);
-                        self.activation_total_fundable(&proposal)
-                    });
-            }
-            if a.item.kind == StackKind::Spell
-                && a.total_cost.is_none()
-                && self.cast_requires_target_payment(a.item.controller, a.item.source.unwrap().card)
-            {
-                if route == ForageRoute::Black
-                    && a.additional_cost().unwrap().kind != EffectChoiceKind::ForageOrBlack
-                {
-                    return false;
-                }
-                let mut proposal = a.clone();
-                proposal.forage = Some(Box::new(ForageSelection {
-                    route: Some(route),
-                    selected: Vec::new(),
-                    skip_to: 0,
-                }));
-                return self.announcement_target_fundable(&proposal, None, None, None, None, false);
-            }
-            let mut goal = self.funding_goal(a);
-            // The current total already includes the black choice after declaration.
-            if a.forage
-                .as_ref()
-                .is_some_and(|f| f.route == Some(ForageRoute::Black))
-            {
-                goal.required[2] -= 1;
-            }
-            return self.forage_cost_fundable(goal, a.additional_cost().unwrap(), Some(route));
-        }
+        let player = self.semantic_actor().unwrap();
         match route {
-            ForageRoute::Black => false,
-            ForageRoute::ExileThree => self.forage_graveyard_count(p) >= 3,
+            ForageRoute::Black => self.state.announcing.as_ref().is_some_and(|a| {
+                !a.cast_costs.as_ref().is_some_and(|costs| costs.paying_origin_forage())
+                    && a.additional_cost().is_some_and(|cost| cost.kind == EffectChoiceKind::ForageOrBlack)
+            }),
+            ForageRoute::ExileThree => self.forage_graveyard_count(player) >= 3,
             ForageRoute::Food => self.state.objects.iter().enumerate().any(|(id, _)| {
-                self.additional_candidate(
-                    food_cost(),
-                    p,
-                    self.object_ref(id as CardId),
-                    self.object_ref(id as CardId),
-                )
+                let object = self.object_ref(id as CardId);
+                self.additional_candidate(food_cost(), player, object, object)
             }),
         }
     }
     fn forage_candidate(&self, r: ObjectRef) -> bool {
-        let Some(o) = self.state.objects.get(r.card as usize) else {
-            return false;
-        };
-        let f = self.forage_selection();
-        let p = self.semantic_actor().unwrap();
-        if self.object_ref(r.card) != r || f.selected.contains(&r) {
+        let Some(object) = self.state.objects.get(r.card as usize) else { return false; };
+        let selection = self.forage_selection();
+        let player = self.semantic_actor().unwrap();
+        if object.generation != r.generation || selection.selected.contains(&r) {
             return false;
         }
-        if let Some(a) = &self.state.announcing
-            && a.production.is_some()
-            && a.additional_cost()
-                .is_some_and(|spec| spec.kind == EffectChoiceKind::Forage)
-        {
-            let Some((cost, count)) = f.route.and_then(ForageRoute::mana_cost) else {
-                return false;
-            };
-            let source = a.item.source.expect("mana activation has a source").object;
-            if f.selected.len() >= count
-                || !self.additional_candidate_for_funding(cost, p, source, r)
-            {
-                return false;
-            }
-            let mut proposal = a.clone();
-            proposal.forage.as_mut().unwrap().selected.push(r);
-            return self.activation_total_fundable(&proposal);
-        }
-        let can_exile = || {
-            o.zone == Zone::Graveyard
-                && o.owner == p
-                && o.is_card()
-                && !ability_world::CharacteristicWorld::graveyard_exile_prohibited(self, r.card)
-        };
-        if self.cast_costs_mana_paid() {
-            let valid = match f.route {
-                Some(ForageRoute::ExileThree) => can_exile(),
-                Some(ForageRoute::Food) => self.additional_candidate(food_cost(), p, r, r),
-                _ => false,
-            };
-            if !valid {
-                return false;
-            }
-            let mut selected = f.selected.clone();
-            selected.push(r);
-            return self.cast_cost_group_fundable(&selected, false);
-        }
-        match f.route {
-            Some(ForageRoute::ExileThree) => can_exile(),
-            Some(ForageRoute::Food) => {
-                self.additional_candidate(food_cost(), p, r, r)
-                    && self.state.announcing.as_ref().is_none_or(|a| {
-                        self.can_fund_for(
-                            FundingGoal {
-                                reserve: Some((r, food_cost())),
-                                ..self.funding_goal(a)
-                            },
-                            self.purpose_for_item(&a.item),
-                        )
-                    })
-            }
+        match selection.route {
+            Some(ForageRoute::ExileThree) => selection.selected.len() < 3
+                && object.zone == Zone::Graveyard && object.owner == player && object.is_card()
+                && !ability_world::CharacteristicWorld::graveyard_exile_prohibited(self, r.card),
+            Some(ForageRoute::Food) => selection.selected.is_empty()
+                && self.additional_candidate(food_cost(), player, r, r),
             _ => false,
         }
     }

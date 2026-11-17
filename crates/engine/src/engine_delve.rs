@@ -125,8 +125,10 @@ impl Game {
     }
     pub(super) fn delver_fundable(&self, object: ObjectRef) -> bool {
         let a = self.state.announcing.as_ref().unwrap();
-        let mut world = self.cast_cost_world(a);
-        world.project_delver(object) && world.cost_completion()
+        let Some(selection) = a.convoke.as_ref() else { return false; };
+        selection.remaining.generic > 0
+            && !selection.contains(object)
+            && delve::eligible(self, a.item.controller, object, a.item.source.map(|s| s.object))
     }
     pub(super) fn pay_mana_contributors(&mut self, a: &mut Announcement) {
         let Some(frame) = &mut a.convoke else {
