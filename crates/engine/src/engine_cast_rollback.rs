@@ -6,6 +6,15 @@ use super::*;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct FrozenLibraryObject {
+    card: CardId,
+    object: Object,
+    counters: Counters,
+    recipe: Option<copies::CopyRecipe>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct CastRollback {
     pub(super) before: State,
     /// Parents are taken out before the checkpoint is copied.
@@ -20,6 +29,7 @@ pub(super) struct CastRollback {
     pub(super) special: bool,
     pub(super) costs_complete: bool,
     pub(super) deferred_draws: Vec<attempts::DeferredAttemptDraw>,
+    pub(super) library_moves: Vec<FrozenLibraryObject>,
     pub(super) failure: Option<AttemptFailureReason>,
     pub(super) player: Player,
     pub(super) spell: CardId,
@@ -57,6 +67,7 @@ impl CastRollback {
             special: false,
             costs_complete: false,
             deferred_draws: Vec::new(),
+            library_moves: Vec::new(),
             failure: None,
             player,
             spell,
@@ -73,6 +84,11 @@ impl CastRollback {
     }
     pub(super) fn bytes(&self) -> usize {
         self.bytes
+            + self
+                .library_moves
+                .iter()
+                .map(|row| std::mem::size_of::<FrozenLibraryObject>() + row.counters.owned_bytes())
+                .sum::<usize>()
             + self.parent.as_ref().map_or(0, |parent| parent.bytes())
             + self
                 .deferred_draws
@@ -90,6 +106,45 @@ impl CastRollback {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    /// Freeze only the actual irreversible library transition. Later reversible
+    /// costs must not change the incarnation retained by a failed attempt.
+    pub(super) fn record_attempt_library_move(
+        &mut self,
+        card: CardId,
+        origin: Zone,
+        destination: Zone,
+    ) {
+        if !(origin == Zone::Library && destination != Zone::Stack || destination == Zone::Library)
+        {
+            return;
+        }
+        let reference = self.object_ref(card);
+        let frozen = FrozenLibraryObject {
+            card,
+            object: self.state.objects[card as usize].clone(),
+            counters: self.counter_amounts(card).to_owned(),
+            recipe: self.state.copy_recipes.as_ref().and_then(|rows| {
+                rows.iter()
+                    .find(|row| row.object == reference)
+                    .map(|row| row.recipe)
+            }),
+        };
+        let mut cursor = self.state.cast_rollback.as_deref_mut();
+        while let Some(attempt) = cursor {
+            if attempt.replay.is_none() {
+                if let Some(row) = attempt
+                    .library_moves
+                    .iter_mut()
+                    .find(|row| row.card == card)
+                {
+                    *row = frozen.clone();
+                } else {
+                    attempt.library_moves.push(frozen.clone());
+                }
+            }
+            cursor = attempt.parent.as_deref_mut();
+        }
+    }
     // Record public knowledge while the checkpoint incarnation is still in hand.
     pub(super) fn remember_public_hand(&mut self, reference: ObjectRef) {
         if self.defer_attempt_draw_reveal(reference) {
@@ -443,7 +498,7 @@ impl Game {
             .checked_add(1)
             .capacity("attempt identity exhausted");
         self.state.cast_rollback = Some(Box::new(rollback));
-        self.state.last_attempt_outcome = None;
+        self.state.last_attempt_outcome[actor.index()] = None;
     }
     fn capture_attempt_origin(&mut self, action: &Action) {
         let (source, ability) = match *action {
@@ -515,6 +570,7 @@ impl Game {
             self.complete_cast_rollback_restore(
                 &current,
                 rollback.spell,
+                &rollback.library_moves,
                 &rollback.public_hand_cards,
                 &rollback.obscured_hand_cards,
                 &rollback.public_face_down,
@@ -531,12 +587,13 @@ impl Game {
         &mut self,
         current: &State,
         spell: CardId,
+        library_moves: &[FrozenLibraryObject],
         public_hand_cards: &[CardId],
         obscured_hand_cards: &[CardId],
         public_face_down: &[ObjectRef],
         obscured_face_down: &[ObjectRef],
     ) {
-        self.preserve_irreversible_cast_library_changes(current, spell);
+        self.preserve_irreversible_cast_library_changes(current, spell, library_moves);
         self.restore_public_hand_knowledge(current, public_hand_cards, obscured_hand_cards);
         self.restore_public_face_down(current, public_face_down, obscured_face_down);
         // A retained mana activation may have tapped a proposed blocker.
@@ -553,11 +610,9 @@ impl Game {
         {
             self.state.selected_blocks.clear();
         }
-        // Undone proposal triggers disappear; retain the original priority holder.
-        if self.state.resolving.is_none() && self.state.pending == Pending::Priority {
-            self.state_based_actions();
-            self.prepare_triggers();
-        }
+        // The caller releases deferred draw reveals before the ordinary
+        // post-action SBA/trigger pass. All simultaneous waiting triggers then
+        // enter the same ordering batch.
     }
     pub(super) fn clear_finished_cast_rollback(&mut self) {
         let Some(rollback) = self.state.cast_rollback.as_ref() else {
@@ -622,7 +677,7 @@ impl Game {
         }
         let mut rollback = self.state.cast_rollback.take().unwrap();
         if rollback.attempt_id != 0 {
-            self.state.last_attempt_outcome = Some(AttemptOutcomeView {
+            self.state.last_attempt_outcome[rollback.player.index()] = Some(AttemptOutcomeView {
                 attempt_id: rollback.attempt_id,
                 player: rollback.player,
                 source: rollback.source,
@@ -682,7 +737,7 @@ impl Game {
         retained: Vec<cast_rollback_mana::ManaEvent>,
     ) {
         if let Some(reason) = rollback.failure {
-            self.state.last_attempt_outcome = Some(AttemptOutcomeView {
+            self.state.last_attempt_outcome[rollback.player.index()] = Some(AttemptOutcomeView {
                 attempt_id: rollback.attempt_id,
                 player: rollback.player,
                 source: rollback.source,
@@ -696,43 +751,31 @@ impl Game {
         self.restore_attempt_parent(rollback, retained);
         self.release_attempt_draws(draws);
     }
-    fn preserve_irreversible_cast_library_changes(&mut self, current: &State, spell: CardId) {
-        let changed = current
-            .players
-            .iter()
-            .zip(&self.state.players)
-            .any(|(a, b)| {
-                a.library
-                    .iter()
-                    .filter(|&&id| id != spell)
-                    .ne(b.library.iter().filter(|&&id| id != spell))
-            })
-            || current.objects.iter().enumerate().any(|(id, o)| {
-                o.zone == Zone::Library
-                    && self
-                        .state
-                        .objects
-                        .get(id)
-                        .is_none_or(|old| old.zone != o.zone || old.generation != o.generation)
-            });
-        if !changed {
-            return;
-        }
+    fn preserve_irreversible_cast_library_changes(
+        &mut self,
+        current: &State,
+        spell: CardId,
+        library_moves: &[FrozenLibraryObject],
+    ) {
+        // Preserve library order and RNG even when a real shuffle produced
+        // the same permutation. Equality of the final list cannot undo entropy.
         // Library movements and shuffles cannot be undone. Preserve both
         // directions, including cards actually drawn during this attempt, with
         // their frozen incarnations. The proposed spell itself is the exception.
         // Silent zone commits never redispatch the undone proposal's observers.
-        let retained = current
-            .objects
+        let retained = library_moves
             .iter()
-            .enumerate()
-            .filter_map(|(id, o)| {
-                (id as CardId != spell
-                    && self.state.objects.get(id).is_some_and(|old| {
-                        (old.zone == Zone::Library || o.zone == Zone::Library)
-                            && (old.zone != o.zone || old.generation != o.generation)
-                    }))
-                .then_some((id as CardId, o.clone()))
+            .filter_map(|row| {
+                let id = row.card;
+                // A retained completed mana event can legitimately move this card
+                // again. Its newer incarnation has already been reconstructed.
+                (id != spell
+                    && self
+                        .state
+                        .objects
+                        .get(id as usize)
+                        .is_some_and(|old| old.generation < row.object.generation))
+                .then_some((id, row.clone()))
             })
             .collect::<Vec<_>>();
         let restored_spell = self
@@ -753,7 +796,8 @@ impl Game {
             .collect();
         self.capture_event_object_facts(before.iter());
         self.capture_source_quantities(before.iter());
-        for (id, object) in retained {
+        for (id, frozen) in retained {
+            let object = frozen.object;
             let before = self.object_view(id);
             if before.zone != object.zone {
                 self.commit_planned_zone_move(
@@ -769,18 +813,8 @@ impl Game {
             self.clear_copy_recipe(temporary);
             self.state.objects[id as usize] = object;
             let reference = self.object_ref(id);
-            let counters = live_counters::amounts(
-                &current.named_counters,
-                reference,
-                current.objects[id as usize].counters,
-            )
-            .to_owned();
-            self.set_counters(id, counters);
-            if let Some(recipe) = current.copy_recipes.as_ref().and_then(|rows| {
-                rows.iter()
-                    .find(|r| r.object == reference)
-                    .map(|r| r.recipe)
-            }) {
+            self.set_counters(id, frozen.counters);
+            if let Some(recipe) = frozen.recipe {
                 self.set_copy_recipe(reference, recipe);
             }
         }

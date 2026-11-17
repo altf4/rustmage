@@ -107,6 +107,7 @@ fn replacements<W: CharacteristicWorld + ?Sized>(
 /// Each addition can occur in any gap between the doublers. Collapse equivalent
 /// orders before carrying alternative life totals into projected funding.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[cfg(feature = "test-support")]
 pub(super) fn replacement_amounts<W: CharacteristicWorld + ?Sized>(
     world: &W,
     player: Player,

@@ -257,7 +257,7 @@ impl Game {
         let ability = attempt.ability;
         let turn = attempt.turn;
         let Some(reason) = reason else {
-            self.state.last_attempt_outcome = Some(AttemptOutcomeView {
+            self.state.last_attempt_outcome[player.index()] = Some(AttemptOutcomeView {
                 attempt_id: id,
                 player,
                 source,
@@ -271,7 +271,7 @@ impl Game {
         attempt.failure = Some(reason);
         self.finish_cast_rollback(false);
         if matches!(self.state.pending, Pending::ManaRollback { .. }) {
-            self.state.last_attempt_outcome = Some(AttemptOutcomeView {
+            self.state.last_attempt_outcome[player.index()] = Some(AttemptOutcomeView {
                 attempt_id: id,
                 player,
                 source,
@@ -350,7 +350,6 @@ impl Game {
         if attempt.attempt_id == 0 || !self.shares_information(viewer, attempt.player) {
             return None;
         }
-        let a = self.state.announcing.as_ref();
         let recovering = matches!(self.state.pending, Pending::ManaRollback { .. });
         let closed = self.attempt_mana_window_closed();
         Some(AttemptView {
@@ -358,11 +357,8 @@ impl Game {
             parent_attempt_id: attempt.parent.as_ref().map(|parent| parent.attempt_id),
             player: attempt.player,
             context: attempt.context,
-            source: a.and_then(|a| a.item.source.map(|source| source.object)),
-            ability: a.and_then(|a| match a.item.kind {
-                StackKind::ActivatedAbility { ability } => Some(ability),
-                _ => None,
-            }),
+            source: attempt.source,
+            ability: attempt.ability,
             stage: if recovering {
                 AttemptStage::Recover
             } else if !self.attempt_payment_boundary() {
@@ -372,7 +368,9 @@ impl Game {
             } else {
                 AttemptStage::GenerateMana
             },
-            locked_cost: self.current_attempt_cost().map(|(_, cost)| cost),
+            locked_cost: (!recovering)
+                .then(|| self.current_attempt_cost().map(|(_, cost)| cost))
+                .flatten(),
             mana_window_closed: closed,
             contributions_sealed: self.attempt_contributions_sealed(),
             can_end_mana_window: self.can_end_attempt_mana_window(),
@@ -385,7 +383,11 @@ impl Game {
     pub fn last_attempt_outcome_view(&self, viewer: Player) -> Option<AttemptOutcomeView> {
         self.state
             .last_attempt_outcome
+            .iter()
+            .flatten()
+            .copied()
             .filter(|outcome| self.shares_information(viewer, outcome.player))
+            .max_by_key(|outcome| outcome.attempt_id)
     }
 }
 

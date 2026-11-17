@@ -381,6 +381,7 @@ impl ManaTapReceipt {
         (output, options)
     }
 
+    #[cfg(feature = "test-support")]
     pub(super) fn visit(
         &self,
         production: Mana,
@@ -442,6 +443,7 @@ impl TapBonusChoice {
             + self.previous.as_ref().map_or(0, Pending::owned_bytes)
     }
 
+    #[cfg(feature = "test-support")]
     pub(super) fn visit_output(
         &self,
         production: Mana,
