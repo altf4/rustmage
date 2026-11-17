@@ -1226,3 +1226,52 @@ fn combat_prefixes_wait_for_complete_declarations_without_suffix_search() {
         }
     }
 }
+
+#[test]
+fn an_unpaid_counter_clause_can_enter_ordered_costs_after_the_mana_window() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let source = put(&mut game, player, "Sunstar Chaplain", Zone::Battlefield);
+        let target = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+        let original = game.object_ref(source);
+        game.state.players[player.index()].mana = [0; 6];
+        Game::reset_payment_planning_work();
+        act(
+            &mut game,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        act(&mut game, Action::EndManaWindow);
+        assert!(game.legal_actions().contains(&Action::BeginOrderedCosts));
+        act(&mut game, Action::BeginOrderedCosts);
+        let clause = game
+            .observe(player)
+            .cast_costs
+            .unwrap()
+            .clauses
+            .iter()
+            .position(|row| row.clause == CastCostClause::Additional && !row.paid)
+            .unwrap() as u16;
+        act(&mut game, Action::ChooseCastCost { clause });
+        act(&mut game, Action::SubmitAttempt);
+        let outcome = game.last_attempt_outcome_view(player).unwrap();
+        assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+        assert_eq!(
+            outcome.reason,
+            Some(AttemptFailureReason::UnsatisfiedMaterial)
+        );
+        assert_eq!(game.object_ref(source), original);
+        assert_eq!(game.counter_count(source, CounterKind::PlusOne), 0);
+        assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+        no_projection_work();
+    }
+}

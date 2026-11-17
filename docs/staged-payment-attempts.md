@@ -37,11 +37,15 @@ A menu return is not a Magic priority pass or a new state-based-action boundary.
 
 Material menus expose individual current candidates. Their partial selections may strand another unpaid clause. Fixed cardinalities, distinct names, craft subtype assignments, weighted requirements and source identities are checked against the supplied set. The engine does not enumerate all unused-object combinations to decide whether the prefix should be offered.
 
+Optional forage, teamwork, blight and behold declarations do not require their materials to exist before the mana window. `DeclareBargain { pay }` similarly declares the intent before material selection; existing `ChooseBargain { sacrifice }` actions remain provisional shortcuts for a currently eligible object. Actual payments still require valid complete selections. Any-number sacrifice declarations span the `u32` representation domain. Printed restrictions, such as Soul Immolation's greatest-toughness bound, remain declaration constraints.
+
+Crew and saddle selections have the same explicit window, submission and unpaid-reset controls. Finishing validates the actual selected power for every mana total. Their frames belong to one announcement context; a nested mana ability on the same permanent cannot inspect or reset its parent's selection. `BeginOrderedCosts` enters any initialized clause plan, including after explicit mana-window closure; it does not reopen the window.
+
 Conspire illustrates the distinction. `ChooseConspireObject { object }` stores a provisional first member without tapping it. The next prompt offers `PayConspire { objects }` pairs extending that member; the pair taps together when committed. A raw, fully supplied `PayConspire` pair can also be validated directly. Initial pair enumeration is not required.
 
 ## Submission, recovery and cancellation
 
-`SubmitAttempt` is not a general cancel or undo command. It is offered after this attempt's mana window is closed, and for an immediately witnessed unsatisfiable target declaration. Submission in a mana/contribution prompt seals the supplied contribution selection; it does not add another convoker, improviser, delver or mana allocation on the caller's behalf.
+`SubmitAttempt` is not a general cancel or undo command. It is offered after this attempt's mana window is closed, and for an immediately witnessed unsatisfiable mode or required-target declaration. Submission in a mana/contribution prompt seals the supplied contribution selection; it does not add another convoker, improviser, delver or mana allocation on the caller's behalf.
 
 The result is reported in `last_attempt_outcome`, with the attempt identity, player, source/ability where applicable, original turn, outcome and optional reason:
 

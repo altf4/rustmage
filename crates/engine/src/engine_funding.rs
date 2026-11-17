@@ -6630,68 +6630,13 @@ impl Game {
         if done {
             return true;
         }
-        // A public suppressed/linked provider may grant convoke only after an
-        // additional cost. Let that cost be paid first; selecting the mana clause
-        // still requires a complete payment with the grant actually available.
-        let deferred_convoke = !convoke
-            && announcement.item.kind == StackKind::Spell
-            && announcement
-                .item
-                .source
-                .is_some_and(|source| convoke::potential(self, source.card));
-        if (deferred_convoke
-            || delve::potential(self)
-            || announcement
-                .conspire
-                .as_deref()
-                .into_iter()
-                .flatten()
-                .any(|r| r.pay)
-            || announcement.additional_cost().is_some_and(|s| {
-                matches!(
-                    s.kind,
-                    EffectChoiceKind::BeholdMany(_) | EffectChoiceKind::BeholdAndExile
-                )
-            })
-            || announcement
-                .item
-                .cast
-                .is_some_and(|cast| cast.beheld == Some(true))
-            || announcement
-                .item
-                .cast
-                .is_some_and(|c| c.method.is_harmonize() || c.blight == Some(true))
-            || announcement.ordered_craft()
-            || announcement.nonmana_x()
-            || announcement
-                .sacrifice_discount_count()
-                .is_some_and(|count| count != 0)
-            || announcement
-                .additional_cost()
-                .is_some_and(|s| matches!(s.kind.payment_kind(), EffectChoiceKind::BlightCost(_)))
-            || announcement.has_compound_sneak_cost()
-            || announcement.item.cast.is_some_and(|cast| {
-                matches!(
-                    cast.method,
-                    CastMethod::WebSlinging | CastMethod::BeamMeUp | CastMethod::BeamMeUpGranted(_)
-                )
-            })
-            || announcement.additional_cost().is_some_and(|cost| {
-                cost.kind == EffectChoiceKind::ReturnTappedCreature
-                    || cost.kind.uses_target_mana_value()
-                    || evidence::threshold(cost).is_some()
-            })
-            || announcement.self_graveyard_cast_cost().is_some()
-            || announcement.has_ordered_life_cost()
-            || announcement.has_ordered_origin_payment()
-            || announcement.linked_origin_counter_cost().is_some()
-            || announcement
-                .additional_cost()
-                .is_some_and(|s| s.kind.additional_life_payment().is_some()))
-            && announcement
-                .cast_costs
-                .as_ref()
-                .is_some_and(|c| !c.mana_closed)
+        // Every initialized clause plan has an explicit entry. A mechanic
+        // whitelist can otherwise strand a locally admitted unpaid cost.
+        // Actual clause eligibility and mandatory ordering are checked below.
+        if announcement
+            .cast_costs
+            .as_ref()
+            .is_some_and(|costs| !costs.mana_closed)
             && emit(Action::BeginOrderedCosts)
         {
             return true;
