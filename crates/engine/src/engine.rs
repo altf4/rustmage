@@ -7521,8 +7521,7 @@ impl Game {
                 {
                     return true;
                 }
-                if tax != 0 && !s.selected_blocks.is_empty() && emit(Action::CancelBlockDeclaration)
-                {
+                if !s.selected_blocks.is_empty() && emit(Action::CancelBlockDeclaration) {
                     return true;
                 }
                 for (i, _) in s.objects.iter().enumerate() {
@@ -7533,10 +7532,7 @@ impl Game {
                         continue;
                     }
                     for attacker in &s.attackers {
-                        if self.can_block_pair(blocker, attacker.card)
-                            && self
-                                .minimum_block_declaration_with(blocker, attacker.card, tax != 0)
-                                .is_some_and(&mut fundable)
+                        if self.block_choice_admissible(blocker, attacker.card)
                             && emit(Action::Block {
                                 blocker,
                                 attacker: attacker.card,
