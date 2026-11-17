@@ -85,7 +85,7 @@ fn mixed_lot_keeps_only_red_with_its_original_restriction_and_rider() {
         assert_eq!(lots[0].restriction, ManaRestrictionView::CreatureSpells);
         assert_eq!(lots[0].spell_bonus, ManaSpellBonusView::Uncounterable);
         assert_eq!(lots[0].retention, ManaRetention::Step);
-        reject(&mut game, Action::AnnounceCast { card: instant });
+        admit(&game, Action::AnnounceCast { card: instant });
         cast(&mut game, creature, None);
         let spell = game.state.stack.last().unwrap().id;
         assert!(
