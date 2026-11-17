@@ -640,6 +640,7 @@ fn funding_payments(pool: [u128; 6], colored: Mana, generic: u32, mut emit: impl
 
 /// Enumerate in the same order as `funding_payments`, stopping when accepted.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[cfg(feature = "test-support")]
 fn visit_funding_payments(
     pool: [u128; 6],
     colored: Mana,
@@ -735,6 +736,7 @@ fn funding_allocations(
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[cfg(feature = "test-support")]
 fn concrete_payment(payment: [u64; 6]) -> Mana {
     payment.map(|n| u32::try_from(n).capacity("mana payment exhausted"))
 }
@@ -5763,52 +5765,13 @@ impl Game {
         world.set_cost_context(Some(&proposal));
         world.reachable(&goal, &mut HashSet::new())
     }
-    pub(super) fn sacrifice_discount_intervals(&self, a: &Announcement) -> Vec<XInterval> {
-        let mut intervals: Vec<XInterval> = Vec::new();
-        for count in 0..=self.sacrifice_discount_limit() {
-            if !self.sacrifice_discount_announcement_fundable(a, a.cost, count) {
-                continue;
-            }
-            if let Some(last) = intervals.last_mut()
-                && last.maximum.checked_add(1) == Some(count)
-            {
-                last.maximum = count;
-            } else {
-                intervals.push(XInterval {
-                    minimum: count,
-                    maximum: count,
-                });
-            }
-        }
-        intervals
-    }
-
-    fn sacrifice_discount_announcement_fundable(
-        &self,
-        a: &Announcement,
-        cost: Option<ManaCost>,
-        count: u32,
-    ) -> bool {
-        let mut proposal = a.clone();
-        if cost.is_some() {
-            proposal.cost = cost;
-        }
-        proposal.declare_sacrifice_discount_count(count);
-        let total =
-            self.provisional_target_cost(&proposal, Self::announcement_base_cost(&proposal));
-        proposal.total_cost = Some(total);
-        let definition = proposal
-            .item
-            .source
-            .expect("sacrifice discount source")
-            .card;
-        let convoke = convoke::cost_potential(self, definition);
-        proposal.initialize_cast_costs(convoke);
-        let goal = self.funding_goal(&proposal);
-        let mut world = FundingState::from_game_with_convoke(self, &goal, convoke);
-        world.set_purpose(self.purpose_for_item(&proposal.item));
-        world.set_payment_context(&proposal);
-        world.reachable(&goal, &mut HashSet::new())
+    pub(super) fn sacrifice_discount_intervals(&self, _a: &Announcement) -> Vec<XInterval> {
+        // "Any number" is a declaration, stored as u32. Materials may change
+        // during the later mana window; validate the supplied sacrifices then.
+        vec![XInterval {
+            minimum: 0,
+            maximum: u32::MAX,
+        }]
     }
 
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
@@ -6803,27 +6766,7 @@ impl Game {
         {
             return false;
         }
-        let goal = FundingGoal {
-            reserve: None,
-            actor: request.controller,
-            required: request.cost.colored,
-            generic: request.cost.generic,
-            source: None,
-        };
-        let mut state = FundingState::from_game(self, &goal);
-        state.set_purpose(mana_lots::Purpose::face_up(self, request.object));
-        if !manifest::face_up_prohibited(self, request.object)
-            && visit_funding_payments(
-                mana_lots::available(state.mana, &state.lots, state.live_mana_purpose()),
-                goal.required,
-                goal.generic,
-                |payment| {
-                    emit(Action::PayFaceUp {
-                        payment: concrete_payment(payment),
-                    })
-                },
-            )
-        {
+        if self.visit_special_mana_payments(emit) {
             return true;
         }
         self.visit_local_mana_abilities(emit)
@@ -6845,19 +6788,7 @@ impl Game {
         if !request.source_is_current(self) {
             return false;
         }
-        let goal = request.goal();
-        let mut world = FundingState::from_game(self, &goal);
-        world.set_purpose(mana_lots::Purpose::UnlockDoor);
-        if visit_funding_payments(
-            mana_lots::available(world.mana, &world.lots, world.live_mana_purpose()),
-            goal.required,
-            goal.generic,
-            |payment| {
-                emit(Action::PayRoomUnlock {
-                    payment: concrete_payment(payment),
-                })
-            },
-        ) {
+        if self.visit_special_mana_payments(emit) {
             return true;
         }
         self.visit_local_mana_abilities(emit)
@@ -6877,21 +6808,7 @@ impl Game {
         if !request.source_is_current(self) {
             return false;
         }
-        let goal = request.goal();
-        let state = FundingState::from_game(self, &goal);
-        if visit_funding_payments(
-            mana_lots::available(state.mana, &state.lots, state.live_mana_purpose()),
-            goal.required,
-            goal.generic,
-            |payment| {
-                let payment = concrete_payment(payment);
-                emit(if request.foretell {
-                    Action::PayForetell { payment }
-                } else {
-                    Action::PayPlot { payment }
-                })
-            },
-        ) {
+        if self.visit_special_mana_payments(emit) {
             return true;
         }
         self.visit_local_mana_abilities(emit)
@@ -6961,22 +6878,8 @@ impl Game {
         if !can_pay_life && request.choices.is_none() {
             return false;
         }
-        if request.route_selected() && can_pay_life && self.resolution_objects_ready(request) {
-            for goal in costs().map(goal_for) {
-                let state = FundingState::from_game(self, &goal);
-                if visit_funding_payments(
-                    mana_lots::available(state.mana, &state.lots, state.live_mana_purpose()),
-                    goal.required,
-                    goal.generic,
-                    |payment| {
-                        emit(Action::PayResolutionMana {
-                            payment: concrete_payment(payment),
-                        })
-                    },
-                ) {
-                    return true;
-                }
-            }
+        if self.visit_special_mana_payments(emit) {
+            return true;
         }
         if let Some(waterbend) = &request.waterbend {
             let payment = waterbend::TapPayment::waterbend(u64::from(waterbend.amount));
@@ -7325,21 +7228,16 @@ impl Game {
     }
     pub(super) fn visit_combat_tax_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let payment = self.state.combat_payment.as_ref().unwrap();
-        let goal = FundingGoal {
-            reserve: None,
-            actor: payment.player,
-            required: [0; 6],
-            generic: payment.generic,
-            source: None,
-        };
-        let state = FundingState::from_game(self, &goal);
-        if visit_funding_payments(
-            mana_lots::available(state.mana, &state.lots, state.live_mana_purpose()),
-            goal.required,
-            goal.generic,
-            |mana| emit(payment.payment_action(concrete_payment(mana))),
-        ) {
-            return true;
+        if let Some(domain) = self.mana_payment_domain() {
+            let mut stopped = false;
+            domain.representatives(|mana| {
+                if !stopped {
+                    stopped = emit(payment.payment_action(mana));
+                }
+            });
+            if stopped {
+                return true;
+            }
         }
         self.visit_local_mana_abilities(emit)
     }

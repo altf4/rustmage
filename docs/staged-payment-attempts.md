@@ -1,6 +1,6 @@
 # Staged payment attempts
 
-RustMage's action contract is `staged_attempts_v1`, with observation schema **226**. This is the default contract for every game. There is no configuration flag or retained guaranteed-completable menu mode. The C ABI remains version 1 and the JSON response envelope remains schema 2; neither identifies the meaning of an action menu. Consumers must check `observation.action_contract` and `observation.schema`.
+RustMage's action contract is `staged_attempts_v1`, with observation schema **227**. This is the default contract for every game. There is no configuration flag or retained guaranteed-completable menu mode. The C ABI remains version 1 and the JSON response envelope remains schema 2; neither identifies the meaning of an action menu. Consumers must check `observation.action_contract` and `observation.schema`.
 
 An action in `legal_actions()`, `LegalActionSpace.choices`, or `observation.actions` is an admissible **next choice**. It does not guarantee that later declarations and payments can finish. The caller chooses an execution; the engine validates its concrete steps against current state and existing declarations. The production admission, numeric-domain and payment paths do not explore alternate future payments, simulate mana abilities to discover future resources, or enumerate complete material subsets to filter the next prompt.
 
@@ -32,6 +32,8 @@ A menu return is not a Magic priority pass or a new state-based-action boundary.
 `x_choice.intervals` describes allowed declarations under rules and representation constraints. It is not a maximum-affordable-X calculation. Submit a concrete `ChooseX { value }`; large numeric domains use bounded representatives in the indexed menu, so use the raw action API for other represented values. Representation/capacity failures remain transactional API errors rather than proof that a different payment sequence is illegal.
 
 `mana_payment` retains its concrete allocation constraints. A six-vector must satisfy the actual colored, colorless, generic and available-mana requirements; restricted mana and provenance choices remain enforced. The removal of future funding proofs does not permit overspending the pool or paying the wrong color.
+
+`special_mana_payments` supplies the same complete allocation domains for face-up, Room unlock, plot, foretell and resolution payments. Each row names its action (`pay_face_up`, `pay_room_unlock`, `pay_plot`, `pay_foretell` or `pay_resolution_mana`) and `domain`; resolution can offer multiple printed mana alternatives. The field is omitted when empty and is visible only to the actor and players sharing their information. Domains require the current source, selected life/material components and eligible mana to be valid. Menus contain at most 64 representatives per domain; raw actions accept every allocation contained in the domain, including allocations absent from the menu. No domain searches future mana or material choices.
 
 Material menus expose individual current candidates. Their partial selections may strand another unpaid clause. Fixed cardinalities, distinct names, craft subtype assignments, weighted requirements and source identities are checked against the supplied set. The engine does not enumerate all unused-object combinations to decide whether the prefix should be offered.
 

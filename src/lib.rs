@@ -94,6 +94,7 @@ pub use rustmage_core::engine::{
     XChoiceView, XInterval, Zone, ZoneChange, ZoneReplacementChoiceView, ZoneReplacementKind,
     ZoneReplacementPickView, ZoneRevealView, ZoneSearchView,
 };
+pub use rustmage_core::engine::{ManaPaymentAction, ManaPaymentChoice};
 pub use rustmage_core::engine::{
     CopiedSagaLoreView, DamageDoublerView, LifeGainReplacement, LifeGainReplacementChoice,
     LifeGainReplacementEffect, ManaSplitChoiceView, MeldDepartureOrder, MeldOrderingChoice,
