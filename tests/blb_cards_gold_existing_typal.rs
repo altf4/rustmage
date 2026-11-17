@@ -41,6 +41,43 @@ fn activate(game: &mut Game, card: CardId) {
     );
 }
 
+fn choose_hybrid_activation_cost(game: &mut Game, source: CardId, cost: u16, payment: Mana) {
+    let actor = game.actor().unwrap();
+    let source_object = game.object_ref(source);
+    let choices = game.legal_actions();
+    for cost in [0, 1] {
+        assert!(choices.contains(&Action::ChooseActivationCost { cost }));
+    }
+
+    // Both declarations are admissible, but paying the other color cannot
+    // silently change the declared route or spend unavailable colored mana.
+    let mut wrong = game.clone();
+    act(&mut wrong, Action::ChooseActivationCost { cost: 1 - cost });
+    assert!(wrong.mana_payment_domain().is_none());
+    reject(&mut wrong, Action::PayCosts { payment });
+    act(&mut wrong, Action::EndManaWindow);
+    act(&mut wrong, Action::SubmitAttempt);
+    assert_eq!(
+        wrong.last_attempt_outcome_view(actor).unwrap().outcome,
+        AttemptOutcome::Failed
+    );
+    assert_eq!(wrong.object_ref(source), source_object);
+    assert_eq!(wrong.state.players[actor.index()].mana, payment);
+    assert!(wrong.state.stack.is_empty());
+
+    let action = Action::ChooseActivationCost { cost };
+    let mut indexed = game.clone();
+    let index = choices
+        .iter()
+        .position(|candidate| *candidate == action)
+        .unwrap();
+    indexed
+        .apply_index(actor, indexed.revision(), index)
+        .unwrap();
+    act(game, action);
+    assert_eq!(game.snapshot(), indexed.snapshot());
+}
+
 fn forage(game: &mut Game, route: ForageRoute, cards: &[CardId]) {
     act(game, Action::ChooseForageRoute { route });
     for &card in cards {
@@ -140,9 +177,7 @@ fn cindering_cutthroat_uses_opponent_life_loss_and_has_two_menace_payment_colors
         mana[5] = 1;
         game.state.players[player.index()].mana = mana;
         activate(&mut game, lizard);
-        choose(&mut game, |action| {
-            matches!(action, Action::ChooseActivationCost { .. })
-        });
+        choose_hybrid_activation_cost(&mut game, lizard, u16::from(color == 2), mana);
         act(&mut game, Action::PayCosts { payment: mana });
         idle(&mut game);
         assert!(game.keywords(lizard).contains(Keywords::MENACE));
@@ -205,9 +240,7 @@ fn mind_drill_gets_live_threshold_from_its_own_surveil_and_tidecaller_rechecks_t
     assert_eq!(stats(&game, mind), (2, 5));
     game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 2];
     activate(&mut game, mind);
-    choose(&mut game, |action| {
-        matches!(action, Action::ChooseActivationCost { .. })
-    });
+    choose_hybrid_activation_cost(&mut game, mind, 1, [0, 1, 0, 0, 0, 2]);
     act(
         &mut game,
         Action::PayCosts {
