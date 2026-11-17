@@ -1,10 +1,14 @@
 //! Staged payment admission and exact concrete payment validation.
 //! Future payment sequences are caller decisions, never action-menu proofs.
 use super::*;
-use crate::cards::{ManaCounterFollowup, ReplacementFilter, StaticAbilityFragment};
+#[cfg(feature = "test-support")]
+use crate::cards::ManaCounterFollowup;
+use crate::cards::{ReplacementFilter, StaticAbilityFragment};
 use ability_world::CharacteristicWorld;
+#[cfg(feature = "test-support")]
 use std::cell::RefCell;
 use std::collections::HashSet;
+#[cfg(feature = "test-support")]
 use std::rc::Rc;
 #[doc(hidden)]
 #[path = "engine_cast_cost_planning.rs"]
@@ -13,7 +17,9 @@ use cast_cost_planning::CostContext;
 #[doc(hidden)]
 #[path = "engine_funding_entries.rs"]
 pub mod funding_entries;
-use funding_entries::{EntryProjection, PaymentContinuation};
+use funding_entries::EntryProjection;
+#[cfg(feature = "test-support")]
+use funding_entries::PaymentContinuation;
 #[doc(hidden)]
 #[path = "engine_funding_entry_devour.rs"]
 mod entry_devour_projection;
@@ -62,6 +68,7 @@ impl Game {
     }
 }
 
+#[cfg(feature = "test-support")]
 type FundingManaActivation = (
     u16,
     &'static ActivatedAbility,
@@ -87,6 +94,7 @@ impl FundingGoal {
         self.generic != 0 || self.required.iter().any(|&amount| amount != 0)
     }
 
+    #[cfg(feature = "test-support")]
     fn reserves_source_tap(&self, object: ObjectRef) -> bool {
         self.source
             .as_ref()
@@ -171,8 +179,10 @@ pub(super) struct FundingState<'g> {
     cost_group: Option<(AdditionalCost, Vec<ObjectRef>)>,
     cast_costs: Option<Box<CostContext>>,
     entry_projection: Option<Box<EntryProjection>>,
+    #[cfg(feature = "test-support")]
     continuation: Option<Box<PaymentContinuation<'g>>>,
     /// One boolean query owns this cache; action enumeration worlds never do.
+    #[cfg(feature = "test-support")]
     continuation_memo: Option<Rc<ContinuationMemo>>,
     /// A projected completion removes only its resolved child from CR605.3c's
     /// active-instance chain; the real game's immutable active frames stay intact.
@@ -449,12 +459,14 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
 /// Permanent/card witnesses for a projected mana activation cost.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone)]
+#[cfg(feature = "test-support")]
 struct ExternalManaCost {
     selection: additional_costs::ManaCostObjects,
     kind: EffectChoiceKind,
     // Evidence may start with only a prefix. Keep its remaining choices lazy.
     exact: bool,
 }
+#[cfg(feature = "test-support")]
 impl ExternalManaCost {
     fn evidence(threshold: u64, prefix: &[ObjectRef], exact: bool) -> Self {
         Self {
@@ -479,6 +491,7 @@ impl ExternalManaCost {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone)]
+#[cfg(feature = "test-support")]
 struct FundingMove {
     resource: usize,
     ability: Option<u16>,
@@ -496,6 +509,7 @@ struct FundingMove {
     output: Option<Box<mana_output::ManaOutput>>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[cfg(feature = "test-support")]
 impl FundingMove {
     fn template_grant(&self) -> Option<ObjectRef> {
         let grantor = self.grantor?;
@@ -585,6 +599,7 @@ struct FundingKey {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Default)]
+#[cfg(feature = "test-support")]
 struct ContinuationMemo {
     visited: RefCell<HashSet<(usize, FundingKey)>>,
     exact: HashSet<CardId>,
@@ -610,6 +625,7 @@ fn payable<N: Copy + Into<u128>>(pool: [N; 6], required: Mana, generic: u32) -> 
 // Funding is counterfactual. Its pools can exceed the concrete mana storage
 // bound without overflowing an observation or excluding a mathematically legal plan.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[cfg(feature = "test-support")]
 fn funding_payments(pool: [u128; 6], colored: Mana, generic: u32, mut emit: impl FnMut([u64; 6])) {
     visit_funding_payments(pool, colored, generic, |payment| {
         emit(payment);
@@ -661,6 +677,7 @@ fn visit_funding_payments(
 }
 /// Exact equivalents of one mana ability, with duplicate physical allocations removed.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[cfg(feature = "test-support")]
 fn funding_cost_payments(
     pool: [u128; 6],
     cost: ActivationCost,
@@ -697,6 +714,7 @@ fn funding_cost_payments(
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[cfg(feature = "test-support")]
 fn funding_allocations(
     pool: [u128; 6],
     lots: &[mana_lots::Lot],
@@ -855,6 +873,7 @@ fn source_obligations(
 /// Overlapping resource/life/counter costs across abilities are deliberately
 /// counted independently: this can only overestimate what a legal path gains.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[cfg(feature = "test-support")]
 fn activation_gain_upper<'a>(
     ability: &ActivatedAbility,
     production: ManaProduction,
@@ -904,6 +923,7 @@ impl<'g> FundingState<'g> {
     // Paying costs can remove a negative modifier or change a scaling count.
     // Current power is not an upper bound on later production. Real moves still
     // evaluate exact borrowed-world power; only pruning uses this loose ceiling.
+    #[cfg(feature = "test-support")]
     fn potential_static_tap_mana(&self) -> impl Iterator<Item = ManaProduction> + '_ {
         self.static_sources()
             .iter()
@@ -956,6 +976,7 @@ impl<'g> FundingState<'g> {
                     }),
             )
     }
+    #[cfg(feature = "test-support")]
     fn production_upper(&self, production: ManaProduction) -> ManaProduction {
         match production.base() {
             ManaProduction::TapSourcePowerChoice { mask }
@@ -1050,9 +1071,11 @@ impl<'g> FundingState<'g> {
             }
         }
     }
+    #[cfg(feature = "test-support")]
     fn improvise_available(&self) -> bool {
         matches!(self.purpose, mana_lots::Purpose::Spell(spell) if improvise::available(self, self.actor, spell.card))
     }
+    #[cfg(feature = "test-support")]
     fn convoke_available(&self) -> bool {
         match self.purpose {
             mana_lots::Purpose::Spell(spell) => convoke::available(self, self.actor, spell.card),
@@ -1066,12 +1089,14 @@ impl<'g> FundingState<'g> {
         }
     }
 
+    #[cfg(feature = "test-support")]
     fn has_contributions(&self) -> bool {
         self.convoke_available()
             || self.improvise_available()
             || self.delve_available()
             || self.activation_tap_payment.is_some()
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn delve_available(&self) -> bool {
         matches!(self.purpose, mana_lots::Purpose::Spell(spell) if delve::available(self, self.actor, spell.card))
     }
@@ -1422,7 +1447,9 @@ impl<'g> FundingState<'g> {
             copy_recipes: game.state.copy_recipes.clone(),
             cast_costs: None,
             entry_projection: None,
+            #[cfg(feature = "test-support")]
             continuation: None,
+            #[cfg(feature = "test-support")]
             continuation_memo: None,
             active_mana_keys: None,
             cost_group: game
@@ -1546,6 +1573,7 @@ impl<'g> FundingState<'g> {
             // abilities consume fuel, including selected creature counters.
             result.set_payment_context(a);
         }
+        #[cfg(feature = "test-support")]
         if let Some(a) = game.state.announcing.as_ref()
             && goal
                 .source
@@ -1966,6 +1994,7 @@ impl<'g> FundingState<'g> {
         }
         keywords
     }
+    #[cfg(feature = "test-support")]
     fn guard_available(&self, guard: ActivationGuard, source: CardId, actor: Player) -> bool {
         match guard {
             ActivationGuard::OncePerIncarnation(guard) => {
@@ -2105,6 +2134,7 @@ impl<'g> FundingState<'g> {
             }),
         }
     }
+    #[cfg(feature = "test-support")]
     fn mana_activations(&self, id: CardId) -> impl Iterator<Item = FundingManaActivation> {
         let object = ability_world::CharacteristicWorld::object(self, id);
         object
@@ -2215,6 +2245,7 @@ impl<'g> FundingState<'g> {
         }
         false
     }
+    #[cfg(feature = "test-support")]
     fn visit_tap_mana_cost_groups(
         &self,
         spec: AdditionalCost,
@@ -2228,6 +2259,7 @@ impl<'g> FundingState<'g> {
         };
         self.visit_exact_mana_cost_groups(spec, source, amount as usize, prefix, excluded, emit)
     }
+    #[cfg(feature = "test-support")]
     fn visit_forage_mana_cost_groups(
         &self,
         source: ObjectRef,
@@ -2257,6 +2289,7 @@ impl<'g> FundingState<'g> {
             )
         })
     }
+    #[cfg(feature = "test-support")]
     fn visit_evidence_mana_cost_groups(
         &self,
         spec: AdditionalCost,
@@ -2334,6 +2367,7 @@ impl<'g> FundingState<'g> {
         )
     }
 
+    #[cfg(feature = "test-support")]
     fn visit_exact_mana_cost_groups(
         &self,
         spec: AdditionalCost,
@@ -3044,6 +3078,7 @@ impl<'g> FundingState<'g> {
         self.payment_departures
             .sort_by_key(|(object, _, _)| (object.card, object.generation));
     }
+    #[cfg(feature = "test-support")]
     fn apply(
         &mut self,
         step: &FundingMove,
@@ -3238,6 +3273,7 @@ impl<'g> FundingState<'g> {
         }
         (tap_bonus, tap_source)
     }
+    #[cfg(feature = "test-support")]
     fn project_mana_color_change(&mut self, output: &mana_output::ManaOutput, production: Mana) {
         let source = output.instance.source;
         if matches!(
@@ -3264,6 +3300,7 @@ impl<'g> FundingState<'g> {
             }
         }
     }
+    #[cfg(feature = "test-support")]
     fn project_mana_time_removal(&mut self, source: ObjectRef) {
         if self.reference(source.card) != source
             || self.object(source.card).zone != Zone::Battlefield
@@ -3278,6 +3315,7 @@ impl<'g> FundingState<'g> {
             live_counters::set(&mut self.named_counters, source, counters.named);
         }
     }
+    #[cfg(feature = "test-support")]
     fn add_funding_output(
         &mut self,
         step: &FundingMove,
@@ -3293,6 +3331,7 @@ impl<'g> FundingState<'g> {
             self.project_mana_color_change(output, production);
         }
     }
+    #[cfg(feature = "test-support")]
     fn visit_mana_counter_followup(
         mut self,
         followup: Option<(ObjectRef, ManaCounterFollowup)>,
@@ -3313,6 +3352,7 @@ impl<'g> FundingState<'g> {
             None => emit(&self),
         }
     }
+    #[cfg(feature = "test-support")]
     fn add_completed_mana(&mut self, production: Mana, quality: Option<mana_lots::Quality>) {
         for (pool, produced) in self.mana.iter_mut().zip(production) {
             *pool = pool
@@ -3323,6 +3363,7 @@ impl<'g> FundingState<'g> {
             mana_lots::add_lot(&mut self.lots, quality, production.map(u128::from));
         }
     }
+    #[cfg(feature = "test-support")]
     fn add_funding_tap_bonus(&mut self, bonus: &mana_tap_bonus::TapBonusOutput) {
         if bonus.total != [0; 6] {
             self.add_completed_mana(bonus.total, None);
@@ -3331,6 +3372,7 @@ impl<'g> FundingState<'g> {
             }
         }
     }
+    #[cfg(feature = "test-support")]
     fn completed_mana_fits(&self, production: Mana, tap_bonus: Mana) -> bool {
         self.mana
             .into_iter()
@@ -3343,6 +3385,7 @@ impl<'g> FundingState<'g> {
     }
     /// The ordinary fixed path adds to the already owned cost world directly.
     /// Dynamic choices keep a separate branch for every distinct concrete result.
+    #[cfg(feature = "test-support")]
     fn singleton_output(
         &self,
         step: &FundingMove,
@@ -3367,6 +3410,7 @@ impl<'g> FundingState<'g> {
         });
         if multiple { None } else { first }
     }
+    #[cfg(feature = "test-support")]
     fn visit_output(
         &self,
         step: &FundingMove,
@@ -3403,6 +3447,7 @@ impl<'g> FundingState<'g> {
             finish(step.production)
         }
     }
+    #[cfg(feature = "test-support")]
     fn projected_mana_split_capacity(&self, receipt: &mana_tap_bonus::ManaTapReceipt) -> Mana {
         let available = self
             .mana
@@ -3410,6 +3455,7 @@ impl<'g> FundingState<'g> {
         receipt.unreplaced_capacity(available)
     }
 
+    #[cfg(feature = "test-support")]
     fn visit_projected_mana_split(
         &self,
         split: crate::cards::ManaSplit,
@@ -3455,6 +3501,7 @@ impl<'g> FundingState<'g> {
             production[split.first.index()] != preferred && finish(production)
         })
     }
+    #[cfg(feature = "test-support")]
     fn key(&self, goal: &FundingGoal) -> FundingKey {
         // Attachment edges distinguish otherwise interchangeable mana sources.
         let linked = self
@@ -3817,6 +3864,7 @@ impl<'g> FundingState<'g> {
             },
         }
     }
+    #[cfg(feature = "test-support")]
     fn attached_to_opposing_permanent(&self, id: CardId) -> bool {
         self.object(id).attached_to.is_some_and(|recipient| {
             self.reference(recipient.card) == recipient
@@ -3824,6 +3872,7 @@ impl<'g> FundingState<'g> {
                 && self.object(recipient.card).controller != self.actor
         })
     }
+    #[cfg(feature = "test-support")]
     fn tap_mana_effects_upper(&self, fixed_control: bool) -> ([u128; 6], u128) {
         use crate::cards::StaticAbilityFragment::*;
         let mut bonus = [0u128; 6];
@@ -3899,6 +3948,7 @@ impl<'g> FundingState<'g> {
     /// Ignore guards, sickness, reservations and shared costs here, since those
     /// restrictions can only lower the amount attainable. Convoke is similarly
     /// overcounted alongside any mana the same creature might produce.
+    #[cfg(feature = "test-support")]
     fn total_mana_upper(&self) -> u128 {
         let mut total = self.mana.into_iter().fold(0u128, u128::saturating_add);
         // Bound each tap as though it could acquire basic-land characteristics
@@ -4059,6 +4109,7 @@ impl<'g> FundingState<'g> {
     // abilities. Count all possible production, ignoring guards and sickness;
     // each restriction we omit only raises this upper bound. No funding move
     // untaps a source, creates a permanent, restores counters or gains life.
+    #[cfg(feature = "test-support")]
     fn possible_color_upper(&self) -> [u128; 6] {
         let mut upper = self.mana;
         let (tap_bonus, tap_factor) = self.tap_mana_effects_upper(false);
@@ -4247,6 +4298,7 @@ impl<'g> FundingState<'g> {
     /// outputs once for quantity, and independently for each required color.
     /// Dynamic sources, entries and characteristic changes fall back to
     /// exact search. These bounds never remove mana lots or payment choices.
+    #[cfg(feature = "test-support")]
     fn fixed_mana_cannot_pay(&self, goal: &FundingGoal) -> bool {
         use crate::cards::{ReplacementSpec, StaticAbilityFragment};
         let purpose = self.payment_purpose(goal);
@@ -4607,6 +4659,7 @@ impl<'g> FundingState<'g> {
     /// A flexible producer can contribute to several individual color bounds,
     /// but it cannot produce its full amount for all those colors at once.
     /// Bound every subset of requested colors in a finite printed-mana world.
+    #[cfg(feature = "test-support")]
     fn joint_colors_possible(&self, goal: &FundingGoal) -> bool {
         let required_mask = goal
             .required
@@ -4757,6 +4810,7 @@ impl<'g> FundingState<'g> {
         true
     }
 
+    #[cfg(feature = "test-support")]
     fn optimistic(&self, goal: &FundingGoal) -> bool {
         // A payment can change which activated abilities a creature inherits,
         // so a bound built from the current inventory can miss a continuation.
@@ -5054,6 +5108,7 @@ impl<'g> FundingState<'g> {
             })
             >= u128::from(goal.generic)
     }
+    #[cfg(feature = "test-support")]
     fn convoke_masks(&self) -> [u64; 32] {
         let used = self
             .cast_costs
@@ -5061,6 +5116,7 @@ impl<'g> FundingState<'g> {
             .map_or(0, |context| context.tap_payment_used);
         self.contribution_masks(used)
     }
+    #[cfg(feature = "test-support")]
     fn contribution_masks(&self, tap_payment_used: usize) -> [u64; 32] {
         let ordinary = (self.convoke_available(), self.improvise_available());
         let mut masks = improvise::masks(self, self.actor, ordinary.0, ordinary.1, &[]);
@@ -5079,6 +5135,7 @@ impl<'g> FundingState<'g> {
         }
         masks
     }
+    #[cfg(feature = "test-support")]
     fn evidence_value(&self) -> u128 {
         // A mana payment may exile an existing graveyard card or create new
         // evidence by sacrificing a permanent. Read each exact virtual object
@@ -5098,6 +5155,7 @@ impl<'g> FundingState<'g> {
     }
     /// Final-purpose facts follow the speculative world, including subtype grants
     /// lost or gained while mana abilities are activated.
+    #[cfg(feature = "test-support")]
     fn payment_purpose(&self, goal: &FundingGoal) -> mana_lots::Purpose {
         if self.lots.is_empty() || !matches!(self.purpose, mana_lots::Purpose::Activation(_)) {
             return self.live_mana_purpose();
@@ -5136,6 +5194,7 @@ impl<'g> FundingState<'g> {
         let _ = visited;
         self.current_funding_obligations(goal)
     }
+    #[cfg(feature = "test-support")]
     fn reachable_with_evidence(
         &self,
         goal: &FundingGoal,
@@ -5155,6 +5214,7 @@ impl<'g> FundingState<'g> {
         let _ = (evidence, visited);
         self.current_funding_obligations(goal) && completion(self)
     }
+    #[cfg(feature = "test-support")]
     fn restore_payment_context(&mut self, parent: &Self) {
         self.purpose = parent.purpose;
         self.spell_lot_demand = parent.spell_lot_demand;
@@ -5266,6 +5326,7 @@ impl<'g> FundingState<'g> {
             found
         })
     }
+    #[cfg(feature = "test-support")]
     fn action(&self, step: &FundingMove) -> Action {
         let card = self.resources[step.resource].id;
         if let Some((_, grant_timestamp)) = step.self_grant {
@@ -5389,6 +5450,7 @@ impl Game {
         };
         FundingState::from_game(self, &goal).preview_entry_view(movement)
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn can_fund_cost_group(
         &self,
         goal: FundingGoal,
@@ -5417,6 +5479,7 @@ impl Game {
         state.cost_group = Some((spec, group.to_vec()));
         state.reachable(&goal, &mut HashSet::new())
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn can_fund_sacrifice_group(
         &self,
         goal: FundingGoal,
@@ -5525,6 +5588,7 @@ impl Game {
     }
     // Numeric funding fixtures use the default-purpose convenience wrapper;
     // runtime spell callers always provide their actual face purpose.
+    #[cfg(feature = "test-support")]
     pub(super) fn can_fund_convoke_for(
         &self,
         goal: FundingGoal,
@@ -5532,6 +5596,7 @@ impl Game {
     ) -> bool {
         self.can_fund_contributions_for(goal, purpose, true)
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn can_fund_contributions_for(
         &self,
         goal: FundingGoal,
@@ -5673,6 +5738,7 @@ impl Game {
         world.set_cost_context(Some(&proposal));
         world.reachable(&goal, &mut HashSet::new())
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn blight_x_cost_fundable(&self, a: &Announcement, cost: ManaCost, x: u32) -> bool {
         let mut proposal = a.clone();
         proposal.item.x = Some(x);
@@ -5890,6 +5956,249 @@ impl Game {
             | StackKind::SiegeDefeat => unreachable!(),
         }
     }
+    /// Validate only the resources committed by this concrete mana payment.
+    /// Separately ordered unpaid clauses are intentionally not considered.
+    pub(super) fn supplied_mana_costs_valid(&self, a: &Announcement) -> bool {
+        let mut goal = self.funding_goal(a);
+        if a.cast_costs.is_some() {
+            goal.reserve = None;
+        }
+        if a.ordered_craft() {
+            goal.source = None;
+        }
+        let mut world = FundingState::from_game(self, &goal);
+        world.set_payment_context(a);
+        if !world.obligations(&goal)
+            || !activation_counter_placement_payable(&world, &goal)
+            || !source_exile_payable(&world, &goal)
+            || !self.tap_contributors_valid(a)
+            || world
+                .contributors
+                .as_ref()
+                .is_some_and(|choice| !choice.complete || !choice.payable(&world))
+        {
+            return false;
+        }
+
+        let source_cost = goal
+            .source
+            .as_ref()
+            .map(|(object, index, _, definition, _)| (*object, definition.activation(*index)));
+        let mut taps = Vec::new();
+        let mut departures = Vec::new();
+        if let Some(choice) = &world.contributors {
+            taps.extend(choice.selected.iter().copied());
+        }
+        if let Some(frame) = &a.convoke {
+            taps.extend(frame.selected.iter().map(|choice| choice.object));
+            taps.extend(frame.improvised.iter().copied());
+            taps.extend(frame.substituted.iter().copied());
+            departures.extend(frame.delved.iter().copied());
+        }
+        if let Some((source, rules)) = source_cost {
+            if rules.cost.tap {
+                taps.push(source);
+            }
+            if let Some(grantor) = a.item.attached_activation_tap_cost() {
+                taps.push(grantor);
+            }
+            if rules.cost.sacrifice
+                || rules.cost.discard
+                || rules.cost.exile_self
+                || rules.origin == ActivationOrigin::GraveyardBottomLibrary
+            {
+                departures.push(source);
+            }
+            if a.convoke
+                .as_ref()
+                .is_some_and(|frame| frame.delved.contains(&source))
+                && (rules.cost.tap
+                    || rules.cost.sacrifice
+                    || rules.cost.discard
+                    || rules.cost.exile_self
+                    || rules.origin == ActivationOrigin::GraveyardBottomLibrary
+                    || rules.cost.remove.is_some()
+                    || rules.cost.loyalty.is_some()
+                    || rules.exerts()
+                    || rules.source_counter_cost().is_some())
+            {
+                return false;
+            }
+        }
+        if taps.iter().enumerate().any(|(i, r)| taps[..i].contains(r))
+            || departures
+                .iter()
+                .enumerate()
+                .any(|(i, r)| departures[..i].contains(r))
+        {
+            return false;
+        }
+
+        // Ordered additional costs commit in their own clause, not here.
+        let Some(mut spec) = a
+            .additional_cost()
+            .filter(|_| a.cast_costs.is_none() && !a.additional_paid)
+        else {
+            return true;
+        };
+        let source = a.item.source.expect("cost source").object;
+        let source_life = source_cost.map_or(0, |(_, rules)| rules.cost.life);
+        if a.additional_life || matches!(spec.kind, EffectChoiceKind::PayLife(_)) {
+            return spec.kind.additional_life_payment().is_some_and(|life| {
+                self.state.players[a.item.controller.index()].life
+                    >= i128::from(source_life) + i128::from(life)
+            });
+        }
+        if spec.kind == EffectChoiceKind::DiscardHand {
+            return true;
+        }
+        if let Some(requirement) = spec.kind.counter_requirement() {
+            let selected = a
+                .creature_counter_cost
+                .as_deref()
+                .map_or(&[][..], Vec::as_slice);
+            if selected.len() != usize::from(requirement.amount) {
+                return false;
+            }
+            return selected.iter().enumerate().all(|(i, &(object, kind))| {
+                if !additional_costs::counter_cost_bearer(
+                    self,
+                    a.item.controller,
+                    object,
+                    requirement.bearer_kinds,
+                ) || requirement.kind.is_some_and(|required| kind != required)
+                {
+                    return false;
+                }
+                let reserved = source_cost
+                    .filter(|(r, _)| *r == object)
+                    .map_or(0, |(_, rules)| {
+                        a.counter_payment.get(kind).saturating_add(
+                            rules
+                                .cost
+                                .loyalty
+                                .filter(|change| *change < 0 && kind == CounterKind::Loyalty)
+                                .map_or(0, |change| u64::from(change.unsigned_abs())),
+                        )
+                    });
+                let used = selected[..=i]
+                    .iter()
+                    .filter(|&&(r, k)| r == object && k == kind)
+                    .count() as u64;
+                self.counter_amounts(object.card)
+                    .get(kind)
+                    .saturating_sub(reserved)
+                    >= used
+                    && a.convoke
+                        .as_ref()
+                        .is_none_or(|frame| !frame.delved.contains(&object))
+            });
+        }
+        let mut selected = a.additional_group.as_deref().map_or_else(
+            || a.additional.into_iter().collect::<Vec<_>>(),
+            |group| group.to_vec(),
+        );
+        if forage::is_forage_cost(spec) {
+            let Some(forage) = a.forage.as_ref().filter(|choice| choice.complete()) else {
+                return false;
+            };
+            let Some(route) = forage.route else {
+                return false;
+            };
+            let Some((cost, amount)) = route.mana_cost() else {
+                return route == ForageRoute::Black;
+            };
+            if forage.selected.len() != amount {
+                return false;
+            }
+            spec = cost;
+            selected = forage.selected.clone();
+            if selected.iter().enumerate().any(|(i, &r)| {
+                selected[..i].contains(&r)
+                    || !self.additional_candidate(spec, a.item.controller, source, r)
+            }) {
+                return false;
+            }
+        } else if let Some(threshold) = evidence::threshold(spec) {
+            let Some(evidence) = a.evidence.as_ref().filter(|choice| choice.complete) else {
+                return false;
+            };
+            selected = evidence.selected.clone();
+            if selected.iter().enumerate().any(|(i, &r)| {
+                selected[..i].contains(&r)
+                    || !additional_costs::graveyard_exile_card_matches(
+                        self,
+                        a.item.controller,
+                        r,
+                        None,
+                    )
+            }) || selected
+                .iter()
+                .map(|r| u128::from(self.state.objects[r.card as usize].card.fixed_mana_value()))
+                .sum::<u128>()
+                < u128::from(threshold)
+            {
+                return false;
+            }
+        } else if !self.additional_selection_valid(spec, a.item.controller, source, &selected, true)
+        {
+            return false;
+        }
+        let kind = spec.kind.payment_kind();
+        let taps_external = matches!(kind, EffectChoiceKind::TapPermanents(_));
+        let nonmoving = taps_external
+            || matches!(
+                kind,
+                EffectChoiceKind::Behold
+                    | EffectChoiceKind::BeholdMany(_)
+                    | EffectChoiceKind::BlightCost(_)
+            );
+        if taps_external && selected.iter().any(|r| taps.contains(r)) {
+            return false;
+        }
+        if !nonmoving && selected.iter().any(|r| departures.contains(r)) {
+            return false;
+        }
+        if let Some((source, rules)) = source_cost {
+            // The source payment precedes sacrifice/return/evidence/forage;
+            // other additional costs precede the source payment.
+            let source_first = matches!(
+                kind,
+                EffectChoiceKind::Sacrifice
+                    | EffectChoiceKind::SacrificeRange { .. }
+                    | EffectChoiceKind::SacrificeDifferentNames(_)
+                    | EffectChoiceKind::SacrificePermanents(_)
+                    | EffectChoiceKind::ReturnToHand
+            ) || forage::is_forage_cost(a.additional_cost().unwrap())
+                || evidence::threshold(a.additional_cost().unwrap()).is_some();
+            if selected.contains(&source) {
+                let source_departs = rules.cost.sacrifice
+                    || rules.cost.discard
+                    || rules.cost.exile_self
+                    || rules.origin == ActivationOrigin::GraveyardBottomLibrary;
+                let source_required = rules.cost.tap
+                    || source_departs
+                    || rules.cost.remove.is_some()
+                    || rules.cost.loyalty.is_some()
+                    || rules.exerts()
+                    || rules.source_counter_cost().is_some();
+                if source_first && source_departs || !source_first && !nonmoving && source_required
+                {
+                    return false;
+                }
+            }
+        }
+        // Delve happens before an external cost; an exiled object cannot also
+        // pay that later cost even when the two filters independently match.
+        if a.convoke
+            .as_ref()
+            .is_some_and(|frame| selected.iter().any(|r| frame.delved.contains(r)))
+        {
+            return false;
+        }
+        true
+    }
+
     /// Complete coupled allocation constraints after every nonmana selection.
     pub fn mana_payment_domain(&self) -> Option<ManaPaymentDomain> {
         if matches!(
@@ -5918,6 +6227,9 @@ impl Game {
             return None;
         }
         let a = self.state.announcing.as_ref()?;
+        if !self.supplied_mana_costs_valid(a) {
+            return None;
+        }
         if a.cast_costs.as_ref().is_some_and(|c| {
             c.mana_closed
                 && c.active
@@ -5946,20 +6258,6 @@ impl Game {
             )
         } else {
             let goal = self.funding_goal(a);
-            let mut state = FundingState::from_game(self, &goal);
-            state.mark_mana_clause_paid();
-            if !state.obligations(&goal)
-                || !state.cost_group_ready()
-                || !state
-                    .contributors
-                    .as_ref()
-                    .is_none_or(|c| c.payable(&state))
-                || !activation_counter_placement_payable(&state, &goal)
-                || !source_exile_payable(&state, &goal)
-                || a.cast_costs.is_none() && a.evidence.as_ref().is_some_and(|e| !e.complete)
-            {
-                return None;
-            }
             cast_origins::payment_requirements(
                 self,
                 a.item.controller,
@@ -5974,6 +6272,7 @@ impl Game {
             generic,
         })
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn discard_or_life_route_fundable(&self, announcement: &Announcement) -> bool {
         let mut proposal = announcement.clone();
         proposal.additional_life = true;
@@ -6026,6 +6325,7 @@ impl Game {
         }
         self.mana_total_parent_fundable(&child, payment)
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn activation_total_fundable(&self, candidate: &Announcement) -> bool {
         self.activation_packet_fundable(candidate)
             && (candidate.production.is_none() || self.mana_total_parent_fundable(candidate, None))
@@ -6069,6 +6369,7 @@ impl Game {
         world.set_payment_context(candidate);
         world.current_funding_obligations(&goal)
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn activation_packet_fundable(&self, candidate: &Announcement) -> bool {
         self.activation_packet_admissible(candidate)
     }
@@ -6079,6 +6380,7 @@ impl Game {
             .cost_options()
             .any(|cost| self.announcement_cost_fundable(&proposal, cost))
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn waterbend_spell_total_fundable(
         &self,
         announcement: &Announcement,
@@ -6110,6 +6412,7 @@ impl Game {
         let candidate = self.payment_announcement(packet.clone(), counters, Some(production), None);
         self.activation_packet_admissible(&candidate)
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn mana_packet_fundable(
         &self,
         packet: &SpellView,
@@ -6118,6 +6421,7 @@ impl Game {
     ) -> bool {
         self.mana_packet_admissible(packet, counters, production)
     }
+    #[cfg(feature = "test-support")]
     fn mana_cost_routes_fundable(
         &self,
         candidate: Announcement,
@@ -6131,6 +6435,7 @@ impl Game {
                 .mana_activation_key()
                 .is_none_or(|key| !self.active_mana_activation_keys().contains(&key))
     }
+    #[cfg(feature = "test-support")]
     fn deferred_mana_fundable(
         &self,
         candidate: &Announcement,
@@ -6227,6 +6532,7 @@ impl Game {
         }
         false
     }
+    #[cfg(feature = "test-support")]
     fn visit_deferred_indexed_mana(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         self.visit_local_mana_abilities(emit)
     }
@@ -6250,7 +6556,7 @@ impl Game {
             && let Some(domain) = self.mana_payment_domain()
         {
             domain.representatives(|payment| {
-                if !done && self.mana_parent_fundable(announcement.additional, Some(payment)) {
+                if !done {
                     done = emit(Action::PayCosts { payment });
                 }
             });
@@ -6613,6 +6919,7 @@ impl Game {
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[cfg(feature = "test-support")]
 type CounterCostFundingKey = (FundingKey, Vec<(ObjectRef, CounterKind, u64, bool)>);
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -6711,6 +7018,7 @@ impl FundingState<'_> {
     }
     /// A mana window consisting only of taps and mana production cannot
     /// increase the number of counters on permanents the payer controls.
+    #[cfg(feature = "test-support")]
     fn fixed_counter_cost_deficit(
         &self,
         requirement: CounterCostRequirement,
@@ -6816,6 +7124,7 @@ impl FundingState<'_> {
         }
         true
     }
+    #[cfg(feature = "test-support")]
     fn fund_counter_cost(
         &self,
         goal: &FundingGoal,
@@ -6923,6 +7232,7 @@ impl Game {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    #[cfg(feature = "test-support")]
     pub(super) fn self_graveyard_announcement_fundable(
         &self,
         a: &Announcement,
@@ -6964,6 +7274,7 @@ impl FundingState<'_> {
     /// This paid child will commit before its parent resumes. Carry only that
     /// activation's use receipt into the virtual completion world; its costs
     /// and output domain have already been evaluated in the post-cost world.
+    #[cfg(feature = "test-support")]
     fn project_paid_mana_use(&mut self, item: &SpellView) {
         if item.is_copy {
             return;
@@ -7004,6 +7315,7 @@ impl FundingState<'_> {
 
     /// Costs and entry choices already belong to this world. Add only the
     /// actual post-cost receipt output and completed use; never replay payment.
+    #[cfg(feature = "test-support")]
     pub(super) fn visit_paid_mana_output(
         &self,
         a: &Announcement,
@@ -7072,6 +7384,7 @@ impl FundingState<'_> {
             emit(self)
         }
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn paid_mana_parent_fundable(&self, a: &Announcement) -> bool {
         if let Some(parent) = self
             .game
@@ -7093,6 +7406,7 @@ impl FundingState<'_> {
                 .is_none_or(|pending| self.guided_mana_resume_fundable(pending))
         }
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn guided_mana_resume_fundable(&self, pending: &Pending) -> bool {
         let Some(goal) = self.game.guided_mana_goal(pending) else {
             return true;
@@ -7155,6 +7469,7 @@ impl Game {
             source: None,
         })
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn paid_mana_parent_world<'g>(&'g self, a: &'g Announcement) -> FundingState<'g> {
         if let Some((parent, outer)) = self
             .state
@@ -7206,6 +7521,7 @@ impl Game {
             world
         }
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn mana_output_parent_goal(&self) -> Option<FundingGoal> {
         let a = self.state.announcing.as_ref()?;
         let output = a.mana_output.as_ref()?;
@@ -7222,6 +7538,7 @@ impl Game {
             })
     }
 
+    #[cfg(feature = "test-support")]
     pub(super) fn mana_split_output_may_fund(&self, upper: Mana) -> bool {
         let Some(a) = self.state.announcing.as_ref() else {
             return false;

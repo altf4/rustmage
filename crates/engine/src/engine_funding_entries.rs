@@ -5,13 +5,16 @@ use ability_world::CharacteristicWorld;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone)]
+#[cfg(feature = "test-support")]
 pub(super) struct PaymentContinuation<'g> {
     head: &'g Announcement,
     pub(super) outer: &'g [mana_announcements::ManaAnnouncement],
     quality: Option<&'g mana_lots::Quality>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[cfg(feature = "test-support")]
 impl PaymentContinuation<'_> {
+    #[cfg(feature = "test-support")]
     pub(super) fn selects(&self, id: CardId) -> bool {
         self.head
             .additional
@@ -2433,6 +2436,7 @@ impl FundingState<'_> {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    #[cfg(feature = "test-support")]
     pub(in crate::engine) fn cast_entry_action_fundable(&self, action: &Action) -> bool {
         // Entry/replacement visitors validate the actual choice. A completed
         // mana ability must finish even if this choice strands its parent.
@@ -2451,6 +2455,7 @@ impl Game {
             .as_ref()
             .is_none_or(|a| self.activation_packet_admissible(a))
     }
+    #[cfg(feature = "test-support")]
     fn projected_cast_entries_fundable(&self, action: Option<&Action>) -> bool {
         let _ = action;
         self.current_cast_costs_fundable()
@@ -2459,6 +2464,7 @@ impl Game {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl<'g> FundingState<'g> {
+    #[cfg(feature = "test-support")]
     pub(super) fn visit_mana_source_counter_placement(
         &self,
         object: ObjectRef,
@@ -2699,6 +2705,7 @@ impl<'g> FundingState<'g> {
             },
         )
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn visit_mana_cost_departures(
         &self,
         source: ObjectRef,
@@ -2762,6 +2769,7 @@ impl<'g> FundingState<'g> {
             self.visit_linked_returns(&mut after_source)
         }
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn continuation_memo_safe(&self) -> bool {
         // An initial copy profile is immutable for this query, just like its
         // Game's rule tables. Changed recipes and projected entries still need
@@ -2782,6 +2790,7 @@ impl<'g> FundingState<'g> {
                     })
                 })
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn scoped_continuation_query(&self) -> Option<Self> {
         if self.continuation_memo.is_some()
             || self.continuation.is_none()
@@ -2839,6 +2848,7 @@ impl<'g> FundingState<'g> {
         query.continuation_memo = Some(Rc::new(memo));
         Some(query)
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn set_funding_continuation(
         &mut self,
         head: &'g Announcement,
