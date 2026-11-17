@@ -257,7 +257,7 @@ fn renew_keyword_counter_batches_and_sage_add_before_double() {
         let source = put(&mut g, p, name, Zone::Graveyard);
         g.state.players[p.index()].mana = [0; 6];
         admit(
-            &mut g,
+            &g,
             Action::AnnounceActivate {
                 card: source,
                 ability: 0,
@@ -864,7 +864,7 @@ fn krumar_chosen_x_pays_life_mana_and_tap_then_chooses_counters_or_sized_spirit(
                 counter_payment: Counters::default(),
             },
         );
-        admit(&mut g, Action::ChooseX { value: 4 });
+        admit(&g, Action::ChooseX { value: 4 });
         act(&mut g, Action::ChooseX { value: 3 });
         pay(&mut g);
         if matches!(g.state.pending, Pending::CastCosts { .. }) {
@@ -963,7 +963,7 @@ fn herd_heirloom_creature_restricted_mana_and_temporary_trample_draw_ability() {
         |a| matches!(a,Action::ActivateMana {card,production,..}if *card==heirloom&&*production==[0,1,0,0,0,0]),
     );
     let noncreature = put(&mut g, p, "Opt", Zone::Hand);
-    admit(&mut g, Action::AnnounceCast { card: noncreature });
+    admit(&g, Action::AnnounceCast { card: noncreature });
     let mut restricted = g.clone();
     act(&mut restricted, Action::AnnounceCast { card: noncreature });
     reject(
@@ -1432,7 +1432,7 @@ fn molten_exhale_requires_behold_for_flash_and_deals_four() {
         let source = candidate(&mut g, p, "Molten Exhale", Zone::Hand);
         let witness = if flash {
             g.state.active = p.other();
-            admit(&mut g, Action::AnnounceCast { card: source });
+            admit(&g, Action::AnnounceCast { card: source });
             let mut missing = g.clone();
             act(&mut missing, Action::AnnounceCast { card: source });
             reject(&mut missing, Action::ChooseCastBehold { pay: false });
@@ -1621,7 +1621,7 @@ fn natures_rhythm_harmonize_preserves_chosen_x_as_mana_value_bound() {
             // remain mandatory even when four total mana are available.
             for greens in [0, 1] {
                 g.state.players[p.index()].mana = [0, 0, 0, 0, greens, 4 - greens];
-                admit(&mut g, Action::AnnounceCast { card: source });
+                admit(&g, Action::AnnounceCast { card: source });
                 let mut missing_green = g.clone();
                 act(&mut missing_green, Action::AnnounceCast { card: source });
                 act(&mut missing_green, Action::ChooseX { value: 2 });
@@ -2371,7 +2371,7 @@ fn hardened_tactician_sacrifices_creature_or_noncreature_token_and_draws_exactly
         assert_eq!(g.hand_count(p), hand + 1);
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
         admit(
-            &mut g,
+            &g,
             Action::AnnounceActivate {
                 card: source,
                 ability: 0,
@@ -2454,7 +2454,7 @@ fn highspire_reduces_only_the_exact_second_spell_generic_component() {
     drain(&mut g);
     let source = put(&mut g, p, "Grizzly Bears", Zone::Hand);
     g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
-    admit(&mut g, Action::AnnounceCast { card: source });
+    admit(&g, Action::AnnounceCast { card: source });
     g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 0];
     cast(&mut g, source, None);
     drain(&mut g);

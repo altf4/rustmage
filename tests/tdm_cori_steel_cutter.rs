@@ -159,7 +159,7 @@ fn paid_equip_moves_bonuses_and_obeys_controller_timing_payment_and_incarnation(
         counter_payment: Counters::default(),
     };
     g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
-    admit(&mut g, announce.clone());
+    admit(&g, announce.clone());
     let mut unpaid = g.clone();
     act(&mut unpaid, announce.clone());
     act(

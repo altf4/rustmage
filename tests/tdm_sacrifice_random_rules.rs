@@ -365,7 +365,7 @@ fn nonmana_x_preserves_sorcery_sickness_tap_control_and_sacrifice_prohibition() 
         reject(&mut bad, activate(source));
     }
     let block = put(&mut g, Player::P0, "Ghost Vacuum", Zone::Battlefield);
-    admit(&mut g, activate(source));
+    admit(&g, activate(source));
     let mut prohibited = g.clone();
     act(&mut prohibited, activate(source));
     act(&mut prohibited, Action::ChooseX { value: 1 });
@@ -661,7 +661,7 @@ fn random_graveyard_normal_spell_cost_allows_nonzero_printed_x_and_rejects_unfun
     settle(&mut g);
     let card = exiled(&g, &cards)[0];
     g.state.players[0].mana = [0; 6];
-    admit(&mut g, Action::AnnounceExile { card });
+    admit(&g, Action::AnnounceExile { card });
     let mut unpaid = g.clone();
     act(&mut unpaid, Action::AnnounceExile { card });
     act(&mut unpaid, Action::ChooseX { value: 4 });
@@ -851,7 +851,7 @@ fn nonmana_x_full_proposal_can_gain_its_only_sacrifice_witness_from_a_taxed_mana
     );
     let target = put(&mut g, Player::P0, "Vampire Nighthawk", Zone::Graveyard);
     g.state.players[0].mana = [0; 6];
-    admit(&mut g, activate(source));
+    admit(&g, activate(source));
     let material = put(&mut g, Player::P0, "Bear Cub", Zone::Exile);
     g.state.exile_links.push(ExileLink {
         source: g.object_ref(producer),
@@ -861,7 +861,7 @@ fn nonmana_x_full_proposal_can_gain_its_only_sacrifice_witness_from_a_taxed_mana
     });
     let mut no_window = g.clone();
     no_window.move_object(tax, Zone::Graveyard);
-    admit(&mut no_window, activate(source));
+    admit(&no_window, activate(source));
     // The same mana ability remains legal before the nonmana announcement.
     act(
         &mut no_window,

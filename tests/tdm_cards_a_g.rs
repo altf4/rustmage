@@ -166,7 +166,7 @@ fn renew_timing_wrong_zone_and_unaffordable_costs_are_atomic() {
         put(&mut g, Player::P1, "Bear Cub", Zone::Battlefield);
         g.state.players[0].mana = [0; 6];
         admit(
-            &mut g,
+            &g,
             Action::AnnounceActivate {
                 card: source,
                 ability: 0,
@@ -554,7 +554,7 @@ fn lands_cori_mountain_monastery_pays_three_red_taps_and_authorizes_paid_spell_o
             if name == "Mountain" {
                 act(&mut g, Action::PlayLand { card: top });
             } else {
-                admit(&mut g, Action::AnnounceExile { card: top });
+                admit(&g, Action::AnnounceExile { card: top });
                 g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 1];
                 act(&mut g, Action::AnnounceExile { card: top });
                 pay(&mut g);
@@ -881,7 +881,7 @@ fn spells_caustic_exhale_beholds_hand_or_permanent_or_pays_one_and_gives_minus_t
     let spell = authored_spell(&mut g, Player::P0, "Caustic Exhale", Zone::Hand);
     let target = put(&mut g, Player::P1, "Bear Cub", Zone::Battlefield);
     g.state.players[0].mana = [0, 0, 1, 0, 0, 0];
-    admit(&mut g, Action::AnnounceCast { card: spell });
+    admit(&g, Action::AnnounceCast { card: spell });
     act(&mut g, Action::AnnounceCast { card: spell });
     act(&mut g, Action::ChooseCastBehold { pay: false });
     act(
@@ -2830,7 +2830,7 @@ fn candidates_abzan_devotee_returns_only_its_exact_graveyard_incarnation_after_t
             g.state.priority = p;
             g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 1];
             admit(
-                &mut g,
+                &g,
                 Action::AnnounceActivate {
                     card: source,
                     ability: 1,
@@ -2934,7 +2934,7 @@ fn candidates_arashin_sunshield_pays_white_and_tap_to_tap_either_players_creatur
             reject(&mut g, announce.clone());
             g.state.objects[source as usize].summoning_sick = false;
             g.state.players[p.index()].mana = [0; 6];
-            admit(&mut g, announce);
+            admit(&g, announce);
             g.state.players[p.index()].mana = one_mana(0);
             activate_target(&mut g, source, 0, target);
             assert!(g.object_view(source).tapped);
@@ -3512,7 +3512,7 @@ fn candidates_equilibrium_adept_exile_permission_requires_mana_lasts_to_next_own
             assert!(!stale.can_play_exiled(p, top));
             if cast_now {
                 g.state.players[p.index()].mana = [0; 6];
-                admit(&mut g, Action::AnnounceExile { card: top });
+                admit(&g, Action::AnnounceExile { card: top });
                 g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 1];
                 act(&mut g, Action::AnnounceExile { card: top });
                 pay(&mut g);
@@ -5408,7 +5408,7 @@ fn special_dragonbroods_relic_mana_requires_source_and_distinct_untapped_owned_c
                 counter_payment: Counters::default(),
                 production: one_mana(color),
             };
-            admit(&mut g, action.clone());
+            admit(&g, action.clone());
             let creature = put(&mut g, p, "Bear Cub", Zone::Battlefield);
             g.state.objects[creature as usize].summoning_sick = true;
             let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
@@ -5455,7 +5455,7 @@ fn special_animated_relic_cannot_pay_both_its_own_tap_and_additional_creature_ta
             counter_payment: Counters::default(),
             production: one_mana(0),
         };
-        admit(&mut g, action.clone());
+        admit(&g, action.clone());
         let creature = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         act(&mut g, action);
         let object = g.object_ref(source);
