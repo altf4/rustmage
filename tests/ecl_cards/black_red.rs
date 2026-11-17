@@ -84,6 +84,18 @@ fn reject(g: &mut Game, a: Action) {
     assert!(g.apply(g.actor().unwrap(), a).is_err());
     assert_eq!(g.snapshot(), before);
 }
+fn fail_current_payment(g: &mut Game, reason: AttemptFailureReason) {
+    let player = g.actor().unwrap();
+    if g.attempt_view(player).unwrap().can_end_mana_window {
+        checked(g, Action::EndManaWindow);
+    }
+    assert!(g.attempt_view(player).unwrap().mana_window_closed);
+    checked(g, Action::SubmitAttempt);
+    let outcome = g.last_attempt_outcome_view(player).unwrap();
+    assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+    assert_eq!(outcome.reason, Some(reason));
+    assert!(g.state.announcing.is_none());
+}
 fn settle(g: &mut Game) {
     g.prepare_triggers();
     for _ in 0..100 {
@@ -2917,7 +2929,27 @@ fn flamebraider_restriction_survives_producer_departure_and_pays_elemental_spell
         g.state.players[p.index()].mana = [0; 6];
         flamebraider_mana(&mut g, source, [1, 0, 0, 1, 0, 0]);
         let wrong = named(&mut g, p, "Lightning Bolt", Zone::Hand);
-        reject(&mut g, Action::AnnounceCast { card: wrong });
+        let wrong_ref = g.object_ref(wrong);
+        let source_ref = g.object_ref(source);
+        checked(&mut g, Action::AnnounceCast { card: wrong });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        reject(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        fail_current_payment(&mut g, AttemptFailureReason::UnsatisfiedMana);
+        assert_eq!(g.object_ref(wrong), wrong_ref);
+        assert_eq!(g.object_view(wrong).zone, Zone::Hand);
+        assert_eq!(g.object_ref(source), source_ref);
+        assert!(g.object_view(source).tapped);
+        assert_eq!(g.state.players[p.index()].mana, [1, 0, 0, 1, 0, 0]);
         g.move_object(source, Zone::Exile);
         let right = named(&mut g, p, "Flamebraider", Zone::Hand);
         cast(&mut g, right);
@@ -3341,7 +3373,24 @@ fn two_behold_creatures_pay_with_permanents_or_private_hand_cards_and_offer_the_
             let mut mana = [0; 6];
             mana[color] = 1;
             g.state.players[p.index()].mana = mana;
-            reject(&mut g, Action::AnnounceCast { card: source });
+            let source_ref = g.object_ref(source);
+            checked(&mut g, Action::AnnounceCast { card: source });
+            checked(&mut g, Action::ChooseSpellCost { cost: 0 });
+            open_additional_payment(&mut g);
+            assert!(g.observe(p).additional_cost.unwrap().candidates.is_empty());
+            reject(&mut g, Action::PayCosts { payment: mana });
+            fail_current_payment(&mut g, AttemptFailureReason::UnsatisfiedMaterial);
+            assert_eq!(g.object_ref(source), source_ref);
+            assert_eq!(g.object_view(source).zone, Zone::Hand);
+            assert_eq!(g.state.players[p.index()].mana, mana);
+
+            checked(&mut g, Action::AnnounceCast { card: source });
+            checked(&mut g, Action::ChooseSpellCost { cost: 1 });
+            reject(&mut g, Action::PayCosts { payment: mana });
+            fail_current_payment(&mut g, AttemptFailureReason::UnsatisfiedMana);
+            assert_eq!(g.object_ref(source), source_ref);
+            assert_eq!(g.object_view(source).zone, Zone::Hand);
+            assert_eq!(g.state.players[p.index()].mana, mana);
             g.state.players[p.index()].mana[5] = 2;
             checked(&mut g, Action::AnnounceCast { card: source });
             checked(&mut g, Action::ChooseSpellCost { cost: 1 });
@@ -6043,7 +6092,39 @@ fn dawnhand_after_printed_exile_returns_fresh_counter_donor_before_cast_complete
             .iter()
             .position(|row| matches!(row.clause, CastCostClause::OriginCounters(_)))
             .unwrap() as u16;
-        reject(&mut g, Action::ChooseCastCost { clause: counters });
+        let mut premature = g.clone();
+        checked(&mut premature, Action::ChooseCastCost { clause: counters });
+        let donor_ref = premature.object_ref(donor);
+        checked(
+            &mut premature,
+            Action::ChooseCreatureCounterCost {
+                object: donor_ref,
+                counter: CounterKind::PlusOne,
+            },
+        );
+        reject(
+            &mut premature,
+            Action::ChooseCreatureCounterCost {
+                object: donor_ref,
+                counter: CounterKind::PlusOne,
+            },
+        );
+        let exiled_auntie = premature.object_ref(auntie);
+        reject(
+            &mut premature,
+            Action::ChooseCreatureCounterCost {
+                object: exiled_auntie,
+                counter: CounterKind::MinusOne,
+            },
+        );
+        fail_current_payment(&mut premature, AttemptFailureReason::UnsatisfiedMaterial);
+        assert_eq!(premature.object_ref(donor), donor_ref);
+        assert_eq!(premature.counter_count(donor, CounterKind::PlusOne), 1);
+        assert_eq!(premature.object_ref(hunter), hunter_ref);
+        assert_eq!(premature.object_view(hunter).zone, Zone::Battlefield);
+        assert_eq!(premature.object_ref(auntie), exiled_auntie);
+        assert_eq!(premature.object_view(auntie).zone, Zone::Exile);
+        assert_eq!(premature.object_view(card).zone, Zone::Exile);
         choose_ordered_cost(&mut g, |clause| clause == CastCostClause::Additional);
         pay_additional(&mut g, hunter_ref);
         for _ in 0..20 {
