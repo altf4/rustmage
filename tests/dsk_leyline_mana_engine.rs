@@ -141,7 +141,7 @@ fn the_source_cost_has_five_colored_symbols_and_leaves_the_printed_x_route_avail
     let spell = put(&mut game, player, "Wildwood Scourge", Zone::Hand);
     let action = alternative(&game, spell, source, PaidCastOrigin::Ordinary);
     game.state.players[player.index()].mana = [0, 1, 1, 1, 1, 1];
-    reject(&mut game, action.clone());
+    admit(&game, action.clone());
     game.state.players[player.index()].mana = COLORS;
 
     let mut printed = game.clone();
@@ -214,7 +214,7 @@ fn a_taxed_exile_cast_preserves_mandatory_costs_and_uses_one_mana_base() {
     let action = alternative(&game, spell, source, origin);
     let payment = [1, 1, 1, 1, 1, 3];
     game.state.players[player.index()].mana = payment;
-    reject(&mut game, action.clone());
+    admit(&game, action.clone());
 
     let sacrifice = put(&mut game, player, "Bear Cub", Zone::Battlefield);
     assert!(

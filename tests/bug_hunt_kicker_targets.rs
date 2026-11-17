@@ -25,7 +25,7 @@ fn a_kicker_target_plan_requires_funding_on_the_same_cast_route() {
     let mut with_target = regular.clone();
     let target = put(&mut with_target, p, "Bear Cub", Zone::Battlefield);
     act(&mut with_target, normal.clone());
-    reject(&mut with_target, Action::ChooseKicker { pay: true });
+    admit(&with_target, Action::ChooseKicker { pay: true });
     act(&mut with_target, Action::ChooseKicker { pay: false });
     act(
         &mut with_target,
@@ -42,7 +42,7 @@ fn a_kicker_target_plan_requires_funding_on_the_same_cast_route() {
         (plotted, plot, [2, 0, 0, 0, 0, 2]),
         (regular, normal, [3, 0, 0, 0, 0, 3]),
     ] {
-        reject(&mut g, cast.clone());
+        admit(&g, cast.clone());
         g.state.players[p.index()].mana = mana;
         act(&mut g, cast);
         reject(&mut g, Action::ChooseKicker { pay: false });
@@ -91,7 +91,7 @@ fn mode_menu_keeps_a_fundable_kicked_target_plan() {
         flash_surcharge: false,
     };
     g.state.players[p.index()].mana = [0; 6];
-    reject(&mut g, free.clone());
+    admit(&g, free.clone());
     g.state.players[p.index()].mana[5] = 2;
     act(&mut g, free);
     act(&mut g, Action::ChooseMode { mode: 0 });

@@ -35,7 +35,7 @@ fn muldrotha_can_cast_modal_back_as_artifact_after_creature_slot_is_used() {
     assert!(!g.legal_actions().contains(&cast_creature(tony)));
 
     g.state.players[p.index()].mana = [0, 1, 0, 1, 0, 3];
-    reject(&mut g, cast_artifact.clone());
+    admit(&g, cast_artifact.clone());
     g.state.players[p.index()].mana[5] = 4;
     let index = g
         .legal_actions()

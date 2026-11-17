@@ -178,7 +178,7 @@ fn abduction_links_both_exiles_and_returns_each_exact_card_to_its_owner() {
     let victim = put(&mut game, PLAYER, "Hill Giant", Zone::Battlefield);
     let bounce = put(&mut game, PLAYER, "Unsummon", Zone::Hand);
     game.change_controller(game.object_ref(victim), OPPONENT);
-    reject(&mut game, Action::AnnounceCast { card: fear });
+    admit(&game, Action::AnnounceCast { card: fear });
     game.change_controller(game.object_ref(payment), PLAYER);
     let own = put(&mut game, PLAYER, "Grizzly Bears", Zone::Battlefield);
 
@@ -227,7 +227,7 @@ fn isolation_returns_a_controlled_permanent_even_if_the_spell_is_countered() {
     let stolen = put(&mut game, OPPONENT, "Prophetic Prism", Zone::Battlefield);
     let enemy = put(&mut game, OPPONENT, "Hill Giant", Zone::Battlefield);
     let counter = put(&mut game, OPPONENT, "Essence Scatter", Zone::Hand);
-    reject(&mut game, Action::AnnounceCast { card: fear });
+    admit(&game, Action::AnnounceCast { card: fear });
     game.change_controller(game.object_ref(stolen), PLAYER);
     let land = put(&mut game, PLAYER, "Forest", Zone::Battlefield);
     game.create_tokens(PLAYER, Card::from_catalogue_id(5669), 1, false);
@@ -626,7 +626,18 @@ fn tales_last_chapter_copies_exact_graveyard_targets_and_pays_for_each_cast() {
     pay(&mut game);
 
     act(&mut game, cast_copy(sorcery_copy));
-    reject(&mut game, Action::ChooseX { value: 100 });
+    let mut unfunded = game.clone();
+    act(&mut unfunded, Action::ChooseX { value: 100 });
+    assert!(unfunded.mana_payment_domain().is_none());
+    act(&mut unfunded, Action::EndManaWindow);
+    act(&mut unfunded, Action::SubmitAttempt);
+    assert_eq!(
+        unfunded
+            .last_attempt_outcome_view(game.actor().unwrap())
+            .unwrap()
+            .reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
     act(&mut game, Action::ChooseX { value: 2 });
     pay(&mut game);
     assert_eq!(game.state.stack.last().unwrap().mana_value(), 4);

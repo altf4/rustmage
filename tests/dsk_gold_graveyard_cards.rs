@@ -297,7 +297,7 @@ fn drag_to_the_roots_costs_two_less_only_with_four_actual_card_types() {
     let land = put(&mut game, player.other(), "Forest", Zone::Battlefield);
     let spell = put(&mut game, player, "Drag to the Roots", Zone::Hand);
     game.state.players[player.index()].mana = [0, 0, 1, 0, 1, 0];
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    admit(&game, Action::AnnounceCast { card: spell });
     put(&mut game, player, "Oaken Siren", Zone::Graveyard);
     act(&mut game, Action::AnnounceCast { card: spell });
     reject(&mut game, target(land));

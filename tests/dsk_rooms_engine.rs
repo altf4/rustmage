@@ -653,7 +653,7 @@ fn each_half_casts_with_its_cost_and_only_the_second_door_completes_the_room() {
         let room = spawn(&mut game, player, ROOM, Zone::Hand);
         game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 1];
         assert_eq!(game.object_mana_value(room), 4);
-        reject(&mut game, room_cast(room, RoomDoor::Right));
+        admit(&game, room_cast(room, RoomDoor::Right));
         reject(&mut game, Action::AnnounceCast { card: room });
         act(&mut game, room_cast(room, RoomDoor::Left));
         pay(&mut game);
@@ -743,7 +743,7 @@ fn graveyard_permanent_type_permission_allows_either_room_half_once() {
             game.legal_actions()
                 .contains(&announce(room, chosen, enchantment))
         );
-        reject(&mut game, announce(room, other, enchantment));
+        admit(&game, announce(room, other, enchantment));
         reject(&mut game, announce(room, chosen, PermanentType::Creature));
         reject(&mut game, announce(opposing_room, chosen, enchantment));
         reject(&mut game, room_cast(room, chosen));
@@ -971,7 +971,7 @@ fn the_multiplier_applies_to_mana_triggers_in_payment_planning_and_actual_taps()
     let cast = Action::AnnounceCast { card: spell };
     let mut locked = game.clone();
     locked.state.players[player.index()].mana = [0; 6];
-    reject(&mut locked, cast.clone());
+    admit(&locked, cast.clone());
 
     unlock_door(&mut game, room, RoomDoor::Right, RED_COST);
     game.state.players[player.index()].mana = [0; 6];
@@ -1647,7 +1647,7 @@ fn a_land_mana_door_must_be_unlocked_to_fund_a_spell_with_a_new_color() {
     let cast_shock = Action::AnnounceCast { card: shock };
     game.state.players[player.index()].mana = [0; 6];
     reject(&mut game, grant.clone());
-    reject(&mut game, cast_shock.clone());
+    admit(&game, cast_shock.clone());
 
     game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 1];
     unlock_door(&mut game, room, RoomDoor::Left, BLUE_COST);
@@ -1700,8 +1700,8 @@ fn reduced_unlock_funding_owns_restricted_mana_and_branches_transactionally() {
             .contains(&room_cast(next_room, RoomDoor::Right))
     );
     reject(&mut game, begin_unlock(object, RoomDoor::Right, RED_COST));
-    reject(&mut game, Action::AnnounceCast { card: shock });
-    reject(&mut game, Action::AnnounceCast { card: enchantment });
+    admit(&game, Action::AnnounceCast { card: shock });
+    admit(&game, Action::AnnounceCast { card: enchantment });
 
     let checkpoint = game.snapshot();
     let index = game
@@ -1728,7 +1728,12 @@ fn reduced_unlock_funding_owns_restricted_mana_and_branches_transactionally() {
     act(&mut indexed, make_mana);
     act(&mut raw, Action::AbortRoomUnlock);
     act(&mut raw, Action::ChooseManaRollback { keep: false });
-    assert_eq!(raw.snapshot(), checkpoint);
+    let outcome = raw.last_attempt_outcome_view(player).unwrap();
+    assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+    let mut expected = raw.clone();
+    expected.restore(&checkpoint).unwrap();
+    expected.state.last_attempt_outcome = raw.state.last_attempt_outcome;
+    assert_eq!(raw.snapshot(), expected.snapshot());
     assert!(!raw.object_view(mana_source).tapped);
     assert_eq!(raw.state.players[player.index()].mana, [0; 6]);
     assert_eq!(raw.object_view(room).room_doors, Some(RoomDoors::default()));

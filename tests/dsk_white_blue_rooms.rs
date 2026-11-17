@@ -272,11 +272,11 @@ fn theater_grants_creature_convoke_and_prop_room_untaps_only_creatures_off_turn(
     let spell = put(&mut game, PLAYER, "Grizzly Bears", Zone::Hand);
     let bow = put(&mut game, PLAYER, "Short Bow", Zone::Hand);
     game.state.players[PLAYER.index()].mana = [0; 6];
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    admit(&game, Action::AnnounceCast { card: spell });
     game.state.players[PLAYER.index()].mana = [1, 0, 0, 0, 0, 3];
     cast_half(&mut game, room, RoomDoor::Left, "Dazzling Theater", 4);
     assert_eq!(game.state.players[PLAYER.index()].mana, [0; 6]);
-    reject(&mut game, Action::AnnounceCast { card: bow });
+    admit(&game, Action::AnnounceCast { card: bow });
     act(&mut game, Action::AnnounceCast { card: spell });
     act(&mut game, Action::BeginConvoke);
     for (card, contribution) in donors.into_iter().zip([

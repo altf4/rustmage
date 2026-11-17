@@ -294,6 +294,29 @@ fn workload_index(view: &Observation) -> usize {
     if matches!(view.actions[smoke], Action::PlayLand { .. }) {
         return smoke;
     }
+    if view.last_attempt_outcome.is_some_and(|outcome| {
+        outcome.player == view.actor.unwrap()
+            && outcome.turn == view.turn
+            && outcome.outcome == rustmage::AttemptOutcome::Failed
+    }) {
+        return smoke;
+    }
+    let actor = view.actor.unwrap();
+    let mana_budget = view.players[actor.index()]
+        .mana
+        .iter()
+        .map(|&amount| u64::from(amount))
+        .sum::<u64>()
+        + view
+            .objects
+            .iter()
+            .filter(|object| {
+                object.controller == actor
+                    && object.zone == Zone::Battlefield
+                    && object.card.is_land()
+                    && !object.tapped
+            })
+            .count() as u64;
     // Exercise each paid alternate route when the stock policy would spend
     // mana on a different available action. Only the acting seat's view is used.
     view.actions
@@ -311,7 +334,15 @@ fn workload_index(view: &Observation) -> usize {
                         .any(|(exact, card)| exact == object && card.is_creature())
                 })
             }
-            Action::BeginRoomUnlock { .. } | Action::BeginFaceUp { .. } => true,
+            Action::BeginRoomUnlock { cost, .. } | Action::BeginFaceUp { cost, .. } => {
+                u64::from(cost.generic)
+                    + cost
+                        .colored
+                        .iter()
+                        .map(|&amount| u64::from(amount))
+                        .sum::<u64>()
+                    <= mana_budget
+            }
             _ => false,
         })
         .unwrap_or(smoke)
@@ -362,6 +393,8 @@ fn duskmourn_standard_games_finish_and_replay_with_real_mechanic_events() {
     let mut draws = 0;
     let mut games = 0;
     let mut actions = 0;
+    let mut failed_attempts = 0;
+    let mut completed_attempts = 0;
     let mut branch_counts = [0; 2];
     let mut gameplay = Duration::ZERO;
     let mut replay = Duration::ZERO;
@@ -383,6 +416,8 @@ fn duskmourn_standard_games_finish_and_replay_with_real_mechanic_events() {
             );
             let mut game = Game::new(input.clone()).unwrap();
             let mut journal = Vec::new();
+            let mut failed_ids = BTreeSet::new();
+            let mut completed_ids = BTreeSet::new();
             let mut branched = [false; 2];
             let started = Instant::now();
             while game.outcome().is_none() && journal.len() < 4096 {
@@ -391,7 +426,19 @@ fn duskmourn_standard_games_finish_and_replay_with_real_mechanic_events() {
                 check_privacy(&view, actor);
                 let index = workload_index(&view);
                 let action = view.actions[index].clone();
-                assert_ne!(action, Action::Concede);
+                if action == Action::Concede {
+                    write_report(
+                        directory.as_deref(),
+                        &format!("{label}-stalled.json"),
+                        &json!({"config": input, "actions": journal, "observation": view}),
+                    );
+                    panic!(
+                        "{label} chose Concede at decision {} in {}: {:?}",
+                        journal.len(),
+                        view.decision,
+                        view.actions
+                    );
+                }
                 let private = view.manifest_choice.is_some()
                     || (private_choice(&view)
                         && view
@@ -419,6 +466,17 @@ fn duskmourn_standard_games_finish_and_replay_with_real_mechanic_events() {
                     panic!("{label}, decision {} {action:?}: {error}", journal.len());
                 }
                 let after = game.observe(actor);
+                if let Some(outcome) = after.last_attempt_outcome {
+                    match outcome.outcome {
+                        rustmage::AttemptOutcome::Failed => {
+                            failed_ids.insert(outcome.attempt_id);
+                        }
+                        rustmage::AttemptOutcome::Completed => {
+                            completed_ids.insert(outcome.attempt_id);
+                        }
+                        _ => (),
+                    }
+                }
                 coverage.transition(&view, &after, &action);
                 journal.push((actor, action));
             }
@@ -428,6 +486,11 @@ fn duskmourn_standard_games_finish_and_replay_with_real_mechanic_events() {
                 &format!("{label}.json"),
                 &json!({
                     "catalogue": rustmage::CATALOGUE_VERSION, "config": input, "actions": journal,
+                    "action_contract": rustmage::ACTION_CONTRACT,
+                    "observation_schema": rustmage::OBSERVATION_SCHEMA,
+                    "caller_contract": "staged_smoke_current_counts_v1",
+                    "primitive_decision_limit": 4096,
+                    "failed_attempts": failed_ids.len(), "completed_attempts": completed_ids.len(),
                     "outcome": game.outcome(), "public_branch": branched[0], "private_branch": branched[1],
                 }),
             );
@@ -439,6 +502,8 @@ fn duskmourn_standard_games_finish_and_replay_with_real_mechanic_events() {
                 Outcome::Draw => draws += 1,
             }
             actions += journal.len();
+            failed_attempts += failed_ids.len();
+            completed_attempts += completed_ids.len();
             games += 1;
             for (count, checked) in branch_counts.iter_mut().zip(branched) {
                 *count += usize::from(checked);
@@ -455,6 +520,11 @@ fn duskmourn_standard_games_finish_and_replay_with_real_mechanic_events() {
     }
 
     let report = json!({
+        "action_contract": rustmage::ACTION_CONTRACT,
+        "observation_schema": rustmage::OBSERVATION_SCHEMA,
+        "caller_contract": "staged_smoke_current_counts_v1",
+        "primitive_decision_limit": 4096,
+        "failed_attempts": failed_attempts, "completed_attempts": completed_attempts,
         "games": games, "decisions": actions, "wins": wins, "draws": draws,
         "colors": coverage.colors, "actual_casts": coverage.casts, "cast_names": coverage.names,
         "events": coverage.events, "public_branches": branch_counts[0],

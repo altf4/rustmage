@@ -89,7 +89,7 @@ fn oculus_requires_six_exact_graveyard_cards_even_with_omniscience_and_manifests
         face: CastFace::Normal,
         flash_surcharge: false,
     };
-    reject(&mut game, free.clone());
+    admit(&game, free.clone());
     payment.push(put(&mut game, PLAYER, "Forest", Zone::Graveyard));
     let spare = put(&mut game, PLAYER, "Forest", Zone::Graveyard);
     game.state.players[PLAYER.index()].mana = [0; 6];
@@ -153,7 +153,7 @@ fn creeping_peeper_funds_only_enchantments_unlocking_or_turning_face_up() {
     };
 
     let mut prohibited = root.clone();
-    reject(&mut prohibited, Action::AnnounceCast { card: opt });
+    admit(&prohibited, Action::AnnounceCast { card: opt });
     act(&mut prohibited, produce.clone());
     let lots = prohibited.observe(PLAYER).mana_lots;
     assert_eq!(lots.len(), 1);
@@ -162,12 +162,40 @@ fn creeping_peeper_funds_only_enchantments_unlocking_or_turning_face_up() {
         lots[0].restriction,
         ManaRestrictionView::EnchantmentSpellOrUnlockDoorOrFaceUp
     );
-    reject(&mut prohibited, Action::AnnounceCast { card: opt });
+    act(&mut prohibited, Action::AnnounceCast { card: opt });
+    reject(&mut prohibited, Action::PayCosts { payment: BLUE });
+    act(&mut prohibited, Action::EndManaWindow);
+    act(&mut prohibited, Action::SubmitAttempt);
+    assert_eq!(prohibited.object_view(opt).zone, Zone::Hand);
+    assert_eq!(prohibited.state.players[PLAYER.index()].mana, BLUE);
+    assert_eq!(
+        prohibited.last_attempt_outcome_view(PLAYER).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
     let mut activation_payment = root.clone();
     activation_payment.state.players[PLAYER.index()].mana[5] = 3;
-    reject(&mut activation_payment, activation(ordinary_activation));
+    admit(&activation_payment, activation(ordinary_activation));
     act(&mut activation_payment, produce.clone());
-    reject(&mut activation_payment, activation(ordinary_activation));
+    act(&mut activation_payment, activation(ordinary_activation));
+    reject(
+        &mut activation_payment,
+        Action::PayCosts {
+            payment: [0, 1, 0, 0, 0, 3],
+        },
+    );
+    act(&mut activation_payment, Action::EndManaWindow);
+    act(&mut activation_payment, Action::SubmitAttempt);
+    assert_eq!(
+        activation_payment
+            .last_attempt_outcome_view(PLAYER)
+            .unwrap()
+            .reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
+    assert_eq!(
+        activation_payment.state.players[PLAYER.index()].mana,
+        [0, 1, 0, 0, 0, 3]
+    );
 
     let mut enchantment = root.clone();
     act(&mut enchantment, Action::AnnounceCast { card: aura });

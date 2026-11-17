@@ -42,7 +42,7 @@ fn bear_trap_can_be_cast_and_paid_for_on_the_opponents_turn() {
     act(&mut game, Action::Pass);
     let mut unfunded = game.clone();
     unfunded.state.players[PLAYER.index()].mana = [0, 0, 0, 0, 0, 2];
-    reject(&mut unfunded, activate(trap, 0));
+    admit(&unfunded, activate(trap, 0));
     assert!(!unfunded.object_view(trap).tapped);
 
     game.state.players[PLAYER.index()].mana = [0, 0, 0, 0, 0, 3];
