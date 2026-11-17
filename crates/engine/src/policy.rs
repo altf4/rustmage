@@ -232,8 +232,20 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::BeginImprovise
             | Action::BeginDelve
             | Action::BeginWaterbend
-            | Action::BeginCreatureTapPayment
-            | Action::BeginOrderedCosts => 40,
+            | Action::BeginCreatureTapPayment => 40,
+            Action::BeginOrderedCosts => {
+                // Entering cost order closes the mana window. Give offered
+                // mana actions a chance before leaving that window.
+                if observation
+                    .attempt
+                    .as_ref()
+                    .is_some_and(|attempt| !attempt.mana_window_closed)
+                {
+                    -4
+                } else {
+                    40
+                }
+            }
             Action::ChooseConvoker { .. }
             | Action::ChooseImproviser { .. }
             | Action::ChooseDelver { .. }
