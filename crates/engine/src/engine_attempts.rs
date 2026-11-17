@@ -655,6 +655,12 @@ impl Game {
             .and_then(|crew| crew.payment.as_ref())
             .is_some_and(|payment| {
                 !payment.selected.is_empty()
+                    && payment.context == a.item.id
+                    && payment.actor == a.item.controller
+                    && matches!(a.item.kind, StackKind::ActivatedAbility { .. })
+                    && a.item.program().is_some_and(|(_, program)| {
+                        matches!(program, [Instruction::Crew { minimum }] if *minimum == payment.minimum)
+                    })
                     && a.item
                         .source
                         .is_some_and(|source| source.object == payment.source)
@@ -667,6 +673,12 @@ impl Game {
             Pending::Saddle { .. } | Pending::PayCosts { .. }
         ) && self.state.saddle_payment.as_ref().is_some_and(|payment| {
             !payment.selected.is_empty()
+                && payment.context == a.item.id
+                && payment.actor == a.item.controller
+                && matches!(a.item.kind, StackKind::ActivatedAbility { .. })
+                && a.item.program().is_some_and(|(_, program)| {
+                    matches!(program, [Instruction::BecomeSaddled { minimum }] if *minimum == payment.minimum)
+                })
                 && a.item
                     .source
                     .is_some_and(|source| source.object == payment.source)

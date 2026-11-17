@@ -34,6 +34,8 @@ pub struct CrewChoiceView {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct CrewPayment {
+    /// Exact announcement that owns this provisional selection.
+    pub context: u64,
     pub source: ObjectRef,
     pub actor: Player,
     pub minimum: u16,
@@ -298,7 +300,14 @@ impl Game {
     pub(super) fn crew_choice(&self, viewer: Player) -> Option<CrewChoiceView> {
         let viewer = self.choice_information_player(viewer);
         let p = self.state.crew.as_ref()?.payment.as_ref()?;
-        if p.actor != viewer || self.semantic_actor() != Some(viewer) {
+        if p.actor != viewer
+            || self.semantic_actor() != Some(viewer)
+            || self
+                .state
+                .announcing
+                .as_ref()
+                .is_none_or(|a| a.item.id != p.context)
+        {
             return None;
         }
         let sum = self.crew_sum(false);
@@ -367,6 +376,7 @@ impl Game {
         }
         let state = self.state.crew.get_or_insert_with(Default::default);
         state.payment = Some(Box::new(CrewPayment {
+            context: a.item.id,
             source: a.item.source.expect("Crew source").object,
             actor: a.item.controller,
             minimum,

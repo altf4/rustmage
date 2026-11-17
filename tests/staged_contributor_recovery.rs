@@ -1,7 +1,7 @@
 //! Current Crew/Saddle/Station choices remain editable and explicitly recoverable.
 mod support;
 use rustmage::Card;
-use rustmage_core::cards::authored::CardRules;
+use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
 use support::*;
 
@@ -20,6 +20,13 @@ const BASE: ActivatedAbility = ActivatedAbility {
 };
 const CREW: CardRules = CardRules {
     effect: Effect::Permanent,
+    extras: &CardExtras {
+        vehicle_stats: Some(Stats {
+            power: 5,
+            toughness: 5,
+        }),
+        ..CardExtras::EMPTY
+    },
     activated: &[ActivatedAbility {
         program: &[Instruction::Crew { minimum: 3 }],
         ..BASE
@@ -73,19 +80,30 @@ const MATERIAL_MANA: CardRules = CardRules {
     activated: &[ActivatedAbility {
         cost: ActivationCost {
             tap: true,
+            sacrifice: true,
             ..ActivationCost::ZERO
         },
-        program: &[
-            Instruction::AddMana(ManaProduction::Fixed(ONE)),
-            Instruction::CreateTokens {
-                token: Card(5304),
-                amount: 3,
-                tapped: false,
-            },
-        ],
+        program: &[Instruction::AddMana(ManaProduction::Fixed(ONE))],
         ..BASE
     }],
     ..CardRules::EMPTY
+};
+const CHILD_MANA: ActivatedAbility = ActivatedAbility {
+    cost: ActivationCost {
+        generic: 1,
+        mana_component: true,
+        ..ActivationCost::ZERO
+    },
+    program: &[Instruction::AddMana(ManaProduction::Fixed(ONE))],
+    ..BASE
+};
+const NESTED_CREW: CardRules = CardRules {
+    activated: &[PAID_CREW.activated[0], CHILD_MANA],
+    ..CREW
+};
+const NESTED_SADDLE: CardRules = CardRules {
+    activated: &[PAID_SADDLE.activated[0], CHILD_MANA],
+    ..SADDLE
 };
 
 #[derive(Clone, Copy)]
@@ -94,6 +112,12 @@ enum Kind {
     Saddle,
 }
 impl Kind {
+    fn card(self) -> Card {
+        match self {
+            Self::Crew => Card::from_name("Hedge Shredder").unwrap(),
+            Self::Saddle => Card::GrizzlyBears,
+        }
+    }
     fn rules(self, paid: bool) -> &'static CardRules {
         match (self, paid) {
             (Self::Crew, false) => &CREW,
@@ -140,7 +164,13 @@ fn same_step(game: &mut Game, action: Action) {
         .legal_actions()
         .iter()
         .position(|a| *a == action)
-        .unwrap();
+        .unwrap_or_else(|| {
+            panic!(
+                "missing {action:?} in {:?}: {:?}",
+                game.state.pending,
+                game.legal_actions()
+            )
+        });
     let revision = game.revision();
     let mut indexed = game.clone();
     indexed.apply_index(actor, revision, index).unwrap();
@@ -162,10 +192,10 @@ fn assert_failed_material(game: &Game, player: Player) {
 #[test]
 fn empty_crew_and_saddle_attempts_fail_explicitly_for_either_player() {
     for kind in [Kind::Crew, Kind::Saddle] {
-        let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, kind.rules(false))]);
+        let _rules = fixture_rules::activate(&[(kind.card(), kind.rules(false))]);
         for player in [Player::P0, Player::P1] {
             let mut game = scenario(player);
-            let source = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+            let source = spawn(&mut game, player, kind.card(), Zone::Battlefield);
             let source_object = game.object_ref(source);
             game.state.players[player.index()].mana = ZERO;
             Game::reset_payment_planning_work();
@@ -191,12 +221,12 @@ fn empty_crew_and_saddle_attempts_fail_explicitly_for_either_player() {
 fn an_underpowered_prefix_can_reset_or_fail_without_tapping_its_contributors() {
     for kind in [Kind::Crew, Kind::Saddle] {
         let _rules = fixture_rules::activate(&[
-            (Card::GrizzlyBears, kind.rules(false)),
+            (kind.card(), kind.rules(false)),
             (Card::LlanowarElves, &NEGATIVE),
         ]);
         for player in [Player::P0, Player::P1] {
             let mut game = scenario(player);
-            let source = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+            let source = spawn(&mut game, player, kind.card(), Zone::Battlefield);
             let negative = put(&mut game, player, "Llanowar Elves", Zone::Battlefield);
             let enough = put(&mut game, player, "Hill Giant", Zone::Battlefield);
             let spare = put(&mut game, player, "Bear Cub", Zone::Battlefield);
@@ -242,14 +272,26 @@ fn an_underpowered_prefix_can_reset_or_fail_without_tapping_its_contributors() {
 fn paid_contributor_costs_validate_exact_power_and_reset_only_unpaid_choices() {
     let producer = Card::from_name("Short Bow").unwrap();
     for kind in [Kind::Crew, Kind::Saddle] {
-        let _rules = fixture_rules::activate(&[
-            (Card::GrizzlyBears, kind.rules(true)),
-            (producer, &MATERIAL_MANA),
-        ]);
+        let _rules =
+            fixture_rules::activate(&[(kind.card(), kind.rules(true)), (producer, &MATERIAL_MANA)]);
         for player in [Player::P0, Player::P1] {
             let mut game = scenario(player);
-            let source = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+            let source = spawn(&mut game, player, kind.card(), Zone::Battlefield);
             let mana_source = spawn(&mut game, player, producer, Zone::Battlefield);
+            let material_source = game.object_ref(mana_source);
+            let exiled: Vec<_> = (0..3)
+                .map(|_| {
+                    let creature = put(&mut game, player, "Llanowar Elves", Zone::Exile);
+                    let object = game.object_ref(creature);
+                    game.state.exile_links.push(ExileLink {
+                        ability_origin: None,
+                        source: material_source,
+                        exiled: object,
+                        return_zone: Zone::Battlefield,
+                    });
+                    object
+                })
+                .collect();
             game.state.players[player.index()].mana = ZERO;
             act(&mut game, announce(source));
             assert_eq!(game.state.pending, kind.pending(player));
@@ -263,43 +305,51 @@ fn paid_contributor_costs_validate_exact_power_and_reset_only_unpaid_choices() {
             };
             same_step(&mut game, mana.clone());
             assert_eq!(game.state.pending, kind.pending(player));
-            let tokens: Vec<_> = game
-                .controlled_token_ids(player)
-                .map(|id| game.object_ref(id))
+            let contributors: Vec<_> = exiled
+                .iter()
+                .map(|old| {
+                    assert_eq!(game.object_view(old.card).zone, Zone::Battlefield);
+                    let current = game.object_ref(old.card);
+                    assert_ne!(current, *old);
+                    current
+                })
                 .collect();
-            assert_eq!(tokens.len(), 3);
-            assert!(game.object_view(mana_source).tapped);
+            assert_eq!(game.object_view(mana_source).zone, Zone::Graveyard);
             assert_eq!(game.state.players[player.index()].mana, ONE);
-            same_step(&mut game, kind.choose(tokens[0]));
+            same_step(&mut game, kind.choose(contributors[0]));
             reject(&mut game, kind.finish());
             same_step(&mut game, Action::EndManaWindow);
             same_step(&mut game, Action::ResetCostSelection);
             assert!(game.attempt_view(player).unwrap().mana_window_closed);
             assert!(kind.selected(&game, player).is_empty());
-            assert!(game.object_view(mana_source).tapped);
+            assert_eq!(game.object_view(mana_source).zone, Zone::Graveyard);
+            assert_ne!(game.object_ref(mana_source), material_source);
             assert_eq!(game.state.players[player.index()].mana, ONE);
-            assert_eq!(game.controlled_token_ids(player).count(), 3);
+            for object in &contributors {
+                assert_eq!(game.object_ref(object.card), *object);
+                assert_eq!(game.object_view(object.card).zone, Zone::Battlefield);
+            }
             reject(&mut game, mana);
-            for &object in &tokens {
+            for &object in &contributors {
                 same_step(&mut game, kind.choose(object));
             }
             same_step(&mut game, kind.finish());
             assert_eq!(game.state.pending, Pending::PayCosts { player });
             assert!(
-                tokens
+                contributors
                     .iter()
                     .all(|object| !game.object_view(object.card).tapped)
             );
             // Finish selected the group but has not paid the taxed activation.
             same_step(&mut game, Action::ResetCostSelection);
             assert_eq!(game.state.pending, kind.pending(player));
-            for &object in &tokens {
+            for &object in &contributors {
                 act(&mut game, kind.choose(object));
             }
             act(&mut game, kind.finish());
             same_step(&mut game, Action::PayCosts { payment: ONE });
             assert!(
-                tokens
+                contributors
                     .iter()
                     .all(|object| game.object_view(object.card).tapped)
             );
@@ -340,12 +390,12 @@ fn station_without_a_current_tap_subject_uses_material_recovery() {
 fn resetting_a_contributor_tapped_for_mana_preserves_the_actual_payment() {
     for kind in [Kind::Crew, Kind::Saddle] {
         let _rules = fixture_rules::activate(&[
-            (Card::GrizzlyBears, kind.rules(true)),
+            (kind.card(), kind.rules(true)),
             (Card::LlanowarElves, &CREATURE_MANA),
         ]);
         for player in [Player::P0, Player::P1] {
             let mut game = scenario(player);
-            let source = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+            let source = spawn(&mut game, player, kind.card(), Zone::Battlefield);
             let mana_source = put(&mut game, player, "Llanowar Elves", Zone::Battlefield);
             let other = put(&mut game, player, "Hill Giant", Zone::Battlefield);
             game.state.players[player.index()].mana = ZERO;
@@ -376,6 +426,107 @@ fn resetting_a_contributor_tapped_for_mana_preserves_the_actual_payment() {
             same_step(&mut game, Action::PayCosts { payment: ONE });
             assert!(game.object_view(mana_source).tapped);
             assert!(game.object_view(other).tapped);
+        }
+    }
+}
+
+#[test]
+fn same_source_mana_children_cannot_reset_suspended_contributor_selections() {
+    for kind in [Kind::Crew, Kind::Saddle] {
+        let rules = match kind {
+            Kind::Crew => &NESTED_CREW,
+            Kind::Saddle => &NESTED_SADDLE,
+        };
+        let _rules = fixture_rules::activate(&[(kind.card(), rules)]);
+        for player in [Player::P0, Player::P1] {
+            for complete_child in [false, true] {
+                let mut game = scenario(player);
+                let source = spawn(&mut game, player, kind.card(), Zone::Battlefield);
+                let donor = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+                let donor = game.object_ref(donor);
+                game.state.players[player.index()].mana = if complete_child { ONE } else { ZERO };
+                act(&mut game, announce(source));
+                act(&mut game, kind.choose(donor));
+                let parent_context = game.state.announcing.as_ref().unwrap().item.id;
+                let parent_attempt = game.attempt_view(player).unwrap().attempt_id;
+                same_step(
+                    &mut game,
+                    Action::AnnounceMana {
+                        card: source,
+                        ability: 1,
+                        counter_payment: Counters::default(),
+                        production: ONE,
+                    },
+                );
+                assert_eq!(game.state.pending, Pending::PayCosts { player });
+                assert_ne!(
+                    game.state.announcing.as_ref().unwrap().item.id,
+                    parent_context
+                );
+                assert_eq!(
+                    game.attempt_view(player).unwrap().parent_attempt_id,
+                    Some(parent_attempt)
+                );
+                assert!(!game.attempt_view(player).unwrap().can_reset_selection);
+                reject(&mut game, Action::ResetCostSelection);
+                match kind {
+                    Kind::Crew => {
+                        assert!(game.crew_choice(player).is_none());
+                        assert_eq!(
+                            game.state
+                                .crew
+                                .as_ref()
+                                .unwrap()
+                                .payment
+                                .as_ref()
+                                .unwrap()
+                                .selected,
+                            [donor]
+                        );
+                    }
+                    Kind::Saddle => {
+                        assert!(game.saddle_choice().is_none());
+                        assert_eq!(
+                            game.state.saddle_payment.as_ref().unwrap().selected,
+                            [donor]
+                        );
+                    }
+                }
+                // Observing the child must not construct a parent contributor
+                // choice against the child's unrelated mana activation.
+                assert!(
+                    game.observe(player)
+                        .attempt
+                        .unwrap()
+                        .parent_attempt_id
+                        .is_some()
+                );
+                if complete_child {
+                    same_step(&mut game, Action::PayCosts { payment: ONE });
+                } else {
+                    same_step(&mut game, Action::EndManaWindow);
+                    same_step(&mut game, Action::SubmitAttempt);
+                    assert_eq!(
+                        game.last_attempt_outcome_view(player).unwrap().reason,
+                        Some(AttemptFailureReason::UnsatisfiedMana)
+                    );
+                }
+                assert_eq!(game.state.pending, kind.pending(player));
+                assert_eq!(
+                    game.state.announcing.as_ref().unwrap().item.id,
+                    parent_context
+                );
+                assert_eq!(
+                    game.attempt_view(player).unwrap().attempt_id,
+                    parent_attempt
+                );
+                assert_eq!(kind.selected(&game, player), [donor]);
+                assert!(!game.object_view(donor.card).tapped);
+                assert!(game.attempt_view(player).unwrap().can_reset_selection);
+                same_step(&mut game, Action::ResetCostSelection);
+                assert!(kind.selected(&game, player).is_empty());
+                assert!(!game.object_view(donor.card).tapped);
+            }
         }
     }
 }
