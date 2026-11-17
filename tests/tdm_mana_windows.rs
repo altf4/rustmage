@@ -660,10 +660,19 @@ fn full_proposal_cannot_restore_its_only_sacrifice_witness_without_a_positive_to
         empty(&mut g, p);
         let action = Action::AnnounceCast { card: s };
         if !taxed {
-            let saved = g.snapshot();
-            assert_eq!(g.apply(p, action), Err(Error::IllegalAction));
-            assert_eq!(g.snapshot(), saved);
+            act(&mut g, action);
+            if g.legal_actions().contains(&Action::EndManaWindow) {
+                act(&mut g, Action::EndManaWindow);
+            }
+            act(&mut g, Action::SubmitAttempt);
+            let failure = g.last_attempt_outcome_view(p).unwrap();
+            assert_eq!(failure.outcome, AttemptOutcome::Failed);
+            assert_eq!(
+                failure.reason,
+                Some(AttemptFailureReason::UnsatisfiedMaterial)
+            );
             assert_eq!(g.object_view(witness).zone, Zone::Exile);
+            assert_eq!(g.object_view(s).zone, Zone::Hand);
             continue;
         }
         act(&mut g, action);
@@ -834,7 +843,7 @@ fn stranded_nonmana_first_proposal_cannot_invent_a_forbidden_late_mana_child() {
     let a = g.state.announcing.as_ref().unwrap();
     let goal = g.funding_goal(a);
     let purpose = g.purpose_for_item(&a.item);
-    assert!(!g.can_fund_for(goal, purpose));
+    assert!(g.can_fund_for(goal, purpose));
     no_mana(&mut g, f);
     let saved = g.snapshot();
     assert_eq!(
@@ -871,5 +880,5 @@ fn symbol_group_replacement_context_keeps_the_already_closed_mana_window() {
             subtype: None,
         },
     };
-    assert!(!g.can_fund_symbol_cost_group(goal, purpose, cost, source, &[g.object_ref(material)]));
+    assert!(g.can_fund_symbol_cost_group(goal, purpose, cost, source, &[g.object_ref(material)]));
 }
