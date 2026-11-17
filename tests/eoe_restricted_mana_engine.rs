@@ -95,6 +95,10 @@ const ABILITIES: CardRules = CardRules {
     ],
     ..CardRules::EMPTY
 };
+const CREATURE_ABILITIES: CardRules = CardRules {
+    effect: Effect::Creature(2, 1),
+    ..ABILITIES
+};
 const MANA_ABILITY: ActivatedAbility = ActivatedAbility {
     cost: ActivationCost {
         tap: true,
@@ -374,7 +378,7 @@ fn artifact_activation_mana_qualifies_by_source_in_each_activation_zone() {
     let _rules = fixture_rules::activate(&[
         (Card::GrizzlyBears, &PRODUCER),
         (named("Candy Trail"), &ABILITIES),
-        (Card::GoblinPiker, &ABILITIES),
+        (Card::GoblinPiker, &CREATURE_ABILITIES),
         (named("Opt"), &RESOLUTION_COST),
     ]);
     let p = Player::P0;
@@ -425,6 +429,10 @@ fn artifact_activation_mana_qualifies_by_source_in_each_activation_zone() {
         },
     );
     admit(&activations_only, activation(other, 0));
+    let mut wrong_source = activations_only.clone();
+    act(&mut wrong_source, activation(other, 0));
+    reject(&mut wrong_source, Action::PayCosts { payment: TWO_BLUE });
+    assert!(wrong_source.mana_payment_domain().is_none());
     reject_resolution_spend(&mut activations_only, p);
 
     let mut spells_only = g;

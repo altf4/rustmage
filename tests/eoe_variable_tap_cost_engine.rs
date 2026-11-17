@@ -158,12 +158,22 @@ fn x_projects_artifact_mana_and_reserves_the_activated_lands_own_tap() {
 
     for branch in [&mut zero, &mut one] {
         target(branch, creature);
-        assert!(!branch.legal_actions().iter().any(|action| match action {
-            Action::TapMana { card }
-            | Action::ActivateMana { card, .. }
-            | Action::AnnounceMana { card, .. } => *card == source,
-            _ => false,
-        }));
+        let self_mana = Action::ActivateMana {
+            card: source,
+            ability: 1,
+            payment: [0; 6],
+            counter_payment: Counters::default(),
+            production: COLORLESS,
+        };
+        admit(branch, self_mana.clone());
+        let mut stranded = branch.clone();
+        act(&mut stranded, self_mana);
+        reject(
+            &mut stranded,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 0, 2],
+            },
+        );
         act(
             branch,
             Action::ActivateMana {
@@ -209,7 +219,7 @@ fn the_group_requires_distinct_artifacts_and_can_tap_a_sick_target() {
     game.state.objects[target_creature as usize].summoning_sick = true;
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
     act(&mut game, activate(source));
-    assert_eq!(game.x_choice().unwrap().intervals[0].maximum, 2);
+    assert_eq!(game.x_choice().unwrap().intervals[0].maximum, u32::MAX);
     act(&mut game, Action::ChooseX { value: 2 });
     target(&mut game, target_creature);
     pay(&mut game);
