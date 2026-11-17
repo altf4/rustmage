@@ -21,9 +21,11 @@ use funding_entries::EntryProjection;
 #[cfg(feature = "test-support")]
 use funding_entries::PaymentContinuation;
 #[doc(hidden)]
+#[cfg(feature = "test-support")]
 #[path = "engine_funding_entry_devour.rs"]
 mod entry_devour_projection;
 #[doc(hidden)]
+#[cfg(feature = "test-support")]
 #[path = "engine_funding_entry_exiles.rs"]
 pub mod funding_entry_exiles;
 #[doc(hidden)]
@@ -6144,6 +6146,11 @@ impl Game {
         {
             return false;
         }
+        // This cost's named-card selection omits its implicit source exile.
+        // Include that movement in the same joint resource check.
+        if matches!(spec.kind, EffectChoiceKind::ExileSourceAndNamed { .. }) {
+            selected.push(source);
+        }
         let kind = spec.kind.payment_kind();
         let taps_external = matches!(kind, EffectChoiceKind::TapPermanents(_));
         let nonmoving = taps_external
@@ -6171,6 +6178,14 @@ impl Game {
                     | EffectChoiceKind::ReturnToHand
             ) || forage::is_forage_cost(a.additional_cost().unwrap())
                 || evidence::threshold(a.additional_cost().unwrap()).is_some();
+            if !source_first
+                && !nonmoving
+                && a.item
+                    .attached_activation_tap_cost()
+                    .is_some_and(|grantor| selected.contains(&grantor))
+            {
+                return false;
+            }
             if selected.contains(&source) {
                 let source_departs = rules.cost.sacrifice
                     || rules.cost.discard
@@ -7142,6 +7157,7 @@ impl FundingState<'_> {
         (upper < u128::from(amount) || invalid_selection) && self.fixed_counter_cost_inventory()
     }
 
+    #[cfg(feature = "test-support")]
     fn fixed_counter_cost_inventory(&self) -> bool {
         let state = &self.game.state;
         if self.continuation.is_some()
@@ -7230,8 +7246,7 @@ impl Game {
             .and_then(|cost| cost.kind.counter_requirement())
             .expect("distributed counter cost");
         let selected = announcement.creature_counter_cost.as_deref();
-        // A selectable prefix can depend on future mana abilities. Only
-        // keep selecting now if the complete payment fits the live inventory.
+        // Check only the supplied prefix against the live counter inventory.
         FundingState::from_game(self, &goal).counter_payment_possible(
             &goal,
             requirement,
@@ -7246,7 +7261,7 @@ impl Game {
             return false;
         }
         let goal = self.funding_goal(announcement);
-        goal.requires_mana() && !FundingState::from_game(self, &goal).fixed_counter_cost_inventory()
+        goal.requires_mana() && !self.attempt_mana_window_closed()
     }
 
     pub(super) fn counter_cost_fundable(

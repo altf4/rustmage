@@ -319,6 +319,7 @@ impl FundingState<'_> {
     }
     /// Current links are immutable rules records. Exact virtual incarnations decide
     /// whether each immediate zone-change effect still has an object to return.
+    #[cfg(feature = "test-support")]
     pub(super) fn visit_linked_returns(&self, emit: &mut dyn FnMut(&Self) -> bool) -> bool {
         if self.game.state.exile_links.is_empty() {
             return emit(self);
@@ -772,6 +773,7 @@ impl FundingState<'_> {
             }
         }
     }
+    #[cfg(feature = "test-support")]
     fn entry_counters(&self, m: &entries::EntryMove) -> Counters {
         if m.destination != Zone::Battlefield {
             return Counters::default();
@@ -898,6 +900,7 @@ impl FundingState<'_> {
         }
         counters
     }
+    #[cfg(feature = "test-support")]
     fn entry_tapped(&self, m: &entries::EntryMove) -> bool {
         let owner = m.controller;
         let land_count = || {
@@ -957,6 +960,7 @@ impl FundingState<'_> {
             }),
         }
     }
+    #[cfg(feature = "test-support")]
     fn initialize_entry_tap(&self, m: &mut entries::EntryMove) -> Vec<entry_tap::EntryTapEffect> {
         let mut effects = Vec::new();
         let kinds = if m.requires_characteristic_preview(self) {
@@ -1048,6 +1052,7 @@ impl FundingState<'_> {
         }
         effects
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn visit_entry_moves(
         &self,
         mut moves: Vec<entries::EntryMove>,
@@ -1055,6 +1060,7 @@ impl FundingState<'_> {
         actual: Option<&entries::EntryBatch>,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
+        record_payment_projection(1);
         let initial = initial || actual.is_some_and(|batch| batch.copying);
         let actual = actual.filter(|batch| !batch.copying);
         for movement in &mut moves {
@@ -1103,6 +1109,7 @@ impl FundingState<'_> {
         }
         self.visit_entry_taps(moves, taps, 0, actual, emit)
     }
+    #[cfg(feature = "test-support")]
     fn visit_entry_taps(
         &self,
         moves: Vec<entries::EntryMove>,
@@ -1234,14 +1241,26 @@ impl FundingState<'_> {
                 entering,
             ) {
                 if !cards.is_empty() {
-                    let mut result = None;
-                    self.cost_departures(&cards, Zone::Exile, &mut |world| {
-                        result = Some(world.clone());
-                        true
-                    });
-                    if let Some(world) = result {
-                        *self = world;
+                    // This is one supplied life payment, with fixed top-library
+                    // cards and destination. Freeze prevention before this
+                    // simultaneous event; no graveyard replacement or linked
+                    // battlefield-return alternatives apply to these objects.
+                    let moving = cards
+                        .into_iter()
+                        .filter(|&object| {
+                            !self.zone_move_prevented(object, Zone::Exile)
+                                && !self.graveyard_exile_prohibited(object.card)
+                        })
+                        .collect::<Vec<_>>();
+                    for object in &moving {
+                        self.remember_payment_departure(object.card);
                     }
+                    for object in moving {
+                        self.project_nonbattlefield_move(object, Zone::Exile, None);
+                    }
+                    self.refresh_control_projection();
+                    self.prune_source_linked_projection();
+                    self.refresh_enduring_projection();
                 }
                 return;
             }
@@ -1254,6 +1273,7 @@ impl FundingState<'_> {
             self.other_life -= amount
         }
     }
+    #[cfg(feature = "test-support")]
     fn aura_candidate(&self, m: &entries::EntryMove, target: ObjectRef) -> bool {
         ability_world::aura_can_enchant(
             self,
@@ -1264,6 +1284,7 @@ impl FundingState<'_> {
             target,
         )
     }
+    #[cfg(feature = "test-support")]
     fn visit_entry_values(
         &self,
         moves: Vec<entries::EntryMove>,
@@ -1436,6 +1457,7 @@ impl FundingState<'_> {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl FundingState<'_> {
+    #[cfg(feature = "test-support")]
     fn visit_entry_riot(
         &self,
         mut moves: Vec<entries::EntryMove>,
@@ -1473,6 +1495,7 @@ impl FundingState<'_> {
         self.visit_entry_counter_rows(moves, actual, emit)
     }
 
+    #[cfg(feature = "test-support")]
     fn visit_entry_counter_rows(
         &self,
         mut moves: Vec<entries::EntryMove>,
@@ -1610,6 +1633,7 @@ impl FundingState<'_> {
         order.sort_by_key(|&i| (moves[i].controller != self.active, i));
         self.visit_entry_counters(moves, &order, 0, actual, emit)
     }
+    #[cfg(feature = "test-support")]
     fn visit_entry_counters(
         &self,
         moves: Vec<entries::EntryMove>,
@@ -1704,6 +1728,7 @@ impl FundingState<'_> {
             self.visit_entry_counters(next, order, at + 1, actual, emit)
         })
     }
+    #[cfg(feature = "test-support")]
     fn visit_entry_timestamps(
         &self,
         moves: Vec<entries::EntryMove>,
@@ -3211,6 +3236,7 @@ impl FundingState<'_> {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl FundingState<'_> {
+    #[cfg(feature = "test-support")]
     fn visit_entry_copy_choices(
         &self,
         moves: Vec<entries::EntryMove>,
