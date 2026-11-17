@@ -86,11 +86,7 @@ impl Game {
             let mut proposal = a.clone();
             proposal.item.x = Some(value);
             proposal.plan = self.target_spec(&proposal.item);
-            if !self.item_targets_available(&proposal.item, proposal.plan)
-                || !proposal
-                    .cost_options()
-                    .any(|cost| self.announcement_cost_fundable(&proposal, cost))
-            {
+            if !self.item_targets_available(&proposal.item, proposal.plan) {
                 continue;
             }
             if let Some(last) = result.last_mut()

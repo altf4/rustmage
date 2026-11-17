@@ -11,7 +11,7 @@ fn foggy_swamp_visions_exiles_exactly_x_creatures_and_copies_them_until_its_own_
     let artifact = put(&mut game, p, "Short Bow", Zone::Battlefield);
     game.state.players[p.index()].mana = [0, 0, 2, 0, 0, 2];
     act(&mut game, Action::AnnounceCast { card: spell });
-    reject(&mut game, Action::ChooseX { value: 3 });
+    admit(&game, Action::ChooseX { value: 3 });
     let mut zero = game.clone();
     act(&mut zero, Action::ChooseX { value: 0 });
     pay(&mut zero);

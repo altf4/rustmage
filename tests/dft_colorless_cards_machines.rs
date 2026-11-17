@@ -202,7 +202,7 @@ fn pathcruiser_crew_five_is_temporary_while_five_color_exhaust_is_permanent_and_
     g.state.priority = p;
     g.state.step = Step::Main1;
     g.state.players[0].mana = [0, 0, 0, 0, 0, 5];
-    reject(&mut g, activation(source, 0));
+    admit(&g, activation(source, 0));
     g.state.players[0].mana = [1, 1, 1, 1, 1, 0];
     act(&mut g, activation(source, 0));
     pay(&mut g);
@@ -241,7 +241,7 @@ fn pit_actual_body_defender_and_two_mana_pay_abilities_but_cannot_cast_spells() 
     g.state.objects[pit as usize].summoning_sick = false;
     act(&mut g, mana);
     let spell = put(&mut g, p, "Swiftfoot Boots", Zone::Hand);
-    reject(&mut g, Action::AnnounceCast { card: spell });
+    admit(&g, Action::AnnounceCast { card: spell });
     g.state.players[0].mana[5] += 2;
     act(&mut g, activation(walker, 0));
     pay(&mut g);

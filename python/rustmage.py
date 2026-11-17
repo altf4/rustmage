@@ -14,6 +14,7 @@ import sys
 import threading
 
 # Bump this repository contract once, in data/observation-schema.txt.
+ACTION_CONTRACT = "staged_attempts_v1"
 OBSERVATION_SCHEMA = int((Path(__file__).resolve().parents[1] / "data/observation-schema.txt").read_text())
 
 
@@ -53,6 +54,16 @@ class Game:
         if not self._handle:
             message = self._take_string(error.value) if error.value else "engine creation failed"
             raise EngineError(message)
+        # The C ABI is unchanged, but action meanings are not. Old libraries
+        # must not silently supply guaranteed-completable menus to this binding.
+        try:
+            contract = self.observe(starting_player)
+            if (contract.get("action_contract") != ACTION_CONTRACT
+                    or contract.get("schema") != OBSERVATION_SCHEMA):
+                raise EngineError("native library has an incompatible action contract or observation schema")
+        except BaseException:
+            self.close()
+            raise
 
     def _configure(self):
         lib = self._lib
@@ -101,7 +112,12 @@ class Game:
                             viewer=observation["actor"])["observation"]
 
     def act(self, observation, action):
-        """Submit a concrete action, including damage/X values or any six-vector in mana_payment constraints."""
+        """Submit one immediate choice; future payment completion is not guaranteed.
+
+        Accepted failed attempts return an observation with last_attempt_outcome
+        and may require further rollback choices. Rejected requests raise without
+        changing game state or revision.
+        """
         return self.request("act", actor=observation["actor"], revision=observation["revision"],
                             action=action, viewer=observation["actor"])["observation"]
 

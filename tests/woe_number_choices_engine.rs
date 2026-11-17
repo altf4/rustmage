@@ -269,7 +269,7 @@ fn an_activation_discount_uses_the_sources_current_controllers_turn() {
         g.state.players[player.index()].mana = [0; 6];
         let mut off_turn = g.clone();
         off_turn.state.active = player.other();
-        reject(&mut off_turn, announce.clone());
+        admit(&off_turn, announce.clone());
         off_turn.state.players[player.index()].mana = [0, 0, 0, 0, 0, 1];
         for branch in [&mut g, &mut off_turn] {
             act(branch, announce.clone());

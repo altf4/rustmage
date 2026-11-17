@@ -241,7 +241,7 @@ fn each_intrinsic_plot_route_charges_the_printed_color_and_generic_cost() {
         let begin = Action::AnnouncePlot { card };
         let mut underfunded = game.clone();
         underfunded.state.players[player.index()].mana[5] -= 1;
-        reject(&mut underfunded, begin.clone());
+        admit(&underfunded, begin.clone());
         act(&mut game, begin);
         let pay = Action::PayPlot { payment };
         assert!(has(&game, &pay), "{name}");

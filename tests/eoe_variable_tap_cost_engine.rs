@@ -1,4 +1,4 @@
-//! Nonmana X is declared against complete projected mana and tap payments.
+//! Nonmana X is declared independently of future mana and tap payments.
 mod support;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardRules, one};
@@ -132,11 +132,12 @@ fn x_projects_artifact_mana_and_reserves_the_activated_lands_own_tap() {
         game.x_choice().unwrap().intervals,
         vec![XInterval {
             minimum: 0,
-            maximum: 1
+            maximum: u32::MAX
         }]
     );
     assert!(game.observe(player.other()).x_choice.is_none());
-    reject(&mut game, Action::ChooseX { value: 2 });
+    let mut larger = game.clone();
+    act(&mut larger, Action::ChooseX { value: 2 });
     let initial = game.snapshot();
     let mut zero = game.clone();
     let mut one = game.clone();
@@ -144,20 +145,35 @@ fn x_projects_artifact_mana_and_reserves_the_activated_lands_own_tap() {
     let index = game
         .legal_actions()
         .iter()
-        .position(|action| *action == one_action)
+        .position(|action| *action == Action::ChooseX { value: 0 })
         .unwrap();
-    one.apply_index(player, one.revision(), index).unwrap();
+    let mut indexed_zero = game.clone();
+    indexed_zero
+        .apply_index(player, game.revision(), index)
+        .unwrap();
     act(&mut zero, Action::ChooseX { value: 0 });
+    assert_eq!(indexed_zero.snapshot(), zero.snapshot());
+    act(&mut one, one_action);
     assert_eq!(game.snapshot(), initial);
 
     for branch in [&mut zero, &mut one] {
         target(branch, creature);
-        assert!(!branch.legal_actions().iter().any(|action| match action {
-            Action::TapMana { card }
-            | Action::ActivateMana { card, .. }
-            | Action::AnnounceMana { card, .. } => *card == source,
-            _ => false,
-        }));
+        let self_mana = Action::ActivateMana {
+            card: source,
+            ability: 1,
+            payment: [0; 6],
+            counter_payment: Counters::default(),
+            production: COLORLESS,
+        };
+        admit(branch, self_mana.clone());
+        let mut stranded = branch.clone();
+        act(&mut stranded, self_mana);
+        reject(
+            &mut stranded,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 0, 2],
+            },
+        );
         act(
             branch,
             Action::ActivateMana {
@@ -203,7 +219,7 @@ fn the_group_requires_distinct_artifacts_and_can_tap_a_sick_target() {
     game.state.objects[target_creature as usize].summoning_sick = true;
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
     act(&mut game, activate(source));
-    assert_eq!(game.x_choice().unwrap().intervals[0].maximum, 2);
+    assert_eq!(game.x_choice().unwrap().intervals[0].maximum, u32::MAX);
     act(&mut game, Action::ChooseX { value: 2 });
     target(&mut game, target_creature);
     pay(&mut game);

@@ -127,7 +127,17 @@ pub fn apply_raw_and_index(game: &mut Game, action: Action) {
     indexed.apply_index(actor, revision, index).unwrap();
     act(game, action.clone());
     assert_eq!(game.snapshot(), indexed.snapshot());
+    // Restore both owned branches from the same external revision so any new
+    // attempt receives the same fresh identity on their replay.
+    let mut before = indexed.clone();
     indexed.restore(&snapshot).unwrap();
+    assert_eq!(indexed.snapshot(), snapshot);
+    assert_eq!(
+        indexed.apply_index(actor, revision, index),
+        Err(Error::StaleRevision)
+    );
+    before.restore(&snapshot).unwrap();
+    act(&mut before, action.clone());
     act(&mut indexed, action);
-    assert_eq!(game.snapshot(), indexed.snapshot());
+    assert_eq!(before.snapshot(), indexed.snapshot());
 }

@@ -394,7 +394,7 @@ fn free_artifact_cast_locks_x_to_zero_and_requires_printed_additional_cost() {
     let mut unfunded = game.clone();
     unfunded.move_object(donor, Zone::Graveyard);
     resolve_top(&mut unfunded);
-    reject(&mut unfunded, action.clone());
+    admit(&unfunded, action.clone());
     assert!(
         unfunded
             .legal_actions()

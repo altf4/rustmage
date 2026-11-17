@@ -327,6 +327,11 @@ impl Game {
         }
     }
     fn begin_contributors(&mut self, artifact: bool) {
+        // Choosing contributors starts cost payment even without an ordered
+        // clause plan. Resetting that unpaid selection cannot reopen mana.
+        if self.state.cast_rollback.is_some() {
+            self.end_attempt_mana_window();
+        }
         let a = self.state.announcing.as_mut().unwrap();
         assert!(a.item.kind == StackKind::Spell && a.convoke.is_none());
         a.initialize_cast_costs(artifact);
@@ -382,6 +387,9 @@ impl Game {
         }
         if done {
             return true;
+        }
+        if self.attempt_contributions_sealed() {
+            return false;
         }
         let tap_payment = a.tap_payment();
         for id in 0..self.state.objects.len() {
@@ -446,24 +454,11 @@ impl Game {
         payment: waterbend::TapPayment,
         object: ObjectRef,
     ) -> bool {
-        if a.cast_costs.is_some() {
-            let mut choice = self.cast_cost_world(a);
-            return choice.project_substituter(object) && choice.cost_completion();
-        }
-        let Some(generic) = f.remaining.generic.checked_sub(1) else {
-            return false;
-        };
-        let masks = self.remaining_contribution_masks(a, f, object, Some(payment));
-        convoke::payable_in(
-            self,
-            a.item.controller,
-            self.purpose_for_item(&a.item),
-            self.available_mana(a.item.controller, self.purpose_for_item(&a.item))
-                .map(u128::from),
-            f.remaining.colored,
-            generic,
-            &masks,
-        )
+        // This selects one contribution, not a plan for the remaining payment.
+        f.remaining.generic > 0
+            && !f.contains(object)
+            && (f.substituted.len() as u64) < payment.cap()
+            && payment.eligible(self, a.item.controller, object)
     }
     fn contributor_fundable(
         &self,
@@ -472,65 +467,19 @@ impl Game {
     ) -> bool {
         let a = self.state.announcing.as_ref().unwrap();
         let f = a.convoke.as_ref().unwrap();
-        if a.cast_costs.is_some() {
-            let mut choice = self.cast_cost_world(a);
-            return (if let Some(c) = contribution {
-                choice.project_convoker(object, c)
-            } else {
-                choice.project_improviser(object)
-            }) && choice.cost_completion();
-        }
-        let mut cost = f.remaining;
-        let colors = ability_world::CharacteristicWorld::colors(self, object.card);
-        if !contribution
-            .unwrap_or(ConvokeContribution::Generic)
-            .apply(colors, &mut cost)
-        {
+        if f.contains(object) {
             return false;
         }
-        let masks = self.remaining_contribution_masks(a, f, object, None);
-        convoke::payable_in(
-            self,
-            a.item.controller,
-            self.purpose_for_item(&a.item),
-            self.available_mana(a.item.controller, self.purpose_for_item(&a.item))
-                .map(u128::from),
-            cost.colored,
-            cost.generic,
-            &masks,
-        )
-    }
-
-    fn remaining_contribution_masks(
-        &self,
-        a: &Announcement,
-        f: &ConvokeSelection,
-        object: ObjectRef,
-        selected_substitution: Option<waterbend::TapPayment>,
-    ) -> [u64; 32] {
-        let mut excluded = f.objects();
-        excluded.push(object);
-        let ordinary = (self.item_convoke(&a.item), self.item_improvise(&a.item));
-        let mut masks =
-            improvise::masks(self, a.item.controller, ordinary.0, ordinary.1, &excluded);
-        if let Some(payment) = selected_substitution.or_else(|| a.tap_payment()) {
-            payment.add_exclusive_masks(
-                self,
-                a.item.controller,
-                &mut masks,
-                ordinary,
-                &excluded,
-                f.substituted.len() + usize::from(selected_substitution.is_some()),
-            );
-        }
-        if self.item_delve(&a.item) {
-            masks[0] += delve::count(
-                self,
-                a.item.controller,
-                a.item.source.map(|s| s.object),
-                &f.delved,
-            );
-        }
-        masks
+        let eligible = if contribution.is_some() {
+            self.item_convoke(&a.item) && self.convoke_eligible(a.item.controller, object)
+        } else {
+            self.item_improvise(&a.item) && improvise::eligible(self, a.item.controller, object)
+        };
+        let mut remaining = f.remaining;
+        eligible
+            && contribution.unwrap_or(ConvokeContribution::Generic).apply(
+                ability_world::CharacteristicWorld::colors(self, object.card),
+                &mut remaining,
+            )
     }
 }

@@ -594,16 +594,30 @@ fn future_behold_witness_cannot_be_invented_by_a_free_zero_total_mana_child() {
     let s = put(&mut g, p, "Shivan Dragon", Zone::Hand);
     empty(&mut g, p);
     act(&mut g, free(s));
-    let saved = g.snapshot();
-    assert!(
-        !g.legal_actions()
-            .contains(&Action::ChooseCastBehold { pay: true })
+    admit(&g, Action::ChooseCastBehold { pay: true });
+    let mut unpaid = g.clone();
+    act(&mut unpaid, Action::ChooseCastBehold { pay: true });
+    assert!(!unpaid.legal_actions().contains(&produce(prod)));
+    act(&mut unpaid, Action::BeginOrderedCosts);
+    let clause = unpaid
+        .observe(p)
+        .cast_costs
+        .unwrap()
+        .clauses
+        .iter()
+        .position(|row| matches!(row.clause, CastCostClause::Behold(_)))
+        .unwrap() as u16;
+    act(&mut unpaid, Action::ChooseCastCost { clause });
+    act(&mut unpaid, Action::SubmitAttempt);
+    assert_eq!(
+        unpaid.last_attempt_outcome_view(p).unwrap().outcome,
+        AttemptOutcome::Failed
     );
     assert_eq!(
-        g.apply(p, Action::ChooseCastBehold { pay: true }),
-        Err(Error::IllegalAction)
+        unpaid.last_attempt_outcome_view(p).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMaterial)
     );
-    assert_eq!(g.snapshot(), saved);
+    assert_eq!(unpaid.object_view(witness).zone, Zone::Exile);
     act(&mut g, Action::ChooseCastBehold { pay: false });
     assert!(g.legal_actions().contains(&produce(prod)));
     act(&mut g, produce(prod));
@@ -660,10 +674,27 @@ fn full_proposal_cannot_restore_its_only_sacrifice_witness_without_a_positive_to
         empty(&mut g, p);
         let action = Action::AnnounceCast { card: s };
         if !taxed {
-            let saved = g.snapshot();
-            assert_eq!(g.apply(p, action), Err(Error::IllegalAction));
-            assert_eq!(g.snapshot(), saved);
+            act(&mut g, action);
+            assert!(!g.legal_actions().contains(&produce(prod)));
+            act(&mut g, Action::BeginOrderedCosts);
+            let clause = g
+                .observe(p)
+                .cast_costs
+                .unwrap()
+                .clauses
+                .iter()
+                .position(|row| row.clause == CastCostClause::Additional)
+                .unwrap() as u16;
+            act(&mut g, Action::ChooseCastCost { clause });
+            act(&mut g, Action::SubmitAttempt);
+            let failure = g.last_attempt_outcome_view(p).unwrap();
+            assert_eq!(failure.outcome, AttemptOutcome::Failed);
+            assert_eq!(
+                failure.reason,
+                Some(AttemptFailureReason::UnsatisfiedMaterial)
+            );
             assert_eq!(g.object_view(witness).zone, Zone::Exile);
+            assert_eq!(g.object_view(s).zone, Zone::Hand);
             continue;
         }
         act(&mut g, action);
@@ -834,7 +865,7 @@ fn stranded_nonmana_first_proposal_cannot_invent_a_forbidden_late_mana_child() {
     let a = g.state.announcing.as_ref().unwrap();
     let goal = g.funding_goal(a);
     let purpose = g.purpose_for_item(&a.item);
-    assert!(!g.can_fund_for(goal, purpose));
+    assert!(g.can_fund_for(goal, purpose));
     no_mana(&mut g, f);
     let saved = g.snapshot();
     assert_eq!(
@@ -871,5 +902,5 @@ fn symbol_group_replacement_context_keeps_the_already_closed_mana_window() {
             subtype: None,
         },
     };
-    assert!(!g.can_fund_symbol_cost_group(goal, purpose, cost, source, &[g.object_ref(material)]));
+    assert!(g.can_fund_symbol_cost_group(goal, purpose, cost, source, &[g.object_ref(material)]));
 }

@@ -690,7 +690,7 @@ fn the_end_reduces_at_five_and_searches_the_exiled_permanents_controller() {
         let caster_card = put(&mut game, player, "Bear Cub", Zone::Hand);
         game.state.players[player.index()].mana = [0, 0, 2, 0, 0, 0];
         game.state.players[player.index()].life = 6;
-        reject(&mut game, Action::AnnounceCast { card: spell });
+        admit(&game, Action::AnnounceCast { card: spell });
 
         let mut full = game.clone();
         full.state.players[player.index()].mana[5] = 2;
@@ -1624,9 +1624,9 @@ fn troyan_funds_expensive_or_printed_x_spells_and_loots_for_blue() {
 
     act(&mut game, produce);
     assert!(game.object_view(troyan).tapped);
-    reject(&mut game, Action::AnnounceCast { card: opt });
-    reject(
-        &mut game,
+    admit(&game, Action::AnnounceCast { card: opt });
+    admit(
+        &game,
         Action::AnnounceActivate {
             card: vault,
             ability: 0,
@@ -1634,7 +1634,7 @@ fn troyan_funds_expensive_or_printed_x_spells_and_loots_for_blue() {
         },
     );
     game.state.players[player.index()].mana[5] = 3;
-    reject(&mut game, Action::AnnounceAdventure { card: wurm });
+    admit(&game, Action::AnnounceAdventure { card: wurm });
     cast(&mut game, wurm, None);
     settle(&mut game);
     assert_eq!(stats(&game, wurm), (5, 4));
@@ -2229,7 +2229,7 @@ fn the_irencrag_produces_colorless_and_can_become_persistent_everflame() {
         counter_payment: Counters::default(),
     };
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
-    reject(&mut game, equip.clone());
+    admit(&game, equip.clone());
     game.state.players[player.index()].mana[5] = 3;
     act(&mut game, equip);
     reject(&mut game, target(foreign));
@@ -2375,11 +2375,11 @@ fn will_freezes_gross_life_gained_and_discounts_white_and_blue_only_this_turn() 
     let white = put(&mut game, player, "Virtue of Loyalty", Zone::Hand);
     let red = put(&mut game, player, "Virtue of Courage", Zone::Hand);
     game.state.players[player.index()].mana = [1, 1, 0, 2, 0, 0];
-    reject(&mut game, Action::AnnounceCast { card: white });
+    admit(&game, Action::AnnounceCast { card: white });
     game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 0];
-    reject(&mut game, Action::AnnounceCast { card: blue });
+    admit(&game, Action::AnnounceCast { card: blue });
     game.state.players[player.index()].mana = [0, 0, 0, 2, 0, 0];
-    reject(&mut game, Action::AnnounceCast { card: red });
+    admit(&game, Action::AnnounceCast { card: red });
 
     game.state.players[player.index()].mana = [2, 1, 0, 0, 0, 1];
     act(&mut game, Action::AnnounceCast { card: blue });
@@ -2400,7 +2400,7 @@ fn will_freezes_gross_life_gained_and_discounts_white_and_blue_only_this_turn() 
     pass_to_later_main(&mut game, player);
     let again = put(&mut game, player, "Virtue of Knowledge", Zone::Hand);
     game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 1];
-    reject(&mut game, Action::AnnounceCast { card: again });
+    admit(&game, Action::AnnounceCast { card: again });
 }
 
 #[test]

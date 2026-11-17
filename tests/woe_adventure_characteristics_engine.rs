@@ -243,7 +243,7 @@ fn graveyard_damage_and_hearth_discount_share_the_physical_card_union() {
         let mut discount = game.clone();
         let announce = Action::AnnounceCast { card: hearth };
         discount.state.players[player.index()].mana = [0, 0, 0, 1, 0, 0];
-        reject(&mut discount, announce.clone());
+        admit(&discount, announce.clone());
         discount.state.players[player.index()].mana[3] = 2;
         act(&mut discount, announce);
         pay(&mut discount);

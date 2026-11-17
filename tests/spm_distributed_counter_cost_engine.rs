@@ -96,7 +96,7 @@ fn repeated_and_split_selections_pay_exact_artifacts_without_targets() {
     }
     game.add_counter(equipment, CounterKind::Shield, 1);
     game.add_counter(equipment, CounterKind::PlusOne, 1);
-    reject(&mut game, draw_activation(source));
+    admit(&game, draw_activation(source));
     game.add_counter(equipment, CounterKind::PlusOne, 1);
     game.add_counter(vehicle, CounterKind::PlusOne, 1);
     assert!(!game.is_creature(vehicle));

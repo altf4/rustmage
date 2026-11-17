@@ -75,6 +75,9 @@ fn prove_branch(game: &Game, actor: Player, actions: &[Action], index: usize) ->
         if *candidate == action || matches!(candidate, Action::Concede) {
             return false;
         }
+        // Each candidate starts from the same allocator state; restoring a
+        // prior candidate would intentionally allocate a newer attempt ID.
+        sibling = game.clone();
         sibling.apply(actor, (*candidate).clone()).unwrap();
         if sibling.snapshot() != raw.snapshot() {
             return true;
@@ -95,11 +98,13 @@ fn prove_branch(game: &Game, actor: Player, actions: &[Action], index: usize) ->
         restored.apply_index(actor, revision, index),
         Err(Error::StaleRevision)
     );
+    let mut restored_raw = restored.clone();
+    restored_raw.apply(actor, action.clone()).unwrap();
     restored
         .apply_index(actor, restored.revision(), index)
         .unwrap();
-    assert_eq!(restored.snapshot(), raw.snapshot());
-    assert_eq!(views(&restored), views(&raw));
+    assert_eq!(restored.snapshot(), restored_raw.snapshot());
+    assert_eq!(views(&restored), views(&restored_raw));
     true
 }
 
@@ -143,6 +148,196 @@ fn decks(workload: &Workload) -> BTreeMap<&str, (&str, Vec<Card>)> {
             (deck.id.as_str(), (deck.name.as_str(), cards))
         })
         .collect()
+}
+
+// Workload preferences inspect only this actor's current public information.
+// The estimate chooses which attempt to try; concrete payment remains an action.
+// Count each currently offered land source once, even if it offers several
+// colors. A fetch land's nonmana activation does not supply mana yet.
+fn current_mana_budget(view: &Observation) -> u64 {
+    let actor = view.actor.unwrap();
+    view.players[actor.index()]
+        .mana
+        .iter()
+        .map(|&n| u64::from(n))
+        .sum::<u64>()
+        + view
+            .objects
+            .iter()
+            .filter(|object| {
+                object.controller == actor
+                    && object.zone == Zone::Battlefield
+                    && object.card.is_land()
+                    && view.actions.iter().any(|action| {
+                        matches!(action,
+                            Action::TapMana { card }
+                                | Action::ActivateMana { card, .. }
+                                | Action::TapGrantedMana { card, .. }
+                                if *card == object.id)
+                    })
+            })
+            .count() as u64
+}
+
+fn currently_offered_color(view: &Observation, color: usize) -> bool {
+    view.players[view.actor.unwrap().index()].mana[color] > 0
+        || view.actions.iter().any(|action| match action {
+            Action::ActivateMana { production, .. } | Action::TapGrantedMana { production, .. } => {
+                production[color] > 0
+            }
+            Action::TapMana { card } => view
+                .objects
+                .iter()
+                .find(|object| object.id == *card)
+                .is_some_and(|object| {
+                    object.has_subtype(["Plains", "Island", "Swamp", "Mountain", "Forest"][color])
+                }),
+            _ => false,
+        })
+}
+
+fn caller_allows(view: &Observation, action: &Action) -> bool {
+    let actor = view.actor.unwrap();
+    if view.decision == "priority" {
+        let budget = current_mana_budget(view);
+        if let Action::AnnounceCast { card } = action
+            && view.objects.iter().any(|object| {
+                object.id == *card && object.card.name() == "Araña, Heart of the Spider"
+            })
+            && (!currently_offered_color(view, 0) || !currently_offered_color(view, 3))
+        {
+            // Do not let the setup preference consume the turn's one attempt
+            // while all current mana sources provide only one of its colors.
+            return false;
+        }
+        if let Action::AnnounceCast { card } = action
+            && view
+                .objects
+                .iter()
+                .find(|object| object.id == *card)
+                .is_some_and(|object| object.card.fixed_mana_value() > budget)
+        {
+            return false;
+        }
+        if matches!(
+            action,
+            Action::AnnounceActivate { .. }
+                | Action::BeginActivate { .. }
+                | Action::Activate { .. }
+        ) && (view.active != actor || !matches!(view.step, Step::Main1 | Step::Main2))
+        {
+            return false;
+        }
+        if let Action::AnnounceWebSlinging { cost, .. } = action {
+            let amount =
+                u64::from(cost.generic) + cost.colored.iter().map(|&n| u64::from(n)).sum::<u64>();
+            if amount > budget
+                || !view.objects.iter().any(|object| {
+                    object.controller == actor
+                        && object.zone == Zone::Battlefield
+                        && object.is_creature()
+                        && object.tapped
+                })
+            {
+                return false;
+            }
+        }
+    }
+    if let Action::AnnounceActivate { card, ability, .. }
+    | Action::BeginActivate { card, ability, .. }
+    | Action::Activate { card, ability, .. } = action
+        && let Some(object) = view.objects.iter().find(|object| object.id == *card)
+        && *ability == 0
+        && object.used_abilities & 1 != 0
+        && object.has_subtype("Vehicle")
+    {
+        // These workload Vehicles have Crew as ability zero. Its first use
+        // already supplies this turn's animation.
+        // Repeating it before that stack item resolves only consumes more crew.
+        return false;
+    }
+    if let Some(item) = &view.announcing
+        && let StackKind::ActivatedAbility { ability } = item.kind
+        && let Some((source, definition)) = item.source_identity()
+        && definition.activations()[usize::from(ability)].cost.tap
+        && matches!(action,
+            Action::TapMana { card } | Action::ActivateMana { card, .. }
+                | Action::TapGrantedMana { card, .. } | Action::AnnounceMana { card, .. }
+                if *card == source.card)
+    {
+        // Preserve the current activation's supplied tap cost. Tapping its
+        // source for mana would make the final concrete payment illegal.
+        return false;
+    }
+    true
+}
+
+fn decision(view: &Observation, actions: &[Action], seek_back_face: bool) -> usize {
+    let smoke = policy::smoke_index_from_observation(view, actions);
+    if matches!(actions[smoke], Action::PlayLand { .. })
+        || (view.attempt.is_none()
+            && view.decision == "priority"
+            && view.last_attempt_outcome.is_some_and(|outcome| {
+                outcome.turn == u64::from(view.turn) && outcome.outcome == AttemptOutcome::Failed
+            }))
+    {
+        return smoke;
+    }
+    // Exercise an offered contribution after the current pool already covers
+    // the mana cost; no additional producer or contributor is predicted.
+    if view.mana_payment.is_some()
+        && let Some(index) = actions
+            .iter()
+            .position(|action| matches!(action, Action::BeginConvoke))
+    {
+        return index;
+    }
+    if view.decision != "priority" {
+        return smoke;
+    }
+    let budget = current_mana_budget(view);
+    if let Some(index) = actions.iter().position(|action| match action {
+        Action::AnnounceBack { card } if seek_back_face => view
+            .objects
+            .iter()
+            .find(|object| object.id == *card)
+            .and_then(|object| object.card.back_face())
+            .is_some_and(|back| back.fixed_mana_value() <= budget),
+        Action::AnnounceLibraryLife { .. }
+        | Action::AnnounceWebSlinging { .. }
+        | Action::AnnounceExile { .. } => true,
+        Action::AnnounceCast { card } => view.objects.iter().any(|object| {
+            object.id == *card
+                && object.card.name() == "Araña, Heart of the Spider"
+                && object.card.fixed_mana_value() <= budget
+        }),
+        _ => false,
+    }) {
+        return index;
+    }
+    if matches!(
+        actions[smoke],
+        Action::AnnounceWebSlinging { .. }
+            | Action::AnnounceMayhem { .. }
+            | Action::AnnounceGrantedMayhem { .. }
+            | Action::AnnounceLibraryLife { .. }
+            | Action::AnnounceExile { .. }
+    ) {
+        return smoke;
+    }
+    actions
+        .iter()
+        .enumerate()
+        .filter_map(|(index, action)| {
+            let (Action::AnnounceCast { card } | Action::Cast { card, .. }) = action else {
+                return None;
+            };
+            let object = view.objects.iter().find(|object| object.id == *card)?;
+            let value = object.card.fixed_mana_value();
+            (value <= budget).then_some((index, value))
+        })
+        .max_by_key(|&(_, value)| value)
+        .map_or(smoke, |(index, _)| index)
 }
 
 fn verify_pairings(
@@ -234,6 +429,7 @@ fn verify_pairings(
                 let eligible: Vec<_> = actions
                     .iter()
                     .enumerate()
+                    .filter(|(_, action)| caller_allows(&observation, action))
                     .filter(|(_, action)| match action {
                         Action::Attack { card } | Action::AttackPlaneswalker { card, .. } => {
                             !rejected.contains(card)
@@ -252,19 +448,23 @@ fn verify_pairings(
                     .map(|(index, action)| (index, action.clone()))
                     .collect();
                 let offered: Vec<_> = eligible.iter().map(|(_, action)| action.clone()).collect();
-                let selected = offered
-                    .iter()
-                    .position(|action| {
-                        seek_back_face && matches!(action, Action::AnnounceBack { .. })
-                    })
-                    .unwrap_or_else(|| {
-                        policy::smoke_index_from_observation(&observation, &offered)
-                    });
+                let selected = decision(&observation, &offered, seek_back_face);
                 let (index, action) = &eligible[selected];
-                assert!(
-                    !matches!(action, Action::Concede),
-                    "{label} attempted concession"
-                );
+                if matches!(action, Action::Concede) {
+                    std::fs::write(
+                        evidence.join(format!("{label}-stalled.json")),
+                        serde_json::to_vec_pretty(&serde_json::json!({
+                            "action_contract": ACTION_CONTRACT,
+                            "observation_schema": OBSERVATION_SCHEMA,
+                            "primitive_decision_limit": 4096,
+                            "config": config, "actions": trace,
+                            "observation": observation,
+                        }))
+                        .unwrap(),
+                    )
+                    .unwrap();
+                    panic!("{label} attempted concession");
+                }
                 match action {
                     Action::Attack { card } | Action::AttackPlaneswalker { card, .. } => {
                         pending_attack = Some(*card);
@@ -302,6 +502,10 @@ fn verify_pairings(
                         "actions": trace,
                         "actor": actor,
                         "failing_action": action,
+                        "observation": observation,
+                        "action_contract": ACTION_CONTRACT,
+                        "observation_schema": OBSERVATION_SCHEMA,
+                        "primitive_decision_limit": 4096,
                     });
                     let path = evidence.join(format!("{label}-failure.json"));
                     std::fs::write(&path, serde_json::to_vec_pretty(&failure).unwrap()).unwrap();
@@ -314,10 +518,28 @@ fn verify_pairings(
                 }
                 trace.push((actor, action.clone()));
             }
+            if game.outcome().is_none() {
+                let actor = game.actor().unwrap();
+                std::fs::write(
+                    evidence.join(format!("{label}-limit.json")),
+                    serde_json::to_vec_pretty(&serde_json::json!({
+                        "action_contract": ACTION_CONTRACT,
+                        "observation_schema": OBSERVATION_SCHEMA,
+                        "primitive_decision_limit": 4096,
+                        "config": config, "actions": trace,
+                        "observation": game.observe(actor),
+                    }))
+                    .unwrap(),
+                )
+                .unwrap();
+            }
             std::fs::write(
                 evidence.join(format!("{label}.json")),
                 serde_json::to_vec_pretty(&serde_json::json!({
                     "catalogue": CATALOGUE_VERSION,
+                    "action_contract": ACTION_CONTRACT,
+                    "observation_schema": OBSERVATION_SCHEMA,
+                    "primitive_decision_limit": 4096,
                     "config": config,
                     "decks": [left_name, right_name],
                     "actions": trace,

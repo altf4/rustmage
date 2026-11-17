@@ -123,7 +123,7 @@ fn buried_treasure_pays_mana_and_its_graveyard_ability_exiles_it_before_discover
     }
     game.move_object(buried, Zone::Graveyard);
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 4];
-    reject(&mut game, activate(buried, 1));
+    admit(&game, activate(buried, 1));
     game.state.players[player.index()].mana[5] = 5;
     game.state.step = Step::End;
     reject(&mut game, activate(buried, 1));

@@ -206,9 +206,65 @@ fn proves_owned_branch(game: &Game, view: &Observation, chosen: usize) -> bool {
 }
 
 fn workload_index(view: &Observation) -> usize {
-    let smoke = policy::smoke_index_from_observation(view, &view.actions);
+    // Exercise both face-down routes in this workload. The generic smoke
+    // policy's equal-score mode tie otherwise always chooses Vannifar's counters.
+    if let Some(mode) = view
+        .mode_choices
+        .iter()
+        .find(|choice| choice.text == "Cloak a card from your hand.")
+        && let Some(index) = view
+            .actions
+            .iter()
+            .position(|action| *action == Action::ChooseMode { mode: mode.mode })
+    {
+        return index;
+    }
+    if view.last_attempt_outcome.is_some_and(|outcome| {
+        outcome.turn == u64::from(view.turn) && outcome.outcome == rustmage::AttemptOutcome::Failed
+    }) {
+        return policy::smoke_index_from_observation(view, &view.actions);
+    }
+    let mut smoke = policy::smoke_index_from_observation(view, &view.actions);
     if matches!(view.actions[smoke], Action::PlayLand { .. }) {
         return smoke;
+    }
+    // Establish the Case before building its board condition. The broader
+    // declaration menu otherwise lets repeated face-down attempts postpone
+    // these cheap enchantments until the late game.
+    if let Some(index) = view.actions.iter().position(|action| {
+        matches!(action, Action::AnnounceCast { card }
+            if view.objects.iter().any(|object| object.id == *card && object.has_subtype("Case")))
+    }) {
+        return index;
+    }
+    // Keep the three artifacts needed to solve Filched Falcon at the end step,
+    // instead of spending each new Clue immediately. This uses public objects.
+    let own_permanents = view
+        .objects
+        .iter()
+        .filter(|object| object.zone == Zone::Battlefield && object.controller == view.viewer);
+    let unsolved_falcon = own_permanents.clone().any(|object| {
+        object.card.name() == "Case of the Filched Falcon"
+            && !view.solved_cases.iter().any(|case| case.card == object.id)
+    });
+    if unsolved_falcon
+        && own_permanents
+            .filter(|object| object.kinds & 16 != 0)
+            .count()
+            <= 3
+        && matches!(
+            view.actions[smoke],
+            Action::AnnounceActivate { card, .. }
+                | Action::Activate { card, .. }
+                | Action::BeginActivate { card, .. }
+                if view.objects.iter().any(|object| object.id == card && object.card == CLUE)
+        )
+        && let Some(pass) = view
+            .actions
+            .iter()
+            .position(|action| *action == Action::Pass)
+    {
+        smoke = pass;
     }
     view.actions
         .iter()
@@ -402,6 +458,8 @@ fn karlov_manor_standard_games_finish_and_replay_with_set_mechanics() {
     let mut draws = 0;
     let mut games = 0;
     let mut decisions = 0;
+    let mut failed_attempts = 0;
+    let mut completed_attempts = 0;
     let mut branch_counts = [0; 2];
     let mut private_decisions = 0;
     let mut gameplay = Duration::ZERO;
@@ -426,6 +484,8 @@ fn karlov_manor_standard_games_finish_and_replay_with_set_mechanics() {
             );
             let mut game = Game::new(input.clone()).unwrap();
             let mut journal = Vec::new();
+            let mut failed_ids = BTreeSet::new();
+            let mut completed_ids = BTreeSet::new();
             let mut branched = [false; 2];
             let started = Instant::now();
             while let Some(actor) = game.actor() {
@@ -436,7 +496,19 @@ fn karlov_manor_standard_games_finish_and_replay_with_set_mechanics() {
                 check_privacy(&view, actor);
                 let index = workload_index(&view);
                 let action = view.actions[index].clone();
-                assert_ne!(action, Action::Concede);
+                if action == Action::Concede {
+                    write_report(
+                        directory.as_deref(),
+                        &format!("{label}-stalled.json"),
+                        json!({"config": input, "actions": journal, "observation": view}),
+                    );
+                    panic!(
+                        "{label} chose Concede at decision {} in {}: {:?}",
+                        journal.len(),
+                        view.decision,
+                        view.actions
+                    );
+                }
                 let private = cloak_choice(&view)
                     || view.evidence.is_some()
                     || view.manifest_choice.is_some()
@@ -469,6 +541,18 @@ fn karlov_manor_standard_games_finish_and_replay_with_set_mechanics() {
                     panic!("{label}, decision {} {action:?}: {error}", journal.len());
                 }
                 let after = game.observe(actor);
+                if let Some(outcome) = after.last_attempt_outcome {
+                    match outcome.outcome {
+                        rustmage::AttemptOutcome::Failed => {
+                            failed_ids.insert(outcome.attempt_id);
+                        }
+                        rustmage::AttemptOutcome::Completed => {
+                            completed_ids.insert(outcome.attempt_id);
+                        }
+                        _ => (),
+                    }
+                }
+
                 let new_hidden: Vec<_> = after
                     .face_down_permanents
                     .iter()
@@ -504,6 +588,11 @@ fn karlov_manor_standard_games_finish_and_replay_with_set_mechanics() {
                 directory.as_deref(),
                 &format!("{label}.json"),
                 json!({
+                    "action_contract": rustmage::ACTION_CONTRACT,
+                    "observation_schema": rustmage::OBSERVATION_SCHEMA,
+                    "caller_contract": "staged_smoke_current_counts_v1",
+                    "primitive_decision_limit": 4096,
+                    "failed_attempts": failed_ids.len(), "completed_attempts": completed_ids.len(),
                     "catalogue": rustmage::CATALOGUE_VERSION, "config": input, "actions": journal,
                     "outcome": game.outcome(), "public_branch": branched[0], "private_branch": branched[1],
                 }),
@@ -516,6 +605,8 @@ fn karlov_manor_standard_games_finish_and_replay_with_set_mechanics() {
                 Outcome::Draw => draws += 1,
             }
             decisions += journal.len();
+            failed_attempts += failed_ids.len();
+            completed_attempts += completed_ids.len();
             games += 1;
             for (count, checked) in branch_counts.iter_mut().zip(branched) {
                 *count += usize::from(checked);
@@ -532,6 +623,11 @@ fn karlov_manor_standard_games_finish_and_replay_with_set_mechanics() {
     }
 
     let report = json!({
+        "action_contract": rustmage::ACTION_CONTRACT,
+        "observation_schema": rustmage::OBSERVATION_SCHEMA,
+        "caller_contract": "staged_smoke_current_counts_v1",
+        "primitive_decision_limit": 4096,
+        "failed_attempts": failed_attempts, "completed_attempts": completed_attempts,
         "games": games, "decisions": decisions, "wins": wins, "draws": draws,
         "colors": coverage.colors, "actual_casts": coverage.casts, "cast_names": coverage.names,
         "events": coverage.events, "public_branches": branch_counts[0],

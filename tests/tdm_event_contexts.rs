@@ -398,13 +398,17 @@ fn death_counter_payload_and_target_choice_are_owned_across_raw_index_restore() 
     assert_eq!(sibling.counter_count(b, CounterKind::Soul), 3);
     assert_eq!(sibling.counter_count(a, CounterKind::Soul), 0);
     indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.snapshot(), saved);
     assert_eq!(
         indexed.apply_index(p, rev, index),
         Err(Error::StaleRevision)
     );
-    act(&mut indexed, action);
-    drain(&mut indexed);
-    assert_eq!(raw.snapshot(), indexed.snapshot());
+    let mut replay = indexed.clone();
+    for branch in [&mut indexed, &mut replay] {
+        act(branch, action.clone());
+        drain(branch);
+    }
+    assert_eq!(replay.snapshot(), indexed.snapshot());
 }
 #[test]
 fn desperate_sba_death_draws_for_original_controller() {
@@ -598,13 +602,17 @@ fn graveyard_observer_owned_payment_restore_preserves_exact_source() {
     drain(&mut sibling);
     assert_eq!(sibling.object_view(source).zone, Zone::Graveyard);
     indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.snapshot(), saved);
     assert_eq!(
         indexed.apply_index(p, rev, index),
         Err(Error::StaleRevision)
     );
-    act(&mut indexed, action);
-    drain(&mut indexed);
-    assert_eq!(raw.snapshot(), indexed.snapshot());
+    let mut replay = indexed.clone();
+    for branch in [&mut indexed, &mut replay] {
+        act(branch, action.clone());
+        drain(branch);
+    }
+    assert_eq!(replay.snapshot(), indexed.snapshot());
 }
 #[test]
 fn cast_creature_entry_observer_destroys_exact_entrant_and_tokens_do_not_retrigger() {
@@ -1045,6 +1053,7 @@ fn linked_optional_choice_is_owned_raw_index_restorable_and_illegal_selection_ro
     leave_priest(&mut raw, source);
     assert_eq!(spirits(&raw, p.other()).len(), 1);
     indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.snapshot(), saved);
     assert_eq!(
         indexed.apply_index(p, rev, index),
         Err(Error::StaleRevision)
@@ -1303,9 +1312,13 @@ fn multiple_owner_creation_waits_for_all_replacements_and_is_owned_after_first_o
         }
     }
     indexed.restore(&saved).unwrap();
-    act(&mut indexed, action);
-    drain(&mut indexed);
-    assert_eq!(raw.snapshot(), indexed.snapshot());
+    assert_eq!(indexed.snapshot(), saved);
+    let mut replay = indexed.clone();
+    for branch in [&mut indexed, &mut replay] {
+        act(branch, action.clone());
+        drain(branch);
+    }
+    assert_eq!(replay.snapshot(), indexed.snapshot());
 }
 fn combat_offer(g: &mut Game, source: CardId) {
     g.state.step = Step::Attackers;
@@ -1478,7 +1491,7 @@ fn free_cast_x_is_zero_and_mandatory_additional_costs_remain_required() {
     let costly = put(&mut g, p.other(), "Grizzly Bears", Zone::Library);
     combat_offer(&mut g, source);
     g.move_object(source, Zone::Exile);
-    assert!(!g.legal_actions().contains(&free_action(&g, costly)));
+    admit(&g, free_action(&g, costly));
     let fodder = put(&mut g, p, "Bear Cub", Zone::Battlefield);
     assert!(g.legal_actions().contains(&free_action(&g, costly)));
     let action = free_action(&g, costly);
@@ -1543,11 +1556,15 @@ fn damage_offer_and_selected_exact_exile_are_owned_raw_index_restorable_and_sibl
     drain(&mut sibling);
     assert_eq!(sibling.object_view(card).zone, Zone::Exile);
     indexed.restore(&saved).unwrap();
-    act(&mut indexed, action);
-    pay(&mut indexed);
-    act(&mut indexed, Action::FinishResolutionCasts);
-    drain(&mut indexed);
-    assert_eq!(raw.snapshot(), indexed.snapshot());
+    assert_eq!(indexed.snapshot(), saved);
+    let mut replay = indexed.clone();
+    for branch in [&mut indexed, &mut replay] {
+        act(branch, action.clone());
+        pay(branch);
+        act(branch, Action::FinishResolutionCasts);
+        drain(branch);
+    }
+    assert_eq!(replay.snapshot(), indexed.snapshot());
 }
 #[test]
 fn event_scaled_offer_keeps_full_damage_domain_before_bounding_to_finite_library() {

@@ -434,7 +434,7 @@ fn mode_owned_activated_templates_have_real_presence_and_pay_costs() {
                 Action::ActivateMana { card, ability: 1, .. } if *card == id)
             });
             assert_eq!(available.is_some(), mode == 1);
-            assert_eq!(g.can_fund(goal(p, [0, 0, 0, 0, 1, 0])), mode == 1);
+            assert!(g.can_fund(goal(p, [0, 0, 0, 0, 1, 0])));
             if let Some(action) = available {
                 act(&mut g, action);
                 assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 0, 1, 0]);
@@ -600,7 +600,7 @@ fn prospective_entry_modes_match_actual_funding_and_never_mutate_parent() {
     assert!(projected.contains(&(EntryChoiceValue::NamedMode(1), 3, true)));
     assert_eq!(g.snapshot(), saved);
     assert!(chosen(&g, id).is_none());
-    assert!(!g.can_fund(goal(p, [0, 0, 0, 0, 1, 0])));
+    assert!(g.can_fund(goal(p, [0, 0, 0, 0, 1, 0])));
     let movement = g.entry_move(id, Zone::Battlefield, false);
     g.stage_entries(vec![movement], None);
     assert!(g.advance_entries());
@@ -668,7 +668,7 @@ fn suppressing_mode_providers_keeps_the_choice_and_restores_only_its_abilities()
     assert_eq!(stats(&g, bear), (2, 2));
     assert!(!g.keywords(bear).contains(Keywords::TRAMPLE));
     g.state.players[p.index()].mana = [0; 6];
-    assert!(!g.can_fund(goal(p, [0, 0, 0, 0, 1, 0])));
+    assert!(g.can_fund(goal(p, [0, 0, 0, 0, 1, 0])));
     g.move_object(aura, Zone::Graveyard);
     drain(&mut g);
     assert_eq!(chosen(&g, id), Some(EntryChoiceValue::NamedMode(1)));

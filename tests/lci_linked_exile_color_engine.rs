@@ -175,7 +175,7 @@ fn changed_incarnations_and_hidden_or_unlinked_cards_do_not_supply_colors() {
     );
     game.move_object(donor, Zone::Graveyard);
     game.move_object(donor, Zone::Exile);
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    admit(&game, Action::AnnounceCast { card: spell });
     reject(&mut game, mana(source, 1, BLUE));
     act(&mut game, mana(source, 1, [0; 6]));
     assert_eq!(game.state.players[p.index()].mana, [0; 6]);

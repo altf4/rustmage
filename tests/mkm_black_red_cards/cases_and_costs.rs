@@ -174,7 +174,7 @@ fn burning_masks_uses_three_damage_sources_and_grants_only_one_paid_play() {
     let mana = game.state.players[player.index()].mana;
     let mut unpaid = game.clone();
     unpaid.state.players[player.index()].mana = [0; 6];
-    reject(&mut unpaid, Action::AnnounceExile { card: playable });
+    admit(&unpaid, Action::AnnounceExile { card: playable });
     act(&mut game, Action::AnnounceExile { card: playable });
     act(
         &mut game,
@@ -271,7 +271,7 @@ fn macabre_reconstruction_uses_arrival_history_and_keeps_its_other_legal_target(
     );
     let shock = put(&mut game, player, "Shock", Zone::Hand);
     game.state.players[player.index()].mana = [0, 0, 1, 1, 0, 1];
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    admit(&game, Action::AnnounceCast { card: spell });
     cast(&mut game, shock, Some(Target::Card(new)));
     settle(&mut game);
 
@@ -356,13 +356,13 @@ fn demand_answers_requires_a_distinct_cost_and_draws_after_either_payment() {
     let spell = put(&mut game, player, "Demand Answers", Zone::Hand);
     let creature = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
     let announce = Action::AnnounceCast { card: spell };
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
 
     let treasure = Card::from_catalogue_id(5302);
     game.create_tokens(player, treasure, 1, false);
     let [token] = tokens(&game, player, treasure).try_into().unwrap();
     game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 0];
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
     game.state.players[player.index()].mana[5] = 1;
 
     let hand = put(&mut game, player, "Forest", Zone::Hand);
@@ -404,7 +404,7 @@ fn suspicious_detonation_counts_an_exiled_sacrifice_and_ignores_ward() {
     let [token] = tokens(&game, player, treasure).try_into().unwrap();
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 1];
 
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    admit(&game, Action::AnnounceCast { card: spell });
     act(
         &mut game,
         Action::ActivateMana {

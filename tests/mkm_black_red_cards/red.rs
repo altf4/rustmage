@@ -283,7 +283,9 @@ fn torch_the_witness_doubles_x_and_investigates_only_for_positive_excess() {
     ] {
         let mut branch = game.clone();
         act(&mut branch, Action::AnnounceCast { card: spell });
-        reject(&mut branch, Action::ChooseX { value: 3 });
+        let mut declared = branch.clone();
+        act(&mut declared, Action::ChooseX { value: 3 });
+        assert_eq!(declared.state.announcing.as_ref().unwrap().item.x, Some(3));
         act(&mut branch, Action::ChooseX { value: x });
         target(&mut branch, target_card);
         act(

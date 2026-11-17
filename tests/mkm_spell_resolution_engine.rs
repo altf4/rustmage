@@ -69,7 +69,9 @@ fn each_legal_target_contributes_the_declared_number_to_one_token_batch() {
         let spell = put(&mut game, player, "Divination", Zone::Hand);
         game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 12];
         act(&mut game, Action::AnnounceCast { card: spell });
-        reject(&mut game, Action::ChooseX { value: 3 });
+        let mut declared = game.clone();
+        act(&mut declared, Action::ChooseX { value: 3 });
+        assert_eq!(declared.state.announcing.as_ref().unwrap().item.x, Some(3));
 
         let mut zero = game.clone();
         act(&mut zero, Action::ChooseX { value: 0 });
@@ -79,15 +81,10 @@ fn each_legal_target_contributes_the_declared_number_to_one_token_batch() {
         assert!(copies(&zero, player, "Forest").is_empty());
 
         let choice = Action::ChooseX { value: 2 };
-        let index = game
-            .legal_actions()
-            .iter()
-            .position(|a| *a == choice)
-            .unwrap();
+        admit(&game, Action::ChooseX { value: 0 });
         let saved = game.snapshot();
-        let revision = game.revision();
         let mut indexed = game.clone();
-        indexed.apply_index(player, revision, index).unwrap();
+        act(&mut indexed, choice.clone());
         act(&mut game, choice.clone());
         assert_eq!(game.snapshot(), indexed.snapshot());
         indexed.restore(&saved).unwrap();

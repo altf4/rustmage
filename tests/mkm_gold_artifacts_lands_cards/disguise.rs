@@ -197,7 +197,7 @@ fn tin_street_gossip_produces_two_restricted_mana_and_keeps_vigilance() {
     let hellion = put(&mut game, player, "Riftburst Hellion", Zone::Hand);
     let shock = put(&mut game, player, "Shock", Zone::Hand);
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 1];
-    reject(&mut game, Action::AnnounceCast { card: shock });
+    admit(&game, Action::AnnounceCast { card: shock });
     let hellion = announce_hand_disguise(&mut game, hellion).card;
     act(
         &mut game,

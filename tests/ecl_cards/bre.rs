@@ -277,11 +277,28 @@ fn ecl_bre_no_mandatory_discard_witness_falls_back_and_all_land_library_exiles_c
                 assert_eq!(g.state.objects[card as usize].zone, Zone::Exile);
             } else {
                 window(&mut g);
-                assert!(
-                    !g.legal_actions()
-                        .iter()
-                        .any(|a| matches!(a, Action::CastExiledDuringResolution { .. }))
+                let object = g.object_ref(card);
+                checked(
+                    &mut g,
+                    Action::CastExiledDuringResolution {
+                        object,
+                        face: CastFace::Normal,
+                    },
                 );
+                assert!(g.observe(p).additional_cost.unwrap().candidates.is_empty());
+                reject(&mut g, Action::PayCosts { payment: [0; 6] });
+                checked(&mut g, Action::EndManaWindow);
+                checked(&mut g, Action::SubmitAttempt);
+                let outcome = g.last_attempt_outcome_view(p).unwrap();
+                assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+                assert_eq!(
+                    outcome.reason,
+                    Some(AttemptFailureReason::UnsatisfiedMaterial)
+                );
+                assert!(g.state.announcing.is_none());
+                assert!(matches!(g.state.pending, Pending::ResolutionCasts { .. }));
+                assert_eq!(g.object_ref(card), object);
+                assert_eq!(g.object_view(card).zone, Zone::Exile);
                 checked(&mut g, Action::FinishResolutionCasts);
                 settle(&mut g);
                 assert_eq!(g.state.objects[card as usize].zone, Zone::Hand);

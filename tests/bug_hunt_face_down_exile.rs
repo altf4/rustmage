@@ -75,7 +75,7 @@ fn huskburster_swarm_ignores_creature_types_of_face_down_exiled_cards() {
 
     g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 6];
     let cast_swarm = Action::AnnounceCast { card: swarm };
-    reject(&mut g, cast_swarm.clone());
+    admit(&g, cast_swarm.clone());
     assert!(
         !g.legal_actions()
             .iter()
@@ -129,7 +129,7 @@ fn an_exiled_face_down_spell_uses_its_cast_face_to_check_protection_and_funding(
 
     game.state.players[player.index()].mana = [1, 0, 0, 0, 0, 1];
     let announce = Action::AnnounceExile { card: spell };
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
     game.state.objects[eligible as usize].tapped = true;
     act(&mut game, announce);
     reject(

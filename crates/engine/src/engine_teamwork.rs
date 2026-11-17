@@ -12,49 +12,6 @@ pub struct TeamworkChoiceView {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    pub(super) fn teamwork_initial_fundable(
-        &self,
-        actor: Player,
-        id: CardId,
-        base: ManaCost,
-    ) -> bool {
-        let card = self.state.objects[id as usize].card;
-        let spec = card.teamwork().unwrap();
-        let normal_targets = match card.effect() {
-            Effect::Spell(plan, _) => self.cast_targets_available(plan, actor, self.object_ref(id)),
-            Effect::Modal(modes) => modes.iter().enumerate().any(|(i, m)| {
-                i < 64
-                    && spec.normal_modes & (1u64 << i) != 0
-                    && self.spell_mode_eligible(actor, self.object_ref(id), card, i)
-                    && self.cast_targets_available(m.targets, actor, self.object_ref(id))
-            }),
-            _ => true,
-        };
-        if normal_targets {
-            return self.spell_can_fund(actor, id, base);
-        }
-        let Some(cost) = self.reduced_spell_cost(actor, id, base) else {
-            return false;
-        };
-        self.preview_optional_cast_costs(
-            FundingGoal {
-                actor,
-                required: cost.colored,
-                generic: cost.generic,
-                source: None,
-                reserve: None,
-            },
-            self.spell_mana_purpose_for_card(actor, id, card),
-            self.object_ref(id),
-            card.additional_cost(),
-            None,
-            &[],
-            false,
-            &[],
-            &[CastCostClause::Teamwork(spec.minimum)],
-        )
-        .unwrap_or(false)
-    }
     pub(super) fn teamwork_mode_allowed(&self, item: &SpellView, mode: usize) -> bool {
         let Some(spec) = item.source.and_then(|source| source.card.teamwork()) else {
             return true;
@@ -66,32 +23,13 @@ impl Game {
         };
         mode < 64 && bits & (1u64 << mode) != 0
     }
-    pub(super) fn teamwork_intent_fundable(&self, announcement: &Announcement, pay: bool) -> bool {
-        let mut a = announcement.clone();
-        a.item.cast.as_mut().unwrap().teamwork = Some(pay);
-        a.initialize_cast_costs(convoke::cost_potential(
-            self,
-            a.item
-                .source
-                .expect("cost announcement has object source")
-                .card,
-        ));
-        if let Some(modes) = a.item.modes() {
-            return modes.iter().enumerate().any(|(i, m)| {
-                if !self.item_mode_eligible(&a.item, i)
-                    || !self.teamwork_mode_allowed(&a.item, i)
-                    || !self.item_targets_available(&a.item, m.targets)
-                {
-                    return false;
-                }
-                let mut choice = a.clone();
-                choice.item.mode = Some(u16::try_from(i).expect("mode index"));
-                choice.plan = m.targets;
-                self.teamwork_proposal_fundable(&choice)
-            });
-        }
-        a.plan = self.target_spec(&a.item);
-        self.item_targets_available(&a.item, a.plan) && self.teamwork_proposal_fundable(&a)
+    pub(super) fn teamwork_intent_fundable(&self, announcement: &Announcement, _pay: bool) -> bool {
+        // This declares an optional cost before the mana window. The supplied
+        // teammates' total power is checked when that cost is paid.
+        announcement
+            .item
+            .source
+            .is_some_and(|source| source.card.teamwork().is_some())
     }
     pub(super) fn choose_teamwork(&mut self, pay: bool) {
         let improvise = improvise::potential(

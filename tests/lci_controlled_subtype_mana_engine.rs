@@ -143,7 +143,7 @@ fn nested_cast_funding_charges_each_life_payment_and_restores_exact_branches() {
     let cast = Action::AnnounceCast { card: spell };
     let mut insufficient = game.clone();
     insufficient.state.players[p.index()].life = 1;
-    reject(&mut insufficient, cast.clone());
+    admit(&insufficient, cast.clone());
 
     act(&mut game, cast);
     if matches!(game.state.pending, Pending::SpellCost { .. }) {

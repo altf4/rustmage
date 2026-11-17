@@ -175,7 +175,7 @@ fn mako_and_shefet_cycling_pay_two_discard_then_draw_and_mako_does_not_grow_in_h
             let mut g = scenario(p);
             let card = put(&mut g, p, name, Zone::Hand);
             g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
-            reject(&mut g, activation(card, ability));
+            admit(&g, activation(card, ability));
             g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
             act(&mut g, activation(card, ability));
             pay(&mut g);

@@ -81,10 +81,10 @@ fn unpaid_fee_excludes_the_cast_or_only_its_unaffordable_target() {
     );
     let spell = put(&mut game, player, "Murder", Zone::Hand);
     let start = Action::AnnounceCast { card: spell };
-    reject(&mut game, start.clone());
+    admit(&game, start.clone());
     let own = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
     act(&mut game, start);
-    reject(&mut game, target(opponent));
+    admit(&game, target(opponent));
     act(&mut game, target(own));
     finish_cast(&mut game);
     settle(&mut game);
@@ -118,7 +118,7 @@ fn one_provider_charges_once_across_groups_and_distinct_providers_charge_separat
         act(&mut game, Action::AnnounceCast { card: spell });
         act(&mut game, target(first));
         if life == 4 {
-            reject(&mut game, target(second));
+            admit(&game, target(second));
         }
         act(&mut game, target(chosen));
         if matches!(game.state.pending, Pending::Targets { .. }) {

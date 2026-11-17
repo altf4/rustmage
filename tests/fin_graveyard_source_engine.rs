@@ -125,7 +125,7 @@ fn the_post_sacrifice_trigger_excludes_its_physical_card_and_can_return_a_namesa
     let exact = game.object_ref(source);
 
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 4];
-    reject(&mut game, announce_sacrifice(source)); // The source tap is reserved.
+    admit(&game, announce_sacrifice(source)); // Its own reserved tap cannot generate the missing mana.
     let mut mana = game.clone();
     act(
         &mut mana,

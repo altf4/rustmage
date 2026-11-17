@@ -34,6 +34,8 @@ pub struct CrewChoiceView {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct CrewPayment {
+    /// Exact announcement that owns this provisional selection.
+    pub context: u64,
     pub source: ObjectRef,
     pub actor: Player,
     pub minimum: u16,
@@ -65,26 +67,18 @@ impl ContributorSelection {
         {
             return false;
         }
-        for id in 0..world.game().state.objects.len() {
-            let id = id as CardId;
-            let reference = world.reference(id);
-            if !world.crew_saddle_eligible(self.source, self.actor, reference) {
-                continue;
-            }
-            let selected = self.selected.contains(&reference);
-            let subject_matches = world.crew_saddle_subject_matches(
-                self.source,
-                if self.saddle { "Mount" } else { "Vehicle" },
-                self.source_subtype,
-            );
-            let (base, bonus) = world.crew_saddle_contribution_terms(id, subject_matches);
-            let positive = base > 0 || base + bonus > 0;
-            // During selection this is a bound, not a choice of a hidden subset.
-            // It is reevaluated in each exact reachable payment world.
-            if selected || (!self.complete && positive) {
-                sum.add(base);
-                sum.add(bonus);
-            }
+        if !self.complete {
+            return true;
+        }
+        let subject_matches = world.crew_saddle_subject_matches(
+            self.source,
+            if self.saddle { "Mount" } else { "Vehicle" },
+            self.source_subtype,
+        );
+        for object in &self.selected {
+            let (base, bonus) = world.crew_saddle_contribution_terms(object.card, subject_matches);
+            sum.add(base);
+            sum.add(bonus);
         }
         sum.enough(self.minimum)
     }
@@ -284,6 +278,21 @@ impl Game {
                 .iter()
                 .all(|&r| self.crew_eligible(p.source, p.actor, r))
     }
+    /// A single current-world upper bound certifies an impossible prefix;
+    /// no future activation, payment order or contributor subset is explored.
+    pub(super) fn crew_payment_impossible(&self) -> bool {
+        let Some(payment) = self
+            .state
+            .crew
+            .as_ref()
+            .and_then(|crew| crew.payment.as_ref())
+        else {
+            return false;
+        };
+        !self.crew_valid()
+            || !self.contributor_selection_fundable(&payment.selected, false)
+            || !self.crew_sum(!payment.complete).enough(payment.minimum)
+    }
     fn crew_sum(&self, maximum: bool) -> PowerSum {
         let p = self.state.crew.as_ref().unwrap().payment.as_ref().unwrap();
         self.contributor_sum(p.source, p.actor, &p.selected, false, maximum, None)
@@ -291,7 +300,14 @@ impl Game {
     pub(super) fn crew_choice(&self, viewer: Player) -> Option<CrewChoiceView> {
         let viewer = self.choice_information_player(viewer);
         let p = self.state.crew.as_ref()?.payment.as_ref()?;
-        if p.actor != viewer || self.semantic_actor() != Some(viewer) {
+        if p.actor != viewer
+            || self.semantic_actor() != Some(viewer)
+            || self
+                .state
+                .announcing
+                .as_ref()
+                .is_none_or(|a| a.item.id != p.context)
+        {
             return None;
         }
         let sum = self.crew_sum(false);
@@ -322,7 +338,14 @@ impl Game {
                 }
             }
         }
-        self.contributor_selection_fundable(&p.selected, true) && emit(Action::FinishCrew)
+        (self.contributor_selection_fundable(&p.selected, true) && emit(Action::FinishCrew))
+            || (self
+                .state
+                .announcing
+                .as_ref()
+                .and_then(|a| a.total_cost)
+                .is_some_and(|cost| cost.generic != 0 || cost.colored != [0; 6])
+                && self.visit_local_mana_abilities(emit))
     }
     pub(super) fn start_crew_payment(&mut self) -> bool {
         let Some(a) = &self.state.announcing else {
@@ -353,6 +376,7 @@ impl Game {
         }
         let state = self.state.crew.get_or_insert_with(Default::default);
         state.payment = Some(Box::new(CrewPayment {
+            context: a.item.id,
             source: a.item.source.expect("Crew source").object,
             actor: a.item.controller,
             minimum,

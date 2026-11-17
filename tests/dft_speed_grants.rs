@@ -171,10 +171,7 @@ fn max_speed_mana_is_one_indexed_activation_and_funding_agrees_at_three_and_four
         g.state.players[p.index()].speed = 3;
         assert!(!g.source_activation_template_available(source, 0));
         assert!(!has_mana(&g, source));
-        assert!(
-            !can_cast(&g, spell),
-            "funding must not invent the absent grant"
-        );
+        admit(&g, Action::AnnounceCast { card: spell });
         g.state.players[p.index()].speed = 4;
         assert!(g.source_activation_template_available(source, 0));
         assert!(has_mana(&g, source));
@@ -208,7 +205,7 @@ fn max_speed_mana_checks_current_controller_and_layer_six_suppression() {
     let spell = put(&mut g, Player::P0, "Divination", Zone::Hand);
     assert!(!g.source_activation_template_available(source, 0));
     assert!(!has_mana(&g, source));
-    assert!(!can_cast(&g, spell));
+    admit(&g, Action::AnnounceCast { card: spell });
     g.move_object(aura, Zone::Graveyard);
     assert!(g.source_activation_template_available(source, 0));
     assert!(has_mana(&g, source));
@@ -236,7 +233,7 @@ fn nested_payment_keeps_indexed_grant_cost_provenance_and_owned_branches() {
     let spell = put(&mut g, Player::P0, "Divination", Zone::Hand);
     g.state.players[0].mana = [0; 6];
     g.state.players[0].speed = 3;
-    assert!(!can_cast(&g, spell));
+    admit(&g, Action::AnnounceCast { card: spell });
     g.state.players[0].speed = 4;
     act(&mut g, Action::AnnounceCast { card: spell });
     choose(
@@ -458,8 +455,16 @@ fn source_exile_prohibition_is_checked_transactionally_in_the_payment_world() {
     let source = put(&mut g, Player::P0, "Grizzly Bears", Zone::Graveyard);
     let prohibition = put(&mut g, Player::P1, "Goblin Piker", Zone::Battlefield);
     let action = source_action(&g, source);
-    assert!(!g.legal_actions().contains(&action));
-    reject(&mut g, action.clone());
+    admit(&g, action.clone());
+    let mut prohibited = g.clone();
+    act(&mut prohibited, action.clone());
+    reject(
+        &mut prohibited,
+        Action::PayCosts {
+            payment: [0, 0, 0, 0, 0, 3],
+        },
+    );
+    assert_eq!(prohibited.object_ref(source), g.object_ref(source));
     g.move_object(prohibition, Zone::Graveyard);
     act(&mut g, action);
     let prohibition = put(&mut g, Player::P1, "Goblin Piker", Zone::Battlefield);

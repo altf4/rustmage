@@ -111,7 +111,7 @@ fn fabrication_foundry_mana_funds_artifacts_and_exact_materials_pay_its_return()
     let mut cast_branch = game.clone();
     act(&mut cast_branch, tap(funder, WHITE));
     assert_eq!(cast_branch.state.players[p.index()].mana, WHITE);
-    reject(&mut cast_branch, Action::AnnounceCast { card: nonartifact });
+    admit(&cast_branch, Action::AnnounceCast { card: nonartifact });
     cast(&mut cast_branch, spell, None);
     settle(&mut cast_branch);
     assert_eq!(cast_branch.object_view(spell).zone, Zone::Battlefield);
@@ -121,7 +121,16 @@ fn fabrication_foundry_mana_funds_artifacts_and_exact_materials_pay_its_return()
     act(&mut game, activate(source, 1));
     reject(&mut game, target(foreign));
     act(&mut game, target(own));
-    reject(&mut game, tap(source, WHITE));
+    admit(&game, tap(source, WHITE));
+    let mut already_tapped = game.clone();
+    act(&mut already_tapped, tap(source, WHITE));
+    reject(
+        &mut already_tapped,
+        Action::PayCosts {
+            payment: [1, 0, 0, 0, 0, 2],
+        },
+    );
+    assert_eq!(already_tapped.object_view(own).zone, Zone::Graveyard);
     act(&mut game, tap(funder, WHITE));
     pay(&mut game);
     choose(&mut game, |action| {
@@ -174,7 +183,7 @@ fn forgotten_monument_grants_the_life_paid_mana_ability_to_other_owned_caves() {
 
     let mut removed = game.clone();
     removed.move_object(monument, Zone::Graveyard);
-    reject(&mut removed, Action::AnnounceCast { card: spell });
+    admit(&removed, Action::AnnounceCast { card: spell });
     act(&mut game, Action::AnnounceCast { card: spell });
     let blue = grant(&game, cave);
     act(&mut game, blue);
@@ -310,7 +319,7 @@ fn ixallis_lorekeeper_mana_pays_for_a_dinosaur_spell_and_rejects_other_spells() 
     game.state.players[p.index()].mana = COLORLESS;
     act(&mut game, tap(source, RED));
     assert_eq!(game.state.players[p.index()].mana, [0, 0, 0, 1, 0, 1]);
-    reject(&mut game, Action::AnnounceCast { card: instant });
+    admit(&game, Action::AnnounceCast { card: instant });
     let mut cycling = game.clone();
     let brinefang = put(&mut cycling, p, "Marauding Brinefang", Zone::Hand);
     let island = put(&mut cycling, p, "Island", Zone::Library);

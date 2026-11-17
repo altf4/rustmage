@@ -134,7 +134,7 @@ fn skullspore_nexus_reduces_only_generic_and_sizes_one_token_from_a_death_batch(
     game.add_counter(giant, CounterKind::PlusOne, 3);
     game.create_tokens(p, Card(5327), 1, false);
     game.state.players[p.index()].mana = [0, 0, 0, 0, 0, 8];
-    reject(&mut game, Action::AnnounceCast { card: source });
+    admit(&game, Action::AnnounceCast { card: source });
     game.state.players[p.index()].mana = [0, 0, 0, 0, 2, 0];
     cast(&mut game, source, None);
     settle(&mut game);

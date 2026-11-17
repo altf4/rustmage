@@ -1,5 +1,6 @@
 //! Real optional conspire costs, trigger packets and exact target-copy choices.
 use crate::ecl_scenarios::{checked, named, settle, setup};
+use crate::support::admit;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
 fn reject(g: &mut Game, action: Action) {
@@ -85,7 +86,51 @@ fn pay_pair(g: &mut Game, source: CardId, first: CardId, second: CardId) {
     select_conspire(g, source);
     let mut objects = [g.object_ref(first), g.object_ref(second)];
     objects.sort_by_key(|object| object.card);
+    checked(g, Action::ChooseConspireObject { object: objects[0] });
+    assert!(
+        objects
+            .iter()
+            .all(|object| !g.object_view(object.card).tapped)
+    );
     checked(g, Action::PayConspire { objects });
+}
+fn fail_material_attempt(g: &mut Game) {
+    let player = g.actor().unwrap();
+    if g.attempt_view(player).unwrap().can_end_mana_window {
+        checked(g, Action::EndManaWindow);
+    }
+    checked(g, Action::SubmitAttempt);
+    for _ in 0..8 {
+        if !matches!(g.state.pending, Pending::ManaRollback { .. }) {
+            break;
+        }
+        checked(g, Action::ChooseManaRollback { keep: false });
+    }
+    assert_eq!(
+        g.last_attempt_outcome_view(player).unwrap().outcome,
+        AttemptOutcome::Failed
+    );
+    assert_eq!(
+        g.last_attempt_outcome_view(player).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMaterial)
+    );
+    assert!(g.state.announcing.is_none());
+}
+fn assert_pair_requires_future_entry(g: &Game, source: CardId, first: CardId, absent: CardId) {
+    let mut premature = g.clone();
+    select_conspire(&mut premature, source);
+    let object = premature.object_ref(first);
+    checked(&mut premature, Action::ChooseConspireObject { object });
+    assert!(
+        !premature
+            .legal_actions()
+            .iter()
+            .any(|a| matches!(a, Action::PayConspire { .. }))
+    );
+    let mut objects = [object, premature.object_ref(absent)];
+    objects.sort_by_key(|r| r.card);
+    reject(&mut premature, Action::PayConspire { objects });
+    fail_material_attempt(&mut premature);
 }
 fn select_additional(g: &mut Game) {
     if g.legal_actions().contains(&Action::BeginOrderedCosts) {
@@ -155,12 +200,26 @@ fn ecl_raiding_paid_body_and_decline_without_two_matching_creatures() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
         let source = schemes(&mut g, p);
-        named(&mut g, p, "Enraged Flamecaster", Zone::Battlefield);
+        let donor = named(&mut g, p, "Enraged Flamecaster", Zone::Battlefield);
         named(&mut g, p, "Bear Cub", Zone::Battlefield);
         let spell = named(&mut g, p, "Shock", Zone::Hand);
         g.state.players[p.index()].mana = [30; 6];
         checked(&mut g, Action::AnnounceCast { card: spell });
-        reject(&mut g, Action::ChooseConspire { pay: true });
+        let mut failed = g.clone();
+        intent(&mut failed, source, true);
+        checked(
+            &mut failed,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        select_conspire(&mut failed, source);
+        let object = failed.object_ref(donor);
+        checked(&mut failed, Action::ChooseConspireObject { object });
+        fail_material_attempt(&mut failed);
+        assert_eq!(failed.object_view(spell).zone, Zone::Hand);
+        assert!(!failed.object_view(donor).tapped);
+        assert_eq!(failed.state.players[p.other().index()].life, 20);
         intent(&mut g, source, false);
         checked(
             &mut g,
@@ -292,7 +351,16 @@ fn ecl_raiding_taps_may_precede_printed_sacrifice_and_cannot_double_spend_a_sacr
             },
         );
         let additional = clause(&g, |c| c == CastCostClause::Additional);
-        reject(&mut g, Action::ChooseCastCost { clause: additional });
+        let mut failed = g.clone();
+        checked(&mut failed, Action::ChooseCastCost { clause: additional });
+        let object = failed.object_ref(a);
+        checked(&mut failed, Action::ChooseAdditionalCost { object });
+        assert_eq!(failed.object_view(a).zone, Zone::Graveyard);
+        select_conspire(&mut failed, source);
+        fail_material_attempt(&mut failed);
+        assert_eq!(failed.object_view(a).zone, Zone::Battlefield);
+        assert_eq!(failed.object_view(spell).zone, Zone::Hand);
+        assert_eq!(failed.object_view(enemy).zone, Zone::Battlefield);
         pay_pair(&mut g, source, a, b);
         select_additional(&mut g);
         let object = g.object_ref(a);
@@ -337,25 +405,44 @@ fn ecl_raiding_printed_sacrifice_returns_a_fresh_donor_before_the_conspire_cost(
                 payment: [0, 0, 1, 0, 0, 0],
             },
         );
-        assert!(
-            !g.legal_actions()
-                .iter()
-                .any(|a| matches!(a, Action::PayConspire { .. }))
-        );
+        assert_pair_requires_future_entry(&g, source, donor, auntie);
         select_additional(&mut g);
         checked(&mut g, Action::ChooseAdditionalCost { object: hunter_ref });
         for _ in 0..30 {
-            if matches!(g.state.pending, Pending::ConspirePayment { .. }) {
+            if matches!(
+                g.state.pending,
+                Pending::CastCosts { .. } | Pending::ConspirePayment { .. }
+            ) {
                 break;
             }
+            // Finish the linked return's entry choices before explicitly
+            // selecting the conspire clause in pay_pair below.
             let action = g
                 .legal_actions()
                 .into_iter()
-                .find(|a| !matches!(a, Action::Concede))
-                .unwrap();
+                .find(|a| {
+                    !matches!(
+                        a,
+                        Action::Concede
+                            | Action::EndManaWindow
+                            | Action::SubmitAttempt
+                            | Action::ResetCostSelection
+                    )
+                })
+                .unwrap_or_else(|| panic!("missing entry continuation: {:?}", g.observe(p)));
             checked(&mut g, action);
         }
+        assert!(
+            matches!(
+                g.state.pending,
+                Pending::CastCosts { .. } | Pending::ConspirePayment { .. }
+            ),
+            "unfinished linked entry: {:?}",
+            g.observe(p)
+        );
+        assert_eq!(g.object_view(hunter).zone, Zone::Graveyard);
         assert_eq!(g.object_view(auntie).zone, Zone::Battlefield);
+        assert!(!g.object_view(auntie).tapped);
         pay_pair(&mut g, source, donor, auntie);
         assert!(g.state.announcing.is_none());
         finish_copies(&mut g);
@@ -519,13 +606,40 @@ fn ecl_raiding_convoke_and_conspire_cannot_tap_the_same_colored_donors() {
         let mana = clause(&g, |c| c == CastCostClause::Mana);
         checked(&mut g, Action::ChooseCastCost { clause: mana });
         let object = g.object_ref(a);
-        reject(
-            &mut g,
+        admit(
+            &g,
             Action::ChooseConvoker {
                 object,
                 contribution: ConvokeContribution::Black,
             },
         );
+        let mut spent_donor = g.clone();
+        checked(
+            &mut spent_donor,
+            Action::ChooseConvoker {
+                object,
+                contribution: ConvokeContribution::Black,
+            },
+        );
+        let object = spent_donor.object_ref(c);
+        checked(
+            &mut spent_donor,
+            Action::ChooseConvoker {
+                object,
+                contribution: ConvokeContribution::Generic,
+            },
+        );
+        checked(
+            &mut spent_donor,
+            Action::PayCosts {
+                payment: [0, 0, 6, 0, 0, 0],
+            },
+        );
+        select_conspire(&mut spent_donor, source);
+        let objects = [spent_donor.object_ref(a), spent_donor.object_ref(b)];
+        reject(&mut spent_donor, Action::PayConspire { objects });
+        fail_material_attempt(&mut spent_donor);
+        assert!(!spent_donor.object_view(a).tapped);
         for id in [c, d] {
             let object = g.object_ref(id);
             checked(
@@ -668,8 +782,8 @@ fn ecl_raiding_mana_abilities_may_recolor_fresh_donors_before_any_cost_payment()
                 target: Target::Player(p.other()),
             },
         );
-        reject(
-            &mut g,
+        admit(
+            &g,
             Action::ActivateMana {
                 card: a,
                 ability: 0,
@@ -732,7 +846,30 @@ fn ecl_raiding_real_drum_mana_cost_cannot_consume_a_reserved_color_donor() {
             },
         );
         let object = g.object_ref(a);
-        reject(&mut g, Action::ChooseAdditionalCost { object });
+        admit(&g, Action::ChooseAdditionalCost { object });
+        let mut spent_donor = g.clone();
+        checked(&mut spent_donor, Action::ChooseAdditionalCost { object });
+        checked(&mut spent_donor, Action::PayCosts { payment: [0; 6] });
+        if matches!(spent_donor.state.pending, Pending::EffectMana { .. }) {
+            checked(
+                &mut spent_donor,
+                Action::ChooseMana {
+                    production: [0, 0, 0, 1, 0, 0],
+                },
+            );
+        }
+        checked(
+            &mut spent_donor,
+            Action::PayCosts {
+                payment: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        select_conspire(&mut spent_donor, source);
+        let objects = [spent_donor.object_ref(a), spent_donor.object_ref(b)];
+        reject(&mut spent_donor, Action::PayConspire { objects });
+        fail_material_attempt(&mut spent_donor);
+        assert!(!spent_donor.object_view(a).tapped);
+        assert!(!spent_donor.object_view(drum).tapped);
         let object = g.object_ref(helper);
         checked(&mut g, Action::ChooseAdditionalCost { object });
         checked(&mut g, Action::PayCosts { payment: [0; 6] });
@@ -799,11 +936,7 @@ fn ecl_raiding_printed_sacrifice_waits_for_omni_entry_before_bounding_fresh_dono
                 payment: [0, 0, 1, 0, 0, 0],
             },
         );
-        assert!(
-            !g.legal_actions()
-                .iter()
-                .any(|a| matches!(a, Action::PayConspire { .. }))
-        );
+        assert_pair_requires_future_entry(&g, source, donor, incoming);
         select_additional(&mut g);
         checked(&mut g, Action::ChooseAdditionalCost { object: hunter_ref });
         assert!(g.state.exile_links.is_empty());

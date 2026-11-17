@@ -246,7 +246,7 @@ fn cavern_of_souls_restricts_colored_mana_and_protects_only_the_matching_spell_p
         if ability == 1 {
             let mut restricted = game.clone();
             restricted.state.players[p.index()].mana[4] = 1;
-            reject(&mut restricted, Action::AnnounceCast { card: wrong });
+            admit(&restricted, Action::AnnounceCast { card: wrong });
         }
         cast(&mut game, bear, None);
         act(&mut game, Action::Pass);

@@ -740,7 +740,7 @@ fn rowdy_research_uses_distinct_declared_attackers_after_a_creature_leaves_and_d
         act(&mut game, Action::Pass);
     }
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 5];
-    reject(&mut game, Action::AnnounceCast { card: research });
+    admit(&game, Action::AnnounceCast { card: research });
     game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 4];
     act(&mut game, Action::AnnounceCast { card: research });
     let cost = game.mana_payment_domain().unwrap();

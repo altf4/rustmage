@@ -62,7 +62,7 @@ fn plotting_dragons_prey_must_still_check_its_target_cost_increase() {
     settle(&mut funded);
     assert_eq!(funded.object_view(dragon).zone, Zone::Graveyard);
 
-    reject(&mut g, cast_plotted.clone());
+    admit(&g, cast_plotted.clone());
 
     // A free completion exists with a different target, but choosing the
     // Dragon still requires its two mana increase.
@@ -77,8 +77,8 @@ fn plotting_dragons_prey_must_still_check_its_target_cost_increase() {
     indexed.apply_index(p, g.revision(), index).unwrap();
     act(&mut g, cast_plotted.clone());
     assert_eq!(indexed.snapshot(), g.snapshot());
-    reject(
-        &mut g,
+    admit(
+        &g,
         Action::ChooseTarget {
             target: Target::Card(dragon),
         },

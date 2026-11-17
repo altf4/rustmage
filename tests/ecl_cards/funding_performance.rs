@@ -1,5 +1,6 @@
-//! A real vivid-deck negative funding search and a legal restricted-mana converter.
+//! Restricted mana stays exact at payment while declarations avoid future searches.
 use crate::ecl_scenarios::{cast, checked, named, settle, setup};
+use crate::support::admit;
 use rustmage_core::cards::*;
 use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::engine::funding::{FundingGoal, FundingState};
@@ -31,7 +32,7 @@ fn position(p: Player, converter: bool) -> (Game, CardId, CardId) {
     } else {
         named(&mut g, p, "Bear Cub", Zone::Battlefield)
     };
-    // An unrelated real attachment must not disable the negative shortcut.
+    // An unrelated real attachment does not change mana eligibility.
     // On the converter it makes the activated source an Elemental, so the
     // restricted lot can pay that activation and become unrestricted mana.
     let dagger = named(&mut g, p, "Stalactite Dagger", Zone::Battlefield);
@@ -69,7 +70,7 @@ fn restricted_mana_rejects_impossible_aurora_and_keeps_elemental() {
         let (world, goal) = world_for(&g, p, aurora);
         assert!(world.total_mana_upper() >= 7);
         let mut visited = HashSet::new();
-        assert!(!world.reachable(&goal, &mut visited));
+        assert!(world.reachable(&goal, &mut visited));
         assert!(visited.is_empty());
         let flame = g
             .state
@@ -92,30 +93,29 @@ fn restricted_mana_rejects_impossible_aurora_and_keeps_elemental() {
         );
         let (world, goal) = world_for(&g, p, aurora);
         assert!(
-            !world.reachable(&goal, &mut HashSet::new()),
-            "existing restricted lots remain ineligible"
+            world.reachable(&goal, &mut HashSet::new()),
+            "declaration admission does not spend restricted lots"
         );
-        let before = g.snapshot();
-        let actions = g.legal_actions();
-        assert!(!actions.contains(&Action::AnnounceCast { card: aurora }));
-        assert!(actions.contains(&Action::AnnounceCast { card: prism }));
-        assert_eq!(g.snapshot(), before);
-        let revision = g.revision();
-        let mut branch = {
-            let parent = g.clone();
-            parent.clone()
-        };
+        admit(&g, Action::AnnounceCast { card: aurora });
+        admit(&g, Action::AnnounceCast { card: prism });
+        let mut failed = g.clone();
+        checked(&mut failed, Action::AnnounceCast { card: aurora });
+        assert!(
+            !failed
+                .legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::PayCosts { .. }))
+        );
+        checked(&mut failed, Action::EndManaWindow);
+        checked(&mut failed, Action::SubmitAttempt);
+        let outcome = failed.last_attempt_outcome_view(p).unwrap();
+        assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+        assert_eq!(outcome.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+        assert_eq!(failed.object_view(aurora).zone, Zone::Hand);
         assert_eq!(
-            branch.apply(p, Action::AnnounceCast { card: aurora }),
-            Err(Error::IllegalAction)
+            failed.state.players[p.index()].mana,
+            g.state.players[p.index()].mana
         );
-        assert_eq!(branch.snapshot(), before);
-        assert_eq!(branch.revision(), revision);
-        assert_eq!(
-            g.apply(p, Action::AnnounceCast { card: aurora }),
-            Err(Error::IllegalAction)
-        );
-        assert_eq!(g.snapshot(), before);
     }
 }
 #[test]
@@ -136,23 +136,51 @@ fn restricted_mana_converter_fallback_preserves_paid_aurora_and_owned_actions() 
         let (world, goal) = world_for(&g, p, aurora);
         assert!(world.reachable(&goal, &mut HashSet::new()));
         checked(&mut g, Action::AnnounceCast { card: aurora });
-        for _ in 0..20 {
-            if g.state.announcing.is_none() {
-                break;
-            }
-            let actions = g.legal_actions();
-            let action = actions
-                .iter()
-                .find(|a| matches!(a, Action::FinishTargets | Action::PayCosts { .. }))
-                .or_else(|| {
-                    actions
-                        .iter()
-                        .find(|a| matches!(a, Action::TapMana { .. } | Action::ActivateMana { .. }))
-                })
-                .expect("legal funding plan has a next action")
-                .clone();
-            checked(&mut g, action);
-        }
+        let flame = g
+            .state
+            .objects
+            .iter()
+            .position(|o| o.card == Card::from_name("Flamebraider").unwrap())
+            .unwrap() as CardId;
+        let converter = g
+            .state
+            .objects
+            .iter()
+            .position(|o| o.card == Card::from_name("Foraging Wickermaw").unwrap())
+            .unwrap() as CardId;
+        checked(
+            &mut g,
+            Action::ActivateMana {
+                card: flame,
+                ability: 0,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 2, 0, 0],
+            },
+        );
+        checked(
+            &mut g,
+            Action::ActivateMana {
+                card: converter,
+                ability: 0,
+                payment: [0, 0, 0, 1, 0, 0],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 0, 1, 0],
+            },
+        );
+        assert_eq!(
+            g.available_mana(
+                p,
+                g.spell_mana_purpose_for_card(p, aurora, g.state.objects[aurora as usize].card)
+            ),
+            [0, 0, 0, 0, 7, 0]
+        );
+        checked(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 7, 0],
+            },
+        );
         assert!(g.state.announcing.is_none());
         settle(&mut g);
         assert_eq!(g.state.objects[aurora as usize].zone, Zone::Battlefield);
@@ -188,7 +216,7 @@ fn restricted_color_bound_rejects_kinbinding_with_abundant_ineligible_white() {
             "quantity alone cannot reject this spell"
         );
         let mut visited = HashSet::new();
-        assert!(!world.reachable(&goal, &mut visited));
+        assert!(world.reachable(&goal, &mut visited));
         let flame = g
             .state
             .objects
@@ -215,27 +243,25 @@ fn restricted_color_bound_rejects_kinbinding_with_abundant_ineligible_white() {
             .unwrap();
         g.state.objects[druid].tapped = true;
         g.state.players[p.index()].mana[0] += 1;
-        let before = g.snapshot();
-        let revision = g.revision();
+        admit(&g, Action::AnnounceCast { card: spell });
+        let mut failed = g.clone();
+        checked(&mut failed, Action::AnnounceCast { card: spell });
         assert!(
-            !g.legal_actions()
-                .contains(&Action::AnnounceCast { card: spell })
+            !failed
+                .legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::PayCosts { .. }))
         );
-        let mut branch = {
-            let parent = g.clone();
-            parent.clone()
-        };
+        checked(&mut failed, Action::EndManaWindow);
+        checked(&mut failed, Action::SubmitAttempt);
+        let outcome = failed.last_attempt_outcome_view(p).unwrap();
+        assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+        assert_eq!(outcome.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+        assert_eq!(failed.object_view(spell).zone, Zone::Hand);
         assert_eq!(
-            branch.apply(p, Action::AnnounceCast { card: spell }),
-            Err(Error::IllegalAction)
+            failed.state.players[p.index()].mana,
+            g.state.players[p.index()].mana
         );
-        assert_eq!(branch.snapshot(), before);
-        assert_eq!(branch.revision(), revision);
-        assert_eq!(
-            g.apply(p, Action::AnnounceCast { card: spell }),
-            Err(Error::IllegalAction)
-        );
-        assert_eq!(g.snapshot(), before);
     }
 }
 
@@ -272,23 +298,46 @@ fn restricted_white_converter_fallback_keeps_actual_double_white_payment() {
         let (world, goal) = world_for(&g, p, spell);
         assert!(world.reachable(&goal, &mut HashSet::new()));
         checked(&mut g, Action::AnnounceCast { card: spell });
-        for _ in 0..20 {
-            if g.state.announcing.is_none() {
-                break;
-            }
-            let actions = g.legal_actions();
-            let action = actions
-                .iter()
-                .find(|a| matches!(a, Action::FinishTargets | Action::PayCosts { .. }))
-                .or_else(|| {
-                    actions
-                        .iter()
-                        .find(|a| matches!(a, Action::TapMana { .. } | Action::ActivateMana { .. }))
-                })
-                .expect("converter has a legal next action")
-                .clone();
-            checked(&mut g, action);
+        let converter = g
+            .state
+            .objects
+            .iter()
+            .position(|o| o.card == Card::from_name("Foraging Wickermaw").unwrap())
+            .unwrap() as CardId;
+        checked(
+            &mut g,
+            Action::ActivateMana {
+                card: converter,
+                ability: 0,
+                payment: [1, 0, 0, 0, 0, 0],
+                counter_payment: Counters::default(),
+                production: [1, 0, 0, 0, 0, 0],
+            },
+        );
+        // If the lot allocation is ambiguous, spend the restricted Flamebraider
+        // lot on the Elemental's activation and retain ordinary white for the spell.
+        while let Some(choice) = g.observe(p).mana_lot_spend {
+            let quality = g.state.mana_lots.as_ref().unwrap().pools[p.index()][choice.lot].quality;
+            let amount = if quality.eligible(mana_lots::Purpose::Other) {
+                choice.minimum
+            } else {
+                choice.maximum
+            };
+            checked(&mut g, Action::ChooseManaLotSpend { amount });
         }
+        assert_eq!(
+            g.available_mana(
+                p,
+                g.spell_mana_purpose_for_card(p, spell, g.state.objects[spell as usize].card)
+            ),
+            [2, 0, 0, 0, 0, 3]
+        );
+        checked(
+            &mut g,
+            Action::PayCosts {
+                payment: [2, 0, 0, 0, 0, 3],
+            },
+        );
         assert!(g.state.announcing.is_none());
         settle(&mut g);
         assert_eq!(g.state.objects[spell as usize].zone, Zone::Battlefield);
@@ -320,12 +369,9 @@ fn self_bound_mirrorform_copies_preserve_the_restricted_white_bound() {
         let kinbinding = named(&mut g, p, "Kinbinding", Zone::Hand);
         let (world, goal) = world_for(&g, p, kinbinding);
         let mut visited = HashSet::new();
-        assert!(!world.reachable(&goal, &mut visited));
+        assert!(world.reachable(&goal, &mut visited));
         assert!(visited.is_empty());
-        assert!(
-            !g.legal_actions()
-                .contains(&Action::AnnounceCast { card: kinbinding })
-        );
+        admit(&g, Action::AnnounceCast { card: kinbinding });
         named(&mut g, p, "Plains", Zone::Battlefield);
         assert!(
             g.legal_actions()
@@ -365,14 +411,7 @@ fn celestial_reunion_x_counts_fixed_bloom_colors_and_ignores_an_opposing_land_bo
         );
         // Eight lands plus black, red and green from each Tender, with one
         // mana for the printed green symbol. Tapped Druids still count.
-        let before = g.snapshot();
-        let revision = g.revision();
-        assert_eq!(
-            g.apply(p, Action::ChooseX { value: 14 }),
-            Err(Error::IllegalAction)
-        );
-        assert_eq!(g.snapshot(), before);
-        assert_eq!(g.revision(), revision);
+        admit(&g, Action::ChooseX { value: 14 });
         checked(&mut g, Action::ChooseX { value: 13 });
     }
 }
@@ -407,12 +446,9 @@ fn scaling_creatures_and_fixed_ability_removal_preserve_white_mana_bound() {
 
         let (world, goal) = world_for(&g, p, rhys);
         let mut visited = HashSet::new();
-        assert!(!world.reachable(&goal, &mut visited));
+        assert!(world.reachable(&goal, &mut visited));
         assert!(visited.is_empty());
-        assert!(
-            !g.legal_actions()
-                .contains(&Action::AnnounceCast { card: rhys })
-        );
+        admit(&g, Action::AnnounceCast { card: rhys });
 
         g.state.objects[live as usize].tapped = false;
         assert!(
@@ -422,12 +458,9 @@ fn scaling_creatures_and_fixed_ability_removal_preserve_white_mana_bound() {
         let (world, goal) = world_for(&g, p, eirdu);
         let mut visited = HashSet::new();
         assert_eq!(goal.required[0], 2);
-        assert!(!world.reachable(&goal, &mut visited));
+        assert!(world.reachable(&goal, &mut visited));
         assert!(visited.is_empty());
-        assert!(
-            !g.legal_actions()
-                .contains(&Action::AnnounceCast { card: eirdu })
-        );
+        admit(&g, Action::AnnounceCast { card: eirdu });
         named(&mut g, p, "Plains", Zone::Battlefield);
         assert!(
             g.legal_actions()
@@ -437,7 +470,7 @@ fn scaling_creatures_and_fixed_ability_removal_preserve_white_mana_bound() {
 }
 
 #[test]
-fn end_blaze_keeps_a_bounded_x_search_after_abigale_removes_abilities() {
+fn end_blaze_keeps_x_admission_after_abigale_removes_abilities() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
         for name in [
@@ -464,21 +497,14 @@ fn end_blaze_keeps_a_bounded_x_search_after_abigale_removes_abilities() {
         let (world, mut goal) = world_for(&g, p, spell);
         goal.generic = 8;
         let mut visited = HashSet::new();
-        assert!(!world.reachable(&goal, &mut visited));
+        assert!(world.reachable(&goal, &mut visited));
         assert!(
             visited.is_empty(),
-            "the ninth mana is ruled out before search"
+            "declaration admission does not search for the ninth mana"
         );
 
         checked(&mut g, Action::AnnounceCast { card: spell });
-        let before = g.snapshot();
-        let revision = g.revision();
-        assert_eq!(
-            g.apply(p, Action::ChooseX { value: 8 }),
-            Err(Error::IllegalAction)
-        );
-        assert_eq!(g.snapshot(), before);
-        assert_eq!(g.revision(), revision);
+        admit(&g, Action::ChooseX { value: 8 });
         checked(&mut g, Action::ChooseX { value: 7 });
         checked(
             &mut g,
@@ -490,7 +516,7 @@ fn end_blaze_keeps_a_bounded_x_search_after_abigale_removes_abilities() {
 }
 
 #[test]
-fn absent_external_tap_witness_prunes_many_meek_attacks_but_fresh_creature_funds_actual_cost() {
+fn absent_external_tap_witness_allows_declaration_but_fresh_creature_pays_actual_cost() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
         for _ in 0..8 {
@@ -519,58 +545,65 @@ fn absent_external_tap_witness_prunes_many_meek_attacks_but_fresh_creature_funds
         };
         let world = FundingState::from_game(&g, &goal);
         let mut visited = HashSet::new();
-        assert!(!world.reachable(&goal, &mut visited));
+        assert!(world.reachable(&goal, &mut visited));
         assert!(
             visited.is_empty(),
             "no creature can pay Drum's separate tap cost"
         );
-        let actions = g.legal_actions();
-        assert!(
-            !actions.iter().any(
-                |a| matches!(a, Action::AnnounceActivate { card, .. } if meeks.contains(card))
-            )
-        );
-        let before = g.snapshot();
+        for &meek in &meeks {
+            admit(
+                &g,
+                Action::AnnounceActivate {
+                    card: meek,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+        }
         let action = Action::AnnounceActivate {
             card: meek,
             ability: 0,
             counter_payment: Counters::default(),
         };
-        let mut child = {
-            let parent = g.clone();
-            parent.clone()
-        };
-        assert_eq!(child.apply(p, action.clone()), Err(Error::IllegalAction));
-        assert_eq!(child.snapshot(), before);
-        assert_eq!(g.apply(p, action.clone()), Err(Error::IllegalAction));
-        assert_eq!(g.snapshot(), before);
+        let mut failed = g.clone();
+        checked(&mut failed, action.clone());
+        checked(&mut failed, Action::EndManaWindow);
+        checked(&mut failed, Action::SubmitAttempt);
+        let outcome = failed.last_attempt_outcome_view(p).unwrap();
+        assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+        assert_eq!(outcome.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+        assert!(!failed.object_view(meek).tapped);
+        assert!(!failed.object_view(drum).tapped);
         let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
         g.state.objects[bear as usize].summoning_sick = true;
         checked(&mut g, action);
-        for _ in 0..20 {
-            if g.state.announcing.is_none() {
-                break;
-            }
-            let actions = g.legal_actions();
-            let action = actions
-                .iter()
-                .find(|a| matches!(a, Action::FinishTargets | Action::PayCosts { .. }))
-                .or_else(|| {
-                    actions.iter().find(|a| {
-                        matches!(
-                            a,
-                            Action::TapMana { .. }
-                                | Action::ActivateMana { .. }
-                                | Action::AnnounceMana { .. }
-                                | Action::ChooseAdditionalCost { .. }
-                                | Action::ChooseMana { .. }
-                        )
-                    })
-                })
-                .expect("fresh creature supplies Drum witness")
-                .clone();
-            checked(&mut g, action);
-        }
+        checked(
+            &mut g,
+            Action::AnnounceMana {
+                card: drum,
+                ability: 0,
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        let object = g.object_ref(bear);
+        checked(&mut g, Action::ChooseAdditionalCost { object });
+        checked(&mut g, Action::PayCosts { payment: [0; 6] });
+        let forest = g
+            .state
+            .objects
+            .iter()
+            .position(|o| {
+                o.card == Card::Forest && o.zone == Zone::Battlefield && o.controller == p
+            })
+            .unwrap() as CardId;
+        checked(&mut g, Action::TapMana { card: forest });
+        checked(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 0, 1, 1, 0],
+            },
+        );
         assert!(g.state.announcing.is_none());
         assert!(g.state.objects[drum as usize].tapped);
         assert!(g.state.objects[bear as usize].tapped);
@@ -602,19 +635,7 @@ fn wickermaw_recoloring_tender_funds_paid_double_blue_counterspell() {
         assert!(world.reachable(&goal, &mut HashSet::new()));
         let mut tapped_control = g.clone();
         tapped_control.state.objects[tender as usize].tapped = true;
-        assert!(
-            !tapped_control
-                .legal_actions()
-                .contains(&Action::AnnounceCast { card: spell })
-        );
-        let before = tapped_control.snapshot();
-        let revision = tapped_control.revision();
-        assert_eq!(
-            tapped_control.apply(p, Action::AnnounceCast { card: spell }),
-            Err(Error::IllegalAction)
-        );
-        assert_eq!(tapped_control.snapshot(), before);
-        assert_eq!(tapped_control.revision(), revision);
+        admit(&tapped_control, Action::AnnounceCast { card: spell });
         checked(&mut g, Action::AnnounceCast { card: spell });
         checked(&mut g, Action::ChooseSpellCost { cost: 1 });
         checked(

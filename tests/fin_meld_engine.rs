@@ -407,7 +407,7 @@ fn casting_can_be_funded_by_both_fronts_after_meld_sacrifice() {
         "Rest in Peace",
         Zone::Battlefield,
     );
-    reject(&mut replaced, cast.clone());
+    admit(&replaced, cast.clone());
     assert_eq!(game.snapshot(), before);
 
     act(&mut game, cast);

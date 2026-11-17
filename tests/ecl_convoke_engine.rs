@@ -14,6 +14,17 @@ const GRANT: CardRules = CardRules {
     }],
     ..CardRules::EMPTY
 };
+fn fail_unpaid_mana(g: &mut Game) {
+    let player = g.actor().unwrap();
+    if g.legal_actions().contains(&Action::EndManaWindow) {
+        act(g, Action::EndManaWindow);
+    }
+    act(g, Action::SubmitAttempt);
+    let failed = g.last_attempt_outcome_view(player).unwrap();
+    assert_eq!(failed.outcome, AttemptOutcome::Failed);
+    assert_eq!(failed.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+    assert_eq!(g.state.pending, Pending::Priority);
+}
 #[test]
 fn dynamic_creature_convoke_pays_with_summoning_sick_creatures_and_rejects_noncreatures() {
     let _rules = fixture_rules::activate(&[(Card::from_name("Short Bow").unwrap(), &GRANT)]);
@@ -49,7 +60,11 @@ fn dynamic_creature_convoke_pays_with_summoning_sick_creatures_and_rejects_noncr
         assert_eq!(g.state.objects[spell as usize].zone, Zone::Battlefield);
         assert!(g.state.objects[a as usize].tapped && g.state.objects[b as usize].tapped);
         let noncreature = put(&mut g, p, "Divination", Zone::Hand);
-        reject(&mut g, Action::AnnounceCast { card: noncreature });
+        admit(&g, Action::AnnounceCast { card: noncreature });
+        act(&mut g, Action::AnnounceCast { card: noncreature });
+        reject(&mut g, Action::BeginConvoke);
+        fail_unpaid_mana(&mut g);
+        assert_eq!(g.object_view(noncreature).zone, Zone::Hand);
     }
 }
 #[test]
@@ -92,7 +107,12 @@ fn departed_or_ability_removed_grant_cannot_pay_creature_spell() {
         if removed {
             let aura = put(&mut g, Player::P1, "Pacifism", Zone::Battlefield);
             g.state.objects[aura as usize].attached_to = Some(g.object_ref(grant));
-            reject(&mut g, Action::AnnounceCast { card: spell });
+            admit(&g, Action::AnnounceCast { card: spell });
+            let mut unpaid = g.clone();
+            act(&mut unpaid, Action::AnnounceCast { card: spell });
+            assert!(!convoke::available(&unpaid, Player::P0, Card::GrizzlyBears));
+            fail_unpaid_mana(&mut unpaid);
+            assert_eq!(unpaid.object_view(spell).zone, Zone::Hand);
             g.move_object(aura, Zone::Graveyard);
             assert!(
                 g.legal_actions()
@@ -100,7 +120,11 @@ fn departed_or_ability_removed_grant_cannot_pay_creature_spell() {
             );
         } else {
             g.move_object(grant, Zone::Graveyard);
-            reject(&mut g, Action::AnnounceCast { card: spell });
+            admit(&g, Action::AnnounceCast { card: spell });
+            act(&mut g, Action::AnnounceCast { card: spell });
+            reject(&mut g, Action::BeginConvoke);
+            fail_unpaid_mana(&mut g);
+            assert_eq!(g.object_view(spell).zone, Zone::Hand);
         }
     }
 }
@@ -230,7 +254,12 @@ fn sacrificing_public_suppressor_or_exiler_restores_convoke_for_the_same_cast() 
             .iter()
             .position(|r| r.clause == CastCostClause::Additional)
             .unwrap() as u16;
-        reject(&mut g, Action::ChooseCastCost { clause: mana });
+        admit(&g, Action::ChooseCastCost { clause: mana });
+        let mut mana_first = g.clone();
+        act(&mut mana_first, Action::ChooseCastCost { clause: mana });
+        assert!(!convoke::available(&mana_first, p, definition));
+        fail_unpaid_mana(&mut mana_first);
+        assert_eq!(mana_first.object_view(spell).zone, Zone::Hand);
         act(&mut g, Action::ChooseCastCost { clause: additional });
         let object = g.object_ref(binder);
         act(&mut g, Action::ChooseAdditionalCost { object });
@@ -258,7 +287,7 @@ fn sacrificing_public_suppressor_or_exiler_restores_convoke_for_the_same_cast() 
 }
 
 #[test]
-fn additional_cost_cannot_sacrifice_the_only_convoke_grant_before_mana() {
+fn sacrificing_the_only_convoke_grant_can_strand_the_later_mana_clause() {
     const CREATURE_GRANT: CardRules = CardRules {
         effect: Effect::Creature(2, 2),
         ..GRANT
@@ -291,6 +320,25 @@ fn additional_cost_cannot_sacrifice_the_only_convoke_grant_before_mana() {
         .unwrap() as u16;
     act(&mut g, Action::ChooseCastCost { clause: additional });
     let object = g.object_ref(grant);
-    reject(&mut g, Action::ChooseAdditionalCost { object });
+    act(&mut g, Action::ChooseAdditionalCost { object });
+    assert_eq!(g.object_view(grant).zone, Zone::Graveyard);
+    assert!(!convoke::available(
+        &g,
+        p,
+        Card::from_name("Arbiter of Woe").unwrap()
+    ));
+    let mana = g
+        .observe(p)
+        .cast_costs
+        .unwrap()
+        .clauses
+        .iter()
+        .position(|row| row.clause == CastCostClause::Mana)
+        .unwrap() as u16;
+    act(&mut g, Action::ChooseCastCost { clause: mana });
+    reject(&mut g, Action::PayCosts { payment: [0; 6] });
+    fail_unpaid_mana(&mut g);
+    assert_eq!(g.object_ref(grant), object);
     assert_eq!(g.object_view(grant).zone, Zone::Battlefield);
+    assert_eq!(g.object_view(spell).zone, Zone::Hand);
 }

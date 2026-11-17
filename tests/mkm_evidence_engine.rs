@@ -180,8 +180,8 @@ fn target_evidence_locks_before_mana_sacrifices_and_rejects_unfundable_targets()
             target: Target::Card(artifact),
         },
     );
-    reject(
-        &mut game,
+    admit(
+        &game,
         Action::ChooseTarget {
             target: Target::Card(expensive),
         },
@@ -232,8 +232,8 @@ fn mandatory_zero_evidence_is_paid_and_the_casting_card_cannot_be_its_own_fuel()
     let source = put(&mut game, player, "Lightning Strike", Zone::Graveyard);
 
     act(&mut game, Action::AnnounceFlashback { card: source });
-    reject(
-        &mut game,
+    admit(
+        &game,
         Action::ChooseTarget {
             target: Target::Card(artifact),
         },
@@ -448,7 +448,7 @@ fn the_hand_alternative_pays_zero_mana_and_fixes_printed_x_at_zero() {
     let provider = game.object_ref(source);
     let choice = alternative(&game, spell, provider, PaidCastOrigin::Ordinary);
     game.state.players[player.index()].mana = [0; 6];
-    reject(&mut game, choice.clone());
+    admit(&game, choice.clone());
     let fuel = ten_mana_witness(&mut game, player);
 
     act(&mut game, choice);
@@ -506,11 +506,11 @@ fn the_alternative_requires_independent_graveyard_and_exile_permissions_and_pays
         } else {
             game.grant_exile_play_permission(player, reference, false);
         }
-        reject(&mut game, choice.clone());
+        admit(&game, choice.clone());
 
         let last_fuel = put(&mut game, player, "Lightning Bolt", Zone::Graveyard);
         game.state.players[player.index()].mana = [0; 6];
-        reject(&mut game, choice.clone());
+        admit(&game, choice.clone());
         game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
         act(&mut game, choice);
         act(&mut game, Action::BeginOrderedCosts);
@@ -545,12 +545,12 @@ fn the_printed_discard_can_fund_the_later_alternative_evidence_clause() {
         PaidCastOrigin::Ordinary,
     );
     let low = put(&mut game, player, "Grizzly Bears", Zone::Hand);
-    reject(&mut game, choice.clone());
+    admit(&game, choice.clone());
     let discarded = spawn(&mut game, player, named("Omniscience"), Zone::Hand);
 
     act(&mut game, choice);
     act(&mut game, Action::BeginOrderedCosts);
-    assert!(!game.legal_actions().iter().any(|action| {
+    assert!(game.legal_actions().iter().any(|action| {
         let Action::ChooseCastCost { clause } = action else {
             return false;
         };
@@ -567,7 +567,7 @@ fn the_printed_discard_can_fund_the_later_alternative_evidence_clause() {
     }));
     choose_cost(&mut game, CastCostClause::Additional);
     let object = game.object_ref(low);
-    reject(&mut game, Action::ChooseAdditionalCost { object });
+    admit(&game, Action::ChooseAdditionalCost { object });
     let object = game.object_ref(discarded);
     act(&mut game, Action::ChooseAdditionalCost { object });
     assert_eq!(game.object_view(discarded).zone, Zone::Graveyard);
@@ -601,8 +601,8 @@ fn printed_and_alternative_evidence_use_disjoint_cards_and_commit_two_ordered_ev
     let first = put(&mut game, player, "Hill Giant", Zone::Graveyard);
     let mut insufficient = game.clone();
     act(&mut insufficient, choice.clone());
-    reject(
-        &mut insufficient,
+    admit(
+        &insufficient,
         Action::ChooseCollectEvidence { collect: true },
     );
     let second = put(&mut game, player, "Hill Giant", Zone::Graveyard);
@@ -630,7 +630,7 @@ fn printed_and_alternative_evidence_use_disjoint_cards_and_commit_two_ordered_ev
 
     choose_cost(&mut game, CastCostClause::OriginEvidence(10));
     let first_choice = choose_evidence(&game, first);
-    reject(&mut game, first_choice);
+    admit(&game, first_choice);
     let large_choice = Action::ChooseEvidence { object: reference };
     let index = game
         .legal_actions()
@@ -667,7 +667,21 @@ fn printed_and_alternative_evidence_use_disjoint_cards_and_commit_two_ordered_ev
     );
 
     choose_cost(&mut reverse, CastCostClause::Additional);
-    reject(&mut reverse, Action::ChooseEvidence { object: reference });
+    admit(&reverse, Action::ChooseEvidence { object: reference });
+    let mut stranded = reverse.clone();
+    select_evidence(&mut stranded, &[large]);
+    assert_eq!(stranded.object_view(large).zone, Zone::Exile);
+    choose_cost(&mut stranded, CastCostClause::OriginEvidence(10));
+    act(&mut stranded, Action::SubmitAttempt);
+    assert_eq!(
+        stranded.last_attempt_outcome_view(player).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMaterial)
+    );
+    assert_eq!(stranded.object_view(spell).zone, Zone::Hand);
+    for id in [large, first, second] {
+        assert_eq!(stranded.object_view(id).zone, Zone::Graveyard);
+    }
+    assert!(stranded.observe(player).last_evidence.is_none());
     select_evidence(&mut reverse, &[first, second]);
     let event = reverse.observe(player.other()).last_evidence.unwrap();
     assert_eq!((event.sequence, event.threshold), (1, 6));
@@ -793,7 +807,7 @@ fn evidence_mana_commits_exiles_before_color_and_unlock_replacement_choices() {
     game.state.players[player.index()].mana = [0; 6];
     let source = put(&mut game, player, "Soul-Guide Lantern", Zone::Battlefield);
     let choice = announce_evidence_mana(source);
-    reject(&mut game, choice.clone());
+    admit(&game, choice.clone());
 
     let fuel = put(&mut game, player, "Hill Giant", Zone::Graveyard);
     let mut prohibited = game.clone();
@@ -803,7 +817,7 @@ fn evidence_mana_commits_exiles_before_color_and_unlock_replacement_choices() {
         "Short Bow",
         Zone::Battlefield,
     );
-    reject(&mut prohibited, choice.clone());
+    admit(&prohibited, choice.clone());
 
     put(&mut game, player, "Candy Trail", Zone::Battlefield);
     put(&mut game, player, "Doubling Season", Zone::Battlefield);
@@ -856,7 +870,7 @@ fn a_parent_cast_keeps_its_exact_evidence_while_mana_evidence_branches_and_repla
     game.state.players[player.index()].mana = initial_payment;
     let mut short = game.clone();
     act(&mut short, Action::AnnounceCast { card: spell });
-    reject(&mut short, Action::ChooseCollectEvidence { collect: true });
+    admit(&short, Action::ChooseCollectEvidence { collect: true });
 
     let second = put(&mut game, player, "Lightning Bolt", Zone::Graveyard);
     game.begin_combat_rollback(player);
@@ -866,10 +880,35 @@ fn a_parent_cast_keeps_its_exact_evidence_while_mana_evidence_branches_and_repla
     let parent_source = game.object_ref(spell);
     act(&mut game, announce_evidence_mana(source));
     assert!(game.observe(player.other()).evidence.is_none());
-    for unavailable in [reserved, other] {
-        let choice = choose_evidence(&game, unavailable);
-        reject(&mut game, choice);
+    let foreign = choose_evidence(&game, other);
+    reject(&mut game, foreign);
+    let reserved_choice = choose_evidence(&game, reserved);
+    admit(&game, reserved_choice);
+    let mut stranded = game.clone();
+    select_evidence(&mut stranded, &[reserved]);
+    pay(&mut stranded);
+    act(&mut stranded, Action::ChooseMana { production: BLUE });
+    assert_eq!(stranded.object_view(reserved).zone, Zone::Exile);
+    reject(
+        &mut stranded,
+        Action::PayCosts {
+            payment: [0, 1, 0, 0, 0, 2],
+        },
+    );
+    act(&mut stranded, Action::EndManaWindow);
+    act(&mut stranded, Action::SubmitAttempt);
+    assert_eq!(
+        stranded.last_attempt_outcome_view(player).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMaterial)
+    );
+    if matches!(stranded.state.pending, Pending::ManaRollback { .. }) {
+        act(&mut stranded, Action::ChooseManaRollback { keep: false });
     }
+    assert_eq!(stranded.object_view(spell).zone, Zone::Hand);
+    assert_eq!(stranded.object_view(reserved).zone, Zone::Graveyard);
+    assert!(!stranded.object_view(source).tapped);
+    assert_eq!(stranded.counter_count(source, CounterKind::Unlock), 0);
+    assert_eq!(stranded.state.players[player.index()].mana, initial_payment);
 
     let choice = choose_evidence(&game, first);
     let index = game
@@ -896,7 +935,7 @@ fn a_parent_cast_keeps_its_exact_evidence_while_mana_evidence_branches_and_repla
     select_evidence(&mut game, &[second]);
     pay(&mut game);
     assert_eq!(game.object_view(reserved).zone, Zone::Graveyard);
-    reject(&mut game, Action::ChooseMana { production: GREEN });
+    admit(&game, Action::ChooseMana { production: GREEN });
     act(&mut game, Action::ChooseMana { production: BLUE });
     assert_eq!(game.state.pending, Pending::PayCosts { player });
     assert_eq!(game.counter_count(source, CounterKind::Unlock), 1);
@@ -1436,7 +1475,7 @@ fn a_paid_cast_uses_exact_linked_evidence_and_replaces_only_its_own_graveyard_mo
     let action = start_linked_spell(&game, shock);
     let mut unfunded = game.clone();
     unfunded.state.players[pilot.index()].mana = [0; 6];
-    reject(&mut unfunded, action.clone());
+    admit(&unfunded, action.clone());
     let index = game
         .legal_actions()
         .iter()
@@ -1448,9 +1487,12 @@ fn a_paid_cast_uses_exact_linked_evidence_and_replaces_only_its_own_graveyard_mo
     indexed.apply_index(pilot, revision, index).unwrap();
     act(&mut game, action.clone());
     assert_eq!(game.snapshot(), indexed.snapshot());
+    let mut replay = game.clone();
+    replay.restore(&snapshot).unwrap();
     indexed.restore(&snapshot).unwrap();
+    act(&mut replay, action.clone());
     act(&mut indexed, action);
-    assert_eq!(game.snapshot(), indexed.snapshot());
+    assert_eq!(replay.snapshot(), indexed.snapshot());
     act(
         &mut game,
         Action::ChooseTarget {

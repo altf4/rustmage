@@ -435,7 +435,7 @@ fn projected_borrowed_mana_can_spend_the_counter_that_granted_the_ability() {
     let spell = put(&mut parent, player, "Unsummon", Zone::Hand);
     parent.state.players[player.index()].mana = ZERO;
     let cast = Action::AnnounceCast { card: spell };
-    reject(&mut parent, cast.clone());
+    admit(&parent, cast.clone());
     exile(&mut parent, provider, donor);
     resolve_top(&mut parent);
     act(&mut parent, target(recipient));
@@ -467,7 +467,17 @@ fn projected_borrowed_mana_can_spend_the_counter_that_granted_the_ability() {
         .unwrap();
     assert_eq!(raw.snapshot(), indexed.snapshot());
     raw.restore(&saved).unwrap();
+    assert_eq!(raw.snapshot(), saved);
+    assert_eq!(
+        raw.apply_index(player, parent.revision(), index),
+        Err(Error::StaleRevision)
+    );
+    indexed = raw.clone();
     act(&mut raw, mana.clone());
+    indexed
+        .apply_index(player, indexed.revision(), index)
+        .unwrap();
+    assert_eq!(raw.snapshot(), indexed.snapshot());
     for game in [&mut raw, &mut indexed] {
         assert_eq!(count(game, recipient), 0);
         assert_eq!(game.state.players[player.index()].mana, BLUE);

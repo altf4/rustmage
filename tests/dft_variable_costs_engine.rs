@@ -517,13 +517,33 @@ fn graveyard_exile_prohibition_is_shared_by_funding_and_actual_payment() {
         g.state.players[p.index()].mana = [0; 6];
         assert!(available(&g, source));
         begin(&mut g, source, None);
-        select(&mut g, artifact);
-        act(&mut g, Action::FinishAdditionalCostGroup);
+        assert_eq!(g.state.pending, Pending::AdditionalCost { player: p });
+        reject_selection(&mut g, artifact);
+        let nested = Action::AnnounceMana {
+            card: blocker,
+            ability: 0,
+            counter_payment: Counters::default(),
+            production: [0, 1, 1, 0, 0, 2],
+        };
+        admit(&g, nested.clone());
+        let mut staged = g.clone();
+        act(&mut staged, nested);
+        pay(&mut staged);
+        assert_eq!(staged.state.pending, Pending::AdditionalCost { player: p });
+        assert_eq!(staged.object_view(blocker).zone, Zone::Graveyard);
+        select(&mut staged, artifact);
+        act(&mut staged, Action::FinishAdditionalCostGroup);
+        pay(&mut staged);
+        assert_eq!(staged.object_view(artifact).zone, Zone::Exile);
+        drain(&mut staged);
+        assert_eq!(staged.state.players[p.index()].life, 21);
         choose(
             &mut g,
             |a| matches!(a, Action::ActivateMana {card,..} if *card == blocker),
         );
         assert_eq!(g.object_view(blocker).zone, Zone::Graveyard);
+        select(&mut g, artifact);
+        act(&mut g, Action::FinishAdditionalCostGroup);
         pay(&mut g);
         assert_eq!(g.object_view(artifact).zone, Zone::Exile);
         drain(&mut g);
@@ -644,11 +664,25 @@ fn a_departing_source_cannot_pay_a_second_distinct_departure_cost() {
     let p = Player::P0;
     let mut g = scenario(p);
     let source = put(&mut g, p, "Clamorous Ironclad", Zone::Battlefield);
-    assert!(!available(&g, source));
+    admit(
+        &g,
+        Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
     let extra = put(&mut g, p, "Soul-Guide Lantern", Zone::Battlefield);
     assert!(available(&g, source));
     begin(&mut g, source, None);
-    reject_selection(&mut g, source);
+    // The provisional group may name the source, but completing that group
+    // checks that one incarnation cannot pay both distinct departures.
+    select(&mut g, source);
+    reject(&mut g, Action::FinishAdditionalCostGroup);
+    assert_eq!(g.state.pending, Pending::AdditionalCost { player: p });
+    assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+    assert_eq!(g.object_view(extra).zone, Zone::Battlefield);
+    act(&mut g, Action::ResetCostSelection);
     select(&mut g, extra);
     finish(&mut g);
     assert_eq!(g.object_view(source).zone, Zone::Graveyard);

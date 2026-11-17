@@ -105,7 +105,7 @@ fn named_tax_applies_to_both_controllers_and_a_zero_mana_printed_activation() {
         let other = put(&mut g, p, "Goblin Piker", Zone::Battlefield);
         tax(&mut g, p.other(), "Grizzly Bears");
         g.state.players[p.index()].mana = [0; 6];
-        reject(&mut g, start(source));
+        admit(&g, start(source));
         assert!(g.legal_actions().contains(&start(other)));
         g.state.players[p.index()].mana = TWO;
         act(&mut g, start(source));
@@ -245,7 +245,7 @@ fn x_is_added_with_the_increase_before_a_counter_based_reduction_saturates() {
     g.add_counter(source, CounterKind::Charge, 5);
     g.state.players[0].mana = TWO;
     act(&mut g, start(source));
-    assert_eq!(g.x_choice().unwrap().intervals[0].maximum, 5);
+    assert_eq!(g.x_choice().unwrap().intervals[0].maximum, u32::MAX);
     act(&mut g, Action::ChooseX { value: 5 });
     assert_eq!(g.mana_payment_domain().unwrap().generic, 2);
     pay(&mut g);
@@ -547,7 +547,7 @@ fn independent_self_granted_mana_instances_pay_tax_and_keep_once_per_turn_histor
 }
 
 #[test]
-fn crew_and_saddle_reserve_selected_contributors_against_mana_and_tap_only_after_all_costs() {
+fn crew_and_saddle_recheck_selected_contributors_after_mana_and_tap_only_at_payment() {
     let _scope = fixture_rules::activate(&[
         (named("Ghost Vacuum"), &TAX),
         (Card::GrizzlyBears, &PLAIN),
@@ -559,7 +559,7 @@ fn crew_and_saddle_reserve_selected_contributors_against_mana_and_tap_only_after
         let mana_creature = put(&mut g, Player::P0, "Llanowar Elves", Zone::Battlefield);
         tax(&mut g, Player::P1, name);
         g.state.players[0].mana = [0; 6];
-        reject(&mut g, start(source));
+        admit(&g, start(source));
         let participant = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
         act(&mut g, start(source));
         let wrong = if crew {
@@ -571,7 +571,9 @@ fn crew_and_saddle_reserve_selected_contributors_against_mana_and_tap_only_after
                 object: g.object_ref(mana_creature),
             }
         };
-        reject(&mut g, wrong);
+        admit(&g, wrong.clone());
+        let mut reserved = g.clone();
+        act(&mut reserved, wrong);
         let choose = if crew {
             Action::ChooseCrewer {
                 object: g.object_ref(participant),
@@ -581,6 +583,20 @@ fn crew_and_saddle_reserve_selected_contributors_against_mana_and_tap_only_after
                 object: g.object_ref(participant),
             }
         };
+        act(&mut reserved, choose.clone());
+        act(
+            &mut reserved,
+            if crew {
+                Action::FinishCrew
+            } else {
+                Action::FinishSaddle
+            },
+        );
+        act(&mut reserved, activate_mana(mana_creature, TWO));
+        assert!(reserved.mana_payment_domain().is_none());
+        reject(&mut reserved, Action::PayCosts { payment: TWO });
+        assert!(reserved.object_view(mana_creature).tapped);
+        assert!(!reserved.object_view(participant).tapped);
         act(&mut g, choose);
         act(
             &mut g,
@@ -633,7 +649,7 @@ fn suppressing_the_provider_removes_the_tax_and_aura_departure_restores_it() {
     settle(&mut g);
     g.move_object(aura, Zone::Graveyard);
     assert_eq!(g.named_activation_generic_increase(source), 2);
-    reject(&mut g, start(source));
+    admit(&g, start(source));
 }
 
 #[test]
@@ -774,7 +790,7 @@ fn a_current_copied_name_controls_the_tax_instead_of_the_source_definition() {
     g.set_copy_recipe(g.object_ref(source), recipe);
     assert_eq!(g.object_name(source), "Goblin Piker");
     assert_eq!(g.named_activation_generic_increase(source), 2);
-    reject(&mut g, start(source));
+    admit(&g, start(source));
     g.state.players[0].mana = TWO;
     act(&mut g, start(source));
     assert_eq!(

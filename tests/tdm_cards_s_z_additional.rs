@@ -1692,7 +1692,7 @@ fn tersa_random_permission_is_owned_deterministic_paid_and_expires_after_this_tu
     reset_main(&mut raw, p);
     raw.state.step = Step::Main2;
     raw.state.players[0].mana = [0; 6];
-    reject(&mut raw, Action::AnnounceExile { card });
+    admit(&raw, Action::AnnounceExile { card });
     let mut expired = raw.clone();
     expired.state.turn += 1;
     expired.state.players[0].mana = [8; 6];
@@ -1756,7 +1756,7 @@ fn sibsig_ceremony_reduces_only_own_creature_generic_costs_and_direct_entries_do
     assert_eq!(g.object_view(direct).zone, Zone::Battlefield);
     assert_eq!(tokens(&g, p, "Zombie").len(), 1);
     let artifact = put(&mut g, p, "Short Bow", Zone::Hand);
-    reject(&mut g, Action::AnnounceCast { card: artifact });
+    admit(&g, Action::AnnounceCast { card: artifact });
     g.state.players[0].mana = [0, 0, 0, 0, 0, 2];
     cast(&mut g, artifact, None);
     drain(&mut g);
@@ -1764,7 +1764,7 @@ fn sibsig_ceremony_reduces_only_own_creature_generic_costs_and_direct_entries_do
     reset_main(&mut g, p.other());
     let enemy = put(&mut g, p.other(), "Hill Giant", Zone::Hand);
     g.state.players[1].mana = [0, 0, 0, 1, 0, 1];
-    reject(&mut g, Action::AnnounceCast { card: enemy });
+    admit(&g, Action::AnnounceCast { card: enemy });
     g.state.players[1].mana = [0, 0, 0, 1, 0, 3];
     cast(&mut g, enemy, None);
     drain(&mut g);

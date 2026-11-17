@@ -175,7 +175,25 @@ fn eluge_counts_the_new_island_and_reduces_only_the_first_actual_spell() {
         [0; 6]
     );
     drain(&mut game);
-    reject(&mut game, Action::AnnounceCast { card: second });
+    act(&mut game, Action::AnnounceCast { card: second });
+    assert_eq!(
+        game.state.announcing.as_ref().unwrap().total_cost,
+        Some(ManaCost {
+            colored: [0, 1, 0, 0, 0, 0],
+            generic: 0,
+        })
+    );
+    reject(&mut game, Action::PayCosts { payment: [0; 6] });
+    act(&mut game, Action::EndManaWindow);
+    act(&mut game, Action::SubmitAttempt);
+    let outcome = game.last_attempt_outcome_view(player).unwrap();
+    assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+    assert_eq!(outcome.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+    assert_eq!(game.object_view(second).zone, Zone::Hand);
+    assert_eq!(
+        game.state.players[player.index()].instant_sorcery_cast_this_turn,
+        1
+    );
     game.pay_counters(mountain, &Counters::of(CounterKind::Flood, 1));
     assert!(!game.object_view(mountain).has_subtype("Island"));
     assert_eq!(stats(&game, source), (1, 1));

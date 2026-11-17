@@ -13,7 +13,7 @@ fn allies_at_last_uses_live_affinity_and_two_sources_without_fighting() {
     game.state.players[player.index()].mana = [0, 0, 0, 0, 1, 0];
     let mut short = game.clone();
     short.move_object(first, Zone::Hand);
-    reject(&mut short, cast_action.clone());
+    admit(&short, cast_action.clone());
 
     act(&mut game, cast_action);
     let mut zero = game.clone();

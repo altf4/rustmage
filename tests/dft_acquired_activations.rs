@@ -233,7 +233,7 @@ fn acquired_target_discount_and_additional_tap_cost_share_one_projected_payment_
     );
     let action = acquire(&mut g, source);
     g.state.players[0].mana = [0; 6];
-    reject(&mut g, action.clone());
+    admit(&g, action.clone());
     let mana = put(&mut g, Player::P0, "Forest", Zone::Battlefield);
     assert!(
         g.legal_actions().contains(&action),

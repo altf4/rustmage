@@ -470,7 +470,7 @@ fn howlsquad_max_speed_tap_mana_counts_current_owned_goblins_including_itself_an
         };
         g.state.players[p.index()].speed = 3;
         reject(&mut g, mana.clone());
-        reject(&mut g, Action::AnnounceCast { card: spell });
+        admit(&g, Action::AnnounceCast { card: spell });
         g.state.players[p.index()].speed = 4;
         g.state.objects[source as usize].summoning_sick = true;
         reject(&mut g, mana.clone());

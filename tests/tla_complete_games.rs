@@ -1,7 +1,7 @@
 //! Standard games and ownership checks using only Avatar release identities.
 use rustmage::{
-    Action, Card, CardId, CastMethod, Config, DeckRules, Error, Game, Observation, Outcome, Player,
-    StackKind, Step, policy,
+    Action, AttemptOutcome, Card, CardId, CastMethod, Config, DeckRules, Error, Game, Observation,
+    Outcome, Player, StackKind, Step, Zone, policy,
 };
 use serde::Deserialize;
 use serde_json::json;
@@ -192,11 +192,90 @@ fn prove_owned_branch(game: &Game, view: &Observation, chosen: usize) -> bool {
 }
 
 fn workload_index(view: &Observation, activated: &BTreeSet<(u32, CardId)>) -> usize {
-    let smoke = policy::smoke_index_from_observation(view, &view.actions);
-    if matches!(view.actions[smoke], Action::PlayLand { .. }) {
+    let actor = view.actor.unwrap();
+    let tap_source = view.announcing.as_ref().and_then(|item| {
+        let StackKind::ActivatedAbility { ability } = item.kind else {
+            return None;
+        };
+        let (source, definition) = item.source_identity()?;
+        definition
+            .activations()
+            .get(usize::from(ability))
+            .is_some_and(|ability| ability.cost.tap)
+            .then_some(source.card)
+    });
+    let eligible: Vec<_> = view
+        .actions
+        .iter()
+        .enumerate()
+        .filter(|(_, action)| {
+            if tap_source.is_some_and(|source| {
+                matches!(action,
+            Action::TapMana { card } | Action::TapGrantedMana { card, .. }
+                | Action::ActivateMana { card, .. } | Action::AnnounceMana { card, .. }
+                if *card == source)
+            }) {
+                return false;
+            }
+            if view.decision == "priority"
+                && matches!(
+                    action,
+                    Action::AnnounceActivate { .. }
+                        | Action::Activate { .. }
+                        | Action::BeginActivate { .. }
+                )
+                && (view.active != actor || !matches!(view.step, Step::Main1 | Step::Main2))
+            {
+                let card = match action {
+                    Action::AnnounceActivate { card, .. }
+                    | Action::Activate { card, .. }
+                    | Action::BeginActivate { card, .. } => *card,
+                    _ => unreachable!(),
+                };
+                return view
+                    .objects
+                    .iter()
+                    .find(|object| object.id == card)
+                    .is_some_and(|object| {
+                        matches!(
+                            object.card.name(),
+                            "Katara, Water Tribe's Hope"
+                                | "Waterbender Ascension"
+                                | "Water Tribe Rallier"
+                        )
+                    });
+            }
+            !(view.decision == "priority"
+                && view.active == actor
+                && matches!(view.step, Step::Untap | Step::Upkeep | Step::Draw)
+                && matches!(action, Action::AnnounceCast { .. } | Action::Cast { .. }))
+        })
+        .map(|(index, action)| (index, action.clone()))
+        .collect();
+    let actions: Vec<_> = eligible.iter().map(|(_, action)| action.clone()).collect();
+    eligible[workload_choice(view, &actions, activated)].0
+}
+
+fn workload_choice(
+    view: &Observation,
+    actions: &[Action],
+    activated: &BTreeSet<(u32, CardId)>,
+) -> usize {
+    let smoke = policy::smoke_index_from_observation(view, actions);
+    if matches!(actions[smoke], Action::PlayLand { .. }) {
         return smoke;
     }
-    if let Some(index) = view.actions.iter().position(|action| {
+    // The preferred casting routes are ordinary paid proposals. Preserve the
+    // smoke caller's failed-turn backoff before applying workload preferences.
+    if view.attempt.is_none()
+        && view.decision == "priority"
+        && view.last_attempt_outcome.is_some_and(|outcome| {
+            outcome.turn == u64::from(view.turn) && outcome.outcome == AttemptOutcome::Failed
+        })
+    {
+        return smoke;
+    }
+    if let Some(index) = actions.iter().position(|action| {
         matches!(
             action,
             Action::AnnounceForetell { .. }
@@ -207,9 +286,46 @@ fn workload_index(view: &Observation, activated: &BTreeSet<(u32, CardId)>) -> us
     }) {
         return index;
     }
+    if view.decision == "priority"
+        && view.active == view.actor.unwrap()
+        && matches!(view.step, Step::Main1 | Step::Main2)
+        && view.stack.is_empty()
+    {
+        let actor = view.actor.unwrap();
+        let budget = view.players[actor.index()]
+            .mana
+            .iter()
+            .map(|&n| u64::from(n))
+            .sum::<u64>()
+            + view
+                .objects
+                .iter()
+                .filter(|object| {
+                    object.controller == actor
+                        && object.zone == Zone::Battlefield
+                        && object.card.is_land()
+                        && !object.tapped
+                })
+                .count() as u64;
+        if let Some((index, _)) = actions
+            .iter()
+            .enumerate()
+            .filter_map(|(index, action)| {
+                let (Action::Cast { card, .. } | Action::AnnounceCast { card }) = action else {
+                    return None;
+                };
+                let object = view.objects.iter().find(|object| object.id == *card)?;
+                let value = object.card.fixed_mana_value();
+                (value <= budget).then_some((index, value))
+            })
+            .max_by_key(|&(_, value)| value)
+        {
+            return index;
+        }
+    }
     // Keep reusable mana sinks out of upkeep. A card-selection ability can
     // spend spare resources after combat; combat tricks need a useful window.
-    if let Action::AnnounceActivate { card, .. } = view.actions[smoke]
+    if let Action::AnnounceActivate { card, .. } = actions[smoke]
         && let Some(object) = view.objects.iter().find(|object| object.id == card)
         && let Some(window) = match object.card.name() {
             "Katara, Water Tribe's Hope" => Some(Step::Blockers),
@@ -221,10 +337,7 @@ fn workload_index(view: &Observation, activated: &BTreeSet<(u32, CardId)>) -> us
             || view.step != window
             || !view.stack.is_empty()
             || activated.contains(&(view.turn, card)))
-        && let Some(pass) = view
-            .actions
-            .iter()
-            .position(|action| *action == Action::Pass)
+        && let Some(pass) = actions.iter().position(|action| *action == Action::Pass)
     {
         return pass;
     }
@@ -289,7 +402,37 @@ fn avatar_only_standard_games_finish_and_replay_with_all_four_bends() {
             let mut activated = BTreeSet::new();
             let started = Instant::now();
             while let Some(actor) = game.actor() {
-                assert!(journal.len() < 4096, "{label} exceeded its decision limit");
+                if journal.len() >= 4096 {
+                    let trace_dir = directory.clone().unwrap_or_else(|| {
+                        std::env::var_os("HOME")
+                            .map(PathBuf::from)
+                            .unwrap_or_else(|| PathBuf::from("/tmp"))
+                            .join(".cache/rustmage-staged-tla-failures")
+                    });
+                    std::fs::create_dir_all(&trace_dir).unwrap();
+                    let path = trace_dir.join(format!("{label}-stalled.json"));
+                    let view = game.observe(actor);
+                    let next = workload_index(&view, &activated);
+                    std::fs::write(
+                        &path,
+                        serde_json::to_vec_pretty(&json!({
+                            "label": label,
+                            "seed": run.seed,
+                            "p0": pairing.p0,
+                            "p1": pairing.p1,
+                            "starting_player": run.starting_player,
+                            "decisions": journal.len(),
+                            "next_action": view.actions[next],
+                            "last_attempt_outcome": view.last_attempt_outcome,
+                            "attempt": view.attempt,
+                            "observations": PLAYERS.map(|player| game.observe(player)),
+                            "journal": journal,
+                        }))
+                        .unwrap(),
+                    )
+                    .unwrap();
+                    panic!("{label} exceeded 4096 decisions; trace {}", path.display());
+                }
                 let view = game.observe(actor);
                 evidence::check_privacy(&view, actor);
                 let index = workload_index(&view, &activated);

@@ -329,7 +329,7 @@ fn origin_discount_and_cast_entry_apply_to_independent_graveyard_permission() {
     let object = game.object_ref(from_grave);
     game.grant_graveyard_permission(player, object, GraveyardCastKind::Cast);
     game.state.players[player.index()].mana = [0; 6];
-    reject(&mut game, Action::AnnounceCast { card: from_hand });
+    admit(&game, Action::AnnounceCast { card: from_hand });
 
     act(&mut game, Action::AnnounceCast { card: from_grave });
     pay(&mut game);
@@ -358,7 +358,7 @@ fn granted_mayhem_prices_the_adventure_face_of_a_discarded_land() {
 
     game.state.players[player.index()].mana = [2, 0, 0, 0, 0, 0];
     let adventure = granted(id, CastFace::Adventure);
-    reject(&mut game, adventure.clone());
+    admit(&game, adventure.clone());
     game.state.players[player.index()].mana[5] = 1;
     act(&mut game, adventure);
     if game.legal_actions().contains(&Action::FinishTargets) {

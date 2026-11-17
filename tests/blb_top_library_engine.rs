@@ -77,7 +77,7 @@ fn choose_index(game: &mut Game, player: Player, action: &Action) {
 }
 
 #[test]
-fn paid_variable_spell_constrains_funding_and_x_and_keeps_the_next_card_private() {
+fn paid_variable_spell_keeps_permission_x_and_privacy_without_proving_funding() {
     let _rules = fixture_rules::activate(&[(Card::HillGiant, &TOP_PERMISSION)]);
     for player in [Player::P0, Player::P1] {
         let opponent = player.other();
@@ -90,7 +90,24 @@ fn paid_variable_spell_constrains_funding_and_x_and_keeps_the_next_card_private(
         game.state.players[player.index()].mana = [0, 0, 2, 0, 0, 1];
         assert_eq!(top(&game, player, player), Some(game.object_ref(spell)));
         assert_eq!(top(&game, opponent, player), None);
-        reject(&mut game, announcement.clone());
+        Game::reset_payment_planning_work();
+        let mut unfunded = game.clone();
+        act(&mut unfunded, announcement.clone());
+        // This declaration is permitted by printed value despite the current
+        // pool being too small. Failure belongs to this supplied execution.
+        act(&mut unfunded, Action::ChooseX { value: 3 });
+        assert_eq!(top(&unfunded, player, player), None);
+        act(&mut unfunded, Action::EndManaWindow);
+        act(&mut unfunded, Action::SubmitAttempt);
+        let outcome = unfunded.last_attempt_outcome_view(player).unwrap();
+        assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+        assert_eq!(outcome.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+        assert_eq!(unfunded.object_view(spell).zone, Zone::Library);
+        assert_eq!(
+            unfunded.state.players[player.index()].mana,
+            [0, 0, 2, 0, 0, 1]
+        );
+        assert!(unfunded.legal_actions().contains(&announcement));
 
         let land = put(&mut game, player, "Swamp", Zone::Battlefield);
         let start = game.snapshot();
@@ -104,11 +121,11 @@ fn paid_variable_spell_constrains_funding_and_x_and_keeps_the_next_card_private(
             game.x_choice().unwrap().intervals,
             [XInterval {
                 minimum: 2,
-                maximum: 2,
+                maximum: u32::MAX,
             }]
         );
         reject(&mut game, Action::ChooseX { value: 1 });
-        reject(&mut game, Action::ChooseX { value: 3 });
+        assert!(game.x_choice().unwrap().contains(3));
         choose_index(&mut indexed, player, &x);
         act(&mut game, x);
         assert_eq!(indexed.snapshot(), game.snapshot());
@@ -141,6 +158,7 @@ fn paid_variable_spell_constrains_funding_and_x_and_keeps_the_next_card_private(
         assert_eq!(game.state.players[opponent.index()].life, 18);
         act(&mut game, Action::PlayLand { card: next });
         assert_eq!(game.object_view(next).zone, Zone::Battlefield);
+        assert_eq!(Game::payment_planning_work(), Default::default());
     }
 }
 
@@ -173,7 +191,15 @@ fn selected_face_and_free_routes_use_printed_value_with_fixed_x() {
             .contains(&Action::AnnounceAdventure { card: adventure })
     );
     game.state.players[player.index()].mana = [0; 6];
-    reject(&mut game, Action::AnnounceAdventure { card: adventure });
+    let mut paid = game.clone();
+    act(&mut paid, Action::AnnounceAdventure { card: adventure });
+    act(&mut paid, Action::EndManaWindow);
+    act(&mut paid, Action::SubmitAttempt);
+    assert_eq!(
+        paid.last_attempt_outcome_view(player).unwrap().outcome,
+        AttemptOutcome::Failed
+    );
+    assert_eq!(paid.object_view(adventure).zone, Zone::Library);
     act(&mut game, free_spell(adventure, CastFace::Adventure));
     pay(&mut game);
     let item = game.state.stack.last().unwrap();
@@ -208,9 +234,22 @@ fn independent_limited_permission_and_ordinary_permission_have_separate_x_domain
         .unwrap();
     let mut using_ordinary = game.clone();
     act(&mut using_ordinary, ordinary);
+    assert_eq!(
+        using_ordinary.x_choice().unwrap().intervals,
+        [XInterval {
+            minimum: 2,
+            maximum: u32::MAX
+        }]
+    );
     reject(&mut using_ordinary, Action::ChooseX { value: 1 });
     act(&mut game, limited);
-    assert!(game.x_choice().unwrap().contains(0));
+    assert_eq!(
+        game.x_choice().unwrap().intervals,
+        [XInterval {
+            minimum: 0,
+            maximum: u32::MAX
+        }]
+    );
     act(&mut game, Action::ChooseX { value: 0 });
     pay(&mut game);
     assert_eq!(game.state.stack.last().unwrap().mana_value(), 2);

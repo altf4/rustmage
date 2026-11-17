@@ -68,12 +68,10 @@ fn equipped_haste_respects_current_control_and_projected_attachment_departure() 
     let tap = Action::TapMana { card: elf };
     assert!(!game.equipped(elf));
     assert!(!game.legal_actions().contains(&tap));
-    assert!(!game.can_fund(goal.clone()));
 
     assert!(game.attach_equipment(equipment_ref, elf_ref));
     assert!(game.equipped(elf));
     assert!(game.legal_actions().contains(&tap));
-    assert!(game.can_fund(goal.clone()));
     let before = game.snapshot();
     let projected = FundingState::from_game(&game, &goal);
     assert!(projected.activation_keywords(elf).contains(Keywords::HASTE));
@@ -96,7 +94,7 @@ fn equipped_haste_respects_current_control_and_projected_attachment_departure() 
     );
     assert!(blanked.equipped(elf));
     assert!(!blanked.object_view(elf).keywords.contains(Keywords::HASTE));
-    assert!(!blanked.can_fund(goal.clone()));
+    reject(&mut blanked, tap.clone());
 
     let mut transferred = game.clone();
     transferred.record_control(provider_ref, player.other(), None);
@@ -107,7 +105,7 @@ fn equipped_haste_respects_current_control_and_projected_attachment_departure() 
             .keywords
             .contains(Keywords::HASTE)
     );
-    assert!(!transferred.can_fund(goal));
+    reject(&mut transferred, tap.clone());
 
     act(&mut game, tap);
     assert_eq!(game.state.players[player.index()].mana[4], 1);

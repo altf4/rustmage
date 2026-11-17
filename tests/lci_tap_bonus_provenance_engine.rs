@@ -179,7 +179,7 @@ fn separate_produced_type_choices_keep_both_exact_providers_on_rollback() {
     assert_eq!(live_mana(&game, p, first_ref), Some(GREEN.map(u128::from)));
     assert_eq!(live_mana(&game, p, second_ref), None);
     assert!(game.state.cast_rollback.as_ref().unwrap().events.is_empty());
-    reject(&mut game, Action::ChooseMana { production: GREEN });
+    admit(&game, Action::ChooseMana { production: GREEN });
     act(&mut game, Action::ChooseMana { production: BLUE });
     assert_eq!(live_mana(&game, p, second_ref), Some(BLUE.map(u128::from)));
     assert!(game.observe(p).mana_tap_bonus_source.is_none());

@@ -88,7 +88,7 @@ fn an_ordinary_lifetime_limit_survives_new_turns_and_resets_on_blink() {
         reject(&mut game, first.clone());
         put(&mut game, player, "Forest", Zone::Graveyard);
         game.state.players[player.index()].mana = BLUE;
-        reject(
+        act(
             &mut game,
             Action::AnnounceActivate {
                 card: source,
@@ -96,6 +96,20 @@ fn an_ordinary_lifetime_limit_survives_new_turns_and_resets_on_blink() {
                 counter_payment: Counters::default(),
             },
         );
+        assert!(game.mana_payment_domain().is_none());
+        reject(&mut game, Action::PayCosts { payment: BLUE });
+        reject(&mut game, Action::PayCosts { payment: FULL });
+        act(&mut game, Action::EndManaWindow);
+        act(&mut game, Action::SubmitAttempt);
+        assert_eq!(
+            game.last_attempt_outcome_view(player).unwrap().outcome,
+            AttemptOutcome::Failed
+        );
+        assert_eq!(game.object_ref(source), original);
+        assert_eq!(game.counter_count(source, CounterKind::PlusOne), 0);
+        assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 0);
+        assert_eq!(game.state.players[player.index()].mana, BLUE);
+        assert!(game.state.stack.is_empty());
 
         game.state.players[player.index()].mana = FULL;
         let snapshot = game.snapshot();

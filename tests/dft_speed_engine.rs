@@ -332,10 +332,16 @@ fn artifact_or_activation_mana_rejects_other_payments_and_keeps_quality_after_de
             g.legal_actions()
                 .contains(&Action::AnnounceCast { card: artifact })
         );
-        assert!(
-            !g.legal_actions()
-                .contains(&Action::AnnounceCast { card: spell })
+        admit(&g, Action::AnnounceCast { card: spell });
+        let mut restricted = g.clone();
+        act(&mut restricted, Action::AnnounceCast { card: spell });
+        reject(
+            &mut restricted,
+            Action::PayCosts {
+                payment: [0, 3, 0, 0, 0, 0],
+            },
         );
+        assert!(restricted.mana_payment_domain().is_none());
         assert!(g.legal_actions().iter().any(
             |a| matches!(a, Action::AnnounceActivate {card, ability:0, ..} if *card == camera)
         ));
@@ -346,9 +352,15 @@ fn artifact_or_activation_mana_rejects_other_payments_and_keeps_quality_after_de
         );
         let purpose = mana_lots::Purpose::Activation(mana_lots::Source::in_world(&g, camera));
         assert!(quality.eligible(purpose));
-        let before = g.snapshot();
-        reject(&mut g, Action::AnnounceCast { card: spell });
-        assert_eq!(g.snapshot(), before);
+        act(&mut restricted, Action::EndManaWindow);
+        act(&mut restricted, Action::SubmitAttempt);
+        let failed = restricted.last_attempt_outcome_view(p).unwrap();
+        assert_eq!(failed.outcome, AttemptOutcome::Failed);
+        assert_eq!(failed.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+        assert_eq!(restricted.object_ref(spell), g.object_ref(spell));
+        assert_eq!(restricted.object_view(spell).zone, Zone::Hand);
+        assert_eq!(restricted.state.players[p.index()].mana, [0, 3, 0, 0, 0, 0]);
+        assert_eq!(restricted.state.mana_lots, g.state.mana_lots);
     }
 }
 

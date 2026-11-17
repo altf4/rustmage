@@ -430,7 +430,18 @@ fn valgavoths_onslaught_pays_double_x_and_counters_only_its_two_results() {
     let spell = put(&mut game, player, "Valgavoth's Onslaught", Zone::Hand);
     game.state.players[player.index()].mana = [0, 0, 0, 0, 1, 4];
     act(&mut game, Action::AnnounceCast { card: spell });
-    reject(&mut game, Action::ChooseX { value: 3 });
+    let mut unfunded = game.clone();
+    act(&mut unfunded, Action::ChooseX { value: 3 });
+    assert!(unfunded.mana_payment_domain().is_none());
+    act(&mut unfunded, Action::EndManaWindow);
+    act(&mut unfunded, Action::SubmitAttempt);
+    assert_eq!(
+        unfunded
+            .last_attempt_outcome_view(game.actor().unwrap())
+            .unwrap()
+            .reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
     act(&mut game, Action::ChooseX { value: 2 });
     pay(&mut game);
     assert_eq!(game.state.players[player.index()].mana, [0; 6]);

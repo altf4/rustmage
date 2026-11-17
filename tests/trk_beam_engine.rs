@@ -121,7 +121,7 @@ fn graveyard_permission_timing_tax_and_return_cost() {
         let spell = put(&mut game, actor, "Opt", Zone::Graveyard);
         let enemy_spell = put(&mut game, actor.other(), "Opt", Zone::Graveyard);
         let hand_spell = put(&mut game, actor, "Opt", Zone::Hand);
-        reject(&mut game, beam(spell));
+        admit(&game, beam(spell));
         reject(&mut game, beam(enemy_spell));
         reject(&mut game, beam(hand_spell));
 
@@ -294,7 +294,7 @@ fn enchanted_creature_cannot_pay_beam_return() {
     let aura = put(&mut game, Player::P1, "Pacifism", Zone::Battlefield);
     let enchanted_ref = game.object_ref(enchanted);
     game.state.objects[aura as usize].attached_to = Some(enchanted_ref);
-    reject(&mut game, beam(spell));
+    admit(&game, beam(spell));
 
     let other = put(&mut game, Player::P0, "Bear Cub", Zone::Battlefield);
     let other_ref = game.object_ref(other);

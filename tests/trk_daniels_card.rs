@@ -74,7 +74,7 @@ fn graveyard_daniels_pays_exact_bottom_before_gaining_life() {
         },
     );
     game.state.players[0].mana = [0; 6];
-    reject(&mut game, action.clone());
+    admit(&game, action.clone());
     game.state.players[0].mana = [8; 6];
 
     let snapshot = game.snapshot();

@@ -295,7 +295,7 @@ fn exact_surcharges_taxes_and_mandatory_costs_survive_transactional_casting() {
     });
     let action = zero(&parent, spell, source, ExileZeroOrigin::Taxed { surcharge });
     parent.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
-    reject(&mut parent, action.clone());
+    admit(&parent, action.clone());
     let total = [0, 0, 0, 0, 0, 3];
     parent.state.players[player.index()].mana = total;
     let index = parent
@@ -368,7 +368,7 @@ fn linked_exile_permissions_keep_their_entry_counter_or_counter_cost() {
         };
         let action = zero(&game, spell, source, origin);
         if with_counter_cost {
-            reject(&mut game, action.clone());
+            admit(&game, action.clone());
             game.add_counter(grant.card, CounterKind::PlusOne, 2);
         }
         act(&mut game, action);

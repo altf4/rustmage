@@ -299,7 +299,7 @@ fn intimidation_tactics_still_reveals_an_unmatched_hand_and_cycles_for_three() {
     }
     let card = put(&mut g, p, "Intimidation Tactics", Zone::Hand);
     g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
-    reject(&mut g, activation(card, 0));
+    admit(&g, activation(card, 0));
     g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
     act(&mut g, activation(card, 0));
     pay(&mut g);
@@ -316,7 +316,7 @@ fn wickerfolk_intrinsic_graveyard_route_pays_life_and_either_material_then_dies_
             let mut g = scenario(p);
             let source = put(&mut g, p, "Wickerfolk Indomitable", Zone::Graveyard);
             let route = Action::AnnounceGraveyardAdditionalCosts { card: source };
-            reject(&mut g, route.clone());
+            admit(&g, route.clone());
             let cost = put(&mut g, p, name, Zone::Battlefield);
             g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 3];
             act(&mut g, route);

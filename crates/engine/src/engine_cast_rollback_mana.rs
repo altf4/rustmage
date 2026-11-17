@@ -1,10 +1,41 @@
-//! Selective CR733.1 reversal of completed, frozen mana events.
+//! Selective CR734.1 reversal of completed, frozen mana events.
 //! These cold actual-event reconstructions never participate in funding search.
 use super::*;
 use additional_costs::ManaCostObjects;
 use cast_rollback::CastRollback;
 use std::collections::VecDeque;
 use zone_replacements::{ZoneMoveCompletion, ZoneShuffle};
+/// Rollback retention exploration is deliberately measured separately from
+/// current-action validation and the removed funding-completion search.
+#[cfg(feature = "test-support")]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct RollbackPlanningWork {
+    pub suffix_entries: u64,
+    pub replay_branches: u64,
+}
+#[cfg(feature = "test-support")]
+thread_local! {
+    static ROLLBACK_WORK: std::cell::Cell<RollbackPlanningWork> = const {
+        std::cell::Cell::new(RollbackPlanningWork { suffix_entries: 0, replay_branches: 0 })
+    };
+}
+#[cfg(feature = "test-support")]
+pub fn reset_rollback_planning_work() {
+    ROLLBACK_WORK.set(RollbackPlanningWork::default());
+}
+#[cfg(feature = "test-support")]
+pub fn rollback_planning_work() -> RollbackPlanningWork {
+    ROLLBACK_WORK.get()
+}
+#[cfg(feature = "test-support")]
+fn count_rollback_branch() {
+    ROLLBACK_WORK.with(|counter| {
+        let mut work = counter.get();
+        work.replay_branches = work.replay_branches.saturating_add(1);
+        counter.set(work);
+    });
+}
+
 type FrozenZoneMove = (
     ObjectRef,
     Zone,
@@ -173,12 +204,14 @@ pub(super) struct ManaReplay {
     current_bytes: usize,
     index: usize,
     active: Option<Box<ActiveManaReplay>>,
+    retained: Vec<ManaEvent>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ManaReplay {
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.current_bytes
+            + self.retained.iter().map(ManaEvent::bytes).sum::<usize>()
             + self.active.as_ref().map_or(0, |active| {
                 std::mem::size_of::<ActiveManaReplay>()
                     + active
@@ -250,6 +283,7 @@ impl Game {
             current_bytes,
             index: 0,
             active: None,
+            retained: Vec::new(),
         }));
         self.state = rollback.before.clone();
         self.restore_public_hand_knowledge(
@@ -326,6 +360,8 @@ impl Game {
         if !keep && event.irreversible {
             return false;
         }
+        #[cfg(feature = "test-support")]
+        count_rollback_branch();
         let mut branch = Game {
             state: self.state.clone(),
             revision: self.revision,
@@ -334,6 +370,12 @@ impl Game {
             && branch.mana_rollback_suffix(&rollback.events[replay.index + 1..])
     }
     fn mana_rollback_suffix(&self, events: &[ManaEvent]) -> bool {
+        #[cfg(feature = "test-support")]
+        ROLLBACK_WORK.with(|counter| {
+            let mut work = counter.get();
+            work.suffix_entries = work.suffix_entries.saturating_add(1);
+            counter.set(work);
+        });
         // Every reversible suffix can be declined immediately. Only future
         // irreversible activations constrain earlier retention decisions.
         if !events.iter().any(|e| e.irreversible) {
@@ -345,6 +387,8 @@ impl Game {
         if !event.irreversible && self.mana_rollback_suffix(rest) {
             return true;
         }
+        #[cfg(feature = "test-support")]
+        count_rollback_branch();
         let mut branch = Game {
             state: self.state.clone(),
             revision: self.revision,
@@ -365,6 +409,15 @@ impl Game {
                 self.replay_completed_mana_event(&event),
                 "validated frozen mana retention"
             );
+            self.state
+                .cast_rollback
+                .as_mut()
+                .unwrap()
+                .replay
+                .as_mut()
+                .unwrap()
+                .retained
+                .push(event);
         }
         self.state
             .cast_rollback
@@ -378,14 +431,8 @@ impl Game {
             let mut rollback = self.state.cast_rollback.take().unwrap();
             let replay = rollback.replay.take().unwrap();
             self.state.pending = rollback.before.pending.clone();
-            self.complete_cast_rollback_restore(
-                &replay.current,
-                rollback.spell,
-                &rollback.public_hand_cards,
-                &rollback.obscured_hand_cards,
-                &rollback.public_face_down,
-                &rollback.obscured_face_down,
-            );
+            self.complete_cast_rollback_restore(&replay.current, &rollback);
+            self.finish_attempt_recovery(&mut rollback, replay.retained);
         }
     }
     fn prepare_frozen_mana_spend(

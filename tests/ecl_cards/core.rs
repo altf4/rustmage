@@ -5,19 +5,43 @@ use rustmage_core::engine::*;
 
 fn hybrid_cast(g: &mut Game, card: CardId) {
     checked(g, Action::AnnounceCast { card });
-    if let Some(a) = g
-        .legal_actions()
-        .into_iter()
-        .find(|a| matches!(a, Action::ChooseSpellCost { .. }))
-    {
-        checked(g, a);
-    }
+    choose_equivalent(g);
     let a = g
         .legal_actions()
         .into_iter()
         .find(|a| matches!(a, Action::PayCosts { .. }))
         .unwrap();
     checked(g, a);
+}
+
+fn choose_equivalent(g: &mut Game) {
+    if !matches!(
+        g.state.pending,
+        Pending::SpellCost { .. } | Pending::ActivationCost { .. }
+    ) {
+        return;
+    }
+    let a = g.state.announcing.as_ref().unwrap();
+    let pool = g.state.players[a.item.controller.index()].mana;
+    let cost = a
+        .cost_choices()
+        .position(|cost| {
+            ManaPaymentDomain {
+                available: pool,
+                required: cost.colored,
+                generic: cost.generic,
+            }
+            .payable()
+        })
+        .expect("scripted pool pays a printed hybrid equivalent") as u16;
+    checked(
+        g,
+        if matches!(g.state.pending, Pending::SpellCost { .. }) {
+            Action::ChooseSpellCost { cost }
+        } else {
+            Action::ChooseActivationCost { cost }
+        },
+    );
 }
 
 fn until_payment(g: &mut Game) {
@@ -418,12 +442,7 @@ fn ecl_reaping_willow_hybrid_paid_counters_sorcery_and_exact_grave_target() {
                     .find(|a| matches!(a,Action::AnnounceActivate{card,..}if *card==source))
                     .unwrap();
                 checked(&mut g, announce);
-                let cost = g
-                    .legal_actions()
-                    .into_iter()
-                    .find(|a| matches!(a, Action::ChooseActivationCost { .. }))
-                    .unwrap();
-                checked(&mut g, cost);
+                choose_equivalent(&mut g);
                 assert!(!g.legal_actions().contains(&Action::ChooseTarget {
                     target: Target::Card(high)
                 }));

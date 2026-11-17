@@ -148,13 +148,14 @@ fn same_grant_pays_independently_and_marks_only_the_creature_that_actually_enter
         let second = put(&mut game, player, "Healer's Hawk", Zone::Graveyard);
         let outsider = put(&mut game, player.other(), "Healer's Hawk", Zone::Graveyard);
         let noncreature = put(&mut game, player, "Disenchant", Zone::Graveyard);
-        for card in [outsider, noncreature, first] {
-            // No Food, and the two other cards in this graveyard cannot forage
-            // together with the creature being announced.
+        for card in [outsider, noncreature] {
+            // The grant permits only the controller's creature cards.
             let action = forage_cast(&game, card, permission, CastMethod::Normal);
             reject(&mut game, action);
         }
 
+        let action = forage_cast(&game, first, permission, CastMethod::Normal);
+        admit(&game, action);
         let food = put(&mut game, player, "Candy Trail", Zone::Battlefield);
         let action = forage_cast(&game, first, permission, CastMethod::Normal);
         let mut wrong_timing = game.clone();
@@ -227,7 +228,7 @@ fn the_origin_and_printed_forage_costs_keep_separate_choices_in_either_order() {
     let spell = spawn(&mut game, player, spell_card, Zone::Graveyard);
     let first = put(&mut game, player, "Candy Trail", Zone::Battlefield);
     let action = forage_cast(&game, spell, permission, CastMethod::Normal);
-    reject(&mut game, action.clone());
+    admit(&game, action.clone());
     let second = put(&mut game, player, "Candy Trail", Zone::Battlefield);
     act(&mut game, action);
     act(
@@ -341,7 +342,7 @@ fn the_life_route_is_live_on_its_controllers_turn_and_preserves_printed_costs() 
     let own_action = life_cast(&game, instant);
     let opposing_action = life_cast(&game, opponent_spell);
     reject(&mut game, opposing_action);
-    reject(&mut game, own_action.clone());
+    admit(&game, own_action.clone());
     let discard = put(&mut game, player, "Forest", Zone::Hand);
 
     game.state.active = player.other();
@@ -400,7 +401,7 @@ fn a_bargain_declaration_reserves_food_independently_of_the_origin_cost() {
 
     let mut one_food = game.clone();
     act(&mut one_food, action.clone());
-    reject(&mut one_food, bargain.clone());
+    admit(&one_food, bargain.clone());
     act(&mut one_food, Action::ChooseBargain { sacrifice: None });
 
     let origin_food = put(&mut game, player, "Candy Trail", Zone::Battlefield);
@@ -415,7 +416,8 @@ fn a_bargain_declaration_reserves_food_independently_of_the_origin_cost() {
         },
     );
     let object = game.object_ref(bargain_food);
-    reject(&mut game, Action::ChooseForage { object });
+    // This current payment can strand the other unpaid provisional selection.
+    admit(&game, Action::ChooseForage { object });
     let object = game.object_ref(origin_food);
     act(&mut game, Action::ChooseForage { object });
     choose_cost(&mut game, CastCostClause::Additional);

@@ -146,7 +146,7 @@ fn sacrifice_cost_reads_positive_damage_by_the_current_exact_creature() {
     let unused = put(&mut game, player, "Healer's Hawk", Zone::Battlefield);
     let spell = spawn(&mut game, player, card, Zone::Hand);
     let announce = Action::AnnounceCast { card: spell };
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
     let target = Target::Player(opponent);
     game.apply_damage_batch(&[dealer, stale].map(|id| DamageEvent {
         source: game.damage_source(id),

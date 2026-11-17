@@ -212,16 +212,16 @@ fn tea_shop_and_hideout_spend_mana_only_on_their_printed_categories() {
     denied.state.players[player.index()].mana = [0; 6];
     mana(&mut denied, shop, 1, [1, 0, 0, 0, 0, 0]);
     mana(&mut denied, hideout, 1, [1, 0, 0, 0, 0, 0]);
-    reject(
-        &mut denied,
+    admit(
+        &denied,
         Action::AnnounceActivate {
             card: bow,
             ability: 0,
             counter_payment: Counters::default(),
         },
     );
-    reject(
-        &mut denied,
+    admit(
+        &denied,
         Action::AnnounceActivate {
             card: captain,
             ability: 0,
@@ -313,7 +313,7 @@ fn friendly_momo_discounts_the_first_other_flying_cast_and_grows_on_entry() {
     assert_eq!(stats(&game, momo), (2, 2));
     assert_eq!(game.object_view(glider).zone, Zone::Battlefield);
     game.state.players[player.index()].mana = [1, 0, 0, 0, 0, 1];
-    reject(&mut game, Action::AnnounceCast { card: next });
+    admit(&game, Action::AnnounceCast { card: next });
 }
 
 #[test]

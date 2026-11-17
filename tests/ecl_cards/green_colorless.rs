@@ -1,5 +1,6 @@
 //! Paid ECL rules scenarios, with raw/indexed branches and restore on every action.
 use crate::ecl_scenarios::{cast, checked, named, settle, setup};
+use crate::support::admit;
 use rustmage_core::cards::*;
 use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::engine::*;
@@ -192,11 +193,31 @@ fn ecl_green_drum_taps_summoning_sick_creature_as_cost_and_adds_each_color_witho
             let drum = named(&mut g, p, "Springleaf Drum", Zone::Hand);
             cast(&mut g, drum, None, &[]);
             settle(&mut g);
-            assert!(
-                !g.legal_actions()
-                    .iter()
-                    .any(|a| matches!(a, Action::AnnounceMana { card, .. } if *card == drum))
+            let mut missing = g.clone();
+            checked(
+                &mut missing,
+                Action::AnnounceMana {
+                    card: drum,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                    production: [1, 0, 0, 0, 0, 0],
+                },
             );
+            assert!(
+                missing
+                    .observe(p)
+                    .additional_cost
+                    .unwrap()
+                    .candidates
+                    .is_empty()
+            );
+            checked(&mut missing, Action::EndManaWindow);
+            checked(&mut missing, Action::SubmitAttempt);
+            assert_eq!(
+                missing.last_attempt_outcome_view(p).unwrap().reason,
+                Some(AttemptFailureReason::UnsatisfiedMaterial)
+            );
+            assert!(!missing.object_view(drum).tapped);
             let creature = named(&mut g, p, "Bear Cub", Zone::Battlefield);
             g.state.objects[creature as usize].summoning_sick = true;
             let enemy = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
@@ -295,9 +316,21 @@ fn ecl_green_drum_funding_requires_distinct_untapped_creatures_and_resumes_outer
             g.state.players[p.index()].mana = [0; 6];
             let spell = named(&mut g, p, "Bear Cub", Zone::Hand);
             let announce = Action::AnnounceCast { card: spell };
-            assert_eq!(g.legal_actions().contains(&announce), creatures == 2);
+            admit(&g, announce.clone());
             if creatures != 2 {
-                reject(&mut g, announce);
+                checked(&mut g, announce);
+                checked(&mut g, Action::EndManaWindow);
+                checked(&mut g, Action::SubmitAttempt);
+                let failure = g.last_attempt_outcome_view(p).unwrap();
+                assert_eq!(failure.outcome, AttemptOutcome::Failed);
+                assert_eq!(failure.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+                assert_eq!(g.object_view(spell).zone, Zone::Hand);
+                assert!(
+                    drums
+                        .iter()
+                        .chain(&witnesses)
+                        .all(|&id| !g.object_view(id).tapped)
+                );
                 continue;
             }
             checked(&mut g, announce);
@@ -305,7 +338,10 @@ fn ecl_green_drum_funding_requires_distinct_untapped_creatures_and_resumes_outer
                 let announce = g
                     .legal_actions()
                     .into_iter()
-                    .find(|a| matches!(a, Action::AnnounceMana { .. }))
+                    .find(|a| {
+                        matches!(a, Action::AnnounceMana { production, .. }
+                        if *production == [0, 0, 0, 0, 1, 0])
+                    })
                     .unwrap();
                 checked(&mut g, announce);
                 let choose = g
@@ -322,7 +358,10 @@ fn ecl_green_drum_funding_requires_distinct_untapped_creatures_and_resumes_outer
                     let output = g
                         .legal_actions()
                         .into_iter()
-                        .find(|a| matches!(a, Action::ChooseMana { .. }))
+                        .find(|a| {
+                            matches!(a, Action::ChooseMana { production }
+                            if *production == [0, 0, 0, 0, 1, 0])
+                        })
                         .unwrap();
                     checked(&mut g, output);
                 }
@@ -458,13 +497,15 @@ fn ecl_green_brawler_paid_attack_elf_target_and_live_block_requirement() {
         checked(&mut g, Action::Pass);
         assert_eq!(g.block_requirement_weight(brawler), 1);
         reject(&mut g, Action::FinishBlockers);
-        reject(
-            &mut g,
+        let mut wrong_block = g.clone();
+        checked(
+            &mut wrong_block,
             Action::Block {
                 blocker: foe,
                 attacker: bear,
             },
         );
+        reject(&mut wrong_block, Action::FinishBlockers);
         checked(
             &mut g,
             Action::Block {
@@ -1141,8 +1182,29 @@ fn ecl_green_realms_constrained_choice_and_mana_restriction_survive_source_depar
         g.state.players[p.index()].mana = [0; 6];
         restricted_realms_mana(&mut g, land, 4);
         let wrong = named(&mut g, p, "Giant Growth", Zone::Hand);
-        named(&mut g, p, "Bear Cub", Zone::Battlefield);
-        reject(&mut g, Action::AnnounceCast { card: wrong });
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        admit(&g, Action::AnnounceCast { card: wrong });
+        let mut unpaid = g.clone();
+        checked(&mut unpaid, Action::AnnounceCast { card: wrong });
+        checked(
+            &mut unpaid,
+            Action::ChooseTarget {
+                target: Target::Card(bear),
+            },
+        );
+        reject(
+            &mut unpaid,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 1, 0],
+            },
+        );
+        checked(&mut unpaid, Action::EndManaWindow);
+        checked(&mut unpaid, Action::SubmitAttempt);
+        assert_eq!(
+            unpaid.last_attempt_outcome_view(p).unwrap().reason,
+            Some(AttemptFailureReason::UnsatisfiedMana)
+        );
+        assert_eq!(unpaid.object_view(wrong).zone, Zone::Hand);
         g.move_object(land, Zone::Exile);
         let elf = named(&mut g, p, "Llanowar Elves", Zone::Hand);
         cast(&mut g, elf, None, &[]);
@@ -2653,7 +2715,7 @@ fn ecl_green_wickermaw_color_change_enables_later_bloom_tender_in_same_guided_fu
         g.state.objects[bloom as usize].summoning_sick = false;
         let spell = named(&mut g, p, "Divination", Zone::Hand);
         g.state.players[p.index()].mana = [0; 6];
-        reject(&mut g, Action::AnnounceCast { card: spell });
+        admit(&g, Action::AnnounceCast { card: spell });
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
         checked(&mut g, Action::AnnounceCast { card: spell });
         let convert = g.legal_actions().into_iter().find(|action| matches!(action, Action::ActivateMana { card, production, .. } if *card == wicker && *production == [0,1,0,0,0,0])).unwrap();
@@ -2976,14 +3038,14 @@ fn ecl_green_lys_extra_mana_route_cannot_behold_source_and_free_cast_still_requi
                 Action::AnnounceCast { card: source }
             };
             g.state.players[p.index()].mana = if free { [0; 6] } else { [0, 0, 0, 0, 1, 1] };
-            reject(&mut g, action.clone());
+            admit(&g, action.clone());
             g.state.players[p.index()].mana = if free {
                 [0, 0, 0, 0, 0, 2]
             } else {
                 [0, 0, 0, 0, 1, 3]
             };
             checked(&mut g, action);
-            reject(&mut g, Action::ChooseSpellCost { cost: 0 });
+            admit(&g, Action::ChooseSpellCost { cost: 0 });
             checked(&mut g, Action::ChooseSpellCost { cost: 1 });
             assert!(g.observe(p).additional_cost.is_none());
             pay(&mut g);
@@ -3464,7 +3526,7 @@ fn ecl_green_reunion_optional_phase_always_exists_and_requires_two_distinct_crea
         let choose_elf = Action::ChooseBeholdType {
             creature_type: Some(rustmage_core::cards::CreatureType::from_name("Elf").unwrap()),
         };
-        reject(&mut g, choose_elf.clone());
+        admit(&g, choose_elf.clone());
         let second = named(&mut g, p, "Changeling Wayfinder", Zone::Hand);
         checked(&mut g, choose_elf);
         checked(&mut g, Action::ChooseX { value: 0 });

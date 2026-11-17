@@ -462,7 +462,7 @@ fn terrific_team_up_costs_two_less_with_a_four_mana_permanent_and_grows_both_sou
     ];
     let enemy = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
     game.state.players[player.index()].mana = [0, 0, 0, 0, 1, 1];
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    admit(&game, Action::AnnounceCast { card: spell });
     put(&mut game, player, "Hedron Archive", Zone::Battlefield);
     announce(
         &mut game,

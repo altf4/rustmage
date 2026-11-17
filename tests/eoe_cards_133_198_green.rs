@@ -515,7 +515,7 @@ fn lashwhip_predator_needs_three_opposing_creatures_for_two_mana_off() {
         );
     }
     game.state.players[player.index()].mana = [0, 0, 0, 0, 4, 0];
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    admit(&game, Action::AnnounceCast { card: spell });
     put(
         &mut game,
         player.other(),

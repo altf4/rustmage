@@ -1,5 +1,6 @@
 //! Morcant's paid Elf costs and public non-targeting proliferate decisions.
 use crate::ecl_scenarios::{cast, checked, named, settle, setup};
+use crate::support::admit;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
 fn reject(g: &mut Game, action: Action) {
@@ -148,7 +149,7 @@ fn ecl_morcant_tap_cost_accepts_new_kindred_elves_ignores_sickness_and_enforces_
         reject(&mut g, action.clone());
         g.state.priority = p;
         g.state.objects[elves[1] as usize].tapped = true;
-        reject(&mut g, action.clone());
+        admit(&g, action.clone());
         g.state.objects[elves[1] as usize].tapped = false;
         checked(&mut g, action);
         for id in [own_nonelf, enemy] {

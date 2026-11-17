@@ -232,7 +232,7 @@ fn red_tiger_mechan_can_warp_with_two_mana_and_recast_later_at_printed_cost() {
     let mut game = scenario(player);
     let tiger = put(&mut game, player, "Red Tiger Mechan", Zone::Hand);
     game.state.players[player.index()].mana = [0, 0, 0, 2, 0, 0];
-    reject(&mut game, Action::AnnounceCast { card: tiger });
+    admit(&game, Action::AnnounceCast { card: tiger });
     act(&mut game, Action::AnnounceWarp { card: tiger });
     pay(&mut game);
     settle(&mut game);

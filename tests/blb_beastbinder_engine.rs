@@ -2,7 +2,6 @@
 mod support;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
-use rustmage_core::engine::funding::FundingGoal;
 use rustmage_core::{cards::*, engine::*};
 use support::*;
 
@@ -159,24 +158,23 @@ fn source_departure_preserves_both_layers_until_the_initiating_controllers_turn(
         assert_eq!(stats(&blinked, elf), (1, 1));
 
         g.move_object(opposing_land, Zone::Graveyard);
-        let green = FundingGoal {
-            actor: p.other(),
-            required: [0, 0, 0, 0, 1, 0],
-            generic: 0,
-            reserve: None,
-            source: None,
-        };
+        let green = Action::TapMana { card: elf };
         g.finish_cleanup();
         assert_eq!(g.state.active, p.other());
         assert_eq!(stats(&g, elf), (3, 3));
         assert!(!g.printed_abilities_available(elf));
-        assert!(!g.can_fund_for(green.clone(), mana_lots::Purpose::Other));
+        assert_eq!(g.actor(), Some(p.other()));
+        reject(&mut g, green.clone());
         g.finish_cleanup();
         assert_eq!(g.state.active, p);
         assert_eq!(stats(&g, elf), (2, 2));
         assert!(g.printed_abilities_available(elf));
-        assert!(g.can_fund_for(green, mana_lots::Purpose::Other));
         assert!(g.observe(p).base_stat_effects.is_empty());
+        act(&mut g, Action::Pass);
+        assert_eq!(g.actor(), Some(p.other()));
+        act(&mut g, green);
+        assert!(g.object_view(elf).tapped);
+        assert_eq!(g.state.players[p.other().index()].mana, [0, 0, 0, 0, 1, 0]);
     }
 }
 

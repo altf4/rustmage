@@ -21,6 +21,7 @@ impl ZoneChangeTurnHistory {
             .capacity("creature card arrival history exhausted");
     }
 
+    #[cfg(feature = "test-support")]
     pub(super) fn record_artifact_cost_departure(
         &mut self,
         controller: Player,

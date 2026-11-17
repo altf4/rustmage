@@ -255,7 +255,7 @@ fn venom_hunger_reduces_the_cost_with_a_villain_and_then_gains_two_life() {
     );
     let spell = put(&mut game, player, "Venom's Hunger", Zone::Hand);
     game.state.players[player.index()].mana = [0, 0, 1, 0, 0, 2];
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    admit(&game, Action::AnnounceCast { card: spell });
     put(&mut game, player, "Common Crook", Zone::Battlefield);
     cast(&mut game, spell, Some(Target::Card(enemy)));
     settle(&mut game);

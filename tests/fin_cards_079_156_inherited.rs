@@ -102,15 +102,26 @@ fn fate_discounts_only_a_tapped_creature_and_destroys_it() {
     let artifact = put(&mut game, p.other(), "Short Bow", Zone::Battlefield);
     game.state.objects[artifact as usize].tapped = true;
     game.state.players[p.index()].mana = [1, 0, 0, 0, 0, 2];
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    admit(&game, Action::AnnounceCast { card: spell });
     game.state.objects[creature as usize].tapped = true;
     act(&mut game, Action::AnnounceCast { card: spell });
+    let mut undiscounted = game.clone();
+    target(&mut undiscounted, artifact);
+    assert_eq!(undiscounted.observe(p).payment_request.unwrap().generic, 4);
     reject(
-        &mut game,
-        Action::ChooseTarget {
-            target: Target::Card(artifact),
+        &mut undiscounted,
+        Action::PayCosts {
+            payment: [1, 0, 0, 0, 0, 2],
         },
     );
+    act(&mut undiscounted, Action::EndManaWindow);
+    act(&mut undiscounted, Action::SubmitAttempt);
+    assert_eq!(
+        undiscounted.last_attempt_outcome_view(p).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
+    assert_eq!(undiscounted.object_view(spell).zone, Zone::Hand);
+    assert_eq!(undiscounted.object_view(artifact).zone, Zone::Battlefield);
     target(&mut game, creature);
     pay(&mut game);
     assert_eq!(game.state.players[p.index()].mana, [0; 6]);
@@ -547,7 +558,7 @@ fn laughing_mad_requires_a_distinct_discard_in_both_cast_routes() {
         } else {
             Action::AnnounceFlashback { card: spell }
         };
-        reject(&mut game, announce.clone());
+        admit(&game, announce.clone());
         let discard = put(&mut game, p, "Forest", Zone::Hand);
         act(&mut game, announce);
         let object = game.object_ref(discard);

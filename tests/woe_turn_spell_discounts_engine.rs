@@ -209,8 +209,8 @@ fn the_discount_freezes_life_loss_at_resolution_and_survives_source_departure() 
         let mut other = responded.clone();
         other.state.players[player.other().index()].mana = [0, 0, 1, 0, 0, 0];
         act(&mut other, Action::Pass);
-        reject(
-            &mut other,
+        admit(
+            &other,
             Action::AnnounceAdventure {
                 card: opponent_adventure,
             },
@@ -303,7 +303,7 @@ fn discounts_stack_and_use_the_selected_adventure_face() {
     put(&mut game, player, "Mocking Sprite", Zone::Battlefield);
     let mut underfunded = game.clone();
     underfunded.state.players[player.index()].mana = [0, 1, 0, 0, 0, 0];
-    reject(&mut underfunded, Action::AnnounceCast { card: adventure });
+    admit(&underfunded, Action::AnnounceCast { card: adventure });
     act(&mut game, Action::AnnounceAdventure { card: adventure });
     reject(
         &mut game,

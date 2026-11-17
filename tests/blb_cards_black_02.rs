@@ -115,27 +115,51 @@ fn cruelclaws_heist_can_take_the_gift_draw_and_cast_it_turns_later() {
         assert_eq!(game.object_view(creature).zone, Zone::Exile);
         game.state.turn += 4;
         game.state.players[player.index()].mana = [0, 0, 2, 0, 0, 0];
-        assert_eq!(
-            game.permitted_cast_available(
-                player,
-                creature,
-                CastMethod::Normal,
-                CastFace::Normal,
-                true,
-                false
-            ),
-            gift
-        );
+        let announce = Action::AnnounceExile { card: creature };
+        // Origin permission belongs to the actual action boundary, before the
+        // shared declaration helper checks this card's current cost/targets.
+        assert_eq!(game.can_play_exiled(player, creature), gift);
+        assert_eq!(game.legal_actions().contains(&announce), gift);
+        if gift {
+            let mut unfunded = game.clone();
+            unfunded.state.players[player.index()].mana = [0, 0, 1, 0, 0, 0];
+            act(&mut unfunded, announce.clone());
+            reject(
+                &mut unfunded,
+                Action::PayCosts {
+                    payment: [0, 0, 1, 0, 0, 0],
+                },
+            );
+            act(&mut unfunded, Action::EndManaWindow);
+            act(&mut unfunded, Action::SubmitAttempt);
+            let outcome = unfunded.last_attempt_outcome_view(player).unwrap();
+            assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+            assert_eq!(outcome.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+            assert_eq!(unfunded.object_view(creature).zone, Zone::Exile);
+            assert!(unfunded.can_play_exiled(player, creature));
+
+            // The granted permission allows black mana to pay this green
+            // creature's actual cost even several turns after the Heist.
+            unfunded.state.players[player.index()].mana = [0, 0, 2, 0, 0, 0];
+            act(&mut unfunded, announce.clone());
+            act(
+                &mut unfunded,
+                Action::PayCosts {
+                    payment: [0, 0, 2, 0, 0, 0],
+                },
+            );
+            settle(&mut unfunded);
+            assert_eq!(unfunded.object_view(creature).zone, Zone::Battlefield);
+            assert_eq!(unfunded.object_view(creature).controller, player);
+            assert_eq!(unfunded.object_view(creature).owner, opponent);
+            assert_eq!(unfunded.state.players[player.index()].mana, [0; 6]);
+        } else {
+            reject(&mut game, announce.clone());
+        }
         game.move_object(creature, Zone::Graveyard);
         game.move_object(creature, Zone::Exile);
-        assert!(!game.permitted_cast_available(
-            player,
-            creature,
-            CastMethod::Normal,
-            CastFace::Normal,
-            true,
-            false
-        ));
+        assert!(!game.can_play_exiled(player, creature));
+        reject(&mut game, announce);
     }
 }
 

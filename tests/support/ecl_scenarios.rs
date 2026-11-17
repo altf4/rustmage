@@ -39,8 +39,13 @@ pub(super) fn checked(g: &mut Game, action: Action) {
     let index = g
         .legal_actions()
         .iter()
-        .position(|a| *a == action)
-        .unwrap_or_else(|| panic!("illegal independent {action:?} {:?}", g.state.pending));
+        .position(|candidate| *candidate == action);
+    if index.is_none() {
+        let Action::ChooseX { value } = action else {
+            panic!("missing concrete action");
+        };
+        assert!(g.x_choice().is_some_and(|domain| domain.contains(value)));
+    }
     let before = g.snapshot();
     assert_eq!(
         g.apply(actor.other(), action.clone()),
@@ -51,7 +56,11 @@ pub(super) fn checked(g: &mut Game, action: Action) {
         let parent = g.clone();
         parent.clone()
     };
-    branch.apply_index(actor, revision, index).unwrap();
+    if let Some(index) = index {
+        branch.apply_index(actor, revision, index).unwrap();
+    } else {
+        branch.apply(actor, action.clone()).unwrap();
+    }
     g.apply(actor, action.clone()).unwrap();
     assert_eq!(g.snapshot(), branch.snapshot());
     for player in [Player::P0, Player::P1] {
@@ -70,14 +79,54 @@ pub(super) fn checked(g: &mut Game, action: Action) {
             );
         }
     }
-    let after = g.snapshot();
     g.restore(&before).unwrap();
+    assert_eq!(g.snapshot(), before);
     assert_eq!(
-        g.apply_index(actor, revision, index),
+        g.apply_index(actor, revision, index.unwrap_or(0)),
         Err(Error::StaleRevision)
     );
+    // Replaying an announcement allocates a new attempt ID. Compare branches
+    // forked after restore, with the same nonrewinding allocation history.
+    let mut replay = g.clone();
+    if let Some(index) = index {
+        replay.apply_index(actor, replay.revision(), index).unwrap();
+    } else {
+        replay.apply(actor, action.clone()).unwrap();
+    }
     g.apply(actor, action).unwrap();
-    assert_eq!(g.snapshot(), after);
+    assert_eq!(g.snapshot(), replay.snapshot());
+}
+// Successful scenario continuations must advance the declared payment, not
+// enter failure/retry controls just because those precede cost actions in menus.
+pub(super) fn success_continuation(g: &Game, actions: &[Action]) -> Action {
+    actions
+        .iter()
+        .find(|a| matches!(a, Action::PayCosts { .. }))
+        .or_else(|| actions.iter().find(|a| matches!(a, Action::FinishTargets)))
+        .or_else(|| {
+            actions
+                .iter()
+                .find(|a| matches!(a, Action::BeginOrderedCosts | Action::ChooseCastCost { .. }))
+        })
+        .or_else(|| {
+            actions.iter().find(|a| {
+                !matches!(
+                    a,
+                    Action::Concede
+                        | Action::EndManaWindow
+                        | Action::SubmitAttempt
+                        | Action::ResetCostSelection
+                        | Action::ChooseManaRollback { .. }
+                )
+            })
+        })
+        .unwrap_or_else(|| {
+            panic!(
+                "scenario needs an explicit choice in {:?}: {actions:?}",
+                g.state.pending
+            )
+        })
+        .clone()
 }
 fn settle_on(g: &mut Game, chosen: Option<Target>) {
     g.prepare_triggers();
@@ -98,13 +147,7 @@ fn settle_on(g: &mut Game, chosen: Option<Target>) {
         } else if g.state.pending == Pending::Priority {
             Action::Pass
         } else {
-            actions
-                .iter()
-                .find(|a| matches!(a, Action::PayCosts { .. }))
-                .or_else(|| actions.iter().find(|a| matches!(a, Action::FinishTargets)))
-                .or_else(|| actions.iter().find(|a| !matches!(a, Action::Concede)))
-                .unwrap()
-                .clone()
+            success_continuation(g, &actions)
         };
         checked(g, action);
     }
@@ -158,7 +201,12 @@ pub(super) fn cast(g: &mut Game, id: CardId, mode: Option<u16>, targets: &[Targe
                     .into_iter()
                     .find(|a| matches!(a, Action::PayCosts { .. }))
             })
-            .unwrap();
+            .or_else(|| {
+                g.legal_actions().into_iter().find(|a| {
+                    matches!(a, Action::BeginOrderedCosts | Action::ChooseCastCost { .. })
+                })
+            })
+            .unwrap_or_else(|| panic!("cast needs an explicit choice in {:?}", g.state.pending));
         checked(g, a);
     }
     panic!("unpaid");
@@ -179,9 +227,8 @@ pub(super) fn next_turn(g: &mut Game) {
                     Action::Pass | Action::FinishAttackers | Action::FinishBlockers
                 )
             })
-            .or_else(|| actions.iter().find(|a| !matches!(a, Action::Concede)))
-            .unwrap()
-            .clone();
+            .cloned()
+            .unwrap_or_else(|| success_continuation(g, &actions));
         checked(g, action);
     }
     panic!("turn failed to advance");

@@ -95,6 +95,10 @@ const ABILITIES: CardRules = CardRules {
     ],
     ..CardRules::EMPTY
 };
+const CREATURE_ABILITIES: CardRules = CardRules {
+    effect: Effect::Creature(2, 1),
+    ..ABILITIES
+};
 const MANA_ABILITY: ActivatedAbility = ActivatedAbility {
     cost: ActivationCost {
         tap: true,
@@ -261,8 +265,8 @@ fn live_artifact_mana_grant_funds_library_spells_and_only_nonhand_casts() {
     changed_control.change_controller(exact, p.other());
     reject(&mut changed_control, tap(artifact));
 
-    reject(&mut g, Action::AnnounceCast { card: hand });
-    reject(&mut g, activation(artifact, 0));
+    admit(&g, Action::AnnounceCast { card: hand });
+    admit(&g, activation(artifact, 0));
     let mut spent = g.clone();
     act(&mut spent, tap(grantor));
     act(&mut spent, tap(artifact));
@@ -270,8 +274,8 @@ fn live_artifact_mana_grant_funds_library_spells_and_only_nonhand_casts() {
         spent.observe(p).mana_lots[0].restriction,
         ManaRestrictionView::CastFromNonhand
     );
-    reject(&mut spent, Action::AnnounceCast { card: hand });
-    reject(&mut spent, activation(artifact, 0));
+    admit(&spent, Action::AnnounceCast { card: hand });
+    admit(&spent, activation(artifact, 0));
     let mut resolution = spent.clone();
     reject_resolution_spend(&mut resolution, p);
     let mut exiled = spent.clone();
@@ -334,7 +338,7 @@ fn blank_artifacts_fund_spells_through_live_and_newly_entering_grants() {
         let announce = Action::AnnounceExile { card: spell };
         let extra_artifact = if let Some(returning) = returning {
             let seed = put(&mut g, p, "Goblin Piker", Zone::Battlefield);
-            reject(&mut g, announce.clone());
+            admit(&g, announce.clone());
             g.state.exile_links.push(ExileLink {
                 ability_origin: None,
                 source: g.object_ref(seed),
@@ -374,7 +378,7 @@ fn artifact_activation_mana_qualifies_by_source_in_each_activation_zone() {
     let _rules = fixture_rules::activate(&[
         (Card::GrizzlyBears, &PRODUCER),
         (named("Candy Trail"), &ABILITIES),
-        (Card::GoblinPiker, &ABILITIES),
+        (Card::GoblinPiker, &CREATURE_ABILITIES),
         (named("Opt"), &RESOLUTION_COST),
     ]);
     let p = Player::P0;
@@ -386,13 +390,13 @@ fn artifact_activation_mana_qualifies_by_source_in_each_activation_zone() {
     let other = put(&mut g, p, "Goblin Piker", Zone::Battlefield);
     let artifact_spell = put(&mut g, p, "Swiftfoot Boots", Zone::Hand);
     g.state.players[p.index()].mana = [0; 6];
-    reject(
-        &mut g,
+    admit(
+        &g,
         Action::AnnounceCast {
             card: artifact_spell,
         },
     );
-    reject(&mut g, activation(other, 0));
+    admit(&g, activation(other, 0));
     for (card, index) in [(field, 0), (hand, 1), (graveyard, 2)] {
         let mut branch = g.clone();
         act(&mut branch, activation(card, index));
@@ -418,19 +422,23 @@ fn artifact_activation_mana_qualifies_by_source_in_each_activation_zone() {
     let mut activations_only = g.clone();
     act(&mut activations_only, mana(producer, 1, TWO_BLUE));
     reject(&mut activations_only, mana(producer, 0, BLUE));
-    reject(
-        &mut activations_only,
+    admit(
+        &activations_only,
         Action::AnnounceCast {
             card: artifact_spell,
         },
     );
-    reject(&mut activations_only, activation(other, 0));
+    admit(&activations_only, activation(other, 0));
+    let mut wrong_source = activations_only.clone();
+    act(&mut wrong_source, activation(other, 0));
+    reject(&mut wrong_source, Action::PayCosts { payment: TWO_BLUE });
+    assert!(wrong_source.mana_payment_domain().is_none());
     reject_resolution_spend(&mut activations_only, p);
 
     let mut spells_only = g;
     spells_only.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
     act(&mut spells_only, mana(producer, 0, BLUE));
-    reject(&mut spells_only, activation(field, 0));
+    admit(&spells_only, activation(field, 0));
     act(
         &mut spells_only,
         Action::AnnounceCast {

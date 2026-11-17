@@ -2,9 +2,7 @@
 mod support;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
-use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::{cards::*, engine::*};
-use std::collections::HashSet;
 use support::*;
 
 const ZERO: Mana = [0; 6];
@@ -218,7 +216,7 @@ const RED_FILTER: CardRules = CardRules {
 };
 
 #[test]
-fn guided_split_checks_the_disjoint_feasible_allocations() {
+fn split_choices_do_not_filter_parent_payment_continuations() {
     let _rules = fixture_rules::activate(&[
         (Card::GrizzlyBears, &SPLITTER),
         (Card::from_name("Gilded Lotus").unwrap(), &BLUE_FILTER),
@@ -234,13 +232,21 @@ fn guided_split_checks_the_disjoint_feasible_allocations() {
     act(&mut game, start_mana(source));
     let space = game.legal_action_space();
     let domain = space.mana_split.unwrap();
-    assert!(domain.guided);
+    assert!(!domain.guided);
     let mixed = [0, 1, 0, 1, 0, 0];
     assert!(domain.contains_allocation(mixed));
-    assert!(!game.mana_split_production_legal(mixed));
+    assert!(game.mana_split_production_legal(mixed));
     assert!(space.choices.contains(&choose_mana(0, 2)));
     assert!(space.choices.contains(&choose_mana(2, 0)));
-    reject(&mut game, choose_mana(1, 1));
+    admit(&game, choose_mana(1, 1));
+    let mut unfunded = game.clone();
+    act(&mut unfunded, choose_mana(1, 1));
+    act(&mut unfunded, Action::EndManaWindow);
+    act(&mut unfunded, Action::SubmitAttempt);
+    assert_eq!(
+        unfunded.last_attempt_outcome_view(player).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
 
     act(&mut game, choose_mana(2, 0));
     assert_eq!(game.state.pending, Pending::PayCosts { player });
@@ -256,27 +262,28 @@ fn guided_split_checks_the_disjoint_feasible_allocations() {
 }
 
 #[test]
-fn projected_large_split_prunes_impossible_total_without_materializing_moves() {
+fn large_split_validates_the_supplied_total_without_planning_future_mana() {
     let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &SPLITTER)]);
     let player = Player::P0;
     let (mut game, source) = setup(player);
     game.state.objects[source as usize].growth.power = 1_000_001;
-    let goal = FundingGoal {
-        actor: player,
-        required: [0, 500_001, 0, 500_001, 0, 0],
-        generic: 0,
-        reserve: None,
-        source: None,
-    };
-    let world = FundingState::from_game(&game, &goal);
-    assert_eq!(world.moves(&goal).len(), 1);
-    assert!(!world.reachable(&goal, &mut HashSet::new()));
-
-    let available = FundingGoal {
-        required: [0, 500_000, 0, 500_001, 0, 0],
-        ..goal
-    };
-    assert!(world.reachable(&available, &mut HashSet::new()));
-    assert_eq!(game.state.players[player.index()].mana, ZERO);
+    Game::reset_payment_planning_work();
+    act(&mut game, start_mana(source));
+    let space = game.legal_action_space();
+    let domain = space.mana_split.unwrap();
+    assert_eq!(domain.total, 1_000_001);
+    assert!(!domain.guided);
+    assert!(space.choices.len() <= 4);
+    reject(&mut game, choose_mana(500_001, 500_001));
+    act(&mut game, choose_mana(500_000, 500_001));
+    assert_eq!(
+        game.state.players[player.index()].mana,
+        [0, 500_000, 0, 500_001, 0, 0]
+    );
     assert!(!game.object_view(source).tapped);
+    let work = Game::payment_planning_work();
+    assert_eq!(
+        work.projected_moves + work.projected_steps + work.continuation_plans,
+        0
+    );
 }

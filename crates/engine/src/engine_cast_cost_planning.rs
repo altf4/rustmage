@@ -1,15 +1,8 @@
-//! Completion search for declared nonmana clauses in the borrowed funding world.
+//! Local validation for declared nonmana clauses and supplied material selections.
 use super::*;
+#[cfg(feature = "test-support")]
 use crate::cards::ZoneReplacementRule;
 use ability_world::CharacteristicWorld;
-
-#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-#[derive(Clone, Copy)]
-enum CostWeight {
-    PrintedManaValue,
-    LiveManaValue,
-    ManaSymbols(crate::cards::ChoiceColor),
-}
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone)]
@@ -30,16 +23,20 @@ pub(super) struct CostContext {
     selected: Vec<ObjectRef>,
     exact: bool,
     counters: Vec<(ObjectRef, CounterKind)>,
+    #[cfg(feature = "test-support")]
     mana: Option<ManaCost>,
     teammates: Vec<ObjectRef>,
     teamwork_exact: bool,
+    #[cfg(feature = "test-support")]
     delve_selected: bool,
+    #[cfg(feature = "test-support")]
     pub(super) tap_payment_used: usize,
     /// Existing announcement phase, retained only in this private query context.
     mana_closed: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CostContext {
+    #[cfg(feature = "test-support")]
     pub(super) fn crafts_permanents(&self) -> bool {
         self.clauses.iter().any(|row| {
             !row.paid
@@ -55,6 +52,7 @@ impl CostContext {
         })
     }
 
+    #[cfg(feature = "test-support")]
     pub(super) fn needs_web_return(&self) -> bool {
         self.clauses
             .iter()
@@ -86,6 +84,7 @@ impl CostContext {
         let mut source_counter_reservation = Counters::default();
         if let StackKind::ActivatedAbility { ability } = a.item.kind
             && a.activation_cost_route == ActivationCostRoute::Printed
+            && !c.mana_paid
         {
             let cost = a
                 .item
@@ -104,7 +103,9 @@ impl CostContext {
             }
         }
         Some(Box::new(Self {
+            #[cfg(feature = "test-support")]
             delve_selected: a.convoke.as_ref().is_some_and(|f| !f.delved.is_empty()),
+            #[cfg(feature = "test-support")]
             tap_payment_used: a
                 .convoke
                 .as_ref()
@@ -115,6 +116,7 @@ impl CostContext {
             teammates: c.teammates.clone(),
             teamwork_exact: false,
             actor: a.item.controller,
+            #[cfg(feature = "test-support")]
             mana: a
                 .convoke
                 .as_ref()
@@ -182,6 +184,7 @@ impl FundingState<'_> {
     /// Keep a fixed mana requirement for reveals, graveyard exiles, craft and
     /// witnessed returns. The fixed-world proof separately excludes departures
     /// that could restore mana sources or change an attached recipient.
+    #[cfg(feature = "test-support")]
     pub(super) fn fixed_mana_costs(&self, goal: &FundingGoal) -> bool {
         self.cast_costs.as_ref().is_none_or(|c| {
             c.mana
@@ -222,6 +225,7 @@ impl FundingState<'_> {
     /// In the fixed tap-only proof, a live exile link is inert unless one of
     /// the remaining ordered costs can remove its source. Unknown cost packets
     /// are rejected separately by `fixed_mana_costs`.
+    #[cfg(feature = "test-support")]
     pub(super) fn fixed_mana_link_can_return(&self, goal: &FundingGoal, source: ObjectRef) -> bool {
         if self.reference(source.card) != source
             || self.object(source.card).zone != Zone::Battlefield
@@ -268,6 +272,7 @@ impl FundingState<'_> {
     /// Intrinsic land mana cannot repair a counter shortfall. Avoid enumerating
     /// equivalent land subsets while retaining the complete search for costs or
     /// mana abilities that can introduce counters, objects, or new abilities.
+    #[cfg(feature = "test-support")]
     pub(super) fn fixed_origin_counter_deficit(&self) -> bool {
         let Some(c) = &self.cast_costs else {
             return false;
@@ -325,6 +330,7 @@ impl FundingState<'_> {
     /// Unknown costs and worlds with linked or nested state changes retain the
     /// complete search. Counts deliberately ignore filters, control, names,
     /// counters and tapping, all of which can change during funding.
+    #[cfg(feature = "test-support")]
     pub(super) fn additional_cost_deficit(&self) -> bool {
         let Some(c) = &self.cast_costs else {
             return false;
@@ -445,6 +451,7 @@ impl FundingState<'_> {
     }
     /// Only a fixed witness set permits rejecting an absent chosen subtype
     /// before mana search. This also handles mandatory single behold/exile costs.
+    #[cfg(feature = "test-support")]
     fn unchanging_behold_witness_deficit(&self, c: &CostContext, spec: AdditionalCost) -> bool {
         let required = match spec.kind.payment_kind() {
             EffectChoiceKind::BeholdMany(amount) => usize::from(amount),
@@ -634,32 +641,8 @@ impl FundingState<'_> {
                 self.project_cost_spell_source(source.object);
             }
         }
-        if let Some(a) = a.filter(|a| a.cast_costs.is_some())
-            && let Some(frame) = &a.convoke
-        {
-            // A contributor is reserved during selection and becomes tapped in
-            // the speculative world. The live group commits only with payment.
-            for selected in frame.objects() {
-                if let Some(r) = self
-                    .resources
-                    .iter_mut()
-                    .find(|r| r.id == selected.card && r.object.generation == selected.generation)
-                {
-                    r.object.tapped = true;
-                }
-            }
-            if !frame.delved.is_empty() {
-                let mut projected = None;
-                self.cost_departures(&frame.delved, Zone::Exile, &mut |next| {
-                    projected = Some(next.clone());
-                    true
-                });
-                if let Some(next) = projected {
-                    *self = next;
-                }
-            }
-        }
     }
+
     pub(super) fn set_payment_context(&mut self, a: &Announcement) {
         self.set_tap_payment(a.tap_payment());
         self.payment_source = a.item.source.map(|s| s.object);
@@ -742,6 +725,7 @@ impl FundingState<'_> {
             object.controller = self.actor;
         }
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn cost_object(
         &self,
         spec: AdditionalCost,
@@ -831,18 +815,21 @@ impl FundingState<'_> {
                 || self.suspected(r.card),
             )
     }
+    #[cfg(feature = "test-support")]
     fn keywords_for_cost(&self, id: CardId) -> Keywords {
         self.resources
             .iter()
             .find(|r| r.id == id)
             .map_or(Keywords::NONE, |r| self.keywords(r))
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn cost_departures(
         &self,
         objects: &[ObjectRef],
         requested: Zone,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
+        record_payment_projection(1);
         if objects.iter().any(|&object| {
             self.reference(object.card) != object || self.object(object.card).zone == Zone::Outside
         }) {
@@ -1158,6 +1145,7 @@ impl FundingState<'_> {
         }
         after
     }
+    #[cfg(feature = "test-support")]
     fn visit_death_exile_gains(
         &self,
         gains: &[(Player, u8)],
@@ -1185,23 +1173,247 @@ impl FundingState<'_> {
                 next.visit_death_exile_gains(later, emit)
             })
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn set_cost_counter_prefix(&mut self, selected: &[(ObjectRef, CounterKind)]) {
         if let Some(c) = &mut self.cast_costs {
             c.counters = selected.to_vec();
         }
     }
-    pub(in crate::engine) fn cost_completion(&self) -> bool {
-        let Some(context) = &self.cast_costs else {
+    /// Validate the supplied active clause or partial selection only. No
+    /// resource is projected and no alternate future payment is explored.
+    pub(in crate::engine) fn cost_selection_admissible(&self) -> bool {
+        let Some(c) = &self.cast_costs else {
             return true;
         };
-        let unpaid = context
-            .clauses
-            .iter()
-            .enumerate()
-            .filter(|(_, r)| !r.paid)
-            .map(|(i, _)| i)
-            .collect::<Vec<_>>();
-        self.complete_cost_rows(context, &unpaid)
+        let Some(active) = c.active else {
+            return true;
+        };
+        let Some(row) = c.clauses.get(usize::from(active)).filter(|row| !row.paid) else {
+            return false;
+        };
+        let selected_object = |spec: AdditionalCost, selected: Option<ObjectRef>| {
+            selected.is_none_or(|object| {
+                self.game
+                    .additional_candidate_in_world(self, spec, c.actor, c.source, object, false)
+            })
+        };
+        match row.clause {
+            CastCostClause::Mana => true,
+            CastCostClause::Life(amount) | CastCostClause::AlternativeLife(amount) => {
+                amount == 0 || self.life >= i128::from(amount)
+            }
+            CastCostClause::CraftSource => {
+                self.reference(c.source.card) == c.source
+                    && self.object(c.source.card).zone == Zone::Battlefield
+            }
+            CastCostClause::Harmonize(object) => {
+                harmonize::contribution(self, c.actor, object).is_some()
+            }
+            CastCostClause::Behold(_) => true,
+            CastCostClause::OriginDiscard(selected) => {
+                selected_object(equip_costs::discard_cost(), selected)
+            }
+            CastCostClause::SneakReturn(selected) => selected_object(sneak::COST, selected),
+            CastCostClause::WebSlingingReturn(selected) => {
+                selected_object(web_slinging::RETURN_COST, selected)
+            }
+            CastCostClause::BeamMeUpReturn(selected, provider) => selected.is_none_or(|object| {
+                Some(object) != provider
+                    && !self.beam_return_prohibited(object)
+                    && selected_object(web_slinging::BEAM_RETURN_COST, Some(object))
+            }),
+            CastCostClause::Blight { selected, amount } => selected.is_none_or(|object| {
+                self.reference(object.card) == object
+                    && self.object(object.card).zone == Zone::Battlefield
+                    && self.object(object.card).controller == c.actor
+                    && CharacteristicWorld::kinds(self, object.card) & 1 != 0
+                    && (amount == 0 || !replacements::counters_prohibited(self, object))
+            }),
+            CastCostClause::Casualty(instance) => {
+                let declaration = &c.casualty[usize::from(instance)];
+                declaration.sacrifice.is_none_or(|object| {
+                    self.reference(object.card) == object
+                        && self.object(object.card).zone == Zone::Battlefield
+                        && self.object(object.card).controller == c.actor
+                        && CharacteristicWorld::kinds(self, object.card) & 1 != 0
+                        && self.power(object.card) >= i128::from(declaration.grant.minimum)
+                        && !CharacteristicWorld::sacrifice_prohibited(self, object.card)
+                })
+            }
+            CastCostClause::Conspire(instance) => c.conspire[usize::from(instance)]
+                .objects
+                .is_none_or(|objects| {
+                    objects[0].card < objects[1].card
+                        && objects.iter().all(|object| {
+                            self.resources
+                                .iter()
+                                .position(|resource| {
+                                    resource.id == object.card
+                                        && resource.object.generation == object.generation
+                                })
+                                .is_some_and(|index| {
+                                    self.conspire_candidate(
+                                        c.actor,
+                                        CharacteristicWorld::colors(self, c.source.card),
+                                        index,
+                                    )
+                                })
+                        })
+                }),
+            CastCostClause::Teamwork(minimum) => {
+                let mut sum = saddle::PowerSum::default();
+                c.teammates.iter().enumerate().all(|(index, &object)| {
+                    if c.teammates[..index].contains(&object)
+                        || self.reference(object.card) != object
+                        || self.object(object.card).zone != Zone::Battlefield
+                        || self.object(object.card).controller != c.actor
+                        || self.object(object.card).tapped
+                        || CharacteristicWorld::kinds(self, object.card) & 1 == 0
+                    {
+                        return false;
+                    }
+                    sum.add(self.power(object.card));
+                    true
+                }) && (!c.teamwork_exact || sum.enough(minimum))
+            }
+            CastCostClause::OriginCounters(amount) => self.local_counter_selection_valid(
+                c,
+                EffectChoiceKind::RemoveCreatureCounters(amount)
+                    .counter_requirement()
+                    .unwrap(),
+            ),
+            CastCostClause::OriginEvidence(threshold) => {
+                self.local_evidence_selection_valid(c, threshold)
+            }
+            CastCostClause::OriginForage => {
+                let Some(choice) = c.origin_forage.as_ref() else {
+                    return true;
+                };
+                self.local_forage_selection_valid(
+                    c,
+                    choice.route,
+                    &choice.selected,
+                    choice.complete(),
+                )
+            }
+            CastCostClause::Additional => {
+                let Some(spec) = c.additional else {
+                    return true;
+                };
+                if spec.kind == EffectChoiceKind::DiscardHand {
+                    return true;
+                }
+                if let Some(amount) = spec.kind.additional_life_payment()
+                    && (c.additional_life || matches!(spec.kind, EffectChoiceKind::PayLife(_)))
+                {
+                    return self.life >= i128::from(amount);
+                }
+                if let Some(requirement) = spec.kind.counter_requirement() {
+                    return self.local_counter_selection_valid(c, requirement);
+                }
+                if let Some(threshold) = evidence::threshold(spec) {
+                    return self.local_evidence_selection_valid(c, threshold);
+                }
+                if forage::is_forage_cost(spec) {
+                    return self.local_forage_selection_valid(c, c.forage, &c.selected, c.exact);
+                }
+                let mut spec = spec;
+                if spec.kind.additional_life_payment().is_some() {
+                    spec.kind = EffectChoiceKind::Discard;
+                }
+                c.selected.iter().all(|object| {
+                    !(c.source_tap_reserved
+                        && *object == c.source
+                        && matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_)))
+                }) && self.game.additional_selection_valid_in_world(
+                    self,
+                    spec,
+                    c.actor,
+                    c.source,
+                    &c.selected,
+                    c.exact,
+                )
+            }
+        }
+    }
+    pub(in crate::engine) fn cost_completion(&self) -> bool {
+        self.cost_selection_admissible()
+    }
+    fn local_counter_selection_valid(
+        &self,
+        c: &CostContext,
+        requirement: CounterCostRequirement,
+    ) -> bool {
+        c.counters.len() <= usize::from(requirement.amount)
+            && c.counters
+                .iter()
+                .enumerate()
+                .all(|(index, &(object, kind))| {
+                    !requirement.kind.is_some_and(|expected| expected != kind)
+                        && additional_costs::counter_cost_bearer(
+                            self,
+                            c.actor,
+                            object,
+                            requirement.bearer_kinds,
+                        )
+                        && (c.counters[..=index]
+                            .iter()
+                            .filter(|&&(r, k)| r == object && k == kind)
+                            .count() as u64)
+                            .checked_add(if object == c.source {
+                                c.source_counter_reservation.get(kind)
+                            } else {
+                                0
+                            })
+                            .is_some_and(|needed| {
+                                CharacteristicWorld::counter_count(self, object.card, kind)
+                                    >= needed
+                            })
+                })
+    }
+    fn local_evidence_selection_valid(&self, c: &CostContext, threshold: u64) -> bool {
+        c.selected.iter().enumerate().all(|(index, &object)| {
+            !c.selected[..index].contains(&object)
+                && !c.paid_evidence.contains(&object)
+                && object != c.source
+                && additional_costs::graveyard_exile_card_matches(self, c.actor, object, None)
+        }) && (!c.exact
+            || c.selected
+                .iter()
+                .map(|object| u128::from(self.object(object.card).card.fixed_mana_value()))
+                .sum::<u128>()
+                >= u128::from(threshold))
+    }
+    fn local_forage_selection_valid(
+        &self,
+        c: &CostContext,
+        route: Option<ForageRoute>,
+        selected: &[ObjectRef],
+        exact: bool,
+    ) -> bool {
+        match route {
+            None => !exact && selected.is_empty(),
+            Some(ForageRoute::Black) => selected.is_empty(),
+            Some(ForageRoute::Food) => self.game.additional_selection_valid_in_world(
+                self,
+                forage::food_cost(),
+                c.actor,
+                c.source,
+                selected,
+                exact,
+            ),
+            Some(ForageRoute::ExileThree) => {
+                selected.len() <= 3
+                    && (!exact || selected.len() == 3)
+                    && selected.iter().enumerate().all(|(index, &object)| {
+                        !selected[..index].contains(&object)
+                            && object != c.source
+                            && additional_costs::graveyard_exile_card_matches(
+                                self, c.actor, object, None,
+                            )
+                    })
+            }
+        }
     }
     fn conspire_candidate(&self, actor: Player, colors: u8, index: usize) -> bool {
         let resource = &self.resources[index];
@@ -1211,416 +1423,14 @@ impl FundingState<'_> {
             && CharacteristicWorld::kinds(self, resource.id) & 1 != 0
             && CharacteristicWorld::colors(self, resource.id) & colors != 0
     }
-    fn complete_conspire_clause(
-        &self,
-        current: &CostContext,
-        later: &CostContext,
-        remaining: &[usize],
-        instance: u16,
-    ) -> bool {
-        let colors = CharacteristicWorld::colors(self, current.source.card);
-        let complete = |[first, second]: [usize; 2]| {
-            let mut next = self.clone();
-            next.resources[first].object.tapped = true;
-            next.resources[second].object.tapped = true;
-            next.complete_cost_rows(later, remaining)
-        };
-        if let Some(objects) = current.conspire[usize::from(instance)].objects {
-            // A selected pair is one exact payment, not a prefix to enumerate.
-            // Resource insertion order differs from public object/action order.
-            if objects[0].card >= objects[1].card {
-                return false;
-            }
-            let mut pair = [0; 2];
-            for (index, object) in objects.iter().enumerate() {
-                let Some(resource) = self
-                    .resources
-                    .iter()
-                    .position(|r| r.id == object.card && r.object.generation == object.generation)
-                else {
-                    return false;
-                };
-                if !self.conspire_candidate(current.actor, colors, resource) {
-                    return false;
-                }
-                pair[index] = resource;
-            }
-            return complete(pair);
-        }
-        // Future unpaid instances still explore distinct pairs in the current
-        // projected world, after earlier mana and nonmana costs have changed it.
-        let eligible: Vec<_> = (0..self.resources.len())
-            .filter(|&index| self.conspire_candidate(current.actor, colors, index))
-            .collect();
-        for (at, &first) in eligible.iter().enumerate() {
-            for &second in &eligible[at + 1..] {
-                if complete([first, second]) {
-                    return true;
-                }
-            }
-        }
-        false
-    }
-    fn combined_evidence_deficit(&self, c: &CostContext, remaining: &[usize]) -> bool {
-        let Some(printed) = c.additional.and_then(evidence::threshold) else {
-            return false;
-        };
-        if !self.game.state.exile_links.is_empty() {
-            return false;
-        }
-        let mut alternative = None;
-        let mut includes_printed = false;
-        for &i in remaining {
-            match c.clauses[i].clause {
-                CastCostClause::Mana => {}
-                CastCostClause::OriginEvidence(n) => alternative = Some(n),
-                CastCostClause::Additional => includes_printed = true,
-                _ => return false,
-            }
-        }
-        let Some(alternative) = alternative.filter(|_| includes_printed) else {
-            return false;
-        };
-        // In this packet neither evidence nor mana contributors can add a
-        // graveyard card. Ignore prohibitions for a conservative upper bound.
-        let available = self
-            .resources
-            .iter()
-            .filter(|resource| {
-                let object = &resource.object;
-                let reference = self.reference(resource.id);
-                object.zone == Zone::Graveyard
-                    && object.owner == c.actor
-                    && object.is_card()
-                    && reference != c.source
-                    && !c.paid_evidence.contains(&reference)
-            })
-            .map(|resource| u128::from(resource.object.card.fixed_mana_value()))
-            .sum::<u128>();
-        available < u128::from(printed) + u128::from(alternative)
-    }
 
-    fn complete_cost_rows(&self, c: &CostContext, remaining: &[usize]) -> bool {
-        if remaining.is_empty() {
-            return true;
-        }
-        if self.combined_evidence_deficit(c, remaining) {
-            return false;
-        }
-        // With only Teamwork and Mana left, these inner costs merely tap
-        // contributors. They cannot add mana or restore/change a type, color,
-        // provider or mana-type permission. The current Hall test is therefore
-        // an upper bound before any teammates are spent. A successful bound
-        // retains the complete ordered search and every live power evaluation.
-        // Other costs may remove suppression or return providers, so they must
-        // keep the general path even when mana is not currently payable.
-        if remaining
-            .iter()
-            .any(|&i| matches!(c.clauses[i].clause, CastCostClause::Teamwork(_)))
-            && remaining
-                .iter()
-                .any(|&i| c.clauses[i].clause == CastCostClause::Mana)
-            && remaining.iter().all(|&i| {
-                matches!(
-                    c.clauses[i].clause,
-                    CastCostClause::Teamwork(_) | CastCostClause::Mana
-                )
-            })
-            && !self.mana_clause_payable(c)
-        {
-            return false;
-        }
-        for (position, &index) in remaining.iter().enumerate() {
-            if c.active.is_some_and(|i| usize::from(i) != index) {
-                continue;
-            }
-            let mut rest = remaining.to_vec();
-            rest.remove(position);
-            let mut later = c.clone();
-            later.active = None;
-            if matches!(
-                c.clauses[index].clause,
-                CastCostClause::Additional
-                    | CastCostClause::OriginCounters(_)
-                    | CastCostClause::OriginEvidence(_)
-            ) {
-                later.selected.clear();
-                later.exact = false;
-                later.counters.clear();
-            }
-            match c.clauses[index].clause {
-                CastCostClause::OriginCounters(amount) => {
-                    let requirement = EffectChoiceKind::RemoveCreatureCounters(amount)
-                        .counter_requirement()
-                        .unwrap();
-                    if self.complete_counter_cost(c, &later, &rest, requirement) {
-                        return true;
-                    }
-                }
-                CastCostClause::Teamwork(minimum) => {
-                    if self.complete_teamwork_clause(c, &later, &rest, minimum) {
-                        return true;
-                    }
-                }
-                CastCostClause::Blight { amount, selected } => {
-                    for resource in &self.resources {
-                        let reference = self.reference(resource.id);
-                        if selected.is_some_and(|wanted| wanted != reference) {
-                            continue;
-                        }
-                        if self.visit_blight_cost_projection(
-                            reference,
-                            u32::from(amount),
-                            &mut |next| next.complete_cost_rows(&later, &rest),
-                        ) {
-                            return true;
-                        }
-                    }
-                }
-                CastCostClause::Mana => {
-                    if self.complete_convoke_clause(c, &later, &rest) {
-                        return true;
-                    }
-                }
-                CastCostClause::Life(amount) | CastCostClause::AlternativeLife(amount) => {
-                    if amount == 0 || self.life >= i128::from(amount) {
-                        let mut next = self.clone();
-                        next.pay_projected_life(next.actor, amount, &[]);
-                        if next.complete_cost_rows(&later, &rest) {
-                            return true;
-                        }
-                    }
-                }
-                CastCostClause::Behold(subtype) => {
-                    if hand_choices::visit_behold_candidates(self, c.actor, subtype, &[], |_| true)
-                        && self.complete_cost_rows(&later, &rest)
-                    {
-                        return true;
-                    }
-                }
-                CastCostClause::Conspire(instance) => {
-                    if self.complete_conspire_clause(c, &later, &rest, instance) {
-                        return true;
-                    }
-                }
-                CastCostClause::Casualty(instance) => {
-                    let row = &c.casualty[usize::from(instance)];
-                    for resource in &self.resources {
-                        let r = self.reference(resource.id);
-                        let o = &resource.object;
-                        if row.sacrifice.is_some_and(|wanted| wanted != r)
-                            || o.zone != Zone::Battlefield
-                            || o.controller != c.actor
-                            || CharacteristicWorld::kinds(self, resource.id) & 1 == 0
-                            || self.power(resource.id) < i128::from(row.grant.minimum)
-                        {
-                            continue;
-                        }
-                        if self.cost_departures(&[r], Zone::Graveyard, &mut |w| {
-                            w.complete_cost_rows(&later, &rest)
-                        }) {
-                            return true;
-                        }
-                    }
-                }
-                CastCostClause::Harmonize(object) => {
-                    if harmonize::contribution(self, c.actor, object).is_some()
-                        && let Some(index) = self.resources.iter().position(|r| {
-                            r.id == object.card && r.object.generation == object.generation
-                        })
-                    {
-                        let mut next = self.clone();
-                        next.resources[index].object.tapped = true;
-                        if next.complete_cost_rows(&later, &rest) {
-                            return true;
-                        }
-                    }
-                }
-                CastCostClause::CraftSource => {
-                    if self.reference(c.source.card) == c.source
-                        && self.object(c.source.card).zone == Zone::Battlefield
-                        && self.cost_departures(&[c.source], Zone::Exile, &mut |world| {
-                            world.complete_cost_rows(&later, &rest)
-                        })
-                    {
-                        return true;
-                    }
-                }
-                CastCostClause::SneakReturn(selected) => {
-                    for attack in &self.game.state.attackers {
-                        let object = self.game.object_ref(attack.card);
-                        if selected.is_none_or(|wanted| wanted == object)
-                            && self.cost_object(sneak::COST, object, c.source)
-                            && self.cost_departures(&[object], Zone::Hand, &mut |world| {
-                                world.complete_cost_rows(&later, &rest)
-                            })
-                        {
-                            return true;
-                        }
-                    }
-                }
-                CastCostClause::WebSlingingReturn(selected) => {
-                    for resource in &self.resources {
-                        let object = self.reference(resource.id);
-                        if selected.is_none_or(|wanted| wanted == object)
-                            && self.cost_object(web_slinging::RETURN_COST, object, c.source)
-                            && (rest.is_empty()
-                                || self.cost_departures(&[object], Zone::Hand, &mut |world| {
-                                    world.complete_cost_rows(&later, &rest)
-                                }))
-                        {
-                            return true;
-                        }
-                    }
-                }
-                CastCostClause::BeamMeUpReturn(selected, provider) => {
-                    for resource in &self.resources {
-                        let object = self.reference(resource.id);
-                        if selected.is_none_or(|wanted| wanted == object)
-                            && Some(object) != provider
-                            && !self.beam_return_prohibited(object)
-                            && self.cost_object(web_slinging::BEAM_RETURN_COST, object, c.source)
-                            && (rest.is_empty()
-                                || self.cost_departures(&[object], Zone::Hand, &mut |world| {
-                                    world.complete_cost_rows(&later, &rest)
-                                }))
-                        {
-                            return true;
-                        }
-                    }
-                }
-                CastCostClause::OriginDiscard(selected) => {
-                    let mut payment = c.clone();
-                    payment.additional = Some(equip_costs::discard_cost());
-                    payment.selected = selected.into_iter().collect();
-                    payment.exact = selected.is_some();
-                    if self.complete_additional(&payment, &later, &rest) {
-                        return true;
-                    }
-                }
-                CastCostClause::OriginForage => {
-                    if self.complete_origin_forage(c, &later, &rest) {
-                        return true;
-                    }
-                }
-                CastCostClause::OriginEvidence(threshold) => {
-                    let mut payment = c.clone();
-                    payment.additional = Some(evidence::cost(threshold));
-                    if c.active.is_none() {
-                        payment.selected.clear();
-                        payment.exact = false;
-                    }
-                    if self.complete_additional(&payment, &later, &rest) {
-                        return true;
-                    }
-                }
-                CastCostClause::Additional => {
-                    if self.complete_additional(c, &later, &rest) {
-                        return true;
-                    }
-                }
-            }
-        }
-        false
-    }
     pub(in crate::engine) fn set_teamwork_prefix(&mut self, selected: &[ObjectRef], exact: bool) {
         let c = self.cast_costs.as_mut().expect("teamwork cost context");
         c.teammates = selected.to_vec();
         c.teamwork_exact = exact;
     }
-    fn complete_teamwork_clause(
-        &self,
-        c: &CostContext,
-        later: &CostContext,
-        rest: &[usize],
-        minimum: u16,
-    ) -> bool {
-        let eligible = |r: ObjectRef| {
-            let o = self.object(r.card);
-            self.reference(r.card) == r
-                && o.zone == Zone::Battlefield
-                && o.controller == c.actor
-                && !o.tapped
-                && CharacteristicWorld::kinds(self, r.card) & 1 != 0
-        };
-        if !c.teammates.iter().all(|&r| eligible(r)) {
-            return false;
-        }
-        let candidates: Vec<_> = self
-            .resources
-            .iter()
-            .map(|r| self.reference(r.id))
-            .filter(|&r| eligible(r))
-            .collect();
-        let mut selected = c.teammates.clone();
-        self.complete_teamwork_choices(
-            later,
-            rest,
-            minimum,
-            &candidates,
-            0,
-            &mut selected,
-            c.teamwork_exact,
-        )
-    }
-    #[allow(clippy::too_many_arguments)]
-    fn complete_teamwork_choices(
-        &self,
-        later: &CostContext,
-        rest: &[usize],
-        minimum: u16,
-        candidates: &[ObjectRef],
-        at: usize,
-        selected: &mut Vec<ObjectRef>,
-        exact: bool,
-    ) -> bool {
-        let mut sum = saddle::PowerSum::default();
-        for r in selected.iter() {
-            sum.add(self.power(r.card));
-        }
-        if sum.enough(minimum) {
-            let mut next = self.clone();
-            for r in selected.iter() {
-                let i = next.resources.iter().position(|v| v.id == r.card).unwrap();
-                next.resources[i].object.tapped = true;
-            }
-            if next.complete_cost_rows(later, rest) {
-                return true;
-            }
-        }
-        if exact {
-            return false;
-        }
-        let mut maximum = sum;
-        for r in &candidates[at..] {
-            if !selected.contains(r) {
-                maximum.add(self.power(r.card).max(0));
-            }
-        }
-        if !maximum.enough(minimum) {
-            return false;
-        }
-        for i in at..candidates.len() {
-            let r = candidates[i];
-            if selected.contains(&r) {
-                continue;
-            }
-            selected.push(r);
-            if self.complete_teamwork_choices(
-                later,
-                rest,
-                minimum,
-                candidates,
-                i + 1,
-                selected,
-                false,
-            ) {
-                return true;
-            }
-            selected.pop();
-        }
-        false
-    }
+
+    #[cfg(feature = "test-support")]
     pub(super) fn has_ordered_convoke(&self) -> bool {
         self.cast_costs.as_ref().is_some_and(|c| {
             c.clauses
@@ -1630,6 +1440,7 @@ impl FundingState<'_> {
     }
     /// A deliberately narrow negative bound across future mana-source moves.
     /// Unknown providers and non-tap mutations retain the complete search.
+    #[cfg(feature = "test-support")]
     pub(super) fn pure_tap_teamwork_deficit(&self, goal: &FundingGoal) -> bool {
         let Some(c) = &self.cast_costs else {
             return false;
@@ -1746,6 +1557,7 @@ impl FundingState<'_> {
         // remove a candidate from this exact positive-power upper sum.
         true
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn only_tap_mana(a: &ActivatedAbility) -> bool {
         let c = a.cost;
         a.origin == ActivationOrigin::Battlefield
@@ -1761,107 +1573,8 @@ impl FundingState<'_> {
             && !a.once_per_turn
             && matches!(a.program, [Instruction::AddMana(_)])
     }
-    fn mana_clause_payable(&self, c: &CostContext) -> bool {
-        if c.delve_selected && !self.delve_available() {
-            return false;
-        }
-        let Some(cost) = c.mana else {
-            return false;
-        };
-        let purpose = self.live_mana_purpose();
-        convoke::payable_in(
-            self,
-            c.actor,
-            purpose,
-            mana_lots::available(self.mana, &self.lots, purpose),
-            cost.colored,
-            cost.generic,
-            &self.contribution_masks(c.tap_payment_used),
-        )
-    }
-    fn complete_convoke_clause(
-        &self,
-        c: &CostContext,
-        later: &CostContext,
-        rest: &[usize],
-    ) -> bool {
-        let Some(cost) = c.mana else {
-            return false;
-        };
-        let purpose = self.live_mana_purpose();
-        let pool = mana_lots::available(self.mana, &self.lots, purpose);
-        // Fail before assigning individual helpers when the current mana clause
-        // cannot be paid at all. If it is last, exact Hall matching is the whole
-        // obligation; later nonmana costs still use the original assignment walk.
-        if !self.mana_clause_payable(c) {
-            return false;
-        }
-        if rest.is_empty() {
-            return true;
-        }
-        let (required, generic) =
-            cast_origins::payment_requirements(self, c.actor, purpose, cost.colored, cost.generic);
-        if payable(pool, required, generic) && self.complete_cost_rows(later, rest) {
-            return true;
-        }
-        for resource in &self.resources {
-            let object = self.reference(resource.id);
-            if self.delve_available()
-                && delve::eligible(self, c.actor, object, self.payment_source)
-                && cost.generic > 0
-            {
-                let mut context = c.clone();
-                context.mana.as_mut().unwrap().generic -= 1;
-                context.delve_selected = true;
-                if self.cost_departures(&[object], Zone::Exile, &mut |next| {
-                    next.complete_convoke_clause(&context, later, rest)
-                }) {
-                    return true;
-                }
-            }
-            if resource.object.zone != Zone::Battlefield
-                || resource.object.controller != c.actor
-                || resource.object.tapped
-            {
-                continue;
-            }
-            let colors = CharacteristicWorld::colors(self, resource.id);
-            let kinds = CharacteristicWorld::kinds(self, resource.id);
-            let (choices, substitution): (&[ConvokeContribution], bool) =
-                if self.convoke_available() && kinds & 1 != 0 {
-                    (&convoke::contributions(), false)
-                } else if self.improvise_available() && kinds & 16 != 0 {
-                    (&[ConvokeContribution::Generic], false)
-                } else if self.activation_tap_payment.is_some_and(|payment| {
-                    (c.tap_payment_used as u64) < payment.cap()
-                        && payment.eligible(self, c.actor, object)
-                }) {
-                    (&[ConvokeContribution::Generic], true)
-                } else {
-                    continue;
-                };
-            for &contribution in choices {
-                let mut remaining = cost;
-                if !contribution.apply(colors, &mut remaining) {
-                    continue;
-                }
-                let mut next = self.clone();
-                let i = next
-                    .resources
-                    .iter()
-                    .position(|r| r.id == resource.id)
-                    .unwrap();
-                next.resources[i].object.tapped = true;
-                let mut context = c.clone();
-                context.mana = Some(remaining);
-                context.tap_payment_used += usize::from(substitution);
-                if next.complete_convoke_clause(&context, later, rest) {
-                    return true;
-                }
-            }
-        }
-        false
-    }
+
+    #[cfg(feature = "test-support")]
     pub(super) fn mark_mana_clause_paid(&mut self) {
         if let Some(c) = &mut self.cast_costs {
             for row in &mut c.clauses {
@@ -1872,6 +1585,7 @@ impl FundingState<'_> {
             c.active = None;
         }
     }
+    #[cfg(feature = "test-support")]
     pub(in crate::engine) fn project_convoker(
         &mut self,
         object: ObjectRef,
@@ -1905,12 +1619,14 @@ impl FundingState<'_> {
         self.resources[index].object.tapped = true;
         true
     }
+    #[cfg(feature = "test-support")]
     pub(in crate::engine) fn project_improviser(&mut self, object: ObjectRef) -> bool {
         if !self.improvise_available() || !improvise::eligible(self, self.actor, object) {
             return false;
         }
         self.project_generic_tapper(object)
     }
+    #[cfg(feature = "test-support")]
     pub(in crate::engine) fn project_substituter(&mut self, object: ObjectRef) -> bool {
         let Some(payment) = self.activation_tap_payment else {
             return false;
@@ -1925,6 +1641,7 @@ impl FundingState<'_> {
         self.cast_costs.as_mut().unwrap().tap_payment_used += 1;
         true
     }
+    #[cfg(feature = "test-support")]
     fn project_generic_tapper(&mut self, object: ObjectRef) -> bool {
         let Some(index) = self
             .resources
@@ -1943,6 +1660,7 @@ impl FundingState<'_> {
         self.resources[index].object.tapped = true;
         true
     }
+    #[cfg(feature = "test-support")]
     pub(in crate::engine) fn project_delver(&mut self, object: ObjectRef) -> bool {
         if !self.delve_available()
             || !delve::eligible(self, self.actor, object, self.payment_source)
@@ -1972,551 +1690,10 @@ impl FundingState<'_> {
             false
         }
     }
-    fn complete_origin_forage(
-        &self,
-        current: &CostContext,
-        later: &CostContext,
-        remaining: &[usize],
-    ) -> bool {
-        let mut payment = current.clone();
-        payment.additional = Some(AdditionalCost {
-            kind: EffectChoiceKind::Forage,
-            filter: forage::food_cost().filter,
-        });
-        payment.selected.clear();
-        payment.exact = false;
-        if let Some(choice) = &current.origin_forage {
-            payment.selected.clone_from(&choice.selected);
-            payment.exact = choice.complete();
-        }
-        let chosen_route = current
-            .origin_forage
-            .as_ref()
-            .and_then(|choice| choice.route);
-        [ForageRoute::Food, ForageRoute::ExileThree]
-            .into_iter()
-            .any(|route| {
-                if chosen_route.is_some_and(|chosen| chosen != route) {
-                    return false;
-                }
-                payment.forage = Some(route);
-                self.complete_additional(&payment, later, remaining)
-            })
-    }
-
-    fn complete_additional(
-        &self,
-        c: &CostContext,
-        later: &CostContext,
-        remaining: &[usize],
-    ) -> bool {
-        let Some(mut spec) = c.additional else {
-            return true;
-        };
-        if spec.kind == EffectChoiceKind::DiscardHand {
-            // Whole-hand costs select no individual resource and remain payable
-            // after any legal mana children. Project their actual current group
-            // before proving later ordered costs or an outer announcement.
-            let hand = self
-                .resources
-                .iter()
-                .filter_map(|resource| {
-                    (resource.object.zone == Zone::Hand
-                        && resource.object.owner == c.actor
-                        && resource.object.is_card())
-                    .then_some(self.reference(resource.id))
-                })
-                .collect::<Vec<_>>();
-            return self.cost_departures(&hand, Zone::Graveyard, &mut |world| {
-                world.complete_cost_rows(later, remaining)
-            });
-        }
-        if let Some(life) = spec.kind.additional_life_payment() {
-            if !c.exact && self.life >= i128::from(life) {
-                let mut next = self.clone();
-                next.pay_projected_life(next.actor, life, &[]);
-                if next.complete_cost_rows(later, remaining) {
-                    return true;
-                }
-            }
-            if c.additional_life || matches!(spec.kind, EffectChoiceKind::PayLife(_)) {
-                return false;
-            }
-            spec.kind = EffectChoiceKind::Discard;
-        }
-        if let EffectChoiceKind::BlightCost(amount) = spec.kind.payment_kind() {
-            return self.resources.iter().any(|resource| {
-                let object = self.reference(resource.id);
-                self.cost_object(spec, object, c.source)
-                    && (!c.exact || c.selected == [object])
-                    && (c.selected.is_empty() || c.selected == [object])
-                    && self.visit_blight_cost_projection(object, amount, &mut |next| {
-                        next.complete_cost_rows(later, remaining)
-                    })
-            });
-        }
-        let collecting_evidence = evidence::threshold(spec).is_some();
-        let mut amount = 1usize;
-        let mut destination = Zone::Graveyard;
-        let mut weight_minimum = None;
-        let mut counters = None;
-        let mut any_graveyard = false;
-        match spec.kind.payment_kind() {
-            EffectChoiceKind::SacrificeRange { minimum } => {
-                amount = c.selected.len().max(usize::from(minimum));
-            }
-            EffectChoiceKind::ExileGraveyardRange { minimum } => {
-                destination = Zone::Exile;
-                amount = c.selected.len().max(usize::from(minimum));
-            }
-            EffectChoiceKind::ExilePermanentsForTargetManaValue { minimum } => {
-                let Some(minimum) = minimum else {
-                    return false;
-                };
-                destination = Zone::Exile;
-                weight_minimum = Some((u128::from(minimum), CostWeight::LiveManaValue));
-            }
-            EffectChoiceKind::Forage | EffectChoiceKind::ForageOrBlack => match c.forage {
-                Some(ForageRoute::Black) => return self.complete_cost_rows(later, remaining),
-                Some(ForageRoute::Food) => spec = forage::food_cost(),
-                Some(ForageRoute::ExileThree) => {
-                    amount = 3;
-                    destination = Zone::Exile;
-                    spec.kind = EffectChoiceKind::ExileGraveyard;
-                    any_graveyard = true;
-                }
-                None => return false,
-            },
-            EffectChoiceKind::CollectEvidence(n) => {
-                weight_minimum = Some((u128::from(n), CostWeight::PrintedManaValue));
-                destination = Zone::Exile;
-                spec.kind = EffectChoiceKind::ExileGraveyard;
-                any_graveyard = true;
-            }
-            EffectChoiceKind::ExileGraveyardSymbols { color, minimum } => {
-                weight_minimum = Some((u128::from(minimum), CostWeight::ManaSymbols(color)));
-                destination = Zone::Exile;
-            }
-            EffectChoiceKind::RemoveCreatureCounters(_)
-            | EffectChoiceKind::RemoveCreatureCounter(_)
-            | EffectChoiceKind::RemovePermanentCounters { .. } => {
-                counters = spec.kind.counter_requirement();
-            }
-            EffectChoiceKind::BeholdMany(n) | EffectChoiceKind::SacrificeDifferentNames(n) => {
-                amount = usize::from(n)
-            }
-            EffectChoiceKind::SacrificePermanents(n) | EffectChoiceKind::TapPermanents(n) => {
-                amount = n as usize;
-            }
-            EffectChoiceKind::ExileGraveyard
-            | EffectChoiceKind::BeholdAndExile
-            | EffectChoiceKind::ExileControlled
-            | EffectChoiceKind::ExileFromHand
-            | EffectChoiceKind::ExileControlledOrGraveyard => destination = Zone::Exile,
-            EffectChoiceKind::ExileCraftNonlands(n) => {
-                destination = Zone::Exile;
-                amount = usize::from(n);
-            }
-            EffectChoiceKind::ExileCraftMaterials(materials) => {
-                destination = Zone::Exile;
-                amount = materials.minimum();
-            }
-            EffectChoiceKind::ExileGraveyardCards(n) => {
-                destination = Zone::Exile;
-                amount = usize::from(n);
-            }
-            EffectChoiceKind::ReturnUnblockedAttacker | EffectChoiceKind::ReturnToHand => {
-                destination = Zone::Hand
-            }
-            EffectChoiceKind::Behold
-            | EffectChoiceKind::ChooseControlledOrWarpedCreature
-            | EffectChoiceKind::ChooseControlledOrRevealCreature
-            | EffectChoiceKind::Sacrifice
-            | EffectChoiceKind::SacrificeAttachedEquipment
-            | EffectChoiceKind::SacrificeAttachedPermanent
-            | EffectChoiceKind::SacrificeOrDiscard { .. }
-            | EffectChoiceKind::Discard
-            | EffectChoiceKind::DiscardNamed(_)
-            | EffectChoiceKind::DiscardMatchingLegendary
-            | EffectChoiceKind::DiscardLegendary => {}
-            _ => return false,
-        }
-        if let Some(requirement) = counters {
-            return self.complete_counter_cost(c, later, remaining, requirement);
-        }
-        if any_graveyard {
-            spec.filter = SacrificeFilter {
-                keywords: Keywords::NONE,
-                source_only: false,
-                kinds: 0,
-                nonland: false,
-                other: false,
-                tokens: None,
-                artifact_enchantment_or_token: false,
-                subtype: None,
-            };
-        }
-        let candidates = self
-            .resources
-            .iter()
-            .filter_map(|v| {
-                let r = self.reference(v.id);
-                (self.cost_object(spec, r, c.source)
-                    && (!any_graveyard
-                        || r != c.source && !self.graveyard_exile_prohibited(r.card))
-                    && (!collecting_evidence || !c.paid_evidence.contains(&r))
-                    && !(c.source_tap_reserved
-                        && r == c.source
-                        && matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))))
-                .then_some(r)
-            })
-            .collect::<Vec<_>>();
-        if !c.selected.iter().all(|r| candidates.contains(r)) {
-            return false;
-        }
-        if let Some((minimum, weight)) = weight_minimum {
-            let available = if c.exact { &c.selected } else { &candidates };
-            let enough = available
-                .iter()
-                .map(|r| cost_weight(self, *r, weight))
-                .sum::<u128>()
-                >= minimum;
-            if !enough || spec.kind.uses_target_mana_value() && available.is_empty() {
-                return false;
-            }
-            // When nothing follows, the entire witness set is itself one valid
-            // group. Individual subset orders cannot improve a monotone bound.
-            if spec.kind.uses_target_mana_value() && remaining.is_empty() {
-                return true;
-            }
-        }
-        if matches!(
-            spec.kind.payment_kind(),
-            EffectChoiceKind::SacrificePermanents(_)
-        ) && candidates.len() < amount
-        {
-            return false;
-        }
-        if remaining.is_empty()
-            && matches!(
-                spec.kind.payment_kind(),
-                EffectChoiceKind::TapPermanents(_) | EffectChoiceKind::SacrificePermanents(_)
-            )
-        {
-            return c.selected.len() <= amount
-                && (!c.exact || c.selected.len() == amount)
-                && candidates.len() >= amount;
-        }
-        if remaining.is_empty() && collecting_evidence {
-            // The eligible mana values already met the threshold above. No other
-            // clause can require a particular subset of those objects.
-            return true;
-        }
-        let mut selected = c.selected.clone();
-        self.complete_object_choices(
-            c,
-            later,
-            remaining,
-            spec,
-            destination,
-            amount,
-            weight_minimum,
-            &candidates,
-            0,
-            &mut selected,
-        )
-    }
-    #[allow(clippy::too_many_arguments)]
-    fn complete_object_choices(
-        &self,
-        c: &CostContext,
-        later: &CostContext,
-        remaining: &[usize],
-        spec: AdditionalCost,
-        destination: Zone,
-        amount: usize,
-        weight_minimum: Option<(u128, CostWeight)>,
-        candidates: &[ObjectRef],
-        at: usize,
-        selected: &mut Vec<ObjectRef>,
-    ) -> bool {
-        let craft_materials = spec.kind.craft_materials();
-        if craft_materials.is_some_and(|materials| {
-            materials
-                .maximum()
-                .is_some_and(|maximum| selected.len() > maximum)
-                || !craft::material_group_matches(self, materials, selected)
-        }) {
-            return false;
-        }
-        let enough = weight_minimum.map_or_else(
-            || {
-                craft_materials.map_or(selected.len() == amount, |materials| {
-                    materials.accepts(selected.len())
-                })
-            },
-            |(minimum, weight)| {
-                (!spec.kind.uses_target_mana_value() || !selected.is_empty())
-                    && selected
-                        .iter()
-                        .map(|r| cost_weight(self, *r, weight))
-                        .sum::<u128>()
-                        >= minimum
-            },
-        );
-        if enough {
-            if remaining.is_empty() {
-                return true;
-            }
-            let success = if matches!(
-                spec.kind.payment_kind(),
-                EffectChoiceKind::Behold
-                    | EffectChoiceKind::BeholdMany(_)
-                    | EffectChoiceKind::ChooseControlledOrWarpedCreature
-                    | EffectChoiceKind::ChooseControlledOrRevealCreature
-            ) {
-                self.complete_cost_rows(later, remaining)
-            } else if matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_)) {
-                let mut next = self.clone();
-                for r in selected.iter() {
-                    let i = next.resources.iter().position(|v| v.id == r.card).unwrap();
-                    next.resources[i].object.tapped = true;
-                }
-                next.complete_cost_rows(later, remaining)
-            } else if matches!(spec.kind, EffectChoiceKind::ExileSourceAndNamed { .. }) {
-                let mut batch = selected.clone();
-                batch.push(c.source);
-                self.cost_departures(&batch, destination, &mut |w| {
-                    w.complete_cost_rows(later, remaining)
-                })
-            } else if c.additional.and_then(evidence::threshold).is_some() {
-                let mut later = later.clone();
-                later.paid_evidence.extend_from_slice(selected);
-                self.cost_departures(selected, destination, &mut |w| {
-                    w.complete_cost_rows(&later, remaining)
-                })
-            } else {
-                self.cost_departures(selected, destination, &mut |w| {
-                    w.complete_cost_rows(later, remaining)
-                })
-            };
-            if success {
-                return true;
-            }
-        }
-        if c.exact
-            || craft_materials.is_some_and(|materials| {
-                materials
-                    .maximum()
-                    .is_some_and(|maximum| selected.len() >= maximum)
-            })
-            || weight_minimum.is_none() && selected.len() >= amount && craft_materials.is_none()
-        {
-            return false;
-        }
-        for i in at..candidates.len() {
-            let r = candidates[i];
-            if selected.contains(&r) {
-                continue;
-            }
-            if matches!(
-                spec.kind.payment_kind(),
-                EffectChoiceKind::SacrificeDifferentNames(_)
-            ) && selected
-                .iter()
-                .any(|s| crate::card_names::same_name(self.name(s.card), self.name(r.card)))
-            {
-                continue;
-            }
-            selected.push(r);
-            if self.complete_object_choices(
-                c,
-                later,
-                remaining,
-                spec,
-                destination,
-                amount,
-                weight_minimum,
-                candidates,
-                i + 1,
-                selected,
-            ) {
-                return true;
-            }
-            selected.pop();
-        }
-        false
-    }
-    fn complete_counter_cost(
-        &self,
-        c: &CostContext,
-        later: &CostContext,
-        remaining: &[usize],
-        requirement: CounterCostRequirement,
-    ) -> bool {
-        let CounterCostRequirement {
-            amount,
-            kind: required_kind,
-            bearer_kinds,
-        } = requirement;
-        let mut next = self.clone();
-        for &(r, kind) in &c.counters {
-            if required_kind.is_some_and(|expected| expected != kind)
-                || !next.remove_cost_counter(r, kind, bearer_kinds)
-            {
-                return false;
-            }
-        }
-        if c.counters.len() > usize::from(amount)
-            || (!c.source_counter_reservation.is_empty()
-                && !CharacteristicWorld::counter_amounts(&next, c.source.card)
-                    .contains(&c.source_counter_reservation))
-        {
-            return false;
-        }
-        fn fill(
-            w: &FundingState<'_>,
-            left: usize,
-            later: &CostContext,
-            remaining: &[usize],
-            first: usize,
-            source_reservation: (ObjectRef, &Counters),
-            requirement: CounterCostRequirement,
-        ) -> bool {
-            let (source, reservation) = source_reservation;
-            if left == 0 {
-                return w.complete_cost_rows(later, remaining);
-            }
-            for (index, resource) in w.resources.iter().enumerate().skip(first) {
-                let object = w.reference(resource.id);
-                if !additional_costs::counter_cost_bearer(
-                    w,
-                    w.actor,
-                    object,
-                    requirement.bearer_kinds,
-                ) {
-                    continue;
-                }
-                for kind in CounterKind::ALL {
-                    if requirement.kind.is_some_and(|expected| expected != kind) {
-                        continue;
-                    }
-                    let mut next = w.clone();
-                    if !next.remove_cost_counter(object, kind, requirement.bearer_kinds) {
-                        continue;
-                    }
-                    if !reservation.is_empty()
-                        && !CharacteristicWorld::counter_amounts(&next, source.card)
-                            .contains(reservation)
-                    {
-                        continue;
-                    }
-                    if fill(
-                        &next,
-                        left - 1,
-                        later,
-                        remaining,
-                        index,
-                        source_reservation,
-                        requirement,
-                    ) {
-                        return true;
-                    }
-                }
-            }
-            false
-        }
-        fill(
-            &next,
-            usize::from(amount) - c.counters.len(),
-            later,
-            remaining,
-            0,
-            (c.source, &c.source_counter_reservation),
-            requirement,
-        )
-    }
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    /// Complete mana abilities before testing the orders of the remaining costs.
-    pub(in crate::engine) fn preview_ordered_activation_cost(
-        &self,
-        goal: FundingGoal,
-        spec: AdditionalCost,
-        craft: bool,
-    ) -> bool {
-        let Some((source, _, _, _, _)) = goal.source.as_ref() else {
-            return false;
-        };
-        let purpose = self.funding_purpose(&goal);
-        let mut world = FundingState::from_game(self, &goal);
-        world.set_purpose(purpose);
-        let mana_closed = world.cast_costs.as_ref().is_some_and(|c| c.mana_closed);
-        world.install_cost_context(Some(Box::new(CostContext {
-            delve_selected: false,
-            tap_payment_used: 0,
-            mana_closed,
-            actor: goal.actor,
-            source: *source,
-            source_tap_reserved: goal.reserves_source_tap(*source),
-            source_counter_reservation: Counters::default(),
-            clauses: std::iter::once(CastCostClause::Mana)
-                .chain(craft.then_some(CastCostClause::CraftSource))
-                .chain(std::iter::once(CastCostClause::Additional))
-                .map(|clause| CastCostRow {
-                    clause,
-                    paid: false,
-                })
-                .collect(),
-            active: None,
-            casualty: Vec::new(),
-            conspire: Vec::new(),
-            additional: Some(spec),
-            additional_life: false,
-            forage: None,
-            origin_forage: None,
-            paid_evidence: Vec::new(),
-            selected: Vec::new(),
-            exact: false,
-            counters: Vec::new(),
-            mana: Some(ManaCost {
-                colored: goal.required,
-                generic: goal.generic,
-            }),
-            teammates: Vec::new(),
-            teamwork_exact: false,
-        })));
-        world.reachable(&goal, &mut HashSet::new())
-    }
-    pub(in crate::engine) fn teamwork_proposal_fundable(&self, a: &Announcement) -> bool {
-        if self.cast_requires_target_payment(a.item.controller, a.item.source.unwrap().card) {
-            return a
-                .cost_options()
-                .any(|cost| self.announcement_cost_fundable(a, cost));
-        }
-        a.cost_options().any(|cost| {
-            let mut choice = a.clone();
-            choice.cost = Some(cost);
-            let goal = self.funding_goal(&choice);
-            let mut world = FundingState::from_game_with_convoke(
-                self,
-                &goal,
-                convoke::potential(
-                    self,
-                    choice
-                        .item
-                        .source
-                        .expect("cost announcement has object source")
-                        .card,
-                ),
-            );
-            world.set_purpose(self.purpose_for_item(&choice.item));
-            world.set_cost_context(Some(&choice));
-            world.reachable(&goal, &mut HashSet::new())
-        })
-    }
     pub(in crate::engine) fn teamwork_prefix_fundable(
         &self,
         selected: &[ObjectRef],
@@ -2571,14 +1748,13 @@ impl Game {
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let a = self.state.announcing.as_ref().unwrap();
-        let world = self.cast_cost_world(a);
+        let mut world = self.cast_cost_world(a);
         for (index, row) in a.cast_costs.as_ref().unwrap().clauses.iter().enumerate() {
             if row.paid {
                 continue;
             }
-            let mut choice = world.clone();
-            choice.cast_costs.as_mut().unwrap().active = Some(index as u16);
-            if choice.cost_completion()
+            world.cast_costs.as_mut().unwrap().active = Some(index as u16);
+            if world.cost_selection_admissible()
                 && emit(Action::ChooseCastCost {
                     clause: index as u16,
                 })
@@ -2593,21 +1769,15 @@ impl Game {
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let a = self.state.announcing.as_ref().unwrap();
-        let world = self.cast_cost_world(a);
-        for (id, card) in self.state.objects.iter().enumerate() {
-            if card.zone != Zone::Hand || card.owner != a.item.controller || !card.is_card() {
-                continue;
-            }
+        self.state.objects.iter().enumerate().any(|(id, _)| {
             let object = self.object_ref(id as CardId);
-            let mut choice = world.clone();
-            let costs = choice.cast_costs.as_mut().unwrap();
-            let active = usize::from(costs.active.unwrap());
-            costs.clauses[active].clause = CastCostClause::OriginDiscard(Some(object));
-            if choice.cost_completion() && emit(Action::ChooseAdditionalCost { object }) {
-                return true;
-            }
-        }
-        false
+            self.additional_candidate(
+                equip_costs::discard_cost(),
+                a.item.controller,
+                a.item.source.unwrap().object,
+                object,
+            ) && emit(Action::ChooseAdditionalCost { object })
+        })
     }
 
     pub(in crate::engine) fn visit_sneak_return_cost(
@@ -2615,68 +1785,54 @@ impl Game {
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let a = self.state.announcing.as_ref().unwrap();
-        let world = self.cast_cost_world(a);
-        for attack in &self.state.attackers {
+        self.state.attackers.iter().any(|attack| {
             let object = self.object_ref(attack.card);
-            let mut choice = world.clone();
-            let costs = choice.cast_costs.as_mut().unwrap();
-            let active = usize::from(costs.active.unwrap());
-            costs.clauses[active].clause = CastCostClause::SneakReturn(Some(object));
-            if choice.cost_completion() && emit(Action::PaySneakReturn { object }) {
-                return true;
-            }
-        }
-        false
+            self.additional_candidate(
+                sneak::COST,
+                a.item.controller,
+                a.item.source.unwrap().object,
+                object,
+            ) && emit(Action::PaySneakReturn { object })
+        })
     }
     pub(in crate::engine) fn visit_web_slinging_return_cost(
         &self,
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
-        let announcement = self.state.announcing.as_ref().unwrap();
-        let world = self.cast_cost_world(announcement);
-        for (id, permanent) in self.state.objects.iter().enumerate() {
-            if permanent.zone != Zone::Battlefield || !permanent.tapped {
-                continue;
-            }
+        let a = self.state.announcing.as_ref().unwrap();
+        self.state.objects.iter().enumerate().any(|(id, _)| {
             let object = self.object_ref(id as CardId);
-            let mut choice = world.clone();
-            let costs = choice.cast_costs.as_mut().unwrap();
-            let active = usize::from(costs.active.unwrap());
-            costs.clauses[active].clause = CastCostClause::WebSlingingReturn(Some(object));
-            if choice.cost_completion() && emit(Action::PayWebSlingingReturn { object }) {
-                return true;
-            }
-        }
-        false
+            self.additional_candidate(
+                web_slinging::RETURN_COST,
+                a.item.controller,
+                a.item.source.unwrap().object,
+                object,
+            ) && emit(Action::PayWebSlingingReturn { object })
+        })
     }
     pub(in crate::engine) fn visit_beam_me_up_return_cost(
         &self,
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
-        let announcement = self.state.announcing.as_ref().unwrap();
-        let world = self.cast_cost_world(announcement);
-        for (id, permanent) in self.state.objects.iter().enumerate() {
-            if permanent.zone != Zone::Battlefield {
-                continue;
-            }
+        let a = self.state.announcing.as_ref().unwrap();
+        let Some(CastCostClause::BeamMeUpReturn(_, provider)) =
+            a.cast_costs.as_ref().and_then(|c| c.active_clause())
+        else {
+            return false;
+        };
+        let world = self.cast_cost_world(a);
+        self.state.objects.iter().enumerate().any(|(id, _)| {
             let object = self.object_ref(id as CardId);
-            let mut choice = world.clone();
-            let costs = choice.cast_costs.as_ref().unwrap();
-            let active = usize::from(costs.active.unwrap());
-            let provider = match costs.clauses[active].clause {
-                CastCostClause::BeamMeUpReturn(_, provider) => provider,
-                _ => unreachable!("pending Beam Me Up return cost"),
-            };
-            if Some(object) == provider || choice.beam_return_prohibited(object) {
-                continue;
-            }
-            let costs = choice.cast_costs.as_mut().unwrap();
-            costs.clauses[active].clause = CastCostClause::BeamMeUpReturn(Some(object), provider);
-            if choice.cost_completion() && emit(Action::PayBeamMeUpReturn { object }) {
-                return true;
-            }
-        }
-        false
+            Some(object) != provider
+                && !world.beam_return_prohibited(object)
+                && self.additional_candidate(
+                    web_slinging::BEAM_RETURN_COST,
+                    a.item.controller,
+                    a.item.source.unwrap().object,
+                    object,
+                )
+                && emit(Action::PayBeamMeUpReturn { object })
+        })
     }
     pub(in crate::engine) fn visit_conspire_payments(
         &self,
@@ -2686,22 +1842,24 @@ impl Game {
             return false;
         };
         let a = self.state.announcing.as_ref().unwrap();
-        let world = self.cast_cost_world(a);
-        let colors = CharacteristicWorld::colors(&world, a.item.source.unwrap().id);
-        let mut candidates: Vec<_> = (0..world.resources.len())
-            .filter(|&index| world.conspire_candidate(a.item.controller, colors, index))
-            .map(|index| world.reference(world.resources[index].id))
-            .collect();
-        candidates.sort_unstable_by_key(|object| object.card);
-        for (at, &first) in candidates.iter().enumerate() {
-            for &second in &candidates[at + 1..] {
-                let objects = [first, second];
-                let mut choice = world.clone();
-                choice.cast_costs.as_mut().unwrap().conspire[usize::from(instance)].objects =
-                    Some(objects);
-                if choice.cost_completion() && emit(Action::PayConspire { objects }) {
-                    return true;
+        let first = a.conspire.as_ref().unwrap()[usize::from(instance)].first_object;
+        for id in 0..self.state.objects.len() {
+            let object = self.object_ref(id as CardId);
+            if !self.conspire_object_available(object) || first == Some(object) {
+                continue;
+            }
+            let action = if let Some(first) = first {
+                let mut objects = [first, object];
+                objects.sort_unstable_by_key(|object| object.card);
+                if !self.conspire_payment_valid(objects) {
+                    continue;
                 }
+                Action::PayConspire { objects }
+            } else {
+                Action::ChooseConspireObject { object }
+            };
+            if emit(action) {
+                return true;
             }
         }
         false
@@ -2710,44 +1868,49 @@ impl Game {
         &self,
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
-        let instance = match self.state.pending {
-            Pending::CasualtyPayment { instance, .. } => instance,
-            _ => return false,
+        let Pending::CasualtyPayment { instance, .. } = self.state.pending else {
+            return false;
         };
         let a = self.state.announcing.as_ref().unwrap();
-        let world = self.cast_cost_world(a);
-        for id in 0..self.state.objects.len() {
-            let object = self.object_ref(id as CardId);
-            let mut choice = world.clone();
-            choice.cast_costs.as_mut().unwrap().casualty[usize::from(instance)].sacrifice =
-                Some(object);
-            if choice.cost_completion() && emit(Action::PayCasualty { object }) {
-                return true;
-            }
-        }
-        false
+        let minimum = a.casualty.as_ref().unwrap()[usize::from(instance)]
+            .grant
+            .minimum;
+        self.state
+            .objects
+            .iter()
+            .enumerate()
+            .any(|(id, permanent)| {
+                let id = id as CardId;
+                permanent.zone == Zone::Battlefield
+                    && permanent.controller == a.item.controller
+                    && self.is_creature(id)
+                    && self.stats(id).power >= i128::from(minimum)
+                    && !CharacteristicWorld::sacrifice_prohibited(self, id)
+                    && emit(Action::PayCasualty {
+                        object: self.object_ref(id),
+                    })
+            })
     }
-    pub(in crate::engine) fn cast_cost_object_fundable(&self, object: ObjectRef) -> bool {
-        let Some(a) = self
-            .state
-            .announcing
-            .as_ref()
-            .filter(|a| a.cast_costs.as_ref().is_some_and(|c| c.mana_closed))
-        else {
-            return true;
-        };
-        let mut world = self.cast_cost_world(a);
-        let c = world.cast_costs.as_mut().unwrap();
-        c.selected = vec![object];
-        c.exact = true;
-        world.cost_completion()
-    }
+
     pub(in crate::engine) fn cast_cost_group_fundable(
         &self,
         selected: &[ObjectRef],
         exact: bool,
     ) -> bool {
-        let a = self.state.announcing.as_ref().unwrap();
+        let Some(a) = self.state.announcing.as_ref() else {
+            return false;
+        };
+        if a.cast_costs.as_ref().is_none_or(|c| c.active.is_none()) {
+            return a.additional_cost().is_some_and(|spec| {
+                self.additional_selection_valid(
+                    spec,
+                    a.item.controller,
+                    a.item.source.unwrap().object,
+                    selected,
+                    exact,
+                )
+            });
+        }
         let mut world = self.cast_cost_world(a);
         let c = world.cast_costs.as_mut().unwrap();
         if let Some(origin) = &mut c.origin_forage {
@@ -2756,186 +1919,28 @@ impl Game {
             c.selected = selected.to_vec();
             c.exact = exact;
         }
-        world.cost_completion()
+        world.cost_selection_admissible()
     }
-    pub(in crate::engine) fn cast_cost_counters_fundable(
-        &self,
-        selected: &[(ObjectRef, CounterKind)],
-    ) -> bool {
-        let a = self.state.announcing.as_ref().unwrap();
-        let mut world = self.cast_cost_world(a);
-        world.cast_costs.as_mut().unwrap().counters = selected.to_vec();
-        world.cost_completion()
+
+    pub(in crate::engine) fn conspire_intent_fundable(&self, _pay: bool) -> bool {
+        self.state
+            .announcing
+            .as_ref()
+            .and_then(|a| a.conspire.as_ref())
+            .is_some_and(|rows| rows.iter().any(|row| !row.declared))
     }
-    pub(in crate::engine) fn conspire_intent_fundable(&self, pay: bool) -> bool {
-        let mut a = self.state.announcing.as_ref().unwrap().clone();
-        let row = a
-            .conspire
-            .as_mut()
-            .unwrap()
-            .iter_mut()
-            .find(|r| !r.declared)
-            .unwrap();
-        row.pay = pay;
-        row.declared = true;
-        a.initialize_cast_costs(convoke::cost_potential(
-            self,
-            a.item
-                .source
-                .expect("cost announcement has object source")
-                .card,
-        ));
-        if a.cast_costs.is_none() {
-            a.cast_costs = Some(Box::default());
-            a.initialize_cast_costs(convoke::cost_potential(
-                self,
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .card,
-            ));
-        }
-        if a.item.cast.is_some_and(|c| c.method.is_harmonize()) {
-            return self.harmonize_choice_fundable(&a, None)
-                || (0..self.state.objects.len()).any(|id| {
-                    self.harmonize_choice_fundable(&a, Some(self.object_ref(id as CardId)))
-                });
-        }
-        a.cost
-            .into_iter()
-            .chain(a.cost_options().filter(|_| a.cost.is_none()))
-            .any(|cost| {
-                let mut choice = a.clone();
-                choice.cost = Some(cost);
-                let goal = self.funding_goal(&choice);
-                let mut world = FundingState::from_game_with_convoke(
-                    self,
-                    &goal,
-                    convoke::potential(
-                        self,
-                        choice
-                            .item
-                            .source
-                            .expect("cost announcement has object source")
-                            .card,
-                    ),
-                );
-                world.set_purpose(self.purpose_for_item(&choice.item));
-                world.set_cost_context(Some(&choice));
-                world.reachable(&goal, &mut HashSet::new())
-            })
-    }
-    pub(in crate::engine) fn casualty_intent_fundable(&self, pay: bool) -> bool {
-        let mut a = self.state.announcing.as_ref().unwrap().clone();
-        let row = a
-            .casualty
-            .as_mut()
-            .unwrap()
-            .iter_mut()
-            .find(|r| !r.declared)
-            .unwrap();
-        row.pay = pay;
-        row.declared = true;
-        a.initialize_cast_costs(convoke::cost_potential(
-            self,
-            a.item
-                .source
-                .expect("cost announcement has object source")
-                .card,
-        ));
-        if a.cast_costs.is_none() {
-            a.cast_costs = Some(Box::default());
-            a.initialize_cast_costs(convoke::cost_potential(
-                self,
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .card,
-            ));
-        }
-        if a.item.cast.is_some_and(|c| c.method.is_harmonize()) {
-            return self.harmonize_choice_fundable(&a, None)
-                || (0..self.state.objects.len()).any(|id| {
-                    self.harmonize_choice_fundable(&a, Some(self.object_ref(id as CardId)))
-                });
-        }
-        a.cost_options().any(|cost| {
-            let mut choice = a.clone();
-            choice.cost = Some(cost);
-            let goal = self.funding_goal(&choice);
-            let mut world = FundingState::from_game_with_convoke(
-                self,
-                &goal,
-                convoke::potential(
-                    self,
-                    choice
-                        .item
-                        .source
-                        .expect("cost announcement has object source")
-                        .card,
-                ),
-            );
-            world.set_purpose(self.purpose_for_item(&choice.item));
-            world.set_cost_context(Some(&choice));
-            world.reachable(&goal, &mut HashSet::new())
-        })
-    }
-    /// One resource solver handles mana and ordered additional life costs, including previews before announcement.
-    pub(in crate::engine) fn can_fund_life_cost(
-        &self,
-        goal: FundingGoal,
-        purpose: mana_lots::Purpose,
-        life: u32,
-    ) -> bool {
-        let mut world = FundingState::from_game(self, &goal);
-        world.set_purpose(purpose);
-        if world.cast_costs.is_none() {
-            world.install_cost_context(Some(Box::new(CostContext {
-                delve_selected: false,
-                tap_payment_used: 0,
-                mana_closed: false,
-                teammates: Vec::new(),
-                teamwork_exact: false,
-                actor: goal.actor,
-                mana: None,
-                source_tap_reserved: false,
-                source_counter_reservation: Counters::default(),
-                source: ObjectRef {
-                    card: 0,
-                    generation: 0,
-                },
-                clauses: Vec::new(),
-                active: None,
-                casualty: Vec::new(),
-                conspire: Vec::new(),
-                additional: None,
-                additional_life: false,
-                forage: None,
-                origin_forage: None,
-                paid_evidence: Vec::new(),
-                selected: Vec::new(),
-                exact: false,
-                counters: Vec::new(),
-            })));
-        }
-        let c = world.cast_costs.as_mut().unwrap();
-        if !c
-            .clauses
-            .iter()
-            .any(|r| matches!(r.clause, CastCostClause::Life(_)))
-        {
-            c.clauses.push(CastCostRow {
-                clause: CastCostClause::Life(life),
-                paid: false,
-            });
-        }
-        world.reachable(&goal, &mut HashSet::new())
+    pub(in crate::engine) fn casualty_intent_fundable(&self, _pay: bool) -> bool {
+        self.state
+            .announcing
+            .as_ref()
+            .and_then(|a| a.casualty.as_ref())
+            .is_some_and(|rows| rows.iter().any(|row| !row.declared))
     }
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    /// Preview declarations that are still optional; fixed declarations stay fixed.
+    /// Check supplied declarations while leaving unselected optional costs open.
     #[allow(clippy::too_many_arguments)]
     pub(in crate::engine) fn preview_optional_cast_costs(
         &self,
@@ -2947,7 +1952,7 @@ impl Game {
         selected: &[ObjectRef],
         exact: bool,
         counters: &[(ObjectRef, CounterKind)],
-        extra: &[CastCostClause],
+        _extra: &[CastCostClause],
     ) -> Option<bool> {
         let mana_lots::Purpose::Spell(spell) = purpose else {
             return None;
@@ -2957,9 +1962,7 @@ impl Game {
                 && a.item.controller == goal.actor
                 && a.item
                     .source
-                    .expect("cost announcement has object source")
-                    .card
-                    == spell.card
+                    .is_some_and(|source| source.card == spell.card)
         });
         let additional = additional.and_then(|spec| {
             if matches!(spec.kind, EffectChoiceKind::OptionalBeholdType(_)) {
@@ -2968,221 +1971,48 @@ impl Game {
                 Some(spec)
             }
         });
-        let ordered_additional = additional.is_some_and(|s| {
-            matches!(
-                s.kind,
-                EffectChoiceKind::BeholdMany(_)
-                    | EffectChoiceKind::BeholdAndExile
-                    | EffectChoiceKind::ChooseControlledOrWarpedCreature
-                    | EffectChoiceKind::ChooseControlledOrRevealCreature
-            )
-        }) || delve::potential(self)
-            || additional.is_some_and(|a| {
-                a.kind.additional_life_payment().is_some()
-                    || matches!(a.kind.payment_kind(), EffectChoiceKind::BlightCost(_))
-            })
-            || additional.is_some()
-                && (convoke::potential(self, spell.card)
-                    || improvise::potential(self, spell.card)
-                    || delve::potential(self));
-        if !ordered_additional
-            && extra.is_empty()
-            && current.is_none_or(|a| {
-                a.casualty.is_none() && a.conspire.is_none() && a.cast_costs.is_none()
-            })
-            && !self.has_casualty(goal.actor, spell.card)
-        {
-            return None;
+        // Unselected optional costs are declarations still owned by the caller.
+        // Validate a supplied material prefix without choosing other declarations.
+        if selected.is_empty() && counters.is_empty() && !exact {
+            return Some(true);
         }
-        let grants = current
-            .and_then(|a| a.casualty.as_deref())
-            .cloned()
-            .unwrap_or_else(|| self.casualty_grants(goal.actor, spell.card));
-        if !ordered_additional
-            && grants.is_empty()
-            && extra.is_empty()
-            && current.is_none_or(|a| a.cast_costs.is_none())
-        {
-            return None;
-        }
-        fn declarations(
-            rows: &mut [CasualtyDeclaration],
-            index: usize,
-            visit: &mut impl FnMut(&[CasualtyDeclaration]) -> bool,
-        ) -> bool {
-            if index == rows.len() {
-                return visit(rows);
-            }
-            if rows[index].declared {
-                return declarations(rows, index + 1, visit);
-            }
-            rows[index].declared = true;
-            for pay in [false, true] {
-                rows[index].pay = pay;
-                if declarations(rows, index + 1, visit) {
-                    return true;
-                }
-            }
-            rows[index].declared = false;
-            false
-        }
-        let mut grants = grants;
-        let routes = if additional.is_some_and(forage::is_forage_cost) && route.is_none() {
-            let mut v = vec![Some(ForageRoute::ExileThree), Some(ForageRoute::Food)];
-            if additional.is_some_and(|s| s.kind == EffectChoiceKind::ForageOrBlack) {
-                v.push(Some(ForageRoute::Black));
-            }
-            v
-        } else {
-            vec![route]
-        };
-        Some(declarations(&mut grants, 0, &mut |casualty| {
-            routes.iter().any(|&chosen_route| {
-                let mut attempt = goal.clone();
-                if chosen_route == Some(ForageRoute::Black) && route.is_none() {
-                    attempt.required[2] = attempt.required[2]
-                        .checked_add(1)
-                        .capacity("forage mana exhausted");
-                }
-                let mut clauses = casualty
-                    .iter()
-                    .enumerate()
-                    .filter(|(_, r)| r.pay && !r.paid)
-                    .map(|(i, _)| CastCostRow {
-                        clause: CastCostClause::Casualty(i as u16),
-                        paid: false,
-                    })
-                    .collect::<Vec<_>>();
-                if let Some(rows) = current.and_then(|a| a.conspire.as_deref()) {
-                    clauses.extend(
-                        rows.iter()
-                            .enumerate()
-                            .filter(|(_, r)| r.pay && !r.paid)
-                            .map(|(i, _)| CastCostRow {
-                                clause: CastCostClause::Conspire(i as u16),
-                                paid: false,
-                            }),
-                    );
-                    if rows.iter().any(|r| r.pay) {
-                        clauses.push(CastCostRow {
-                            clause: CastCostClause::Mana,
-                            paid: false,
-                        });
-                    }
-                }
-                if let Some(a) = current
-                    && a.item.cast.is_some_and(|c| c.teamwork == Some(true))
-                {
-                    clauses.push(CastCostRow {
-                        clause: CastCostClause::Teamwork(spell.card.teamwork().unwrap().minimum),
-                        paid: false,
-                    });
-                }
-                if additional.is_some() {
-                    clauses.push(CastCostRow {
-                        clause: CastCostClause::Additional,
-                        paid: false,
-                    });
-                }
-                if additional.is_some_and(|s| {
-                    matches!(
-                        s.kind,
-                        EffectChoiceKind::BeholdMany(_)
-                            | EffectChoiceKind::BeholdAndExile
-                            | EffectChoiceKind::ChooseControlledOrWarpedCreature
-                            | EffectChoiceKind::ChooseControlledOrRevealCreature
-                    )
-                }) || convoke::potential(self, spell.card)
-                    || improvise::potential(self, spell.card)
-                    || delve::potential(self)
-                {
-                    clauses.push(CastCostRow {
-                        clause: CastCostClause::Mana,
-                        paid: false,
-                    });
-                }
-                for &clause in extra {
-                    if !clauses.iter().any(|r| r.clause == clause) {
-                        clauses.push(CastCostRow {
-                            clause,
-                            paid: false,
-                        });
-                    }
-                }
-                let context = CostContext {
-                    delve_selected: false,
-                    tap_payment_used: 0,
-                    mana_closed: current
-                        .and_then(|a| a.cast_costs.as_ref())
-                        .is_some_and(|c| c.mana_closed),
-                    teammates: current
-                        .and_then(|a| a.cast_costs.as_ref())
-                        .map_or_else(Vec::new, |c| c.teammates.clone()),
-                    teamwork_exact: false,
-                    actor: goal.actor,
-                    mana: (extra.contains(&CastCostClause::Mana)
-                        || additional.is_some_and(|s| {
-                            matches!(
-                                s.kind,
-                                EffectChoiceKind::BeholdMany(_)
-                                    | EffectChoiceKind::BeholdAndExile
-                                    | EffectChoiceKind::ChooseControlledOrWarpedCreature
-                                    | EffectChoiceKind::ChooseControlledOrRevealCreature
-                            )
-                        })
-                        || current.is_some_and(|a| {
-                            a.conspire
-                                .as_deref()
-                                .is_some_and(|rows| rows.iter().any(|r| r.pay))
-                        })
-                        || convoke::potential(self, spell.card)
-                        || improvise::potential(self, spell.card)
-                        || delve::potential(self))
-                    .then_some(ManaCost {
-                        colored: attempt.required,
-                        generic: attempt.generic,
-                    }),
-                    source,
-                    source_tap_reserved: false,
-                    source_counter_reservation: Counters::default(),
-                    clauses,
-                    active: None,
-                    casualty: casualty.to_vec(),
-                    conspire: current
-                        .and_then(|a| a.conspire.as_deref())
-                        .cloned()
-                        .unwrap_or_default(),
-                    additional,
-                    additional_life: current.is_some_and(|a| a.additional_life),
-                    forage: chosen_route,
-                    origin_forage: None,
-                    paid_evidence: Vec::new(),
-                    selected: selected.to_vec(),
-                    exact,
-                    counters: counters.to_vec(),
-                };
-                let mut world = FundingState::from_game_with_convoke(
-                    self,
-                    &attempt,
-                    convoke::potential(self, spell.card),
-                );
-                world.set_purpose(purpose);
-                world.install_cost_context(Some(Box::new(context)));
-                world.reachable(&attempt, &mut HashSet::new())
-            })
-        }))
+        let spec = additional?;
+        let mut world = FundingState::from_game(self, &goal);
+        world.set_purpose(purpose);
+        world.install_cost_context(Some(Box::new(CostContext {
+            actor: goal.actor,
+            source,
+            source_tap_reserved: false,
+            source_counter_reservation: Counters::default(),
+            clauses: vec![CastCostRow {
+                clause: CastCostClause::Additional,
+                paid: false,
+            }],
+            active: Some(0),
+            casualty: Vec::new(),
+            conspire: Vec::new(),
+            additional: Some(spec),
+            additional_life: current.is_some_and(|a| a.additional_life),
+            forage: route,
+            origin_forage: None,
+            paid_evidence: Vec::new(),
+            selected: selected.to_vec(),
+            exact,
+            counters: counters.to_vec(),
+            #[cfg(feature = "test-support")]
+            mana: None,
+            teammates: Vec::new(),
+            teamwork_exact: false,
+            #[cfg(feature = "test-support")]
+            delve_selected: false,
+            #[cfg(feature = "test-support")]
+            tap_payment_used: 0,
+            mana_closed: current
+                .and_then(|a| a.cast_costs.as_ref())
+                .is_some_and(|c| c.mana_closed),
+        })));
+        Some(world.cost_selection_admissible())
     }
-}
-
-#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn cost_weight(world: &FundingState<'_>, object: ObjectRef, kind: CostWeight) -> u128 {
-    u128::from(match kind {
-        CostWeight::PrintedManaValue => world.object(object.card).card.fixed_mana_value(),
-        CostWeight::LiveManaValue => CharacteristicWorld::mana_value(world, object.card),
-        CostWeight::ManaSymbols(color) => {
-            world.object(object.card).card.mana_symbols_of_color(color)
-        }
-    })
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -3190,57 +2020,19 @@ impl Game {
     pub(in crate::engine) fn can_fund_symbol_cost_group(
         &self,
         goal: FundingGoal,
-        purpose: mana_lots::Purpose,
+        _purpose: mana_lots::Purpose,
         spec: AdditionalCost,
         source: ObjectRef,
         selected: &[ObjectRef],
     ) -> bool {
-        let mut world = FundingState::from_game(self, &goal);
-        world.set_purpose(purpose);
-        let mana_closed = world.cast_costs.as_ref().is_some_and(|c| c.mana_closed);
-        world.install_cost_context(Some(Box::new(CostContext {
-            delve_selected: false,
-            tap_payment_used: 0,
-            mana_closed,
-            actor: goal.actor,
-            source,
-            source_tap_reserved: goal.reserves_source_tap(source),
-            source_counter_reservation: Counters::default(),
-            clauses: vec![
-                CastCostRow {
-                    clause: CastCostClause::Additional,
-                    paid: false,
-                },
-                CastCostRow {
-                    clause: CastCostClause::Mana,
-                    paid: false,
-                },
-            ],
-            active: None,
-            casualty: Vec::new(),
-            conspire: Vec::new(),
-            additional: Some(spec),
-            additional_life: false,
-            forage: None,
-            origin_forage: None,
-            paid_evidence: Vec::new(),
-            selected: selected.to_vec(),
-            exact: false,
-            counters: Vec::new(),
-            mana: Some(ManaCost {
-                colored: goal.required,
-                generic: goal.generic,
-            }),
-            teammates: Vec::new(),
-            teamwork_exact: false,
-        })));
-        world.reachable(&goal, &mut HashSet::new())
+        self.additional_selection_valid(spec, goal.actor, source, selected, false)
     }
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl FundingState<'_> {
     /// Enumerate the exact pre-SBA counter worlds produced by paying a blight cost.
+    #[cfg(feature = "test-support")]
     fn visit_blight_cost_projection(
         &self,
         subject: ObjectRef,

@@ -122,7 +122,7 @@ fn total_toughness_discount_counts_every_controlled_creature_at_announcement() {
         Zone::Battlefield,
     );
     put(&mut game, player, "Healer's Hawk", Zone::Battlefield);
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
     put(&mut game, player, "Llanowar Elves", Zone::Battlefield);
     act(&mut game, announce);
     act(&mut game, Action::PayCosts { payment });

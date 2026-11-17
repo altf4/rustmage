@@ -78,7 +78,7 @@ fn gigastorm_titan_costs_three_less_after_another_spell_even_if_it_was_countered
     let negate = put(&mut game, opponent, "Negate", Zone::Hand);
     let announce = Action::AnnounceCast { card: titan };
     game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 1];
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
 
     let mut first = game.clone();
     first.state.players[player.index()].mana[5] = 4;
@@ -121,8 +121,8 @@ fn illvoi_galeblade_flashes_in_and_sacrifices_without_waiting_for_summoning_sick
 
     let mut short = game.clone();
     short.state.players[player.index()].mana[5] = 1;
-    reject(
-        &mut short,
+    admit(
+        &short,
         Action::AnnounceActivate {
             card: galeblade,
             ability: 0,

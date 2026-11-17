@@ -182,11 +182,11 @@ fn mana_activation_taps_stolen_return_and_exact_lki_survives_branch_restore() {
         let returned = game.object_ref(funder);
         let action = web(spell, CastFace::Normal);
 
-        reject(&mut game, action.clone());
+        admit(&game, action.clone());
         game.change_controller(returned, player);
         game.state.objects[funder as usize].summoning_sick = false;
         act(&mut game, action);
-        assert!(!game.legal_actions().contains(&Action::BeginOrderedCosts));
+        admit(&game, Action::BeginOrderedCosts);
         tap_funder(&mut game, funder);
         assert!(game.state.objects[funder as usize].tapped);
         act(&mut game, Action::BeginOrderedCosts);
@@ -274,7 +274,7 @@ fn granted_web_slinging_uses_the_modal_face_and_keeps_printed_additional_costs()
     let mut short = game.clone();
     short.move_object(creature, Zone::Exile);
     short.state.objects[provider as usize].tapped = true;
-    reject(&mut short, back_action.clone());
+    admit(&short, back_action.clone());
 
     act(&mut game, back_action);
     act(&mut game, Action::BeginOrderedCosts);
@@ -381,7 +381,7 @@ fn ordinary_land_taps_do_not_create_a_web_return_witness() {
     put(&mut game, player, "Hill Giant", Zone::Battlefield);
     let spell = put(&mut game, player, "Grizzly Bears", Zone::Hand);
     let alternative = web(spell, CastFace::Normal);
-    reject(&mut game, alternative.clone());
+    admit(&game, alternative.clone());
 
     // The same untapped creature can now contribute to the Parents' mana
     // ability, making the subsequent return possible.

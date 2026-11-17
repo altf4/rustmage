@@ -74,8 +74,8 @@ fn boommobile_entry_chooses_exactly_four_of_one_color_and_that_mana_cannot_cast_
             assert!(!g.is_creature(source));
             let artifact = put(&mut g, p, "Short Bow", Zone::Hand);
             let spell = put(&mut g, p, "Shock", Zone::Hand);
-            reject(&mut g, Action::AnnounceCast { card: artifact });
-            reject(&mut g, Action::AnnounceCast { card: spell });
+            admit(&g, Action::AnnounceCast { card: artifact });
+            admit(&g, Action::AnnounceCast { card: spell });
             let quality = g.state.mana_lots.as_ref().unwrap().pools[p.index()][0].quality;
             assert!(!quality.eligible(mana_lots::Purpose::Other));
             assert!(
@@ -181,7 +181,7 @@ fn demonic_junker_affinity_counts_only_controlled_artifacts_reduces_generic_to_z
         let source = put(&mut g, p, "Demonic Junker", Zone::Hand);
         let generic = 6u32.saturating_sub(count);
         g.state.players[0].mana = [0, 0, 0, 0, 0, generic];
-        reject(&mut g, Action::AnnounceCast { card: source });
+        admit(&g, Action::AnnounceCast { card: source });
         g.state.players[0].mana = [0, 0, 1, 0, 0, generic];
         cast(&mut g, source, None);
         reach(&mut g, |a| matches!(a, Action::FinishTargets));
@@ -312,7 +312,7 @@ fn gastal_thrillroller_sorcery_graveyard_return_discards_a_card_enters_with_fina
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
         let source = put(&mut g, p, "Gastal Thrillroller", Zone::Graveyard);
-        reject(&mut g, activation(source, 1));
+        admit(&g, activation(source, 1));
         let card = put(&mut g, p, "Mountain", Zone::Hand);
         g.state.step = Step::Upkeep;
         reject(&mut g, activation(source, 1));
@@ -343,7 +343,7 @@ fn spire_mechcycle_exhaust_cost_is_other_untapped_controlled_mount_or_vehicle_an
         let p = Player::P0;
         let mut g = scenario(p);
         let source = put(&mut g, p, "Spire Mechcycle", Zone::Battlefield);
-        reject(&mut g, activation(source, 0));
+        admit(&g, activation(source, 0));
         let mount = put(&mut g, p, "Gilded Ghoda", Zone::Battlefield);
         let vehicle = put(&mut g, p, "Clamorous Ironclad", Zone::Battlefield);
         let ordinary = put(&mut g, p, "Bear Cub", Zone::Battlefield);

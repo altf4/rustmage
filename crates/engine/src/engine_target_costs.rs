@@ -12,12 +12,6 @@ struct Completion<'a> {
     extra: Option<Target>,
     finished: bool,
 }
-#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-struct CostedTargetCompletion<'a> {
-    item: &'a SpellView,
-    plan: TargetPlan,
-    optional_targets_help: bool,
-}
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
@@ -116,229 +110,32 @@ impl Game {
         fees
     }
 
-    fn costed_target_completion(
-        &self,
-        completion: &CostedTargetCompletion<'_>,
-        targets: &mut Vec<BoundTarget>,
-        group: u16,
-        closed: bool,
-        first_candidate: usize,
-        test: &mut impl FnMut(&[BoundTarget]) -> bool,
-    ) -> bool {
-        let Some(spec) = completion.plan.group(group) else {
-            return test(targets);
-        };
-        let count = targets.iter().filter(|bound| bound.group == group).count();
-        let min = self
-            .exact_x_targets(completion.item)
-            .unwrap_or(usize::from(spec.min));
-        if count > spec.max {
-            return false;
-        }
-        if count >= min
-            && self.costed_target_completion(completion, targets, group + 1, false, 0, test)
-        {
-            return true;
-        }
-        if closed || count == spec.max || count >= min && !completion.optional_targets_help {
-            return false;
-        }
-        let mut index = 0;
-        self.visit_item_targets(completion.item, spec.rule, |target| {
-            let candidate = index;
-            index += 1;
-            if candidate < first_candidate
-                || targets
-                    .iter()
-                    .any(|b| b.group == group && b.target == target)
-                || !self.target_group_compatible(spec.rule, group, targets, target)
-            {
-                return false;
-            }
-            let mut bound = self.bind_target(target);
-            bound.group = group;
-            targets.push(bound);
-            let reachable =
-                self.costed_target_completion(completion, targets, group, false, index, test);
-            targets.pop();
-            reachable
-        })
-    }
-
-    pub(super) fn target_payment_fundable(
-        &self,
-        a: &Announcement,
-        plan: TargetPlan,
-        cost: ManaCost,
-        offspring: Option<bool>,
-        extra: Option<Target>,
-        finished: bool,
-    ) -> bool {
-        let mut providers = Vec::new();
-        self.visit_opposing_target_life_costs(a.item.controller, |source, amount| {
-            providers.push((source, amount));
-            false
-        });
-        let mut proposal = a.clone();
-        proposal.cost = Some(cost);
-        if let Some(offspring) = offspring {
-            proposal.item.cast.as_mut().unwrap().offspring = Some(offspring);
-        }
-        let source = proposal.item.source.expect("spell cost source");
-        let base = Self::announcement_base_cost(&proposal);
-        let harmonizer = proposal.harmonizer.flatten();
-        let discount = harmonizer
-            .and_then(|reference| self.harmonizer_discount(&proposal.item, reference))
-            .unwrap_or(0);
-        let reduction = Self::announcement_optional_reduction(&proposal).saturating_add(discount);
-        let mut targets = a.item.targets.clone();
-        if let Some(target) = extra {
-            let mut bound = self.bind_target(target);
-            bound.group = a.group;
-            targets.push(bound);
-        }
-        let completion = CostedTargetCompletion {
-            item: &a.item,
-            plan,
-            optional_targets_help: source.card.target_cost_reduction().is_some(),
-        };
-        proposal.group = u16::MAX;
-        self.costed_target_completion(
-            &completion,
-            &mut targets,
-            a.group,
-            finished,
-            0,
-            &mut |targets| {
-                proposal.item.targets = targets.to_vec();
-                let Some(total) =
-                    self.target_proposal_total(&proposal, base, plan, None, true, reduction)
-                else {
-                    return false;
-                };
-                let mut choice = proposal.clone();
-                // Install ordinary costs first so matching life amounts stay separate.
-                choice.cast_costs.get_or_insert_with(Default::default);
-                if let Some(threshold) = self.target_evidence_threshold(&choice) {
-                    choice.lock_target_evidence(threshold);
-                }
-                choice.initialize_cast_costs(convoke::cost_potential(self, source.card));
-                choice.add_target_life_costs(providers.iter().filter_map(|&(provider, amount)| {
-                    Self::applies_target_life_cost(targets, provider).then_some(amount)
-                }));
-                self.harmonize_proposal_fundable(&choice, harmonizer, total)
-            },
-        )
-    }
-
     pub(super) fn target_payment_announcement_fundable(
         &self,
         a: &Announcement,
         cost: ManaCost,
     ) -> bool {
-        let source = a.item.source.expect("spell cost source");
-        if a.needs_bargain()
-            || a.needs_evidence()
-            || a.needs_kicker()
-            || a.needs_gift()
-            || a.needs_blight()
-        {
-            return [false, true].into_iter().any(|pay| {
-                let mut proposal = a.clone();
-                let cast = proposal.item.cast.as_mut().unwrap();
-                if a.needs_bargain() {
-                    cast.bargain = Some(pay);
-                } else if a.needs_evidence() {
-                    cast.evidence = Some(pay);
-                } else if a.needs_kicker() {
-                    cast.kicker = Some(pay);
-                } else if a.needs_gift() {
-                    cast.gift = Some(if pay {
-                        GiftDeclaration::Promised {
-                            beneficiary: a.item.controller.other(),
-                        }
-                    } else {
-                        GiftDeclaration::Declined
-                    });
-                } else {
-                    cast.blight = Some(pay);
-                }
-                proposal.plan = self.target_spec(&proposal.item);
-                self.target_payment_announcement_fundable(&proposal, cost)
-            });
-        }
-        if a.item.mode.is_none()
-            && let Some(modes) = a.item.modes()
-        {
-            return modes.iter().enumerate().any(|(index, _)| {
-                if !self.item_mode_eligible(&a.item, index)
-                    || !self.teamwork_mode_allowed(&a.item, index)
-                    || !self.blight_mode_allowed(&a.item, index)
-                {
-                    return false;
-                }
-                let mut proposal = a.clone();
-                proposal.item.mode = Some(u16::try_from(index).expect("mode index"));
-                proposal.plan = self.target_spec(&proposal.item);
-                Self::with_tiered_mana(cost, &proposal.item).is_some_and(|total| {
-                    self.target_payment_announcement_fundable(&proposal, total)
-                })
-            });
-        }
+        let Some(source) = a.item.source else {
+            return false;
+        };
         if let Some(index) = a.item.mode.map(usize::from)
-            && (!self.teamwork_mode_allowed(&a.item, index)
+            && (!self.item_mode_eligible(&a.item, index)
+                || !self.teamwork_mode_allowed(&a.item, index)
                 || !self.blight_mode_allowed(&a.item, index))
         {
             return false;
         }
         let cast = a.item.cast.expect("spell cast choices");
-        if cast.method == CastMethod::Normal
-            && a.source_mana_alternative().is_none()
-            && a.independent_additional_mana().is_none()
-            && !cast.flash_surcharge
-            && !self.spell_cost_option_available_for_definition(
+        cast.method != CastMethod::Normal
+            || a.source_mana_alternative().is_some()
+            || a.independent_additional_mana().is_some()
+            || cast.flash_surcharge
+            || self.spell_cost_option_available_for_definition(
                 a.item.controller,
                 source.id,
                 a.cost_before_exile_play_surcharge(cost),
                 source.card,
             )
-        {
-            return false;
-        }
-        if cast.method.is_harmonize() && a.harmonizer.is_none() {
-            let mut proposal = a.clone();
-            proposal.cost = Some(cost);
-            return self.harmonize_choice_fundable(&proposal, None)
-                || (0..self.state.objects.len()).any(|id| {
-                    self.harmonize_choice_fundable(&proposal, Some(self.object_ref(id as CardId)))
-                });
-        }
-        let mut proposal = a.clone();
-        proposal.cost = Some(cost);
-        if proposal.forage.is_none()
-            && let Some(spec) = proposal
-                .additional_cost()
-                .filter(|spec| forage::is_forage_cost(*spec))
-        {
-            return [
-                ForageRoute::Food,
-                ForageRoute::ExileThree,
-                ForageRoute::Black,
-            ]
-            .into_iter()
-            .any(|route| {
-                if route == ForageRoute::Black && spec.kind != EffectChoiceKind::ForageOrBlack {
-                    return false;
-                }
-                proposal.forage = Some(Box::new(forage::ForageSelection {
-                    route: Some(route),
-                    selected: Vec::new(),
-                    skip_to: 0,
-                }));
-                self.announcement_target_fundable(&proposal, None, Some(cost), None, None, false)
-            });
-        }
-        self.announcement_target_fundable(&proposal, None, Some(cost), None, None, false)
     }
 
     fn completion_qualification(
@@ -347,57 +144,29 @@ impl Game {
         rule: TargetRule,
         prefer_matching: bool,
     ) -> Option<bool> {
-        let matches =
-            |target| self.cast_target_matches(rule, c.actor, c.source, c.definition, target);
-        let mut qualifies = c
-            .chosen
-            .iter()
-            .any(|b| self.same_target_object(*b) && matches(b.target))
-            || c.extra.is_some_and(matches);
+        let _ = prefer_matching;
         let mut group = 0;
         while let Some(spec) = c.plan.group(group) {
-            let count = c.chosen.iter().filter(|b| b.group == group).count()
+            let count = c.chosen.iter().filter(|bound| bound.group == group).count()
                 + usize::from(group == c.group && c.extra.is_some());
-            if count > spec.max {
+            if count > spec.max
+                || (group < c.group || group == c.group && c.finished)
+                    && count < usize::from(spec.min)
+            {
                 return None;
-            }
-            let closed = group < c.group || group == c.group && c.finished || count == spec.max;
-            if closed {
-                if count < usize::from(spec.min) {
-                    return None;
-                }
-            } else {
-                let mut available = 0;
-                let mut can_qualify = false;
-                let mut nonmatching = 0usize;
-                self.visit_cast_targets(spec.rule, c.actor, c.source, c.definition, |target| {
-                    if target == Target::Card(c.source.card)
-                        || c.chosen
-                            .iter()
-                            .any(|b| b.group == group && b.target == target)
-                        || group == c.group && c.extra == Some(target)
-                    {
-                        return false;
-                    }
-                    available += 1;
-                    can_qualify |= matches(target);
-                    nonmatching += usize::from(!matches(target));
-                    false
-                });
-                if count + available < usize::from(spec.min) {
-                    return None;
-                }
-                // A discount may choose a qualifying target. An increase is
-                // unavoidable only when every legal completion includes one.
-                qualifies |= if prefer_matching {
-                    count < spec.max && can_qualify
-                } else {
-                    count + nonmatching < usize::from(spec.min)
-                };
             }
             group += 1;
         }
-        Some(qualifies)
+        // Only declared targets affect the displayed provisional cost. No
+        // hypothetical target is selected to obtain a discount or evade a tax.
+        Some(
+            c.chosen.iter().any(|bound| {
+                self.same_target_object(*bound)
+                    && self.cast_target_matches(rule, c.actor, c.source, c.definition, bound.target)
+            }) || c.extra.is_some_and(|target| {
+                self.cast_target_matches(rule, c.actor, c.source, c.definition, target)
+            }),
+        )
     }
     fn completion_modifiers(&self, c: &Completion<'_>) -> Option<(bool, bool)> {
         let reduced = match c.definition.target_cost_reduction() {
@@ -585,31 +354,8 @@ impl Game {
         id: CardId,
         base: ManaCost,
     ) -> bool {
-        let source = self.object_ref(id);
-        let card = self.effective_spell_card(id);
-        let available = |plan| {
-            let c = Completion {
-                actor,
-                source,
-                definition: card,
-                plan,
-                chosen: &[],
-                group: 0,
-                extra: None,
-                finished: false,
-            };
-            self.completion_modifiers(&c).is_some_and(|qualifies| {
-                self.target_total(actor, id, base, qualifies, 0)
-                    .is_some_and(|total| self.spell_can_fund_total(actor, id, total, None))
-            })
-        };
-        match card.effect() {
-            Effect::Modal(modes) => modes.iter().enumerate().any(|(index, mode)| {
-                self.spell_mode_eligible(actor, source, card, index) && available(mode.targets)
-            }),
-            Effect::Spell(plan, _) | Effect::Aura(plan) => available(plan),
-            _ => available(TargetPlan::NONE),
-        }
+        // Costs that depend on targets are established after concrete targets.
+        self.spell_cost_option_available(actor, id, base)
     }
     pub(super) fn announcement_target_fundable(
         &self,
@@ -620,127 +366,32 @@ impl Game {
         extra: Option<Target>,
         finished: bool,
     ) -> bool {
+        let _ = (cost, offspring);
         if !self.exact_x_targets_fundable(a, extra, finished) {
             return false;
         }
-        if let StackKind::ActivatedAbility { ability } = a.item.kind
-            && Self::activation_target_sensitive(
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .card,
-                ability,
-            )
-        {
-            return self.announcement_activation_target_fundable(a, extra, finished);
-        }
-        if a.item.kind != StackKind::Spell || !a.pay_window {
-            return true;
-        }
-        let card = a.item.source.expect("spell cost source").card;
-        let target_payment = self.cast_requires_target_payment(a.item.controller, card);
-        if !target_payment && !card.has_target_cost_modifier() {
-            return true;
-        }
-        if plan.is_none()
-            && a.item.mode.is_none()
-            && let Some(modes) = a.item.modes()
-        {
-            return modes.iter().enumerate().any(|(index, mode)| {
-                self.item_mode_eligible(&a.item, index)
-                    && self.announcement_target_fundable(
-                        a,
-                        Some(mode.targets),
-                        cost,
-                        offspring,
-                        extra,
-                        finished,
-                    )
-            });
-        }
-        let plan = plan.unwrap_or_else(|| {
-            if a.plan == TargetPlan::NONE {
-                self.target_spec(&a.item)
-            } else {
-                a.plan
-            }
-        });
-        let test = |cost| {
-            if target_payment {
-                return self.target_payment_fundable(a, plan, cost, offspring, extra, finished);
-            }
-            let mut base = Self::with_offspring_cost(
-                cost,
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .card,
-                offspring.unwrap_or_else(|| a.item.cast.is_some_and(|c| c.offspring == Some(true))),
-            );
-            base = Self::with_kicker_cost(
-                base,
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .card,
-                a.item.cast.is_some_and(|c| c.kicker == Some(true)),
-            );
-            if a.forage
-                .as_ref()
-                .is_some_and(|f| f.route == Some(ForageRoute::Black))
-            {
-                base.colored[2] = base.colored[2]
-                    .checked_add(1)
-                    .capacity("forage alternative mana cost exhausted");
-            }
-            self.target_proposal_total(
-                a,
-                base,
-                plan,
-                extra,
-                finished,
-                Self::announcement_optional_reduction(a).saturating_add(
-                    a.harmonizer
-                        .flatten()
-                        .and_then(|r| self.harmonizer_discount(&a.item, r))
-                        .unwrap_or(0),
-                ),
-            )
-            .is_some_and(|total| {
-                if a.tap_payment().is_some() {
-                    return self.waterbend_spell_total_fundable(a, total);
-                }
-                if a.independent_additional_mana().is_some() {
-                    let mut proposal = a.clone();
-                    proposal.cast_costs.get_or_insert_with(Default::default);
-                    return self.harmonize_proposal_fundable(
-                        &proposal,
-                        a.harmonizer.flatten(),
-                        total,
-                    );
-                }
-                if a.item.cast.is_some_and(|c| c.method.is_harmonize())
-                    || a.has_ordered_origin_payment()
-                    || a.has_ordered_life_cost()
-                {
-                    return self.harmonize_proposal_fundable(a, a.harmonizer.flatten(), total);
-                }
-                self.spell_can_fund_total(
-                    a.item.controller,
-                    a.item
-                        .source
-                        .expect("cost announcement has object source")
-                        .id,
-                    total,
-                    a.forage.as_ref().and_then(|f| f.route),
-                )
-            })
+        let plan = plan.unwrap_or(a.plan);
+        let Some(spec) = plan.group(a.group) else {
+            return extra.is_none();
         };
-        if let Some(cost) = cost.or(a.cost) {
-            test(cost)
-        } else {
-            a.cost_options().any(test)
+        let count = a
+            .item
+            .targets
+            .iter()
+            .filter(|bound| bound.group == a.group)
+            .count()
+            + usize::from(extra.is_some());
+        if count > spec.max || finished && count < usize::from(spec.min) {
+            return false;
         }
+        extra.is_none_or(|target| {
+            !a.item
+                .targets
+                .iter()
+                .any(|bound| bound.group == a.group && bound.target == target)
+                && self.item_target_matches(&a.item, spec.rule, target)
+                && self.target_group_compatible(spec.rule, a.group, &a.item.targets, target)
+        })
     }
     pub(super) fn provisional_target_cost(&self, a: &Announcement, base: ManaCost) -> ManaCost {
         let c = Completion {
@@ -766,6 +417,6 @@ impl Game {
             qualifies,
             Self::announcement_optional_reduction(a),
         )
-        .expect("validated provisional cost")
+        .capacity("spell mana cost exhausted")
     }
 }

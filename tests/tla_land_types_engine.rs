@@ -253,7 +253,7 @@ fn toph_dependency_keeps_the_order_of_earlier_land_type_effects() {
         game.state.players[player.index()].mana = [0; 6];
         let announce = Action::AnnounceCast { card: hawk };
         if zhao_later {
-            reject(&mut game, announce);
+            admit(&game, announce);
         } else {
             act(&mut game, announce);
             let white = granted_mana(&game, artifact, 0);

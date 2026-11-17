@@ -718,7 +718,7 @@ fn smoky_lounge_mana_funds_both_room_routes_and_misty_salon_samples_live_doors()
     assert!(game.observe(player).mana_lots.iter().any(|lot| {
         lot.player == player && lot.restriction == ManaRestrictionView::RoomSpellOrUnlockDoor
     }));
-    reject(&mut game, Action::AnnounceCast { card: shock });
+    admit(&game, Action::AnnounceCast { card: shock });
     game.state.players[player.index()].mana[1] = 1;
     game.state.players[player.index()].mana[5] = 1;
 

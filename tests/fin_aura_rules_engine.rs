@@ -165,7 +165,7 @@ fn the_activation_rule_applies_to_actual_and_projected_mana_without_blanking_tri
     };
     let announce = Action::AnnounceCast { card: boots };
     reject(&mut game, produce.clone());
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
 
     let mut released = game.clone();
     released.move_object(aura, Zone::Graveyard);

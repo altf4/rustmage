@@ -10,12 +10,19 @@ fn pair(pair: usize) {
     let cases = w.pair(pair);
     assert_eq!(cases.len(), if pair == 6 { 4 } else { 8 });
     let report = workload::run(&w, &cases, workload::Mode::Verify, Some(&dir), None).unwrap();
+    assert_eq!(report.workload, workload::WORKLOAD);
+    assert_eq!(report.action_contract, rustmage::ACTION_CONTRACT);
+    assert_eq!(report.observation_schema, rustmage::OBSERVATION_SCHEMA);
+    assert_eq!(report.caller_contract, workload::CALLER_CONTRACT);
+    assert_eq!(report.primitive_decision_limit, 4096);
     assert!(
         report
             .games
             .iter()
             .all(|g| g.replayed_actions == g.decisions
                 && g.cast_count > 0
+                && g.completed_attempts > 0
+                && g.incomplete_submissions <= g.attempt_submissions
                 && g.decisions <= 4096
                 && !g.owned_decision_roots.is_empty())
     );

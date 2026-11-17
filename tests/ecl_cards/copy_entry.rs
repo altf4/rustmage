@@ -1,5 +1,6 @@
 //! Paid Mirrorform scenarios plus exact physical-copy/DFC boundary regressions.
-use crate::ecl_scenarios::{cast, checked, named, settle, setup};
+use crate::ecl_scenarios::{cast, checked, named, settle, setup, success_continuation};
+use crate::support::{admit, reject};
 use rustmage_core::cards::CreatureType;
 use rustmage_core::cards::*;
 use rustmage_core::engine::copies::CopyFaces;
@@ -84,14 +85,15 @@ fn ecl_copy_entry_mirrorform_target_aura_is_illegal_and_departed_target_fizzles(
                 target: Target::Card(bear),
             },
         );
-        while !matches!(g.state.pending, Pending::Priority) {
-            let action = g
-                .legal_actions()
-                .into_iter()
-                .find(|a| !matches!(a, Action::Concede))
-                .unwrap();
-            checked(&mut g, action);
-        }
+        let payment = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .expect("Mirrorform has a concrete mana payment after its target is chosen");
+        checked(&mut g, payment);
+        assert_eq!(g.state.pending, Pending::Priority);
+        assert!(g.state.announcing.is_none());
+        assert_eq!(g.state.stack.last().unwrap().source.unwrap().id, spell);
         g.move_object(bear, Zone::Exile);
         settle(&mut g);
         assert!(g.state.copy_recipes.is_none());
@@ -770,20 +772,24 @@ fn ecl_copy_entry_mirrorform_realms_without_a_type_produces_frozen_unspendable_c
             ManaRestrictionView::Unavailable
         );
         let elf = named(&mut g, p, "Llanowar Elves", Zone::Hand);
-        assert!(
-            !g.legal_actions()
-                .contains(&Action::AnnounceCast { card: elf })
-        );
+        admit(&g, Action::AnnounceCast { card: elf });
         g.move_object(body, Zone::Hand);
         assert_eq!(
             g.state.objects[body as usize].card.name(),
             "Springleaf Drum"
         );
         assert_eq!(g.available_mana(p, mana_lots::Purpose::Other), [0; 6]);
-        assert!(
-            !g.legal_actions()
-                .contains(&Action::AnnounceCast { card: elf })
+        admit(&g, Action::AnnounceCast { card: elf });
+        checked(&mut g, Action::AnnounceCast { card: elf });
+        reject(&mut g, Action::PayCosts { payment: green });
+        checked(&mut g, Action::EndManaWindow);
+        checked(&mut g, Action::SubmitAttempt);
+        assert_eq!(
+            g.last_attempt_outcome_view(p).unwrap().reason,
+            Some(AttemptFailureReason::UnsatisfiedMana)
         );
+        assert_eq!(g.object_view(elf).zone, Zone::Hand);
+        assert_eq!(g.state.players[p.index()].mana, green);
     }
 }
 
@@ -796,11 +802,11 @@ fn to_omni_copy(g: &mut Game) {
         if matches!(g.state.pending, Pending::EntryCopy { .. }) {
             return;
         }
-        let action = g
-            .legal_actions()
-            .into_iter()
-            .find(|a| !matches!(a, Action::Concede))
-            .unwrap();
+        let action = if g.state.pending == Pending::Priority {
+            Action::Pass
+        } else {
+            success_continuation(g, &g.legal_actions())
+        };
         checked(g, action);
     }
     panic!("missing Omni copy choice: {:?}", g.state.pending);

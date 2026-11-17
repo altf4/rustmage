@@ -274,7 +274,7 @@ fn simultaneous_legendary_creature_entry_offers_an_owned_choice_and_paid_equip()
 
         let announce = equip_action(&parent, exact_source);
         parent.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
-        reject(&mut parent, announce.clone());
+        admit(&parent, announce.clone());
         parent.state.players[player.index()].mana[5] = 3;
         act(&mut parent, announce);
         reject(

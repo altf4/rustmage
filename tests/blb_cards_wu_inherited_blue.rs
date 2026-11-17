@@ -68,7 +68,29 @@ fn dire_downdraft_uses_target_dependent_cost_and_the_owner_chooses_where_it_goes
     game.record_control(game.object_ref(bear), player, None);
     let spell = put(&mut game, player, "Dire Downdraft", Zone::Hand);
     game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 2];
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    act(&mut game, Action::AnnounceCast { card: spell });
+    act(&mut game, target(bear));
+    assert_eq!(
+        game.state.announcing.as_ref().unwrap().total_cost,
+        Some(ManaCost {
+            colored: [0, 1, 0, 0, 0, 0],
+            generic: 3,
+        })
+    );
+    reject(
+        &mut game,
+        Action::PayCosts {
+            payment: [0, 1, 0, 0, 0, 2],
+        },
+    );
+    act(&mut game, Action::EndManaWindow);
+    act(&mut game, Action::SubmitAttempt);
+    let outcome = game.last_attempt_outcome_view(player).unwrap();
+    assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+    assert_eq!(outcome.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+    assert_eq!(game.object_view(spell).zone, Zone::Hand);
+    assert_eq!(game.object_view(bear).zone, Zone::Battlefield);
+    assert_eq!(game.state.players[player.index()].mana, [0, 1, 0, 0, 0, 2]);
     game.state.objects[bear as usize].tapped = true;
     cast(&mut game, spell, Some(Target::Card(bear)));
     assert_eq!(game.state.players[player.index()].mana, [0; 6]);
@@ -186,12 +208,50 @@ fn nightwhorl_hermit_rechecks_threshold_and_pearl_reduces_only_once() {
         Zone::Battlefield,
     );
     game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 1];
-    reject(&mut game, Action::AnnounceCast { card: pearl });
+    act(&mut game, Action::AnnounceCast { card: pearl });
+    assert_eq!(
+        game.state.announcing.as_ref().unwrap().total_cost,
+        Some(ManaCost {
+            colored: [0, 1, 0, 0, 0, 0],
+            generic: 2,
+        })
+    );
+    reject(
+        &mut game,
+        Action::PayCosts {
+            payment: [0, 1, 0, 0, 0, 1],
+        },
+    );
+    act(&mut game, Action::EndManaWindow);
+    act(&mut game, Action::SubmitAttempt);
+    let outcome = game.last_attempt_outcome_view(player).unwrap();
+    assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+    assert_eq!(outcome.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+    assert_eq!(game.object_view(pearl).zone, Zone::Hand);
     put(&mut game, player, "Thieving Otter", Zone::Battlefield);
     put(&mut game, player, "Thieving Otter", Zone::Battlefield);
     let mut cannot_double = game.clone();
     cannot_double.state.players[player.index()].mana = [0, 1, 0, 0, 0, 0];
-    reject(&mut cannot_double, Action::AnnounceCast { card: pearl });
+    act(&mut cannot_double, Action::AnnounceCast { card: pearl });
+    assert_eq!(
+        cannot_double.state.announcing.as_ref().unwrap().total_cost,
+        Some(ManaCost {
+            colored: [0, 1, 0, 0, 0, 0],
+            generic: 1,
+        })
+    );
+    reject(
+        &mut cannot_double,
+        Action::PayCosts {
+            payment: [0, 1, 0, 0, 0, 0],
+        },
+    );
+    act(&mut cannot_double, Action::EndManaWindow);
+    act(&mut cannot_double, Action::SubmitAttempt);
+    let outcome = cannot_double.last_attempt_outcome_view(player).unwrap();
+    assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+    assert_eq!(outcome.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+    assert_eq!(cannot_double.object_view(pearl).zone, Zone::Hand);
     cast(&mut game, pearl, None);
     settle(&mut game);
     assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 2);

@@ -92,8 +92,69 @@ fn the_exile_offer_preserves_both_discard_costs_and_can_be_declined() {
         let mut short = game.clone();
         cast(&mut short, caster, None);
         until_choice(&mut short);
-        let unavailable = exiled_cast(&short, spell, CastFace::Normal);
-        reject(&mut short, unavailable);
+        let first_object = short.object_ref(first);
+        let spell_object = short.object_ref(spell);
+        let mana = short.state.players[player.index()].mana;
+        for (paid, unpaid) in [
+            (
+                CastCostClause::OriginDiscard(None),
+                CastCostClause::Additional,
+            ),
+            (
+                CastCostClause::Additional,
+                CastCostClause::OriginDiscard(None),
+            ),
+        ] {
+            let mut failed = short.clone();
+            let offer = exiled_cast(&failed, spell, CastFace::Normal);
+            indexed_twin(&mut failed, offer);
+            act(&mut failed, Action::BeginOrderedCosts);
+            choose_cost(&mut failed, paid);
+            indexed_twin(
+                &mut failed,
+                Action::ChooseAdditionalCost {
+                    object: first_object,
+                },
+            );
+            assert_eq!(failed.object_view(first).zone, Zone::Graveyard);
+            choose_cost(&mut failed, unpaid);
+            reject(
+                &mut failed,
+                Action::ChooseAdditionalCost {
+                    object: first_object,
+                },
+            );
+            assert!(
+                !failed
+                    .legal_actions()
+                    .iter()
+                    .any(|action| { matches!(action, Action::ChooseAdditionalCost { .. }) })
+            );
+            let attempt = failed.attempt_view(player).unwrap();
+            assert_eq!(attempt.stage, AttemptStage::PayCosts);
+            assert!(attempt.mana_window_closed);
+            assert!(!attempt.can_end_mana_window);
+            assert!(attempt.can_submit);
+            indexed_twin(&mut failed, Action::SubmitAttempt);
+            let outcome = failed.last_attempt_outcome_view(player).unwrap();
+            assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+            assert_eq!(
+                outcome.reason,
+                Some(AttemptFailureReason::UnsatisfiedMaterial)
+            );
+            assert_eq!(failed.state.pending, Pending::ResolutionCasts { player });
+            assert_eq!(failed.object_ref(first), first_object);
+            assert_eq!(failed.object_view(first).zone, Zone::Hand);
+            assert_eq!(failed.object_ref(spell), spell_object);
+            assert_eq!(failed.object_view(spell).zone, Zone::Exile);
+            assert_eq!(failed.state.players[player.index()].mana, mana);
+            assert_eq!(
+                failed.state.players[player.index()].cards_drawn_this_turn,
+                0
+            );
+            act(&mut failed, Action::FinishResolutionCasts);
+            assert!(failed.state.stack.is_empty());
+        }
         act(&mut short, Action::FinishResolutionCasts);
         assert_eq!(short.object_view(first).zone, Zone::Hand);
         assert_eq!(short.object_view(spell).zone, Zone::Exile);

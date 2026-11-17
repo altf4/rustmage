@@ -94,7 +94,7 @@ fn praxis_uses_one_six_name_count_and_only_preexisting_creatures_shrink() {
 fn needs_sacrifices_as_cast_cost_then_protects_creatures_and_player() {
     let mut empty = scenario(Player::P0);
     let spell = put(&mut empty, Player::P0, "The Needs of the Many", Zone::Hand);
-    reject(&mut empty, Action::AnnounceCast { card: spell });
+    admit(&empty, Action::AnnounceCast { card: spell });
 
     let mut game = scenario(Player::P0);
     let paid = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);

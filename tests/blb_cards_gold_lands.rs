@@ -66,7 +66,22 @@ fn each_village_has_unrestricted_colorless_and_restricted_colored_mana() {
         if color == 1 {
             let opt = put(&mut game, player, "Opt", Zone::Hand);
             let bird = put(&mut game, player, "Spyglass Siren", Zone::Hand);
-            reject(&mut game, Action::AnnounceCast { card: opt });
+            let opt_object = game.object_ref(opt);
+            act(&mut game, Action::AnnounceCast { card: opt });
+            assert!(game.mana_payment_domain().is_none());
+            reject(&mut game, Action::PayCosts { payment: colored });
+            act(&mut game, Action::EndManaWindow);
+            act(&mut game, Action::SubmitAttempt);
+            assert_eq!(
+                game.last_attempt_outcome_view(player).unwrap().outcome,
+                AttemptOutcome::Failed
+            );
+            assert_eq!(game.object_ref(opt), opt_object);
+            assert_eq!(game.object_view(opt).zone, Zone::Hand);
+            assert!(game.object_view(land).tapped);
+            assert_eq!(game.state.players[player.index()].mana, colored);
+            assert_eq!(game.observe(player).mana_lots, lots);
+            assert!(game.state.stack.is_empty());
             cast(&mut game, bird, None);
             settle(&mut game);
             assert_eq!(game.object_view(bird).zone, Zone::Battlefield);

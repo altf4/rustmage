@@ -141,10 +141,10 @@ fn actual_and_projected_land_mana_keep_the_original_ability_and_each_added_color
         let announce = Action::AnnounceCast { card: spell };
         let mut short = game.clone();
         short.state.objects[second as usize].tapped = true;
-        reject(&mut short, announce.clone());
+        admit(&short, announce.clone());
         let mut removed = game.clone();
         removed.move_object(source, Zone::Graveyard);
-        reject(&mut removed, announce.clone());
+        admit(&removed, announce.clone());
 
         let mut original = game.clone();
         let wastes = put(&mut original, player, "Wastes", Zone::Battlefield);
@@ -180,9 +180,12 @@ fn actual_and_projected_land_mana_keep_the_original_ability_and_each_added_color
         indexed.apply_index(player, revision, index).unwrap();
         act(&mut game, red.clone());
         assert_eq!(game.snapshot(), indexed.snapshot());
+        let mut replay = game.clone();
+        replay.restore(&saved).unwrap();
         indexed.restore(&saved).unwrap();
+        act(&mut replay, red.clone());
         act(&mut indexed, red);
-        assert_eq!(game.snapshot(), indexed.snapshot());
+        assert_eq!(replay.snapshot(), indexed.snapshot());
         act(&mut game, Action::TapMana { card: second });
         pay(&mut game);
         settle(&mut game);
@@ -286,7 +289,7 @@ fn only_live_controlled_creature_tokens_gain_the_tap_mana_ability() {
         reject(&mut game, colorless);
         let announce = Action::AnnounceCast { card: shock };
         let two_colors = Action::AnnounceCast { card: helix };
-        reject(&mut game, two_colors.clone());
+        admit(&game, two_colors.clone());
 
         let mut animated = game.clone();
         animated.state.players[player.index()].mana = [8; 6];
@@ -323,13 +326,13 @@ fn only_live_controlled_creature_tokens_gain_the_tap_mana_ability() {
             cast(&mut suppressed, spell, Some(Target::Card(blank)));
             settle(&mut suppressed);
             suppressed.state.players[player.index()].mana = [0; 6];
-            reject(&mut suppressed, announce.clone());
+            admit(&suppressed, announce.clone());
             let lost_grant = token_mana(&suppressed, source, bearer, 3);
             reject(&mut suppressed, lost_grant);
         }
         let mut departed = game.clone();
         departed.move_object(source, Zone::Graveyard);
-        reject(&mut departed, announce.clone());
+        admit(&departed, announce.clone());
 
         act(&mut game, announce);
         act(
@@ -350,9 +353,12 @@ fn only_live_controlled_creature_tokens_gain_the_tap_mana_ability() {
         indexed.apply_index(player, revision, index).unwrap();
         act(&mut game, action.clone());
         assert_eq!(game.snapshot(), indexed.snapshot());
+        let mut replay = game.clone();
+        replay.restore(&saved).unwrap();
         indexed.restore(&saved).unwrap();
+        act(&mut replay, action.clone());
         act(&mut indexed, action);
-        assert_eq!(game.snapshot(), indexed.snapshot());
+        assert_eq!(replay.snapshot(), indexed.snapshot());
         assert_eq!(game.state.players[player.index()].mana, [0, 0, 0, 1, 0, 0]);
         assert!(game.object_view(bearer).tapped);
         assert!(!game.object_view(sick).tapped);

@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import unittest
 
-from rustmage import EngineError, Game, OBSERVATION_SCHEMA
+from rustmage import ACTION_CONTRACT, EngineError, Game, OBSERVATION_SCHEMA
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -212,6 +212,7 @@ class BindingContractTests(unittest.TestCase):
                 with self.subTest(viewer=viewer):
                     observation = handle.observe(viewer)
                     self.assertEqual(observation["schema"], OBSERVATION_SCHEMA)
+                    self.assertEqual(observation["action_contract"], ACTION_CONTRACT)
                     self.assertEqual(observation["viewer"], viewer)
                     self.assertEqual(len(observation["objects"]), 7)
                     self.assertTrue(all((item["zone"], item["owner"], item["card"])

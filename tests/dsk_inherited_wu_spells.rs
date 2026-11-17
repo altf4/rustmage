@@ -196,7 +196,7 @@ fn seized_from_slumber_reduces_only_the_tapped_creature_payment() {
     let spell = put(&mut game, PLAYER, "Seized from Slumber", Zone::Hand);
     game.state.players[PLAYER.index()].mana = [1, 0, 0, 0, 0, 1];
     act(&mut game, Action::AnnounceCast { card: spell });
-    reject(&mut game, object(ready));
+    admit(&game, object(ready));
     act(&mut game, object(tapped));
     act(
         &mut game,

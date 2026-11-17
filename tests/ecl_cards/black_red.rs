@@ -1,5 +1,6 @@
 //! Paid ECL cards, with owned branches, observation equality, replay and rejection atomicity.
 use crate::ecl_scenarios::{scenario, spawn};
+use crate::support::admit;
 use rustmage_core::cards::*;
 use rustmage_core::engine::copies::CopyFaces;
 use rustmage_core::engine::*;
@@ -36,8 +37,13 @@ fn checked(g: &mut Game, a: Action) {
     let index = g
         .legal_actions()
         .iter()
-        .position(|v| *v == a)
-        .unwrap_or_else(|| panic!("illegal {a:?}; {:?}", g.legal_actions()));
+        .position(|candidate| *candidate == a);
+    if index.is_none() {
+        let Action::ChooseX { value } = a else {
+            panic!("missing concrete action");
+        };
+        assert!(g.x_choice().is_some_and(|domain| domain.contains(value)));
+    }
     let before = g.snapshot();
     assert_eq!(g.apply(p.other(), a.clone()), Err(Error::WrongActor));
     assert_eq!(g.snapshot(), before);
@@ -45,7 +51,11 @@ fn checked(g: &mut Game, a: Action) {
         let parent = g.clone();
         parent.clone()
     };
-    child.apply_index(p, revision, index).unwrap();
+    if let Some(index) = index {
+        child.apply_index(p, revision, index).unwrap();
+    } else {
+        child.apply(p, a.clone()).unwrap();
+    }
     g.apply(p, a.clone()).unwrap();
     assert_eq!(g.snapshot(), child.snapshot());
     for viewer in [Player::P0, Player::P1] {
@@ -54,16 +64,37 @@ fn checked(g: &mut Game, a: Action) {
             serde_json::to_value(child.observe(viewer)).unwrap()
         );
     }
-    let after = g.snapshot();
     g.restore(&before).unwrap();
-    assert_eq!(g.apply_index(p, revision, index), Err(Error::StaleRevision));
+    assert_eq!(g.snapshot(), before);
+    assert_eq!(
+        g.apply_index(p, revision, index.unwrap_or(0)),
+        Err(Error::StaleRevision)
+    );
+    let mut replay = g.clone();
+    if let Some(index) = index {
+        replay.apply_index(p, replay.revision(), index).unwrap();
+    } else {
+        replay.apply(p, a.clone()).unwrap();
+    }
     g.apply(p, a).unwrap();
-    assert_eq!(g.snapshot(), after);
+    assert_eq!(g.snapshot(), replay.snapshot());
 }
 fn reject(g: &mut Game, a: Action) {
     let before = g.snapshot();
     assert!(g.apply(g.actor().unwrap(), a).is_err());
     assert_eq!(g.snapshot(), before);
+}
+fn fail_current_payment(g: &mut Game, reason: AttemptFailureReason) {
+    let player = g.actor().unwrap();
+    if g.attempt_view(player).unwrap().can_end_mana_window {
+        checked(g, Action::EndManaWindow);
+    }
+    assert!(g.attempt_view(player).unwrap().mana_window_closed);
+    checked(g, Action::SubmitAttempt);
+    let outcome = g.last_attempt_outcome_view(player).unwrap();
+    assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+    assert_eq!(outcome.reason, Some(reason));
+    assert!(g.state.announcing.is_none());
 }
 fn settle(g: &mut Game) {
     g.prepare_triggers();
@@ -76,19 +107,7 @@ fn settle(g: &mut Game) {
         {
             return;
         }
-        let actions = g.legal_actions();
-        let a = if g.state.pending == Pending::Priority {
-            Action::Pass
-        } else {
-            actions
-                .iter()
-                .find(|a| matches!(a, Action::PayCosts { .. }))
-                .or_else(|| actions.iter().find(|a| matches!(a, Action::FinishTargets)))
-                .or_else(|| actions.iter().find(|a| !matches!(a, Action::Concede)))
-                .unwrap()
-                .clone()
-        };
-        checked(g, a);
+        advance(g);
     }
     panic!("unsettled {:?}", g.state.pending);
 }
@@ -188,8 +207,25 @@ fn advance(g: &mut Game) {
             .iter()
             .find(|a| matches!(a, Action::PayCosts { .. }))
             .or_else(|| actions.iter().find(|a| matches!(a, Action::FinishTargets)))
-            .or_else(|| actions.iter().find(|a| !matches!(a, Action::Concede)))
-            .unwrap()
+            .or_else(|| {
+                actions.iter().find(|a| {
+                    matches!(a, Action::BeginOrderedCosts | Action::ChooseCastCost { .. })
+                })
+            })
+            // Success helpers continue supplied costs. Failure tests choose
+            // closure, submission and selection resets explicitly.
+            .or_else(|| {
+                actions.iter().find(|a| {
+                    !matches!(
+                        a,
+                        Action::Concede
+                            | Action::EndManaWindow
+                            | Action::SubmitAttempt
+                            | Action::ResetCostSelection
+                    )
+                })
+            })
+            .unwrap_or_else(|| panic!("no completing action: {:?}", g.observe(g.actor().unwrap())))
             .clone()
     };
     checked(g, a);
@@ -1430,9 +1466,17 @@ fn bogslither_or_additional_routes_preserve_mana_for_free_casts() {
                     let object = g.object_ref(witness);
                     pay_additional(&mut g, object);
                 }
-                while g.state.announcing.is_some() {
+                for _ in 0..8 {
+                    if g.state.announcing.is_none() {
+                        break;
+                    }
                     advance(&mut g);
                 }
+                assert!(
+                    g.state.announcing.is_none(),
+                    "unfinished Bogslither cost: free={free}, mana_route={mana_route}, {:?}",
+                    g.observe(p)
+                );
                 assert_eq!(g.state.players[p.index()].mana, [0; 6]);
                 if let Some(witness) = witness {
                     assert_eq!(g.state.objects[witness as usize].zone, Zone::Graveyard);
@@ -1457,10 +1501,10 @@ fn free_or_cost_requires_additional_payment_and_colored_additional_mana_is_prese
                 flash_surcharge: false,
             };
             g.state.players[p.index()].mana = [0; 6];
-            reject(&mut g, action.clone());
+            admit(&g, action.clone());
             g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
             if name == "Eaten Alive" {
-                reject(&mut g, action.clone());
+                admit(&g, action.clone());
                 g.state.players[p.index()].mana[2] = 1;
             }
             checked(&mut g, action);
@@ -1475,7 +1519,8 @@ fn free_or_cost_requires_additional_payment_and_colored_additional_mana_is_prese
                     }
                 })
                 .collect();
-            assert_eq!(costs, vec![1]);
+            assert_eq!(costs, vec![0, 1]);
+            checked(&mut g, Action::ChooseSpellCost { cost: 1 });
             assert_eq!(
                 g.state.announcing.as_ref().unwrap().cost_options().nth(1),
                 Some(ManaCost {
@@ -2884,7 +2929,27 @@ fn flamebraider_restriction_survives_producer_departure_and_pays_elemental_spell
         g.state.players[p.index()].mana = [0; 6];
         flamebraider_mana(&mut g, source, [1, 0, 0, 1, 0, 0]);
         let wrong = named(&mut g, p, "Lightning Bolt", Zone::Hand);
-        reject(&mut g, Action::AnnounceCast { card: wrong });
+        let wrong_ref = g.object_ref(wrong);
+        let source_ref = g.object_ref(source);
+        checked(&mut g, Action::AnnounceCast { card: wrong });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        reject(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        fail_current_payment(&mut g, AttemptFailureReason::UnsatisfiedMana);
+        assert_eq!(g.object_ref(wrong), wrong_ref);
+        assert_eq!(g.object_view(wrong).zone, Zone::Hand);
+        assert_eq!(g.object_ref(source), source_ref);
+        assert!(g.object_view(source).tapped);
+        assert_eq!(g.state.players[p.index()].mana, [1, 0, 0, 1, 0, 0]);
         g.move_object(source, Zone::Exile);
         let right = named(&mut g, p, "Flamebraider", Zone::Hand);
         cast(&mut g, right);
@@ -3172,7 +3237,7 @@ fn exact_ability_removal_changes_speculative_mana_availability_and_blink_restore
             g.object_view((object).card).controller,
             rustmage_core::cards::AnimationDuration::Permanent,
         );
-        reject(&mut g, Action::AnnounceCast { card: spell });
+        admit(&g, Action::AnnounceCast { card: spell });
         assert!(
             !g.legal_actions()
                 .contains(&Action::TapMana { card: source })
@@ -3308,7 +3373,24 @@ fn two_behold_creatures_pay_with_permanents_or_private_hand_cards_and_offer_the_
             let mut mana = [0; 6];
             mana[color] = 1;
             g.state.players[p.index()].mana = mana;
-            reject(&mut g, Action::AnnounceCast { card: source });
+            let source_ref = g.object_ref(source);
+            checked(&mut g, Action::AnnounceCast { card: source });
+            checked(&mut g, Action::ChooseSpellCost { cost: 0 });
+            open_additional_payment(&mut g);
+            assert!(g.observe(p).additional_cost.unwrap().candidates.is_empty());
+            reject(&mut g, Action::PayCosts { payment: mana });
+            fail_current_payment(&mut g, AttemptFailureReason::UnsatisfiedMaterial);
+            assert_eq!(g.object_ref(source), source_ref);
+            assert_eq!(g.object_view(source).zone, Zone::Hand);
+            assert_eq!(g.state.players[p.index()].mana, mana);
+
+            checked(&mut g, Action::AnnounceCast { card: source });
+            checked(&mut g, Action::ChooseSpellCost { cost: 1 });
+            reject(&mut g, Action::PayCosts { payment: mana });
+            fail_current_payment(&mut g, AttemptFailureReason::UnsatisfiedMana);
+            assert_eq!(g.object_ref(source), source_ref);
+            assert_eq!(g.object_view(source).zone, Zone::Hand);
+            assert_eq!(g.state.players[p.index()].mana, mana);
             g.state.players[p.index()].mana[5] = 2;
             checked(&mut g, Action::AnnounceCast { card: source });
             checked(&mut g, Action::ChooseSpellCost { cost: 1 });
@@ -4883,7 +4965,7 @@ fn kindle_inner_flame_flashback_requires_three_witnesses_and_correct_timing_with
         for _ in 0..2 {
             named(&mut g, p, "Nameless Inversion", Zone::Hand);
         }
-        reject(&mut g, Action::AnnounceFlashback { card: source });
+        admit(&g, Action::AnnounceFlashback { card: source });
         reject(&mut g, Action::AnnounceCast { card: source });
         reject(
             &mut g,
@@ -5412,7 +5494,6 @@ fn soul_immolation_zero_requires_a_creature_but_does_not_place_counters_even_whe
     for p in [Player::P0, Player::P1] {
         let mut g = hexing_setup(p);
         let spell = named(&mut g, p, "Soul Immolation", Zone::Hand);
-        reject(&mut g, Action::AnnounceCast { card: spell });
         reject(
             &mut g,
             Action::Cast {
@@ -5421,21 +5502,73 @@ fn soul_immolation_zero_requires_a_creature_but_does_not_place_counters_even_whe
                 payment: [0, 0, 0, 5, 0, 0],
             },
         );
-        let witness = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
-        hexing_open(&mut g, p, "Blossombind", Some(Target::Card(witness)));
-        hexing_finish(&mut g, true);
-        assert!(replacements::counters_prohibited(&g, g.object_ref(witness)));
+        let mana = g.state.players[p.index()].mana;
         checked(&mut g, Action::AnnounceCast { card: spell });
         assert_eq!(
             g.x_choice().unwrap().intervals,
             vec![XInterval {
                 minimum: 0,
-                maximum: 0
+                maximum: 0,
             }]
         );
-        reject(&mut g, Action::ChooseX { value: 1 });
         checked(&mut g, Action::ChooseX { value: 0 });
+        checked(&mut g, Action::EndManaWindow);
+        open_additional_payment(&mut g);
+        assert!(
+            !g.legal_actions()
+                .iter()
+                .any(|action| matches!(action, Action::ChooseAdditionalCost { .. }))
+        );
+        checked(&mut g, Action::SubmitAttempt);
+        let failure = g.last_attempt_outcome_view(p).unwrap();
+        assert_eq!(failure.outcome, AttemptOutcome::Failed);
+        assert_eq!(
+            failure.reason,
+            Some(AttemptFailureReason::UnsatisfiedMaterial)
+        );
+        assert_eq!(g.object_view(spell).zone, Zone::Hand);
+        assert_eq!(g.state.players[p.index()].mana, mana);
+
+        let witness = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        hexing_open(&mut g, p, "Blossombind", Some(Target::Card(witness)));
+        hexing_finish(&mut g, true);
+        assert!(replacements::counters_prohibited(&g, g.object_ref(witness)));
+        let mana = g.state.players[p.index()].mana;
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        assert_eq!(
+            g.x_choice().unwrap().intervals,
+            vec![XInterval {
+                minimum: 0,
+                maximum: 2,
+            }]
+        );
+        reject(&mut g, Action::ChooseX { value: 3 });
+        checked(&mut g, Action::ChooseX { value: 1 });
+        checked(&mut g, Action::EndManaWindow);
+        open_additional_payment(&mut g);
         let object = g.object_ref(witness);
+        reject(&mut g, Action::ChooseAdditionalCost { object });
+        assert!(
+            !g.legal_actions()
+                .iter()
+                .any(|action| matches!(action, Action::ChooseAdditionalCost { .. }))
+        );
+        checked(&mut g, Action::SubmitAttempt);
+        let failure = g.last_attempt_outcome_view(p).unwrap();
+        assert_eq!(failure.outcome, AttemptOutcome::Failed);
+        assert_eq!(
+            failure.reason,
+            Some(AttemptFailureReason::UnsatisfiedMaterial)
+        );
+        assert_eq!(g.object_view(spell).zone, Zone::Hand);
+        assert_eq!(g.object_ref(witness), object);
+        assert_eq!(g.object_view(witness).zone, Zone::Battlefield);
+        assert_eq!(g.counter_count(witness, CounterKind::MinusOne), 0);
+        assert!(replacements::counters_prohibited(&g, object));
+        assert_eq!(g.state.players[p.index()].mana, mana);
+
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        checked(&mut g, Action::ChooseX { value: 0 });
         pay_additional(&mut g, object);
         kindle_pay(&mut g);
         settle(&mut g);
@@ -5959,7 +6092,39 @@ fn dawnhand_after_printed_exile_returns_fresh_counter_donor_before_cast_complete
             .iter()
             .position(|row| matches!(row.clause, CastCostClause::OriginCounters(_)))
             .unwrap() as u16;
-        reject(&mut g, Action::ChooseCastCost { clause: counters });
+        let mut premature = g.clone();
+        checked(&mut premature, Action::ChooseCastCost { clause: counters });
+        let donor_ref = premature.object_ref(donor);
+        checked(
+            &mut premature,
+            Action::ChooseCreatureCounterCost {
+                object: donor_ref,
+                counter: CounterKind::PlusOne,
+            },
+        );
+        reject(
+            &mut premature,
+            Action::ChooseCreatureCounterCost {
+                object: donor_ref,
+                counter: CounterKind::PlusOne,
+            },
+        );
+        let exiled_auntie = premature.object_ref(auntie);
+        reject(
+            &mut premature,
+            Action::ChooseCreatureCounterCost {
+                object: exiled_auntie,
+                counter: CounterKind::MinusOne,
+            },
+        );
+        fail_current_payment(&mut premature, AttemptFailureReason::UnsatisfiedMaterial);
+        assert_eq!(premature.object_ref(donor), donor_ref);
+        assert_eq!(premature.counter_count(donor, CounterKind::PlusOne), 1);
+        assert_eq!(premature.object_ref(hunter), hunter_ref);
+        assert_eq!(premature.object_view(hunter).zone, Zone::Battlefield);
+        assert_eq!(premature.object_ref(auntie), exiled_auntie);
+        assert_eq!(premature.object_view(auntie).zone, Zone::Exile);
+        assert_eq!(premature.object_view(card).zone, Zone::Exile);
         choose_ordered_cost(&mut g, |clause| clause == CastCostClause::Additional);
         pay_additional(&mut g, hunter_ref);
         for _ in 0..20 {
@@ -5996,10 +6161,6 @@ fn dawnhand_counter_mana_funding_cannot_double_spend_reserved_counters() {
                 face: CastFace::Normal,
                 flash_surcharge: false,
             };
-            if count == 7 {
-                reject(&mut g, action);
-                continue;
-            }
             checked(&mut g, action);
             let r = g.object_ref(ramos);
             let mana = g
@@ -6008,7 +6169,29 @@ fn dawnhand_counter_mana_funding_cannot_double_spend_reserved_counters() {
                 .find(|a| matches!(a, Action::ActivateMana { card, .. } if *card == ramos))
                 .unwrap();
             checked(&mut g, mana);
-            assert_eq!(g.counter_count(ramos, CounterKind::PlusOne), 3);
+            assert_eq!(g.counter_count(ramos, CounterKind::PlusOne), count - 5);
+            if count == 7 {
+                dawnhand_remove(&mut g, r, &[CounterKind::PlusOne; 2]);
+                reject(
+                    &mut g,
+                    Action::ChooseCreatureCounterCost {
+                        object: r,
+                        counter: CounterKind::PlusOne,
+                    },
+                );
+                checked(&mut g, Action::SubmitAttempt);
+                checked(&mut g, Action::ChooseManaRollback { keep: false });
+                let outcome = g.last_attempt_outcome_view(p).unwrap();
+                assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+                assert_eq!(
+                    outcome.reason,
+                    Some(AttemptFailureReason::UnsatisfiedMaterial)
+                );
+                assert_eq!(g.counter_count(ramos, CounterKind::PlusOne), 7);
+                assert_eq!(g.object_view(card).zone, Zone::Exile);
+                assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+                continue;
+            }
             dawnhand_remove(&mut g, r, &[CounterKind::PlusOne; 3]);
             kindle_pay(&mut g);
             assert_eq!(g.counter_count(ramos, CounterKind::PlusOne), 0);
@@ -6023,8 +6206,8 @@ fn dawnhand_variable_creature_spell_requires_existing_counters_and_pays_declared
         let mut g = hexing_setup(p);
         let (source, card, reference) = dawnhand_link(&mut g, p, "Wildwood Scourge");
         g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 4];
-        reject(
-            &mut g,
+        admit(
+            &g,
             Action::AnnounceLinkedExileCounterCost {
                 card,
                 source: reference,
@@ -6035,8 +6218,8 @@ fn dawnhand_variable_creature_spell_requires_existing_counters_and_pays_declared
         g.add_counter(source, CounterKind::Flying, 3);
         dawnhand_announce(&mut g, card, reference);
         assert!(g.x_choice().unwrap().contains(4));
-        assert!(!g.x_choice().unwrap().contains(5));
-        reject(&mut g, Action::ChooseX { value: 5 });
+        assert!(g.x_choice().unwrap().contains(u32::MAX));
+        admit(&g, Action::ChooseX { value: 5 });
         checked(&mut g, Action::ChooseX { value: 4 });
         dawnhand_remove(&mut g, reference, &[CounterKind::Flying; 3]);
         kindle_pay(&mut g);
@@ -6185,7 +6368,7 @@ fn dawnhand_actual_exile_activation_unlocks_cast_and_source_loss_preserves_only_
 }
 
 #[test]
-fn dawnhand_insufficient_counters_reject_without_exploring_equivalent_land_subsets() {
+fn dawnhand_insufficient_counters_fail_without_exploring_equivalent_land_subsets() {
     let mut g = hexing_setup(Player::P0);
     let (source, card, reference) = dawnhand_link(&mut g, Player::P0, "Grizzly Bears");
     g.add_counter(source, CounterKind::Flying, 2);
@@ -6193,7 +6376,8 @@ fn dawnhand_insufficient_counters_reject_without_exploring_equivalent_land_subse
         named(&mut g, Player::P0, "Forest", Zone::Battlefield);
     }
     g.state.players[0].mana = [0; 6];
-    reject(
+    Game::reset_payment_planning_work();
+    checked(
         &mut g,
         Action::AnnounceLinkedExileCounterCost {
             card,
@@ -6202,6 +6386,26 @@ fn dawnhand_insufficient_counters_reject_without_exploring_equivalent_land_subse
             flash_surcharge: false,
         },
     );
+    checked(&mut g, Action::EndManaWindow);
+    dawnhand_remove(&mut g, reference, &[CounterKind::Flying; 2]);
+    reject(
+        &mut g,
+        Action::ChooseCreatureCounterCost {
+            object: reference,
+            counter: CounterKind::Flying,
+        },
+    );
+    checked(&mut g, Action::SubmitAttempt);
+    let outcome = g.last_attempt_outcome_view(Player::P0).unwrap();
+    assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+    assert_eq!(
+        outcome.reason,
+        Some(AttemptFailureReason::UnsatisfiedMaterial)
+    );
+    assert_eq!(g.object_view(card).zone, Zone::Exile);
+    assert_eq!(g.counter_count(source, CounterKind::Flying), 2);
+    assert_eq!(g.state.players[0].mana, [0; 6]);
+    assert_eq!(Game::payment_planning_work(), Default::default());
 }
 
 #[test]
@@ -6746,7 +6950,7 @@ fn lavaleaper_exact_funding_uses_bonus_quantity_without_inventing_other_mana_typ
         g.state.players[p.index()].mana = [0; 6];
         let giant = named(&mut g, p, "Hill Giant", Zone::Hand);
         let draw = named(&mut g, p, "Divination", Zone::Hand);
-        reject(&mut g, Action::AnnounceCast { card: draw });
+        admit(&g, Action::AnnounceCast { card: draw });
         checked(&mut g, Action::AnnounceCast { card: giant });
         checked(&mut g, Action::TapMana { card: forest });
         checked(&mut g, Action::TapMana { card: mountain });

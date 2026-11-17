@@ -221,7 +221,23 @@ impl Game {
     pub(super) fn blocks_complete(&self, taxed: bool) -> bool {
         !matches!(self.state.selected_blocks.as_slice(), [(sole, _)]
             if self.combat_requires_company(*sole))
-            && (taxed || self.block_requirements_complete())
+            && self
+                .state
+                .selected_blocks
+                .iter()
+                .enumerate()
+                .all(|(index, &(blocker, attacker))| {
+                    self.can_be_blocker(blocker)
+                        && !self.state.selected_blocks[..index]
+                            .iter()
+                            .any(|&(other, _)| other == blocker)
+                        && self
+                            .state
+                            .attackers
+                            .iter()
+                            .any(|attack| attack.card == attacker)
+                        && self.can_block_pair(blocker, attacker)
+                })
             && self.state.attackers.iter().all(|a| {
                 let count = self
                     .state
@@ -232,6 +248,7 @@ impl Game {
                 (count == 0 || count >= self.minimum_blockers(a.card))
                     && (!self.attacker_at_most_one_blocker(a.card) || count <= 1)
             })
+            && (taxed || self.block_requirements_complete())
     }
 
     /// Additional blockers needed to accompany one already legal block pair.
@@ -268,75 +285,27 @@ impl Game {
             .min()
     }
 
-    /// Minimum size of a structurally legal declaration extending this choice.
-    pub(super) fn minimum_block_declaration_with(
-        &self,
-        blocker: CardId,
-        attacker: CardId,
-        taxed: bool,
-    ) -> Option<usize> {
-        let selected = self.state.selected_blocks.len() + 1;
-        if self.attacker_at_most_one_blocker(attacker)
-            && self
+    /// Validate only this supplied pair and the current assignment capacity.
+    /// Menace, company, and mandatory blocks are checked on submission.
+    pub(super) fn block_choice_admissible(&self, blocker: CardId, attacker: CardId) -> bool {
+        self.can_be_blocker(blocker)
+            && !self
                 .state
                 .selected_blocks
                 .iter()
-                .any(|&(_, id)| id == attacker)
-        {
-            return None;
-        }
-        let needs: Vec<_> = self
-            .state
-            .attackers
-            .iter()
-            .filter_map(|a| {
-                let minimum = self.minimum_blockers(a.card);
-                let count = self
+                .any(|&(chosen, _)| chosen == blocker)
+            && self
+                .state
+                .attackers
+                .iter()
+                .any(|attack| attack.card == attacker)
+            && self.can_block_pair(blocker, attacker)
+            && (!self.attacker_at_most_one_blocker(attacker)
+                || !self
                     .state
                     .selected_blocks
                     .iter()
-                    .filter(|&&(_, id)| id == a.card)
-                    .count()
-                    + usize::from(a.card == attacker);
-                (count > 0 && count < minimum).then(|| (a.card, minimum - count))
-            })
-            .flat_map(|(id, remaining)| std::iter::repeat_n(id, remaining))
-            .collect();
-        let needs_company =
-            selected == 1 && needs.is_empty() && self.combat_requires_company(blocker);
-        if needs.is_empty() && !needs_company {
-            return (taxed || self.block_requirements_preserved(blocker, attacker))
-                .then_some(selected);
-        }
-        if needs
-            .iter()
-            .any(|&id| self.attacker_at_most_one_blocker(id))
-        {
-            return None;
-        }
-        let available: Vec<_> = self
-            .state
-            .objects
-            .iter()
-            .enumerate()
-            .filter_map(|(id, _)| {
-                let id = id as CardId;
-                (id != blocker
-                    && !self.state.selected_blocks.iter().any(|&(b, _)| b == id)
-                    && (needs_company && self.can_be_blocker(id)
-                        || needs.iter().any(|&a| self.can_block_pair(id, a))))
-                .then_some(id)
-            })
-            .collect();
-        let extra = if needs_company {
-            self.minimum_blocking_company(blocker, attacker, &available)?
-        } else {
-            if !combat_allocations::cover_block_slots(self, &needs, &available) {
-                return None;
-            }
-            needs.len()
-        };
-        (taxed || self.block_requirements_preserved(blocker, attacker)).then_some(selected + extra)
+                    .any(|&(_, chosen)| chosen == attacker))
     }
 
     pub(super) fn finish_block_declaration(&mut self, actor: Player) {

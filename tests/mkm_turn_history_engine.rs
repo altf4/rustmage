@@ -197,10 +197,8 @@ fn artifact_sacrifices_qualify_the_payer_even_when_the_destination_is_exile() {
                 )
             })
         };
-        assert!(
-            !offers_spell(&root),
-            "sacrifice cannot change locked spell costs"
-        );
+        assert!(offers_spell(&root));
+        admit(&root, Action::AnnounceCast { card: spell });
         assert!(!offers_guard(&root));
         let saved = root.snapshot();
         let goal = FundingGoal {
@@ -233,6 +231,45 @@ fn artifact_sacrifices_qualify_the_payer_even_when_the_destination_is_exile() {
             counter_payment: Counters::default(),
             production: blue,
         };
+        let mut locked = root.clone();
+        act(&mut locked, Action::AnnounceCast { card: spell });
+        let total = locked
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .total_cost
+            .unwrap();
+        assert_eq!(
+            total,
+            ManaCost {
+                colored: blue,
+                generic: 2
+            }
+        );
+        act(&mut locked, sacrifice.clone());
+        assert_eq!(
+            locked.state.announcing.as_ref().unwrap().total_cost,
+            Some(total),
+            "sacrificing during the mana window cannot change locked spell costs"
+        );
+        reject(
+            &mut locked,
+            Action::PayCosts {
+                payment: [0, 2, 0, 0, 0, 0],
+            },
+        );
+        act(&mut locked, Action::EndManaWindow);
+        act(&mut locked, Action::SubmitAttempt);
+        assert_eq!(
+            locked.last_attempt_outcome_view(payer).unwrap().reason,
+            Some(AttemptFailureReason::UnsatisfiedMana)
+        );
+        if matches!(locked.state.pending, Pending::ManaRollback { .. }) {
+            act(&mut locked, Action::ChooseManaRollback { keep: false });
+        }
+        assert_eq!(locked.object_view(spell).zone, Zone::Hand);
+        assert_eq!(locked.object_view(token).zone, Zone::Battlefield);
         let index = root
             .legal_actions()
             .iter()
@@ -266,7 +303,7 @@ fn artifact_sacrifices_qualify_the_payer_even_when_the_destination_is_exile() {
         assert!(offers_guard(&raw));
         indexed.restore(&saved).unwrap();
         assert_eq!(indexed.snapshot(), saved);
-        assert!(!offers_spell(&indexed));
+        assert!(offers_spell(&indexed));
         assert!(!offers_guard(&indexed));
 
         cast(&mut raw, spell, None);
@@ -352,7 +389,7 @@ fn fast_mana_sacrifices_enable_history_guarded_mana_during_funding() {
             counter_payment: Counters::default(),
             production,
         };
-        reject(&mut game, announce.clone());
+        admit(&game, announce.clone());
         let fuel = if treasure {
             game.create_tokens(player, Card::from_catalogue_id(5302), 1, false);
             game.controlled_token_ids(player).next().unwrap()

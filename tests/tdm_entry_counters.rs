@@ -471,8 +471,31 @@ fn graveyard_origin_counters_require_an_actual_cast_and_keep_normal_costs() {
         entry(&mut g, vec![m]);
         assert_eq!(g.counter_count(id, CounterKind::Finality), 0);
         let id = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+        let original = g.object_ref(id);
         g.state.players[p.index()].mana = [0; 6];
-        reject(&mut g, Action::AnnounceCast { card: id });
+        act(&mut g, Action::AnnounceCast { card: id });
+        assert_eq!(g.object_view(id).zone, Zone::Stack);
+        assert!(g.mana_payment_domain().is_none());
+        reject(&mut g, Action::PayCosts { payment: [0; 6] });
+        act(&mut g, Action::EndManaWindow);
+        let mut indexed = g.clone();
+        let at = indexed
+            .legal_actions()
+            .iter()
+            .position(|action| *action == Action::SubmitAttempt)
+            .unwrap();
+        indexed.apply_index(p, indexed.revision(), at).unwrap();
+        act(&mut g, Action::SubmitAttempt);
+        assert_eq!(g.snapshot(), indexed.snapshot());
+        assert_eq!(g.object_view(id).zone, Zone::Graveyard);
+        assert_eq!(g.object_ref(id), original);
+        assert_eq!(g.counter_count(id, CounterKind::Finality), 0);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert!(g.state.announcing.is_none());
+        assert_eq!(
+            g.last_attempt_outcome_view(p).unwrap().outcome,
+            AttemptOutcome::Failed
+        );
     }
 }
 #[test]
@@ -613,6 +636,79 @@ fn post_return_replacement_results_match_projection_without_parent_mutation() {
     drain(&mut g);
     assert_eq!(g.counter_count(a, CounterKind::PlusOne), 2);
     assert_eq!(g.counter_count(b, CounterKind::PlusOne), 2);
+}
+
+#[test]
+fn entry_previews_leave_post_entry_counter_replacement_orders_to_the_caller() {
+    const ADD: ReplacementSpec = ReplacementSpec::Counters {
+        filter: ReplacementFilter::Permanent,
+        kind: None,
+        factor: 1,
+        add: 1,
+        effects_only: false,
+    };
+    const ADDER: CardRules = CardRules {
+        static_groups: &[StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::Replacement(0, ADD)],
+        }],
+        extras: &CardExtras {
+            replacement_effects: &[ADD],
+            ..CardExtras::EMPTY
+        },
+        ..DOUBLER
+    };
+    let _scope = fixture_rules::activate(&[
+        (card("Opt"), &POST),
+        (card("Short Bow"), &DOUBLER),
+        (card("Fountainport Bell"), &ADDER),
+    ]);
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let doubler = put(&mut game, p, "Short Bow", Zone::Battlefield);
+    let adder = put(&mut game, p, "Fountainport Bell", Zone::Battlefield);
+    let creature = put(&mut game, p, "Bear Cub", Zone::Graveyard);
+    let mut movement = game.entry_move(creature, Zone::Battlefield, false);
+    movement.post_entry_counters = Some((p, &[(CounterKind::PlusOne, 1)]));
+    let before = game.snapshot();
+    Game::reset_payment_planning_work();
+    let preview = game.ghost_entry_preview(&movement).unwrap();
+    assert_eq!(preview.counters.plus_one, 0);
+    assert_eq!((preview.power, preview.toughness), (2, 2));
+    assert_eq!(Game::payment_planning_work().projected_steps, 0);
+    assert_eq!(game.snapshot(), before);
+
+    return_two(&mut game, p, &[creature]);
+    ready(&mut game, |game| {
+        matches!(game.state.pending, Pending::Replacement { .. })
+    });
+    assert_eq!(game.object_view(creature).zone, Zone::Battlefield);
+    assert_eq!(game.counter_count(creature, CounterKind::PlusOne), 0);
+    let checkpoint = game.snapshot();
+    for (first, expected) in [(doubler, 3), (adder, 4)] {
+        let mut raw = game.clone();
+        let mut indexed = game.clone();
+        let action = Action::ChooseReplacement {
+            source: raw.object_ref(first),
+            ability: 0,
+        };
+        let at = indexed
+            .legal_actions()
+            .iter()
+            .position(|candidate| candidate == &action)
+            .unwrap();
+        indexed.apply_index(p, indexed.revision(), at).unwrap();
+        act(&mut raw, action);
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        drain(&mut raw);
+        drain(&mut indexed);
+        assert_eq!(raw.counter_count(creature, CounterKind::PlusOne), expected);
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        indexed.restore(&checkpoint).unwrap();
+        assert_eq!(indexed.counter_count(creature, CounterKind::PlusOne), 0);
+    }
+    assert_eq!(Game::payment_planning_work().projected_steps, 0);
 }
 #[test]
 fn searched_land_enters_tapped_with_stun_even_if_target_survives() {

@@ -41,90 +41,29 @@ impl Game {
                 self.spell_mode_eligible(item.controller, source.object, source.card, index)
             })
     }
-    pub(super) fn tiered_initial_fundable(
-        &self,
-        actor: Player,
-        id: CardId,
-        base: ManaCost,
-    ) -> bool {
-        let card = self.state.objects[id as usize].card;
-        let costs = card.tiered_costs().expect("Tiered recipe");
-        let Effect::Modal(modes) = card.effect() else {
-            unreachable!("complete Tiered modal body")
-        };
-        let source = self.object_ref(id);
-        modes
-            .iter()
-            .zip(costs)
-            .enumerate()
-            .any(|(index, (mode, extra))| {
-                self.spell_mode_eligible(actor, source, card, index)
-                    && self.cast_targets_available(mode.targets, actor, source)
-                    && Self::add_tiered_mana(base, *extra)
-                        .is_some_and(|cost| self.spell_can_fund(actor, id, cost))
-            })
-    }
+
     pub(super) fn mode_choice_fundable(&self, a: &Announcement, index: usize) -> bool {
-        let mode = &a.item.modes().expect("modal announcement")[index];
+        let Some(mode) = a.item.modes().and_then(|modes| modes.get(index)) else {
+            return false;
+        };
         let kicker_changes_targets = a.item.kind == StackKind::Spell
             && a.pay_window
             && a.item
                 .source
                 .is_some_and(|source| source.card.kicked_targets().is_some());
-        if a.item
+        !a.item
             .bounded_mode_count(index)
             .is_some_and(|count| u32::from(count) > a.item.x.unwrap_or(0))
-            || !self.item_mode_eligible(&a.item, index)
-            || !self.teamwork_mode_allowed(&a.item, index)
-            || !self.blight_mode_allowed(&a.item, index)
-            || !self.modal_choice_unused(&a.item, index)
-            || !kicker_changes_targets && !self.item_targets_available(&a.item, mode.targets)
-        {
-            return false;
-        }
-        if kicker_changes_targets {
-            let mut proposal = a.clone();
-            proposal.item.mode = Some(u16::try_from(index).expect("mode index"));
-            proposal.plan = mode.targets;
-            return self.kicker_choice_fundable(&proposal, false)
-                || self.kicker_choice_fundable(&proposal, true);
-        }
-        let card = a
-            .item
-            .source
-            .expect("cost announcement has object source")
-            .card;
-        if a.pay_window
-            && a.item.kind == StackKind::Spell
-            && self.cast_requires_target_payment(a.item.controller, card)
-        {
-            let mut proposal = a.clone();
-            proposal.item.mode = Some(u16::try_from(index).expect("mode index"));
-            proposal.plan = self.target_spec(&proposal.item);
-            return proposal
-                .cost_options()
-                .any(|cost| self.announcement_cost_fundable(&proposal, cost));
-        }
-        if card.tiered_costs().is_none() {
-            return self.announcement_target_fundable(
-                a,
-                Some(mode.targets),
-                None,
-                None,
-                None,
-                false,
-            );
-        }
-        // A prepaid compact cast cannot waive an unannounced mandatory tier.
-        if a.item.kind != StackKind::Spell || !a.pay_window {
-            return false;
-        }
-        let mut proposal = a.clone();
-        proposal.item.mode = Some(u16::try_from(index).expect("mode index"));
-        proposal.plan = mode.targets;
-        proposal
-            .cost_options()
-            .any(|cost| self.announcement_cost_fundable(&proposal, cost))
+            && self.item_mode_eligible(&a.item, index)
+            && self.teamwork_mode_allowed(&a.item, index)
+            && self.blight_mode_allowed(&a.item, index)
+            && self.modal_choice_unused(&a.item, index)
+            && (kicker_changes_targets || self.item_targets_available(&a.item, mode.targets))
+            && (a
+                .item
+                .source
+                .is_none_or(|source| source.card.tiered_costs().is_none())
+                || a.item.kind == StackKind::Spell && a.pay_window)
     }
 }
 

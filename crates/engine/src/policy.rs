@@ -13,10 +13,11 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
 /// Score offered actions from the actor's observation, without observing twice.
 pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action]) -> usize {
     let actor = observation.actor.expect("nonterminal game");
-    // Fundable declarations are offered before any speculative mana activation.
-    // Preserve spare sources for later steps once those declarations are exhausted.
+    // Declarations are attempts. This deliberately simple smoke policy stops
+    // proposing paid actions for the turn after one failed attempt.
     let tap_for_payment = observation.announcing.is_some()
         || observation.plot_payment.is_some()
+        || observation.face_up_payment.is_some()
         || observation.room_unlock_payment.is_some()
         || observation.payment_request.is_some()
         || observation.attack_payment.is_some()
@@ -132,6 +133,19 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
         if own == beneficial { 70 } else { -10 }
     };
     let score = |action: &Action| -> i128 {
+        if observation.attempt.is_none()
+            && observation.decision == "priority"
+            && observation.last_attempt_outcome.is_some_and(|outcome| {
+                outcome.turn == u64::from(observation.turn)
+                    && outcome.outcome == crate::AttemptOutcome::Failed
+            })
+            && !matches!(
+                action,
+                Action::Pass | Action::Concede | Action::PlayLand { .. }
+            )
+        {
+            return -10;
+        }
         // A smoke policy need not spend the whole turn re-equipping, including
         // legal zero-cost activations. The engine still offers those actions.
         if let Action::Activate { card, ability, .. }
@@ -147,6 +161,21 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
         }
         match action {
             Action::ChooseManaRollback { keep } => i128::from(*keep),
+            Action::EndManaWindow => {
+                if observation.attempt.as_ref().is_some_and(|parent| {
+                    observation.last_attempt_outcome.is_some_and(|outcome| {
+                        outcome.outcome == crate::AttemptOutcome::Failed
+                            && outcome.attempt_id != parent.attempt_id
+                    })
+                }) {
+                    90
+                } else {
+                    -5
+                }
+            }
+            Action::SubmitAttempt => -6,
+            Action::ResetCostSelection => -7,
+            Action::ChooseConspireObject { .. } => 50,
             Action::AssignLibraryPile { pile, .. } => {
                 let piles = observation.library_piles.as_ref().unwrap();
                 // A balanced split is a generic deterministic baseline, using only
@@ -204,13 +233,53 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::BeginDelve
             | Action::BeginWaterbend
             | Action::BeginCreatureTapPayment
-            | Action::BeginOrderedCosts => 40,
+            | Action::BeginOrderedCosts => {
+                // Entering cost payment closes the mana window. Give offered
+                // mana actions a chance before leaving that window.
+                if observation
+                    .attempt
+                    .as_ref()
+                    .is_some_and(|attempt| !attempt.mana_window_closed)
+                {
+                    -4
+                } else {
+                    40
+                }
+            }
             Action::ChooseConvoker { .. }
             | Action::ChooseImproviser { .. }
             | Action::ChooseDelver { .. }
             | Action::ChooseWaterbender { .. }
-            | Action::ChooseCreatureTapPayment { .. }
-            | Action::ChooseHarmonizer { .. } => 50,
+            | Action::ChooseCreatureTapPayment { .. } => {
+                // A declared contribution should be exercised before paying
+                // the unreduced amount. After one actual selection, prefer an
+                // available concrete payment over consuming more materials.
+                let first = match action {
+                    Action::ChooseConvoker { .. } => observation
+                        .convoke_choice
+                        .as_ref()
+                        .is_some_and(|choice| choice.selected.is_empty()),
+                    Action::ChooseImproviser { .. } => observation
+                        .improvise_choice
+                        .as_ref()
+                        .is_some_and(|choice| choice.selected.is_empty()),
+                    Action::ChooseDelver { .. } => observation
+                        .delve_choice
+                        .as_ref()
+                        .is_some_and(|choice| choice.selected.is_empty()),
+                    Action::ChooseWaterbender { .. } => observation
+                        .waterbend_choice
+                        .as_ref()
+                        .is_some_and(|choice| choice.selected.is_empty()),
+                    Action::ChooseCreatureTapPayment { .. } => observation
+                        .creature_tap_payment
+                        .as_ref()
+                        .is_some_and(|choice| choice.selected.is_empty()),
+                    _ => unreachable!(),
+                };
+                if first { 110 } else { 50 }
+            }
+            Action::ChooseHarmonizer { .. } => 50,
             Action::ChooseMobilizeDefender { .. }
             | Action::ChooseEntryAttackingDefender { .. }
             | Action::ChooseHandDefender { .. } => 50,
@@ -254,7 +323,30 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 {
                     -100
                 } else {
-                    80 + i128::from((*value).min(20))
+                    // A policy estimate only: one mana per untapped land plus
+                    // the visible pool. It never changes the engine X domain.
+                    let budget: u64 = observation.players[actor.index()]
+                        .mana
+                        .iter()
+                        .map(|&n| u64::from(n))
+                        .sum::<u64>()
+                        + observation
+                            .objects
+                            .iter()
+                            .filter(|o| {
+                                o.zone == Zone::Battlefield
+                                    && o.controller == actor
+                                    && o.card.is_land()
+                                    && !o.tapped
+                            })
+                            .count() as u64;
+                    let fixed = observation
+                        .announcing
+                        .as_ref()
+                        .and_then(|a| a.source)
+                        .map_or(0, |source| source.card.fixed_mana_value());
+                    let preferred = budget.saturating_sub(fixed).min(20);
+                    100 - i128::from(u64::from(*value).abs_diff(preferred))
                 }
             }
             Action::ChooseBeholdType {
@@ -304,6 +396,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                     0
                 }
             }
+            Action::DeclareBargain { pay } => i128::from(*pay) * 40,
             Action::ChooseCastCost { .. }
             | Action::PayCasualty { .. }
             | Action::PayConspire { .. }
@@ -313,7 +406,29 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::ChooseAdditionalCost { .. }
             | Action::ChooseAdditionalLife
             | Action::ChooseCreatureCounterCost { .. } => 60,
-            Action::ChooseForageRoute { .. } | Action::ChooseForage { .. } => 60,
+            Action::ChooseForageRoute { route } => {
+                let ready = match route {
+                    crate::ForageRoute::ExileThree => {
+                        observation
+                            .objects
+                            .iter()
+                            .filter(|object| {
+                                object.owner == actor && object.zone == Zone::Graveyard
+                            })
+                            .take(3)
+                            .count()
+                            == 3
+                    }
+                    crate::ForageRoute::Food => observation.objects.iter().any(|object| {
+                        object.controller == actor
+                            && object.zone == Zone::Battlefield
+                            && object.has_subtype("Food")
+                    }),
+                    crate::ForageRoute::Black => observation.players[actor.index()].mana[2] != 0,
+                };
+                if ready { 60 } else { -5 }
+            }
+            Action::ChooseForage { .. } => 60,
             Action::DeclineForage => -10,
             Action::ChooseConniver { .. } => 60,
             Action::PayResolutionMana { .. } | Action::PayResolutionLife => 100,
@@ -756,10 +871,83 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                         .unwrap_or(70)
                 }
             }
-            Action::Attack { .. }
-            | Action::AttackPlaneswalker { .. }
-            | Action::AttackBattle { .. }
-            | Action::Block { .. } => 60,
+            Action::Block { blocker, attacker } => {
+                let minimum = observation
+                    .objects
+                    .iter()
+                    .find(|o| o.id == *attacker)
+                    .map_or(1, |o| {
+                        if o.keywords.contains(crate::Keywords::MIN_THREE_BLOCKERS) {
+                            3
+                        } else if o.keywords.contains(crate::Keywords::MENACE) {
+                            2
+                        } else {
+                            1
+                        }
+                    });
+                let current = observation
+                    .blocks
+                    .iter()
+                    .filter(|&&(_, a)| a == *attacker)
+                    .count();
+                let available = actions
+                    .iter()
+                    .filter(|a| matches!(a, Action::Block { attacker: a, .. } if a == attacker))
+                    .count();
+                let max_one = observation.objects.iter().any(|o| {
+                    o.id == *attacker && o.keywords.contains(crate::Keywords::MAX_ONE_BLOCKER)
+                });
+                let alone = observation
+                    .objects
+                    .iter()
+                    .find(|o| o.id == *blocker)
+                    .is_some_and(|o| {
+                        o.card
+                            .static_ability_groups()
+                            .iter()
+                            .flat_map(|g| g.fragments)
+                            .any(|f| {
+                                matches!(
+                                    f,
+                                    crate::cards::StaticAbilityFragment::CantAttackOrBlockAlone
+                                )
+                            })
+                    });
+                let companion = !observation.blocks.is_empty()
+                    || actions.iter().any(
+                        |a| matches!(a, Action::Block { blocker: other, .. } if other != blocker),
+                    );
+                // A caller preference, never an engine legality filter. Avoid
+                // immediately incomplete prefixes that would reset and repeat.
+                if current + available < minimum || max_one && minimum > 1 || alone && !companion {
+                    -10
+                } else {
+                    60
+                }
+            }
+            Action::Attack { card }
+            | Action::AttackPlaneswalker { card, .. }
+            | Action::AttackBattle { card, .. } => {
+                let alone = observation
+                    .objects
+                    .iter()
+                    .find(|o| o.id == *card)
+                    .is_some_and(|o| {
+                        o.card
+                            .static_ability_groups()
+                            .iter()
+                            .flat_map(|g| g.fragments)
+                            .any(|f| {
+                                matches!(
+                                    f,
+                                    crate::cards::StaticAbilityFragment::CantAttackOrBlockAlone
+                                        | crate::cards::StaticAbilityFragment::CantAttackAlone
+                                )
+                            })
+                    });
+                let companion = !observation.attackers.is_empty() || actions.iter().any(|a| matches!(a, Action::Attack { card: other } | Action::AttackPlaneswalker { card: other, .. } | Action::AttackBattle { card: other, .. } if other != card));
+                if alone && !companion { -10 } else { 60 }
+            }
             Action::AssignDamage { amount, .. } => 50 + *amount,
             Action::Bottom { .. } | Action::Discard { .. } => 50,
             Action::PutTrigger { .. } => 50,
@@ -786,7 +974,8 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 }
             }
             Action::TapMana { card } => {
-                if observation.resolution_payment.is_some() {
+                if observation.resolution_payment.is_some() || observation.payment_request.is_some()
+                {
                     let mut production = [0; 6];
                     let object = observation.objects.iter().find(|o| o.id == *card).unwrap();
                     let color = if !object.card.is_land() && object.card.mana_color().is_some() {
@@ -801,7 +990,12 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                     }
                     .expect("legal mana action has a color");
                     production[color] = 1;
-                    return resolution_mana_score([0; 6], production);
+                    if observation.resolution_payment.is_some() {
+                        return resolution_mana_score([0; 6], production);
+                    }
+                    // Use a fixed color source before a flexible source when
+                    // they cover the same current declared requirement.
+                    return 21 + mana_score(observation, production);
                 }
                 if tap_for_payment { 10 } else { -20 }
             }
@@ -849,6 +1043,19 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
 
 fn mana_score(observation: &crate::Observation, production: crate::Mana) -> i128 {
     let pool = observation.players[observation.viewer.index()].mana;
+    if let Some(request) = &observation.payment_request {
+        // A locked declaration may have different colors from its physical
+        // card or other cards in hand, including back faces and alternate costs.
+        return 4 * request
+            .required
+            .iter()
+            .zip(pool)
+            .zip(production)
+            .map(|((&required, available), produced)| {
+                i128::from(required.saturating_sub(available).min(produced))
+            })
+            .sum::<i128>();
+    }
     observation
         .objects
         .iter()

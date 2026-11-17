@@ -5,6 +5,23 @@ use rustmage_core::cards::*;
 use rustmage_core::engine::*;
 use support::*;
 
+fn choose_pool_spell_cost(g: &mut Game) {
+    let a = g.state.announcing.as_ref().unwrap();
+    let pool = g.state.players[a.item.controller.index()].mana;
+    let cost = a
+        .cost_choices()
+        .position(|cost| {
+            ManaPaymentDomain {
+                available: pool,
+                required: cost.colored,
+                generic: cost.generic,
+            }
+            .payable()
+        })
+        .expect("scripted pool pays the declared equivalent") as u16;
+    act(g, Action::ChooseSpellCost { cost });
+}
+
 fn idle(g: &Game) -> bool {
     g.outcome().is_some()
         || (g.state.pending == Pending::Priority
@@ -239,8 +256,8 @@ fn renew_keyword_counter_batches_and_sage_add_before_double() {
         }
         let source = put(&mut g, p, name, Zone::Graveyard);
         g.state.players[p.index()].mana = [0; 6];
-        reject(
-            &mut g,
+        admit(
+            &g,
             Action::AnnounceActivate {
                 card: source,
                 ability: 0,
@@ -847,7 +864,7 @@ fn krumar_chosen_x_pays_life_mana_and_tap_then_chooses_counters_or_sized_spirit(
                 counter_payment: Counters::default(),
             },
         );
-        reject(&mut g, Action::ChooseX { value: 4 });
+        admit(&g, Action::ChooseX { value: 4 });
         act(&mut g, Action::ChooseX { value: 3 });
         pay(&mut g);
         if matches!(g.state.pending, Pending::CastCosts { .. }) {
@@ -946,7 +963,26 @@ fn herd_heirloom_creature_restricted_mana_and_temporary_trample_draw_ability() {
         |a| matches!(a,Action::ActivateMana {card,production,..}if *card==heirloom&&*production==[0,1,0,0,0,0]),
     );
     let noncreature = put(&mut g, p, "Opt", Zone::Hand);
-    reject(&mut g, Action::AnnounceCast { card: noncreature });
+    admit(&g, Action::AnnounceCast { card: noncreature });
+    let mut restricted = g.clone();
+    act(&mut restricted, Action::AnnounceCast { card: noncreature });
+    reject(
+        &mut restricted,
+        Action::PayCosts {
+            payment: [0, 1, 0, 0, 0, 0],
+        },
+    );
+    act(&mut restricted, Action::EndManaWindow);
+    act(&mut restricted, Action::SubmitAttempt);
+    assert_eq!(
+        restricted.last_attempt_outcome_view(p).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
+    assert_eq!(restricted.object_view(noncreature).zone, Zone::Hand);
+    assert_eq!(
+        restricted.state.players[p.index()].mana,
+        g.state.players[p.index()].mana
+    );
     g.state.objects[heirloom as usize].tapped = false;
     let large = put(&mut g, p, "Shivan Dragon", Zone::Battlefield);
     activate(&mut g, heirloom, 1, &[large]);
@@ -1396,7 +1432,33 @@ fn molten_exhale_requires_behold_for_flash_and_deals_four() {
         let source = candidate(&mut g, p, "Molten Exhale", Zone::Hand);
         let witness = if flash {
             g.state.active = p.other();
-            reject(&mut g, Action::AnnounceCast { card: source });
+            admit(&g, Action::AnnounceCast { card: source });
+            let mut missing = g.clone();
+            act(&mut missing, Action::AnnounceCast { card: source });
+            reject(&mut missing, Action::ChooseCastBehold { pay: false });
+            act(&mut missing, Action::ChooseCastBehold { pay: true });
+            act(
+                &mut missing,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            act(&mut missing, Action::BeginOrderedCosts);
+            let clause = missing
+                .observe(p)
+                .cast_costs
+                .unwrap()
+                .clauses
+                .iter()
+                .position(|row| matches!(row.clause, CastCostClause::Behold(_)))
+                .unwrap() as u16;
+            act(&mut missing, Action::ChooseCastCost { clause });
+            act(&mut missing, Action::SubmitAttempt);
+            assert_eq!(
+                missing.last_attempt_outcome_view(p).unwrap().reason,
+                Some(AttemptFailureReason::UnsatisfiedMaterial)
+            );
+            assert_eq!(missing.object_view(source).zone, Zone::Hand);
             Some(put(&mut g, p, "Shivan Dragon", Zone::Hand))
         } else {
             None
@@ -1559,7 +1621,19 @@ fn natures_rhythm_harmonize_preserves_chosen_x_as_mana_value_bound() {
             // remain mandatory even when four total mana are available.
             for greens in [0, 1] {
                 g.state.players[p.index()].mana = [0, 0, 0, 0, greens, 4 - greens];
-                reject(&mut g, Action::AnnounceCast { card: source });
+                admit(&g, Action::AnnounceCast { card: source });
+                let mut missing_green = g.clone();
+                act(&mut missing_green, Action::AnnounceCast { card: source });
+                act(&mut missing_green, Action::ChooseX { value: 2 });
+                let payment = missing_green.state.players[p.index()].mana;
+                reject(&mut missing_green, Action::PayCosts { payment });
+                act(&mut missing_green, Action::EndManaWindow);
+                act(&mut missing_green, Action::SubmitAttempt);
+                assert_eq!(
+                    missing_green.last_attempt_outcome_view(p).unwrap().reason,
+                    Some(AttemptFailureReason::UnsatisfiedMana)
+                );
+                assert_eq!(missing_green.object_view(source).zone, Zone::Hand);
             }
         }
         g.state.players[p.index()].mana = if harmonize {
@@ -2296,8 +2370,8 @@ fn hardened_tactician_sacrifices_creature_or_noncreature_token_and_draws_exactly
         assert_eq!(g.object_view(ordinary).zone, Zone::Battlefield);
         assert_eq!(g.hand_count(p), hand + 1);
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
-        reject(
-            &mut g,
+        admit(
+            &g,
             Action::AnnounceActivate {
                 card: source,
                 ability: 0,
@@ -2380,7 +2454,7 @@ fn highspire_reduces_only_the_exact_second_spell_generic_component() {
     drain(&mut g);
     let source = put(&mut g, p, "Grizzly Bears", Zone::Hand);
     g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
-    reject(&mut g, Action::AnnounceCast { card: source });
+    admit(&g, Action::AnnounceCast { card: source });
     g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 0];
     cast(&mut g, source, None);
     drain(&mut g);
@@ -2723,7 +2797,7 @@ fn kin_tree_severance_twobrid_colored_route_checks_minimum_mana_value() {
         g.state.players[p.index()].mana = [1, 0, 1, 0, 1, 0];
         act(&mut g, Action::AnnounceCast { card: source });
         assert!(matches!(g.state.pending, Pending::SpellCost { .. }));
-        choose(&mut g, |a| matches!(a, Action::ChooseSpellCost { .. }));
+        choose_pool_spell_cost(&mut g);
         for bad in [small, land] {
             reject(
                 &mut g,

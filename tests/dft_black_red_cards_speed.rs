@@ -173,10 +173,10 @@ fn endrider_catalyzer_max_speed_mana_funds_a_real_spell_and_requires_tap_readine
         let spell = put(&mut g, p, "Lightning Strike", Zone::Hand);
         g.state.players[p.index()].mana = [0; 6];
         g.state.players[p.index()].speed = 3;
-        reject(&mut g, Action::AnnounceCast { card: spell });
+        admit(&g, Action::AnnounceCast { card: spell });
         g.state.players[p.index()].speed = 4;
         g.state.objects[source as usize].summoning_sick = true;
-        reject(&mut g, Action::AnnounceCast { card: spell });
+        admit(&g, Action::AnnounceCast { card: spell });
         g.state.objects[source as usize].summoning_sick = false;
         act(&mut g, Action::AnnounceCast { card: spell });
         act(
@@ -305,7 +305,7 @@ fn spikespitter_exiled_land_and_spell_have_normal_paid_plays_only_this_turn() {
             assert_eq!(g.object_view(top).zone, Zone::Battlefield);
         } else {
             g.state.players[0].mana = [0; 6];
-            reject(&mut g, Action::AnnounceExile { card: top });
+            admit(&g, Action::AnnounceExile { card: top });
             g.state.players[0].mana = [0, 0, 0, 1, 0, 0];
             act(&mut g, Action::AnnounceExile { card: top });
             act(

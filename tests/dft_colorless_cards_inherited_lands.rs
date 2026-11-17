@@ -211,10 +211,7 @@ fn verge_funding_and_actual_mana_use_live_types_instead_of_immutable_card_names(
                 .animations
                 .push(characteristic_layers::food_form(object, timestamp));
             assert!(!g.has_subtype(basic, qualifiers[0]));
-            assert!(
-                !cast_available(&g, spell),
-                "{name} cannot fund secondary after the qualifier loses its type"
-            );
+            admit(&g, Action::AnnounceCast { card: spell });
             reject(&mut g, activate(land, 1, secondary));
         }
     }
@@ -227,10 +224,18 @@ fn land_play_and_mana_choices_agree_on_owned_raw_index_and_restored_branches() {
             let land = put(&mut parent, p, name, Zone::Hand);
             parent.state.players[p.index()].mana = [0; 6];
             let saved = parent.snapshot();
-            let mut raw = parent.clone();
-            let mut indexed = parent.clone();
+            let revision = parent.revision();
             let mut restored = parent.clone();
             restored.restore(&saved).unwrap();
+            assert_eq!(restored.snapshot(), saved);
+            assert_eq!(
+                restored.apply_index(p, revision, 0),
+                Err(Error::StaleRevision)
+            );
+            // Fork after restoring so all three executions allocate the same
+            // fresh attempt identities as well as identical game objects.
+            let mut raw = restored.clone();
+            let mut indexed = restored.clone();
             drop(parent);
             for (n, g) in [&mut raw, &mut indexed, &mut restored]
                 .into_iter()

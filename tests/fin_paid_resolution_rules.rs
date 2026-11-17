@@ -186,11 +186,17 @@ fn targeted_permission_rejects_unfundable_cast_and_old_incarnation() {
     assert_eq!(stale.object_view(child).zone, Zone::Graveyard);
 
     paid_offer(&mut g);
-    reject(&mut g, action);
+    admit(&g, action.clone());
+    let mut missing_discard = g.clone();
+    act(&mut missing_discard, action);
+    act(&mut missing_discard, Action::EndManaWindow);
+    act(&mut missing_discard, Action::SubmitAttempt);
     assert_eq!(
-        g.legal_actions(),
-        [Action::Concede, Action::FinishResolutionCasts]
+        missing_discard.last_attempt_outcome_view(p).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMaterial)
     );
+    assert_eq!(missing_discard.object_view(child).zone, Zone::Graveyard);
+    assert!(g.legal_actions().contains(&Action::FinishResolutionCasts));
     act(&mut g, Action::FinishResolutionCasts);
     assert_eq!(g.object_view(child).zone, Zone::Graveyard);
     assert_eq!(g.state.players[p.index()].life, 21);
@@ -300,7 +306,11 @@ fn foreign_top_offer_keeps_color_and_creates_treasure_only_without_a_cast() {
             assert_eq!(g.state.players[p.other().index()].life, 18);
             assert_eq!(treasure_count(&g, p), 0);
         } else {
-            reject(&mut g, action);
+            if name == "Shock" {
+                admit(&g, action);
+            } else {
+                reject(&mut g, action);
+            }
             reject(&mut g, Action::PlayLand { card: top });
         }
     }

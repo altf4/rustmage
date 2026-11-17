@@ -134,12 +134,15 @@ fn assert_owned_action(g: &mut Game, action: Action) {
     act(g, action.clone());
     assert_eq!(g.snapshot(), indexed.snapshot());
     g.restore(&parent).unwrap();
+    assert_eq!(g.snapshot(), parent);
     assert_eq!(
         g.apply_index(actor, revision, index),
         Err(Error::StaleRevision)
     );
+    let mut replay = g.clone();
+    replay.apply_index(actor, replay.revision(), index).unwrap();
     act(g, action);
-    assert_eq!(g.snapshot(), indexed.snapshot());
+    assert_eq!(g.snapshot(), replay.snapshot());
 }
 
 #[test]
@@ -152,7 +155,7 @@ fn exact_group_sacrifice_allows_same_names_and_the_tapped_source() {
         let second = put(&mut g, p, "Burglar Rat", Zone::Battlefield);
         let wrong = put(&mut g, p, "Goblin Piker", Zone::Battlefield);
         let foreign = put(&mut g, p.other(), "Burglar Rat", Zone::Battlefield);
-        assert!(!g.legal_actions().contains(&activate(source)));
+        admit(&g, activate(source));
         let third = put(&mut g, p, "Tunnel Rats", Zone::Battlefield);
         act(&mut g, activate(source));
         for id in [wrong, foreign] {
@@ -186,7 +189,7 @@ fn activation_reserves_and_pays_only_the_specified_creature_counter_kind() {
         let source = put(&mut g, p, "Goblin Piker", Zone::Battlefield);
         let creature = put(&mut g, p, "Savannah Lions", Zone::Battlefield);
         g.state.objects[creature as usize].counters.stun = 1;
-        assert!(!g.legal_actions().contains(&activate(source)));
+        admit(&g, activate(source));
         g.state.objects[creature as usize].counters.plus_one = 1;
         act(&mut g, activate(source));
         let object = g.object_ref(creature);
@@ -222,7 +225,7 @@ fn land_tap_bonus_can_fund_a_spell_of_a_different_color() {
         g.state.players[p.index()].mana = [0; 6];
         let cast = Action::AnnounceCast { card: spell };
         put(&mut g, p.other(), "Goblin Piker", Zone::Battlefield);
-        assert!(!g.legal_actions().contains(&cast));
+        admit(&g, cast.clone());
         put(&mut g, p, "Goblin Piker", Zone::Battlefield);
         act(&mut g, cast);
         assert_owned_action(&mut g, Action::TapMana { card: land });

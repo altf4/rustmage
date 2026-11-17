@@ -354,6 +354,7 @@ impl Game {
 
 /// Flat layer-one blueprint in an actual or projected object world.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[cfg(feature = "test-support")]
 pub(super) fn blueprint_in_world<W: ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
     id: CardId,

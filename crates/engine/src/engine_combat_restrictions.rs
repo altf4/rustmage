@@ -714,108 +714,41 @@ impl Game {
         }
     }
 
-    /// A pending choice needs a legal completion that keeps every chosen route.
+    /// A proposed attacker must fit the current declaration prefix. Company
+    /// and mandatory-attack requirements are checked on the submitted complete
+    /// declaration; no unchosen attacker or payment route is explored here.
     pub(super) fn attack_choice_extendable(
         &self,
         actor: Player,
         card: CardId,
         defender: CombatDefender,
     ) -> bool {
-        let mut chosen = self.state.selected_attackers.clone();
-        chosen.push(Attacker {
-            card,
-            defender: Some(defender),
-            blocked: false,
-        });
-        if !self.has_attack_tax_provider() {
-            // An ordinary proposal with no requirements only needs company for
-            // its first restricted attacker. Most choices need no matching.
-            if self.attack_declaration_has_company(&chosen)
-                && self.global_attack_requirements() == [0; 2]
-                && self.attack_requirement_sources().all(|id| {
-                    self.state.objects[id as usize].controller != actor
-                        || !self.attacks_each_combat(id)
-                })
-            {
-                return true;
-            }
-            return self.maximum_attack_requirements(actor, &chosen, true, true)
-                == self.maximum_attack_requirements(actor, &chosen, false, true);
-        }
-        let candidates: Vec<_> = (0..self.state.objects.len())
-            .map(|id| id as CardId)
-            .filter(|&id| {
-                !chosen.iter().any(|attack| attack.card == id)
-                    && self.can_declare_attacker(actor, id)
-            })
-            .collect();
-        let mut defenders = vec![(CombatDefender::Player(actor.other()), false)];
-        for (id, object) in self.state.objects.iter().enumerate() {
-            let id = id as CardId;
-            let reference = self.object_ref(id);
-            if self.battle_can_be_attacked_by(reference, actor) {
-                defenders.push((CombatDefender::Battle(reference), false));
-            }
-            if object.zone == Zone::Battlefield
-                && object.controller == actor.other()
-                && self.current_kinds(id) & 64 != 0
-            {
-                defenders.push((
-                    CombatDefender::Planeswalker(reference),
-                    self.planeswalker_attack_limited(reference),
-                ));
-            }
-        }
-        self.fundable_attack_completion(actor, &mut chosen, &candidates, &defenders)
-    }
-
-    fn fundable_attack_completion(
-        &self,
-        actor: Player,
-        chosen: &mut Vec<Attacker>,
-        candidates: &[CardId],
-        defenders: &[(CombatDefender, bool)],
-    ) -> bool {
-        let has_company = self.attack_declaration_has_company(chosen);
-        if has_company
-            && self.attack_requirement_score(actor, chosen)
-                >= self
-                    .maximum_attack_requirements(actor, chosen, false, true)
-                    .expect("the empty declaration is always structurally possible")
-        {
-            return self.attackers_fundable(actor, chosen);
-        }
-        for (index, &card) in candidates.iter().enumerate() {
-            if has_company && !self.attacks_each_combat(card) {
-                continue;
-            }
-            for &(defender, limited) in defenders {
-                if (limited
-                    && chosen
-                        .iter()
-                        .any(|attack| attack.defender == Some(defender)))
-                    || !self.can_attack_defender(card, defender)
-                {
-                    continue;
+        self.can_declare_attacker(actor, card)
+            && !self
+                .state
+                .selected_attackers
+                .iter()
+                .any(|attack| attack.card == card)
+            && self.can_attack_defender(card, defender)
+            && match defender {
+                CombatDefender::Player(player) => player == actor.other(),
+                CombatDefender::Planeswalker(reference) => {
+                    self.attack_slot_free(reference, None)
+                        && self
+                            .state
+                            .objects
+                            .get(reference.card as usize)
+                            .is_some_and(|object| {
+                                object.zone == Zone::Battlefield
+                                    && object.generation == reference.generation
+                                    && object.controller == actor.other()
+                                    && self.current_kinds(reference.card) & 64 != 0
+                            })
                 }
-                chosen.push(Attacker {
-                    card,
-                    defender: Some(defender),
-                    blocked: false,
-                });
-                let possible = self.fundable_attack_completion(
-                    actor,
-                    chosen,
-                    &candidates[index + 1..],
-                    defenders,
-                );
-                chosen.pop();
-                if possible {
-                    return true;
+                CombatDefender::Battle(reference) => {
+                    self.battle_can_be_attacked_by(reference, actor)
                 }
             }
-        }
-        false
     }
 
     /// Satisfy as many attack requirements as possible under defender and tax rules.
