@@ -804,6 +804,7 @@ fn concrete_waterbend_cannot_pay_the_same_source_tap_twice() {
     let mut game = scenario(Player::P0);
     let source = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
     let helper = put(&mut game, Player::P0, "Goblin Piker", Zone::Battlefield);
+    let forest = put(&mut game, Player::P0, "Forest", Zone::Battlefield);
     game.state.players[0].mana = [0; 6];
     act(
         &mut game,
@@ -813,7 +814,14 @@ fn concrete_waterbend_cannot_pay_the_same_source_tap_twice() {
             counter_payment: Counters::default(),
         },
     );
+    assert!(
+        game.legal_actions()
+            .contains(&Action::TapMana { card: forest })
+    );
+    admit(&game, Action::BeginWaterbend);
     act(&mut game, Action::BeginWaterbend);
+    assert!(game.state.announcing.as_ref().unwrap().cast_costs.is_none());
+    assert!(game.attempt_view(Player::P0).unwrap().mana_window_closed);
     let mut invalid = game.clone();
     // Supply a complete conflicting clause, independently of prefix filtering.
     let reference = invalid.object_ref(source);
@@ -837,10 +845,113 @@ fn concrete_waterbend_cannot_pay_the_same_source_tap_twice() {
     assert!(!invalid.object_view(source).tapped);
     let helper = game.object_ref(helper);
     act(&mut game, Action::ChooseWaterbender { object: helper });
+    admit(&game, Action::ResetCostSelection);
+    act(&mut game, Action::ResetCostSelection);
+    assert!(game.attempt_view(Player::P0).unwrap().mana_window_closed);
+    assert!(!game.object_view(helper.card).tapped);
+    assert!(!game.object_view(source).tapped);
+    assert!(!game.object_view(forest).tapped);
+    assert!(
+        game.state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .convoke
+            .as_ref()
+            .unwrap()
+            .substituted
+            .is_empty()
+    );
+    reject(&mut game, Action::TapMana { card: forest });
+    act(&mut game, Action::ChooseWaterbender { object: helper });
     act(&mut game, Action::PayCosts { payment: [0; 6] });
     assert!(game.object_view(source).tapped);
     assert!(game.object_view(helper.card).tapped);
     assert!(game.state.announcing.is_none());
+}
+
+#[test]
+fn resetting_nonordered_convoke_or_improvise_does_not_reopen_mana() {
+    const CONTRIBUTIONS: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        extras: &CardExtras {
+            has_convoke: true,
+            has_improvise: true,
+            ..CardExtras::EMPTY
+        },
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &CONTRIBUTIONS)]);
+    for improvise in [false, true] {
+        let player = Player::P0;
+        let mut game = scenario(player);
+        let forest = put(&mut game, player, "Forest", Zone::Battlefield);
+        let helper = put(
+            &mut game,
+            player,
+            if improvise { "Short Bow" } else { "Bear Cub" },
+            Zone::Battlefield,
+        );
+        let spell = put(&mut game, player, "Grizzly Bears", Zone::Hand);
+        game.state.players[0].mana = [0, 0, 0, 0, 1, 0];
+        act(&mut game, Action::AnnounceCast { card: spell });
+        assert!(
+            game.legal_actions()
+                .contains(&Action::TapMana { card: forest })
+        );
+        let begin = if improvise {
+            Action::BeginImprovise
+        } else {
+            Action::BeginConvoke
+        };
+        admit(&game, begin.clone());
+        act(&mut game, begin);
+        assert!(game.state.announcing.as_ref().unwrap().cast_costs.is_none());
+        assert!(game.attempt_view(player).unwrap().mana_window_closed);
+        let object = game.object_ref(helper);
+        let select = if improvise {
+            Action::ChooseImproviser { object }
+        } else {
+            Action::ChooseConvoker {
+                object,
+                contribution: ConvokeContribution::Generic,
+            }
+        };
+        act(&mut game, select.clone());
+        assert!(!game.object_view(helper).tapped);
+        admit(&game, Action::ResetCostSelection);
+        act(&mut game, Action::ResetCostSelection);
+        assert!(game.attempt_view(player).unwrap().mana_window_closed);
+        let frame = game
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .convoke
+            .as_ref()
+            .unwrap();
+        assert!(frame.selected.is_empty() && frame.improvised.is_empty());
+        assert_eq!(
+            frame.remaining,
+            ManaCost {
+                colored: [0, 0, 0, 0, 1, 0],
+                generic: 1
+            }
+        );
+        reject(&mut game, Action::TapMana { card: forest });
+        assert!(!game.object_view(forest).tapped);
+        assert!(!game.object_view(helper).tapped);
+        act(&mut game, select);
+        act(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 1, 0],
+            },
+        );
+        assert!(game.object_view(helper).tapped);
+        assert!(!game.object_view(forest).tapped);
+        assert_eq!(game.object_view(spell).zone, Zone::Stack);
+    }
 }
 
 const SHARED_COUNTERS: CardRules = CardRules {

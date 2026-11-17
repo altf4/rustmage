@@ -327,6 +327,11 @@ impl Game {
         }
     }
     fn begin_contributors(&mut self, artifact: bool) {
+        // Choosing contributors starts cost payment even without an ordered
+        // clause plan. Resetting that unpaid selection cannot reopen mana.
+        if self.state.cast_rollback.is_some() {
+            self.end_attempt_mana_window();
+        }
         let a = self.state.announcing.as_mut().unwrap();
         assert!(a.item.kind == StackKind::Spell && a.convoke.is_none());
         a.initialize_cast_costs(artifact);
