@@ -276,6 +276,8 @@ impl Game {
         let source = a.item.source.expect("attempt source").object;
         let actor = a.item.controller;
         match self.state.pending {
+            Pending::Crew { .. } => self.crew_payment_impossible(),
+            Pending::Saddle { .. } => self.saddle_payment_impossible(),
             Pending::CastCosts { .. } => !self.visit_cast_cost_clauses(&mut |_| true),
             Pending::BlightPayment { .. } => !self.visit_blight_payments(&mut |_| true),
             Pending::BeholdCost { .. } => a

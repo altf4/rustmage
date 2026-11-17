@@ -5532,23 +5532,11 @@ impl Game {
         selection.selected = selected.to_vec();
         selection.complete = complete;
         world.set_purpose(self.purpose_for_item(&a.item));
-        if goal.required == [0; 6]
-            && goal.generic == 0
-            && a.activation_generic_increase == 0
-            && goal
-                .source
+        world.obligations(&goal)
+            && world
+                .contributors
                 .as_ref()
-                .is_some_and(|(_, ability, _, definition, _)| {
-                    !definition.activation(*ability).cost.mana_component
-                })
-        {
-            return world.obligations(&goal)
-                && world
-                    .contributors
-                    .as_ref()
-                    .is_none_or(|c| c.payable(&world));
-        }
-        world.reachable(&goal, &mut HashSet::new())
+                .is_none_or(|selection| selection.payable(&world))
     }
 
     fn self_granted_goal(&self, goal: &FundingGoal) -> bool {
