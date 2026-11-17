@@ -361,6 +361,7 @@ impl Game {
                 .retain(|object| object.card != card);
         }
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn face_up_payment_fundable(&self) -> bool {
         let Some(request) = self.face_up_payment() else {
             return false;

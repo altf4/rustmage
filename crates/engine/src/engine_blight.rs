@@ -14,21 +14,20 @@ impl Game {
         };
         mode < 64 && bits & (1u64 << mode) != 0
     }
-    pub(super) fn blight_initial_fundable(
-        &self,
-        actor: Player,
-        id: CardId,
-        base: ManaCost,
-    ) -> bool {
-        self.spell_cost_option_available(actor, id, base)
-    }
+
     pub(super) fn blight_intent_fundable(&self, pay: bool) -> bool {
-        let Some(a) = self.state.announcing.as_ref() else { return false; };
-        a.item.source.is_some_and(|source| source.card.blight().is_some())
-            && (!pay || self.state.objects.iter().enumerate().any(|(id, object)| {
-                object.zone == Zone::Battlefield && object.controller == a.item.controller
-                    && self.is_creature(id as CardId)
-            }))
+        let Some(a) = self.state.announcing.as_ref() else {
+            return false;
+        };
+        a.item
+            .source
+            .is_some_and(|source| source.card.blight().is_some())
+            && (!pay
+                || self.state.objects.iter().enumerate().any(|(id, object)| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == a.item.controller
+                        && self.is_creature(id as CardId)
+                }))
     }
     pub(super) fn choose_blight(&mut self, pay: bool) {
         let improvise = improvise::potential(
@@ -88,30 +87,24 @@ impl Announcement {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    pub(super) fn preview_blight_activation(
-        &self,
-        goal: FundingGoal,
-        _spec: AdditionalCost,
-    ) -> bool {
-        let (source, index, counters, definition, slot) =
-            goal.source.as_ref().expect("blight activation");
-        let mut packet = self.activation_packet(goal.actor, source.card, *index);
-        packet.set_source_definition(*definition);
-        packet.borrowed_slot = *slot;
-        let mut proposal = self.payment_announcement(packet, counters.clone(), None, None);
-        proposal.cost = Some(ManaCost {
-            colored: goal.required,
-            generic: goal.generic,
-        });
-        proposal.total_cost = proposal.cost;
-        self.activation_packet_fundable(&proposal)
-    }
     pub(super) fn blight_x_intervals(&self, a: &Announcement) -> Vec<XInterval> {
-        let maximum = self.state.objects.iter().enumerate().filter(|(id, object)| {
-            object.zone == Zone::Battlefield && object.controller == a.item.controller
-                && self.is_creature(*id as CardId)
-        }).map(|(id, _)| self.stats(id as CardId).toughness).max().unwrap_or(0)
+        let maximum = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, object)| {
+                object.zone == Zone::Battlefield
+                    && object.controller == a.item.controller
+                    && self.is_creature(*id as CardId)
+            })
+            .map(|(id, _)| self.stats(id as CardId).toughness)
+            .max()
+            .unwrap_or(0)
             .clamp(0, i128::from(u32::MAX)) as u32;
-        vec![XInterval { minimum: 0, maximum }]
+        vec![XInterval {
+            minimum: 0,
+            maximum,
+        }]
     }
 }

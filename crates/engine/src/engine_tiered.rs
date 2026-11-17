@@ -41,25 +41,28 @@ impl Game {
                 self.spell_mode_eligible(item.controller, source.object, source.card, index)
             })
     }
-    pub(super) fn tiered_initial_fundable(
-        &self,
-        actor: Player,
-        id: CardId,
-        base: ManaCost,
-    ) -> bool {
-        self.spell_cost_option_available(actor, id, base)
-    }
+
     pub(super) fn mode_choice_fundable(&self, a: &Announcement, index: usize) -> bool {
-        let Some(mode) = a.item.modes().and_then(|modes| modes.get(index)) else { return false; };
-        let kicker_changes_targets = a.item.kind == StackKind::Spell && a.pay_window
-            && a.item.source.is_some_and(|source| source.card.kicked_targets().is_some());
-        !a.item.bounded_mode_count(index).is_some_and(|count| u32::from(count) > a.item.x.unwrap_or(0))
+        let Some(mode) = a.item.modes().and_then(|modes| modes.get(index)) else {
+            return false;
+        };
+        let kicker_changes_targets = a.item.kind == StackKind::Spell
+            && a.pay_window
+            && a.item
+                .source
+                .is_some_and(|source| source.card.kicked_targets().is_some());
+        !a.item
+            .bounded_mode_count(index)
+            .is_some_and(|count| u32::from(count) > a.item.x.unwrap_or(0))
             && self.item_mode_eligible(&a.item, index)
             && self.teamwork_mode_allowed(&a.item, index)
             && self.blight_mode_allowed(&a.item, index)
             && self.modal_choice_unused(&a.item, index)
             && (kicker_changes_targets || self.item_targets_available(&a.item, mode.targets))
-            && (a.item.source.is_none_or(|source| source.card.tiered_costs().is_none())
+            && (a
+                .item
+                .source
+                .is_none_or(|source| source.card.tiered_costs().is_none())
                 || a.item.kind == StackKind::Spell && a.pay_window)
     }
 }

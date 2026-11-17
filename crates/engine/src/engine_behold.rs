@@ -92,10 +92,16 @@ impl Game {
                 && self.state.stack.is_empty())
     }
     pub(super) fn behold_intent_fundable(&self, a: &Announcement, pay: bool) -> bool {
-        if !pay { return !a.behold_required; }
-        a.item.source.and_then(|source| source.card.behold_cast()).is_some_and(|spec| {
-            !hand_choices::behold_candidates(self, a.item.controller, spec.subtype, &[]).is_empty()
-        })
+        if !pay {
+            return !a.behold_required;
+        }
+        a.item
+            .source
+            .and_then(|source| source.card.behold_cast())
+            .is_some_and(|spec| {
+                !hand_choices::behold_candidates(self, a.item.controller, spec.subtype, &[])
+                    .is_empty()
+            })
     }
     pub(super) fn choose_cast_behold(&mut self, pay: bool) {
         self.state

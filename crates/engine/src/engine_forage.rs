@@ -63,6 +63,7 @@ pub(super) fn food_cost() -> AdditionalCost {
     }
 }
 impl ForageRoute {
+    #[cfg(feature = "test-support")]
     pub(super) const MANA_COST_ROUTES: [Self; 2] = [Self::ExileThree, Self::Food];
 
     pub(super) fn mana_cost(self) -> Option<(AdditionalCost, usize)> {
@@ -197,40 +198,16 @@ impl Game {
             .take(3)
             .count()
     }
-    pub(super) fn forage_cost_fundable(
-        &self,
-        goal: FundingGoal,
-        spec: AdditionalCost,
-        route: Option<ForageRoute>,
-    ) -> bool {
-        let purpose = self.funding_purpose(&goal);
-        self.forage_cost_fundable_for(goal, spec, route, purpose)
-    }
-    pub(super) fn forage_cost_fundable_for(
-        &self,
-        goal: FundingGoal,
-        spec: AdditionalCost,
-        route: Option<ForageRoute>,
-        purpose: mana_lots::Purpose,
-    ) -> bool {
-        let _ = purpose;
-        match route {
-            None => is_forage_cost(spec),
-            Some(ForageRoute::Black) => spec.kind == EffectChoiceKind::ForageOrBlack,
-            Some(ForageRoute::ExileThree) => self.forage_graveyard_count(goal.actor) >= 3,
-            Some(ForageRoute::Food) => self.state.objects.iter().enumerate().any(|(id, _)| {
-                let object = self.object_ref(id as CardId);
-                self.additional_candidate(food_cost(), goal.actor,
-                    goal.source.as_ref().map_or(object, |source| source.0), object)
-            }),
-        }
-    }
+
     fn forage_route_available(&self, route: ForageRoute) -> bool {
         let player = self.semantic_actor().unwrap();
         match route {
             ForageRoute::Black => self.state.announcing.as_ref().is_some_and(|a| {
-                !a.cast_costs.as_ref().is_some_and(|costs| costs.paying_origin_forage())
-                    && a.additional_cost().is_some_and(|cost| cost.kind == EffectChoiceKind::ForageOrBlack)
+                !a.cast_costs
+                    .as_ref()
+                    .is_some_and(|costs| costs.paying_origin_forage())
+                    && a.additional_cost()
+                        .is_some_and(|cost| cost.kind == EffectChoiceKind::ForageOrBlack)
             }),
             ForageRoute::ExileThree => self.forage_graveyard_count(player) >= 3,
             ForageRoute::Food => self.state.objects.iter().enumerate().any(|(id, _)| {
@@ -240,18 +217,26 @@ impl Game {
         }
     }
     fn forage_candidate(&self, r: ObjectRef) -> bool {
-        let Some(object) = self.state.objects.get(r.card as usize) else { return false; };
+        let Some(object) = self.state.objects.get(r.card as usize) else {
+            return false;
+        };
         let selection = self.forage_selection();
         let player = self.semantic_actor().unwrap();
         if object.generation != r.generation || selection.selected.contains(&r) {
             return false;
         }
         match selection.route {
-            Some(ForageRoute::ExileThree) => selection.selected.len() < 3
-                && object.zone == Zone::Graveyard && object.owner == player && object.is_card()
-                && !ability_world::CharacteristicWorld::graveyard_exile_prohibited(self, r.card),
-            Some(ForageRoute::Food) => selection.selected.is_empty()
-                && self.additional_candidate(food_cost(), player, r, r),
+            Some(ForageRoute::ExileThree) => {
+                selection.selected.len() < 3
+                    && object.zone == Zone::Graveyard
+                    && object.owner == player
+                    && object.is_card()
+                    && !ability_world::CharacteristicWorld::graveyard_exile_prohibited(self, r.card)
+            }
+            Some(ForageRoute::Food) => {
+                selection.selected.is_empty()
+                    && self.additional_candidate(food_cost(), player, r, r)
+            }
             _ => false,
         }
     }

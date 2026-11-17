@@ -244,6 +244,7 @@ impl Game {
             .filter_map(|row| row.item.mana_activation_key())
             .collect()
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn deferred_mana_parents(&self) -> Vec<ManaAnnouncement> {
         let mut parents = self
             .state

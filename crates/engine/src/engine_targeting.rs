@@ -3939,6 +3939,9 @@ impl Game {
                 return;
             }
         }
+        if !announcement.trigger {
+            self.mark_attempt_costs_complete();
+        }
         if let Some(completion) = self.take_paid_contributor_completion(&announcement.item) {
             match completion {
                 activations::ActivationPaymentCompletion::Crew(context) => {

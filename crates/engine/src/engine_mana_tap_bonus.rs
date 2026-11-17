@@ -291,6 +291,7 @@ struct TapBonusOption {
     quality: Option<mana_lots::Quality>,
 }
 
+#[cfg(feature = "test-support")]
 fn visit_bonus_options(
     output: &mut TapBonusOutput,
     options: &[TapBonusOption],
@@ -330,6 +331,7 @@ impl ManaTapReceipt {
         }
         available.map(|amount| (u64::from(amount) / self.base.multiplier) as u32)
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn unreplaced_required(&self, amount: u128) -> u128 {
         amount.div_ceil(u128::from(self.base.multiplier))
     }
@@ -388,6 +390,7 @@ impl ManaTapReceipt {
         visit_bonus_options(&mut output, &options, &mut emit)
     }
 
+    #[cfg(feature = "test-support")]
     pub(super) fn singleton(&self, production: Mana) -> Option<TapBonusOutput> {
         let (output, options) = self.output(production);
         options.is_empty().then_some(output)

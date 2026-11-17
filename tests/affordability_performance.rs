@@ -125,8 +125,14 @@ fn craft_mana_shortfall_is_an_attempt_outcome_without_search() {
         assert!(game.revision() > revision);
         assert_eq!(game.state.objects[jewel as usize].zone, Zone::Battlefield);
         assert!(game.state.announcing.is_none());
-        assert_eq!(game.observe(player).last_attempt_outcome.unwrap().outcome, AttemptOutcome::Failed);
-        assert!(game.legal_actions().contains(&announce(jewel)), "failure must permit retry");
+        assert_eq!(
+            game.observe(player).last_attempt_outcome.unwrap().outcome,
+            AttemptOutcome::Failed
+        );
+        assert!(
+            game.legal_actions().contains(&announce(jewel)),
+            "failure must permit retry"
+        );
         assert_no_payment_projection();
     }
 }
@@ -240,11 +246,16 @@ fn material_selection_does_not_project_linked_returns_or_attachments() {
         act(&mut game, Action::BeginOrderedCosts);
         choose_clause(&mut game, CastCostClause::Additional);
         Game::reset_payment_planning_work();
-        let choice = Action::ChooseAdditionalCost { object: game.object_ref(material) };
+        let choice = Action::ChooseAdditionalCost {
+            object: game.object_ref(material),
+        };
         assert!(game.legal_actions().contains(&choice));
         act(&mut game, choice);
         game.observe(player);
-        assert_eq!(game.state.objects[material as usize].zone, Zone::Battlefield);
+        assert_eq!(
+            game.state.objects[material as usize].zone,
+            Zone::Battlefield
+        );
         assert_eq!(game.state.objects[captive as usize].zone, Zone::Exile);
         assert_no_payment_projection();
     }
@@ -266,7 +277,10 @@ fn large_x_declarations_do_not_explore_life_paying_mana_sources() {
         act(&mut game, Action::ChooseX { value: 1 << 23 });
         act(&mut game, Action::EndManaWindow);
         act(&mut game, Action::SubmitAttempt);
-        assert_eq!(game.observe(player).last_attempt_outcome.unwrap().outcome, AttemptOutcome::Failed);
+        assert_eq!(
+            game.observe(player).last_attempt_outcome.unwrap().outcome,
+            AttemptOutcome::Failed
+        );
         assert_no_payment_projection();
     }
 }
