@@ -166,7 +166,22 @@ fn clement_returns_a_smaller_creature_and_gives_frogs_restricted_mana() {
     );
     assert_eq!(blue.state.players[player.index()].mana, BLUE);
     let opt = put(&mut blue, player, "Opt", Zone::Hand);
-    reject(&mut blue, Action::AnnounceCast { card: opt });
+    act(&mut blue, Action::AnnounceCast { card: opt });
+    reject(&mut blue, Action::PayCosts { payment: BLUE });
+    assert!(
+        !blue
+            .legal_actions()
+            .iter()
+            .any(|action| matches!(action, Action::PayCosts { .. }))
+    );
+    act(&mut blue, Action::EndManaWindow);
+    act(&mut blue, Action::SubmitAttempt);
+    let outcome = blue.last_attempt_outcome_view(player).unwrap();
+    assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+    assert_eq!(outcome.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+    assert_eq!(blue.object_view(opt).zone, Zone::Hand);
+    assert_eq!(blue.state.players[player.index()].mana, BLUE);
+    assert!(blue.object_view(clement).tapped);
     act(
         &mut game,
         Action::TapGrantedMana {

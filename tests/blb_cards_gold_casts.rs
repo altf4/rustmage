@@ -206,8 +206,31 @@ fn helga_taps_for_power_and_rewards_only_a_large_creature_spell() {
             production: [0, 0, 0, 0, 6, 0],
         },
     );
-    reject(&mut game, Action::AnnounceCast { card: small });
-    reject(&mut game, Action::AnnounceCast { card: noncreature });
+    for (card, green) in [(small, 1), (noncreature, 5)] {
+        act(&mut game, Action::AnnounceCast { card });
+        reject(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, green, 0],
+            },
+        );
+        assert!(
+            !game
+                .legal_actions()
+                .iter()
+                .any(|action| matches!(action, Action::PayCosts { .. }))
+        );
+        act(&mut game, Action::EndManaWindow);
+        act(&mut game, Action::SubmitAttempt);
+        let outcome = game.last_attempt_outcome_view(player).unwrap();
+        assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+        assert_eq!(outcome.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+        assert_eq!(game.object_view(card).zone, Zone::Hand);
+        assert_eq!(game.state.players[player.index()].mana[4], 6);
+        assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 0);
+        assert_eq!(game.counter_count(helga, CounterKind::PlusOne), 5);
+        assert!(game.object_view(helga).tapped);
+    }
     cast(&mut game, large, None);
     settle(&mut game);
     assert_eq!(game.object_view(large).zone, Zone::Battlefield);
