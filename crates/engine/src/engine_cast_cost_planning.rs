@@ -828,6 +828,7 @@ impl FundingState<'_> {
         requested: Zone,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
+        record_payment_projection(1);
         if objects.iter().any(|&object| {
             self.reference(object.card) != object || self.object(object.card).zone == Zone::Outside
         }) {
