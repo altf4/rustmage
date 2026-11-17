@@ -183,21 +183,34 @@ pub(crate) fn admit(g: &Game, action: Action) {
     let index = g
         .legal_actions()
         .iter()
-        .position(|candidate| *candidate == action)
-        .expect("admissible next step must be offered");
+        .position(|candidate| *candidate == action);
     let before = g.snapshot();
     let revision = g.revision();
     let mut raw = g.clone();
-    let mut indexed = g.clone();
-    act(&mut raw, action);
-    indexed.apply_index(actor, revision, index).unwrap();
-    assert_eq!(raw.snapshot(), indexed.snapshot());
-    indexed.restore(&before).unwrap();
-    assert_eq!(indexed.snapshot(), before);
-    assert_eq!(
-        indexed.apply_index(actor, revision, index),
-        Err(Error::StaleRevision)
-    );
+    if let Some(index) = index {
+        let mut indexed = g.clone();
+        act(&mut raw, action);
+        indexed.apply_index(actor, revision, index).unwrap();
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        indexed.restore(&before).unwrap();
+        assert_eq!(indexed.snapshot(), before);
+        assert_eq!(
+            indexed.apply_index(actor, revision, index),
+            Err(Error::StaleRevision)
+        );
+    } else {
+        // Large scalar domains publish bounded examples. Interior values use
+        // the raw numeric API and must still belong to the complete domain.
+        assert!(matches!(action, Action::ChooseX { value }
+            if g.x_choice().is_some_and(|domain| domain.contains(value))));
+        act(&mut raw, action);
+        raw.restore(&before).unwrap();
+        assert_eq!(raw.snapshot(), before);
+        assert_eq!(
+            raw.apply_index(actor, revision, 0),
+            Err(Error::StaleRevision)
+        );
+    }
 }
 
 pub(crate) fn stats(g: &Game, id: CardId) -> (i128, i128) {
