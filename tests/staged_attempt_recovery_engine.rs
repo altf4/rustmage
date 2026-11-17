@@ -549,6 +549,13 @@ fn failure_reverses_discard_after_a_frozen_library_departure() {
         assert_eq!(g.snapshot(), indexed.snapshot());
         assert_eq!(g.object_view(card).zone, Zone::Hand);
         assert_eq!(g.object_ref(card), frozen);
+        assert!(
+            g.observe(p.other())
+                .objects
+                .iter()
+                .any(|row| row.reference == frozen),
+            "recovery erased public knowledge of discarded card"
+        );
         assert!(!g.state.players[p.index()].library.contains(&card));
         assert_eq!(g.object_view(spell).zone, Zone::Hand);
     }
