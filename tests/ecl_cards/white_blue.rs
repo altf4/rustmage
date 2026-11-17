@@ -1334,6 +1334,17 @@ fn reject_atomic(g: &mut Game, action: Action) {
     assert_eq!(g.snapshot(), before);
     assert_eq!(g.revision(), revision);
 }
+fn fail_declared_attempt(g: &mut Game, reason: AttemptFailureReason) {
+    let player = g.actor().unwrap();
+    if g.legal_actions().contains(&Action::EndManaWindow) {
+        checked(g, Action::EndManaWindow);
+    }
+    checked(g, Action::SubmitAttempt);
+    let outcome = g.last_attempt_outcome_view(player).unwrap();
+    assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+    assert_eq!(outcome.reason, Some(reason));
+    assert!(g.state.announcing.is_none());
+}
 #[test]
 fn pyrrhic_strike_paid_intent_requires_both_and_unpaid_requires_exactly_one() {
     for p in [Player::P0, Player::P1] {
@@ -1464,7 +1475,20 @@ fn pyrrhic_strike_paid_route_requires_a_pair_but_payment_may_remove_its_creature
             finish_optional_blight_cast(&mut g, witness);
             assert_eq!(g.object_view(witness).zone, Zone::Graveyard);
         } else {
-            reject_atomic(&mut g, Action::ChooseBlight { pay: true });
+            admit(&g, Action::ChooseBlight { pay: true });
+            let mut missing_pair = g.clone();
+            checked(&mut missing_pair, Action::ChooseBlight { pay: true });
+            reject_atomic(&mut missing_pair, Action::ChooseMode { mode: 2 });
+            fail_declared_attempt(
+                &mut missing_pair,
+                AttemptFailureReason::UnsatisfiedDeclaration,
+            );
+            assert_eq!(missing_pair.object_view(id).zone, Zone::Hand);
+            assert_eq!(
+                missing_pair.counter_count(witness, CounterKind::MinusOne),
+                0
+            );
+            assert_eq!(missing_pair.object_view(target).zone, Zone::Battlefield);
             checked(&mut g, Action::ChooseBlight { pay: false });
             reject_atomic(&mut g, Action::ChooseMode { mode: 0 });
             checked(&mut g, Action::ChooseMode { mode: 1 });
@@ -1676,7 +1700,7 @@ fn wild_unraveling_cannot_waive_additional_cost_and_uncounterable_spells_still_r
                 Zone::Battlefield,
             );
         }
-        spell(
+        let bolt = spell(
             &mut g,
             Player::P1,
             "Lightning Bolt",
@@ -1699,7 +1723,40 @@ fn wild_unraveling_cannot_waive_additional_cost_and_uncounterable_spells_still_r
         } else {
             Action::AnnounceCast { card: id }
         };
-        reject_atomic(&mut g, action);
+        admit(&g, action.clone());
+        let pool = g.state.players[0].mana;
+        for mana_route in [false, true] {
+            let mut unpaid = g.clone();
+            checked(&mut unpaid, action.clone());
+            checked(
+                &mut unpaid,
+                Action::ChooseSpellCost {
+                    cost: u16::from(mana_route),
+                },
+            );
+            checked(
+                &mut unpaid,
+                Action::ChooseTarget {
+                    target: Target::Spell(bolt),
+                },
+            );
+            if mana_route {
+                reject_atomic(&mut unpaid, Action::PayCosts { payment: pool });
+                fail_declared_attempt(&mut unpaid, AttemptFailureReason::UnsatisfiedMana);
+            } else {
+                begin_additional_payment(&mut unpaid);
+                assert!(
+                    !unpaid
+                        .legal_actions()
+                        .iter()
+                        .any(|a| matches!(a, Action::ChooseAdditionalCost { .. }))
+                );
+                fail_declared_attempt(&mut unpaid, AttemptFailureReason::UnsatisfiedMaterial);
+            }
+            assert_eq!(unpaid.object_view(id).zone, Zone::Hand);
+            assert_eq!(unpaid.state.players[0].mana, pool);
+            assert!(unpaid.state.stack.iter().any(|item| item.id == bolt));
+        }
     }
     let mut g = setup(Player::P1);
     spawn(
@@ -2174,7 +2231,35 @@ fn blossombind_prevents_optional_and_mandatory_blight_costs_without_removing_cou
         Zone::Hand,
     );
     checked(&mut g, Action::AnnounceCast { card: id });
-    reject_atomic(&mut g, Action::ChooseBlight { pay: true });
+    admit(&g, Action::ChooseBlight { pay: true });
+    let mut prohibited = g.clone();
+    checked(&mut prohibited, Action::ChooseBlight { pay: true });
+    checked(
+        &mut prohibited,
+        Action::ChooseTarget {
+            target: Target::Card(enemy),
+        },
+    );
+    checked(&mut prohibited, Action::BeginOrderedCosts);
+    let clause = prohibited
+        .state
+        .announcing
+        .as_ref()
+        .unwrap()
+        .cast_costs
+        .as_ref()
+        .unwrap()
+        .clauses
+        .iter()
+        .position(|row| matches!(row.clause, CastCostClause::Blight { .. }))
+        .unwrap() as u16;
+    checked(&mut prohibited, Action::ChooseCastCost { clause });
+    let object = prohibited.object_ref(bear);
+    reject_atomic(&mut prohibited, Action::PayBlight { object });
+    fail_declared_attempt(&mut prohibited, AttemptFailureReason::UnsatisfiedMaterial);
+    assert_eq!(prohibited.counter_count(bear, CounterKind::MinusOne), 0);
+    assert_eq!(prohibited.object_view(id).zone, Zone::Hand);
+    assert_eq!(prohibited.object_view(enemy).damage, 0);
     checked(&mut g, Action::ChooseBlight { pay: false });
     checked(
         &mut g,
@@ -2353,7 +2438,23 @@ fn blossombind_blocks_blight_payment_routes_and_optional_resolution_payment() {
     );
     g.state.players[0].mana = [0, 2, 0, 0, 0, 1];
     checked(&mut g, Action::AnnounceCast { card: id });
-    reject_atomic(&mut g, Action::ChooseSpellCost { cost: 0 });
+    admit(&g, Action::ChooseSpellCost { cost: 0 });
+    let mut prohibited = g.clone();
+    checked(&mut prohibited, Action::ChooseSpellCost { cost: 0 });
+    checked(
+        &mut prohibited,
+        Action::ChooseTarget {
+            target: Target::Spell(bolt),
+        },
+    );
+    begin_additional_payment(&mut prohibited);
+    let object = prohibited.object_ref(bear);
+    reject_atomic(&mut prohibited, Action::ChooseAdditionalCost { object });
+    fail_declared_attempt(&mut prohibited, AttemptFailureReason::UnsatisfiedMaterial);
+    assert_eq!(prohibited.counter_count(bear, CounterKind::MinusOne), 0);
+    assert_eq!(prohibited.object_view(id).zone, Zone::Hand);
+    assert_eq!(prohibited.state.players[0].mana, [0, 2, 0, 0, 0, 1]);
+    assert!(prohibited.state.stack.iter().any(|item| item.id == bolt));
     checked(&mut g, Action::ChooseSpellCost { cost: 1 });
     checked(
         &mut g,
@@ -3777,7 +3878,42 @@ fn swat_away_discount_requires_creature_attacking_player_and_stops_after_it_leav
             let available = g
                 .legal_actions()
                 .contains(&Action::AnnounceCast { card: source });
-            assert_eq!(available, !walker_attack);
+            assert!(available);
+            admit(&g, Action::AnnounceCast { card: source });
+            let mut no_attacker = g.clone();
+            no_attacker.move_object(attacker, Zone::Hand);
+            let remaining_target = spawn(
+                &mut no_attacker,
+                p.other(),
+                Card::GrizzlyBears,
+                Zone::Battlefield,
+            );
+            checked(&mut no_attacker, Action::AnnounceCast { card: source });
+            checked(
+                &mut no_attacker,
+                Action::ChooseTarget {
+                    target: Target::Card(remaining_target),
+                },
+            );
+            assert_eq!(
+                no_attacker.state.announcing.as_ref().unwrap().total_cost,
+                Some(ManaCost {
+                    colored: [0, 2, 0, 0, 0, 0],
+                    generic: 2,
+                })
+            );
+            reject_atomic(
+                &mut no_attacker,
+                Action::PayCosts {
+                    payment: [0, 2, 0, 0, 0, 0],
+                },
+            );
+            fail_declared_attempt(&mut no_attacker, AttemptFailureReason::UnsatisfiedMana);
+            assert_eq!(no_attacker.object_view(source).zone, Zone::Hand);
+            assert_eq!(
+                no_attacker.state.players[p.index()].mana,
+                [0, 2, 0, 0, 0, 0]
+            );
             if !walker_attack {
                 checked(&mut g, Action::AnnounceCast { card: source });
                 checked(
@@ -3791,6 +3927,29 @@ fn swat_away_discount_requires_creature_attacking_player_and_stops_after_it_leav
                 wait_library_owner(&mut g);
                 library_destination(&mut g, attacker, LibraryDestination::Bottom);
             } else {
+                let mut wrong_defender = g.clone();
+                checked(&mut wrong_defender, Action::AnnounceCast { card: source });
+                checked(
+                    &mut wrong_defender,
+                    Action::ChooseTarget {
+                        target: Target::Card(attacker),
+                    },
+                );
+                assert_eq!(
+                    wrong_defender.state.announcing.as_ref().unwrap().total_cost,
+                    Some(ManaCost {
+                        colored: [0, 2, 0, 0, 0, 0],
+                        generic: 2,
+                    })
+                );
+                reject_atomic(
+                    &mut wrong_defender,
+                    Action::PayCosts {
+                        payment: [0, 2, 0, 0, 0, 0],
+                    },
+                );
+                fail_declared_attempt(&mut wrong_defender, AttemptFailureReason::UnsatisfiedMana);
+                assert_eq!(wrong_defender.object_view(attacker).zone, Zone::Battlefield);
                 g.move_object(attacker, Zone::Hand);
                 assert!(
                     !g.legal_actions()
@@ -4420,11 +4579,27 @@ fn spiral_into_solitude_blight_cost_cannot_use_enemy_or_counter_prohibited_creat
             ability: 0,
             counter_payment: Counters::default(),
         };
-        reject_atomic(&mut g, action.clone());
+        admit(&g, action.clone());
+        let mut enemy_only = g.clone();
+        checked(&mut enemy_only, action.clone());
+        begin_additional_payment(&mut enemy_only);
+        let object = enemy_only.object_ref(bear);
+        reject_atomic(&mut enemy_only, Action::ChooseAdditionalCost { object });
+        fail_declared_attempt(&mut enemy_only, AttemptFailureReason::UnsatisfiedMaterial);
+        assert_eq!(enemy_only.object_view(aura).zone, Zone::Battlefield);
+        assert_eq!(enemy_only.object_view(bear).zone, Zone::Battlefield);
         let witness = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
         let prohibition = spell(&mut g, p, "Blossombind", &[Target::Card(witness)]);
         settle(&mut g);
-        reject_atomic(&mut g, action.clone());
+        admit(&g, action.clone());
+        let mut prohibited = g.clone();
+        checked(&mut prohibited, action.clone());
+        begin_additional_payment(&mut prohibited);
+        let object = prohibited.object_ref(witness);
+        reject_atomic(&mut prohibited, Action::ChooseAdditionalCost { object });
+        fail_declared_attempt(&mut prohibited, AttemptFailureReason::UnsatisfiedMaterial);
+        assert_eq!(prohibited.counter_count(witness, CounterKind::MinusOne), 0);
+        assert_eq!(prohibited.object_view(aura).zone, Zone::Battlefield);
         assert_eq!(g.counter_count(witness, CounterKind::MinusOne), 0);
         assert_eq!(g.object_view(aura).zone, Zone::Battlefield);
         g.move_object(prohibition, Zone::Graveyard);
@@ -6146,7 +6321,24 @@ fn sunderflock_cost_funding_observes_current_elemental_types_and_restores_after_
             Zone::Hand,
         );
         g.state.players[p.index()].mana = [0, 2, 0, 0, 0, 6];
-        reject_atomic(&mut g, Action::AnnounceCast { card: source });
+        admit(&g, Action::AnnounceCast { card: source });
+        let mut full_cost = g.clone();
+        checked(&mut full_cost, Action::AnnounceCast { card: source });
+        let (colored, generic) = Card::from_name("Sunderflock").unwrap().cost();
+        assert_eq!(
+            full_cost.state.announcing.as_ref().unwrap().total_cost,
+            Some(ManaCost { colored, generic })
+        );
+        reject_atomic(
+            &mut full_cost,
+            Action::PayCosts {
+                payment: [0, 2, 0, 0, 0, 6],
+            },
+        );
+        fail_declared_attempt(&mut full_cost, AttemptFailureReason::UnsatisfiedMana);
+        assert_eq!(full_cost.object_view(source).zone, Zone::Hand);
+        assert_eq!(full_cost.state.players[p.index()].mana, [0, 2, 0, 0, 0, 6]);
+        assert!(!full_cost.has_subtype(provider, "Elemental"));
         g.move_object(aura, Zone::Graveyard);
         assert!(g.has_subtype(provider, "Elemental"));
         g.state.players[p.index()].mana = [0, 2, 0, 0, 0, 0];
