@@ -217,8 +217,30 @@ impl Game {
     }
 
     fn can_submit_attempt(&self) -> bool {
-        (self.attempt_payment_boundary() && self.attempt_mana_window_closed())
-            || (self.state.cast_rollback.is_some() && self.declaration_failure())
+        if self.attempt_payment_boundary() && self.attempt_mana_window_closed() {
+            // Submission may seal the supplied contributors or initiate recovery
+            // from a concrete failure. Rewriting an incomplete receipt alone is
+            // not progress: leave the actual unpaid choices in the menu instead.
+            return self.submission_seals_contributions()
+                || self.current_attempt_failure().is_some();
+        }
+        self.state.cast_rollback.is_some() && self.declaration_failure()
+    }
+
+    fn submission_seals_contributions(&self) -> bool {
+        self.state
+            .cast_rollback
+            .as_ref()
+            .is_some_and(|attempt| !attempt.contributions_sealed)
+            && matches!(
+                self.state.pending,
+                Pending::PayCosts { .. }
+                    | Pending::Convoke { .. }
+                    | Pending::Improvise { .. }
+                    | Pending::Delve { .. }
+                    | Pending::Waterbend { .. }
+                    | Pending::CreatureTapPayment { .. }
+            )
     }
 
     pub(super) fn visit_attempt_controls(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
@@ -241,15 +263,7 @@ impl Game {
     pub(super) fn submit_attempt(&mut self) {
         // Submission is an explicit end of the supplied contribution selection;
         // it never automatically chooses an additional convoker or allocation.
-        if matches!(
-            self.state.pending,
-            Pending::PayCosts { .. }
-                | Pending::Convoke { .. }
-                | Pending::Improvise { .. }
-                | Pending::Delve { .. }
-                | Pending::Waterbend { .. }
-                | Pending::CreatureTapPayment { .. }
-        ) {
+        if self.submission_seals_contributions() {
             self.state
                 .cast_rollback
                 .as_mut()
