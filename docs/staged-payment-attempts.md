@@ -20,10 +20,12 @@ Timing, permissions, actors, source incarnations, target restrictions, selected-
 | Pay | `ChooseCastCost`, material selections, contribution choices and concrete `PayCosts` allocations | Validates the supplied clause, ordering and joint payment. Whole-group costs commit atomically after their complete selection is valid. |
 | Revise an unpaid selection | `ResetCostSelection`, only when offered | Clears the current provisional selection while preserving declarations, locked costs, paid clauses, executed effects and mana-window closure. |
 | Complete | The final required concrete payment/continuation | Completes the cast or activation once and closes its attempt. `last_attempt_outcome.outcome` becomes `completed`. |
-| Submit an unfinished execution | `SubmitAttempt`, only when offered | Returns an incomplete outcome or starts failed-action recovery from a current, concrete failure witness. It does not search for another payment or choose one automatically. |
+| Submit an unfinished execution | `SubmitAttempt`, only when offered | Seals the supplied contributions or starts failed-action recovery from a current, concrete failure witness. Sealing can return an incomplete outcome when other choices remain. It does not search for another payment or choose one automatically. |
 | Recover | Offered `ChooseManaRollback { keep }` choices and any required continuations | Retains or reverses the permitted mana events and resumes the owning parent or ordinary game flow. |
 
 The available controls are explicit in `attempt.can_end_mana_window`, `attempt.can_submit` and `attempt.can_reset_selection`, and in the action menu. They are withheld during mandatory entry/replacement/output continuations. A decision belonging to another player still belongs to that player; use `observation.actor`, not the attempted spell's controller, to dispatch the next request.
+
+`SubmitAttempt` is withheld when it would only repeat an incomplete outcome without changing the attempt. An unfinished material selection must be completed or revised through its offered choices. Submission becomes available when it can newly seal contributions or when the current supplied execution has a concrete failure. These checks inspect only current selections and resources; they do not search for a completable payment route. Rejected raw submissions leave state and revision unchanged, just like other unavailable actions.
 
 A menu return is not a Magic priority pass or a new state-based-action boundary. Triggers and required effects follow the existing rules engine. Likewise, the staged interface does not authorize interleaving mana generation with an already-started cost-payment stage.
 

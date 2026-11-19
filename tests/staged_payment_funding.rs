@@ -414,11 +414,10 @@ fn completed_forage_with_missing_mana_fails_and_restores_the_exact_attempt() {
                 act(&mut game, Action::ChooseForage { object });
             }
             act(&mut game, Action::EndManaWindow);
-            act(&mut game, Action::SubmitAttempt);
-            assert_eq!(
-                game.last_attempt_outcome_view(player).unwrap().outcome,
-                AttemptOutcome::Incomplete
-            );
+            // An incomplete but completable forage selection is not a failed
+            // payment. Expose its continuation rather than a no-progress submit.
+            assert!(!game.attempt_view(player).unwrap().can_submit);
+            reject(&mut game, Action::SubmitAttempt);
             assert!(game.state.announcing.is_some());
 
             // Completing the separate forage selection must expose the actual

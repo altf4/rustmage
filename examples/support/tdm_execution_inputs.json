@@ -121,7 +121,7 @@
     "crates/engine/src/engine_attachment_death.rs": "c855c58edc67b5a3710f258a7d5261de00bd03076a2aa8659cda388058949dfc",
     "crates/engine/src/engine_attack_trigger_observers.rs": "334f831f1a2a94c27d54d36c17c47a699f23fee2e8685b08426d27482481f390",
     "crates/engine/src/engine_attacking_exile.rs": "05aaae9f82d910903d1a0080ca38dc3445548ddedcf50bd3102fd4f86dfbbb28",
-    "crates/engine/src/engine_attempts.rs": "c87ffa7ea951fd786ba02451e82202d6fe72c7b827802aa9cd0d6e4c8b10491c",
+    "crates/engine/src/engine_attempts.rs": "f28959d8fa955a18935b33168ab83f7a782d2b9d3811a245245056d109a82a80",
     "crates/engine/src/engine_bargain.rs": "9657cbc33a816cd7f6c0f4e5755beab8f42b8fbaa1560e956c037564dec1effd",
     "crates/engine/src/engine_base_power.rs": "d530c9a615cfc63a5cffd5900535e427af2a733019e1716aa68531627f795092",
     "crates/engine/src/engine_base_stats.rs": "0315a10adceb4b17606e26677bd29c9065ded2de725dd9fcc4abd1051fee8ffc",
