@@ -248,12 +248,11 @@ fn an_underpowered_prefix_can_reset_or_fail_without_tapping_its_contributors() {
             same_step(&mut game, Action::ResetCostSelection);
             assert!(kind.selected(&game, player).is_empty());
             assert!(game.attempt_view(player).unwrap().mana_window_closed);
-            same_step(&mut game, Action::SubmitAttempt);
+            // No contributors have been selected and a valid completion still
+            // exists. Submitting here would only rewrite an incomplete receipt.
+            assert!(!game.attempt_view(player).unwrap().can_submit);
+            reject(&mut game, Action::SubmitAttempt);
             assert_eq!(game.state.pending, kind.pending(player));
-            assert_eq!(
-                game.last_attempt_outcome_view(player).unwrap().outcome,
-                AttemptOutcome::Incomplete
-            );
             same_step(&mut game, kind.choose(exact[2]));
             same_step(&mut game, kind.finish());
             assert!(game.object_view(enough).tapped);

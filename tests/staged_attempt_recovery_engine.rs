@@ -35,6 +35,18 @@ fn close_and_submit(g: &mut Game) {
     act(g, Action::SubmitAttempt);
 }
 
+fn reject_no_progress_submission(g: &mut Game) {
+    let player = g.actor().unwrap();
+    assert!(!g.attempt_view(player).unwrap().can_submit);
+    assert!(!g.legal_actions().contains(&Action::SubmitAttempt));
+    assert!(g.attempt_view(player.other()).is_none());
+    // An absent indexed choice must also be rejected transactionally through
+    // the raw-action API; a caller cannot recreate the old loop manually.
+    for _ in 0..3 {
+        reject(g, Action::SubmitAttempt);
+    }
+}
+
 #[test]
 fn failed_concrete_cast_can_retry_and_old_indices_stay_stale() {
     for p in [Player::P0, Player::P1] {
@@ -115,8 +127,127 @@ fn omitted_allocation_preserves_continuation_and_rejected_requests_do_not_mutate
     );
     assert!(g.state.announcing.is_some());
     assert_eq!(g.object_view(spell).zone, Zone::Stack);
+    assert!(g.attempt_view(p).unwrap().contributions_sealed);
+    reject_no_progress_submission(&mut g);
     pay(&mut g);
     assert_eq!(g.state.stack.len(), 1);
+}
+
+#[test]
+fn unfinished_discard_payment_exposes_selection_instead_of_no_progress_submission() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = put(&mut g, player, "Fomori Vault", Zone::Battlefield);
+        let material = put(&mut g, player, "Shock", Zone::Hand);
+        let object = g.object_ref(material);
+        Game::reset_payment_planning_work();
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        assert_eq!(g.state.pending, Pending::AdditionalCost { player });
+        act(&mut g, Action::EndManaWindow);
+        reject_no_progress_submission(&mut g);
+        assert!(g.last_attempt_outcome_view(player).is_none());
+        let saved = g.snapshot();
+        let mut restored = g.clone();
+        restored.restore(&saved).unwrap();
+        reject_no_progress_submission(&mut restored);
+        let select = Action::ChooseAdditionalCost { object };
+        admit(&g, select.clone());
+        act(&mut g, select);
+        assert_eq!(g.state.pending, Pending::PayCosts { player });
+        // This first submit is productive: it seals the supplied selections.
+        admit(&g, Action::SubmitAttempt);
+        act(&mut g, Action::SubmitAttempt);
+        assert!(g.attempt_view(player).unwrap().contributions_sealed);
+        reject_no_progress_submission(&mut g);
+        pay(&mut g);
+        assert_eq!(g.object_view(material).zone, Zone::Graveyard);
+        assert!(g.object_view(source).tapped);
+        assert_eq!(g.state.stack.len(), 1);
+        assert_eq!(
+            g.last_attempt_outcome_view(player).unwrap().outcome,
+            AttemptOutcome::Completed
+        );
+        assert_eq!(Game::payment_planning_work(), Default::default());
+    }
+}
+
+#[test]
+fn ordered_and_blight_selections_hide_no_progress_submits_but_keep_failure_recovery() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let witness = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let object = g.object_ref(witness);
+        let target = put(&mut g, player.other(), "Hill Giant", Zone::Battlefield);
+        let spell = put(&mut g, player, "Cinder Strike", Zone::Hand);
+        Game::reset_payment_planning_work();
+        act(&mut g, Action::AnnounceCast { card: spell });
+        act(&mut g, Action::ChooseBlight { pay: true });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        act(&mut g, Action::EndManaWindow);
+        act(&mut g, Action::BeginOrderedCosts);
+        assert_eq!(g.state.pending, Pending::CastCosts { player });
+        reject_no_progress_submission(&mut g);
+        let clause = g
+            .observe(player)
+            .cast_costs
+            .unwrap()
+            .clauses
+            .iter()
+            .position(|row| matches!(row.clause, CastCostClause::Blight { .. }))
+            .unwrap() as u16;
+        let select = Action::ChooseCastCost { clause };
+        admit(&g, select.clone());
+        act(&mut g, select);
+        assert!(matches!(g.state.pending, Pending::BlightPayment { .. }));
+        reject_no_progress_submission(&mut g);
+
+        // Once the current material really is unavailable, submission must
+        // remain an exit from the attempt, including the indexed API.
+        let mut impossible = g.clone();
+        impossible.move_object(witness, Zone::Graveyard);
+        admit(&impossible, Action::SubmitAttempt);
+        act(&mut impossible, Action::SubmitAttempt);
+        let failed = impossible.last_attempt_outcome_view(player).unwrap();
+        assert_eq!(failed.outcome, AttemptOutcome::Failed);
+        assert_eq!(
+            failed.reason,
+            Some(AttemptFailureReason::UnsatisfiedMaterial)
+        );
+        assert_eq!(impossible.object_view(spell).zone, Zone::Hand);
+
+        admit(&g, Action::PayBlight { object });
+        act(&mut g, Action::PayBlight { object });
+        for _ in 0..8 {
+            if g.state.announcing.is_none() {
+                break;
+            }
+            choose(&mut g, |action| {
+                matches!(
+                    action,
+                    Action::ChooseCastCost { .. } | Action::PayCosts { .. }
+                )
+            });
+        }
+        assert!(g.state.announcing.is_none());
+        assert_eq!(g.state.stack.len(), 1);
+        assert_eq!(
+            g.last_attempt_outcome_view(player).unwrap().outcome,
+            AttemptOutcome::Completed
+        );
+        assert_eq!(Game::payment_planning_work(), Default::default());
+    }
 }
 
 #[test]
