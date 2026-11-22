@@ -419,6 +419,7 @@ fn unrelated_static_abilities_leave_mana_discovery_available_on_a_crowded_board(
     // Each size adds both eligible lands and unrelated continuous effects.
     let payer = Player::P0;
     for count in [4, 16, 64] {
+        Game::take_auto_tap_inventory_counts();
         let mut game = window(payer);
         for _ in 0..count {
             put(&mut game, payer, "Island", Zone::Battlefield);
@@ -429,6 +430,9 @@ fn unrelated_static_abilities_leave_mana_discovery_available_on_a_crowded_board(
         let options = AutoTapOptions::default();
         let root = game.snapshot();
         let mut latency = [0; 100];
+        game.observe(payer);
+        game.legal_actions();
+        assert_eq!(Game::take_auto_tap_inventory_counts(), (0, 0));
         for sample in &mut latency {
             let start = std::time::Instant::now();
             let plan = game.plan_mana_payment(payer, rev, id, &options).unwrap();
@@ -436,6 +440,9 @@ fn unrelated_static_abilities_leave_mana_discovery_available_on_a_crowded_board(
             assert_eq!(plan.status, AutoTapStatus::InsufficientSupportedMana);
             assert!(plan.actions.is_empty());
         }
+        let (visited, expensive) = Game::take_auto_tap_inventory_counts();
+        assert!((count * latency.len()..=2 * count * latency.len()).contains(&visited));
+        assert_eq!(expensive, 0);
         latency.sort_unstable();
         eprintln!(
             "islands={count} death_barons={count} samples=100 inventory_p50_ns={} inventory_p99_ns={}",
