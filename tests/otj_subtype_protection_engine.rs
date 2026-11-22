@@ -1,12 +1,11 @@
 //! Subtype protection across actual damage, spell/ability targets, attachments and blocking.
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::engine::*;
-use support::*;
 
 const CREATURE: TargetPlan = TargetPlan::Single(TargetSpec::one(TargetRule::Creature));
 const fn ability(

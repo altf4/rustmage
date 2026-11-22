@@ -1,11 +1,10 @@
 //! Bargain's optional target plan follows the declared payment, including copies.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const BARGAIN: CardRules = CardRules {
     effect: Effect::Spell(

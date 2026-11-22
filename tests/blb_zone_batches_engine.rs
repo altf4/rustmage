@@ -1,10 +1,9 @@
 //! Entry batches use post-event types; departure batches use the frozen battlefield.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const LEAVE_OBSERVER: CardRules = CardRules {
     effect: Effect::Creature(2, 2),

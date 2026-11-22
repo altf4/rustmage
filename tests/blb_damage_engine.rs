@@ -1,10 +1,9 @@
 //! Additive damage replacements qualify the actual event and source.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const TYPAL: ReplacementSpec = ReplacementSpec::ControlledSubtypeDamagePlus {
     subtypes: &["Lizard", "Mouse", "Otter", "Raccoon"],

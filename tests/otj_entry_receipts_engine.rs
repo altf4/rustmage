@@ -1,10 +1,9 @@
 //! Exact batch entry observers use actual cast receipts and entry characteristics.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const OBSERVER: CardRules = CardRules {
     effect: Effect::Creature(2, 3),

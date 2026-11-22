@@ -1,10 +1,9 @@
 //! Deferred indexed mana announcement preflight couples every enclosing payment.
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const BLUE: Mana = [0, 3, 0, 0, 0, 0];
 const ABILITY: ActivatedAbility = ActivatedAbility {

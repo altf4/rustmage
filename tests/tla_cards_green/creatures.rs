@@ -1,4 +1,5 @@
-use crate::{reach, support::*};
+use super::reach;
+use crate::support::*;
 use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::{cards::*, engine::*};
 

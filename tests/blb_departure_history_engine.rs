@@ -1,10 +1,9 @@
 //! Graveyard departures and Food sacrifices retain committed turn history.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const REQUIREMENT: StatValue = StatValue::Sum(&[
     StatValue::AtLeast {

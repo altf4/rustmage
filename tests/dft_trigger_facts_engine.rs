@@ -1,10 +1,9 @@
 //! Cast participants, historical declarations and source-independent delayed clauses.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const fn ability(targets: TargetPlan, program: &'static [Instruction]) -> ActivatedAbility {
     ActivatedAbility {

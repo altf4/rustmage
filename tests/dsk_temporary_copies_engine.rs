@@ -1,10 +1,9 @@
 //! Exact exile receipts, simultaneous copies and expiration at the next end step.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardRules, one};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const PLAYER: Player = Player::P0;
 const FOOD: Card = Card::from_catalogue_id(5246);

@@ -1,10 +1,9 @@
 //! Repeatable graveyard casting permissions with independently ordered costs.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const GRANTOR: CardRules = CardRules {
     effect: Effect::Permanent,

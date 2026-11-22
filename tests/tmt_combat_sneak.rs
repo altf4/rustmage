@@ -1,10 +1,9 @@
 //! TMNT's casting and attacking-entry contracts on the split engine.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 fn reach(g: &mut Game, condition: impl Fn(&Game) -> bool) {
     for _ in 0..80 {

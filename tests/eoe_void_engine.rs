@@ -1,9 +1,8 @@
 //! Void follows actual public events across both players and the turn boundary.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const DISCOUNT: SpellReduction = SpellReduction {
     source_only: true,

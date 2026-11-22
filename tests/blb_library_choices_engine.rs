@@ -1,10 +1,9 @@
 //! Dynamic private library counts and public typed selection with exact free casts.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const PRIVATE_SELECTION: CardRules = CardRules {
     effect: Effect::Spell(

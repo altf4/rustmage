@@ -1,10 +1,9 @@
 //! Restricted mana follows the actual spell face and exact face-up special action.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const GOSSIP_MANA: Mana = [0, 0, 0, 1, 1, 0];
 const GOSSIP: CardRules = CardRules {

@@ -1,10 +1,9 @@
 //! Exact graveyard Eerie from an enchantment entry or a fully unlocked Room.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const FEAR: Card = Card::GrizzlyBears;
 const ROOM: Card = Card::from_catalogue_id(176); // Anthem of Champions

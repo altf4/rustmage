@@ -1,11 +1,10 @@
 //! The first optional instruction does not gate the following non-targeted
 //! choice. A partial selection returns exactly the cards selected.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const RETURN: CardRules = CardRules {
     effect: Effect::Spell(

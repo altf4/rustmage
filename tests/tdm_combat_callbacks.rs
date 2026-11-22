@@ -1,10 +1,9 @@
 //! Shared combat/entry/cast callbacks and exact token continuations; no admissions.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const WARRIOR: Card = Card::test_index(5255);
 const FOOD: Card = Card::test_index(5246);

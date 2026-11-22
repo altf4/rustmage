@@ -1,10 +1,9 @@
 //! Artifact token tap bonuses use the actual mana event and exact providers.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const BLUE: Mana = [0, 1, 0, 0, 0, 0];
 const COLORLESS: Mana = [0, 0, 0, 0, 0, 1];

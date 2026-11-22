@@ -1,9 +1,8 @@
 //! Exact paid activation, exhaust, cycling, discard-batch and linked-exile outcomes.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 fn idle(g: &Game) -> bool {
     g.state.pending == Pending::Priority
         && g.state.stack.is_empty()

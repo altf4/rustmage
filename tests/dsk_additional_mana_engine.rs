@@ -1,11 +1,10 @@
 //! Mandatory mana-or-object costs keep their own identity across cast routes.
-mod support;
 
+use crate::support::*;
 use rustmage::AdditionalCostRoute;
 use rustmage_core::cards::authored::{CardExtras, CardRules, one};
 use rustmage_core::{cards::*, engine::*};
 use std::num::NonZeroU32;
-use support::*;
 
 const RED: Mana = [0, 0, 0, 1, 0, 0];
 const WUBRG: Mana = [1, 1, 1, 1, 1, 0];

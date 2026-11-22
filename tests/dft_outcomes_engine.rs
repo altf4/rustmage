@@ -1,10 +1,9 @@
 //! Outcome-based resolution contracts, derived before ordinary card admissions.
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const ANY_CREATURE_VEHICLE: &[CostMatch] = &[CostMatch::Kinds(1), CostMatch::Subtype("Vehicle")];
 const RUMMAGE: CardRules = CardRules {

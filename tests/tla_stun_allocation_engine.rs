@@ -1,10 +1,9 @@
 //! Resolution-time distribution owns non-targeted choices until one counter event.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const WAVE: CardRules = CardRules {
     effect: Effect::Spell(

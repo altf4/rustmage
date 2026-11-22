@@ -1,8 +1,7 @@
 //! Native outcomes for the inherited Final Fantasy definitions in rows 235–291.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn passes(game: &mut Game) {
     act(game, Action::Pass);

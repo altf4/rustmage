@@ -1,10 +1,9 @@
 //! Actual Outlaws definitions and their interactions through owned game actions.
-mod support;
 
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 #[path = "otj_cards_m_r/combat.rs"]
 mod combat;

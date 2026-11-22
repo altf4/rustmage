@@ -1,9 +1,8 @@
 //! Wither damage remains a damage event while counter replacements suspend it.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const BODY: CardRules = CardRules {
     effect: Effect::Creature(3, 3),

@@ -1,10 +1,9 @@
 //! Live instant and sorcery keyword grants use the actual damage source.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const PROVIDER: CardRules = CardRules {
     effect: Effect::Creature(3, 3),

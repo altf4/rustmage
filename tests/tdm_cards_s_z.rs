@@ -1,9 +1,8 @@
 //! Whole printed definitions owned by the S–Z TDM partition.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 fn reach(g: &mut Game, ready: impl Fn(&Game) -> bool) {
     for _ in 0..40 {

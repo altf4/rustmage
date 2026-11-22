@@ -1,10 +1,9 @@
 //! Exact combat event packets shared by MKM triggers.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const BLOCKED_OBSERVER: CardRules = CardRules {
     effect: Effect::Creature(4, 4),

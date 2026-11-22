@@ -1,10 +1,9 @@
 //! Shared spell-copy policy and suspend lifecycle; no TDM card admissions.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const fn copy_program(retarget: bool) -> Instruction {
     Instruction::CopyCapturedSpell {

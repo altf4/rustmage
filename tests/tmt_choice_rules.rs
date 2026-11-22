@@ -1,9 +1,8 @@
 //! Paid TMNT choices, hidden information, and replay across the merged engine.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 fn advance(g: &mut Game, done: impl Fn(&Game) -> bool) {
     for _ in 0..72 {

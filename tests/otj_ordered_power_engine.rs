@@ -1,10 +1,9 @@
 //! The second effect measures current creature powers after the first effect's move.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const ORDERED: CardRules = CardRules {
     effect: Effect::Spell(

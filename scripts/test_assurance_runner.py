@@ -27,6 +27,21 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class AssuranceRunnerTests(unittest.TestCase):
+    def test_every_scenario_file_has_one_cargo_target(self):
+        tests = ROOT/'tests'
+        metadata = json.loads(subprocess.check_output(
+            ['cargo', 'metadata', '--no-deps', '--format-version=1'], cwd=ROOT))
+        package = next(p for p in metadata['packages'] if Path(p['manifest_path']) == ROOT/'Cargo.toml')
+        targets = {t['name']: Path(t['src_path']) for t in package['targets'] if 'test' in t['kind']}
+        registered = list(targets.values())
+        expected = set(tests.glob('*.rs'))
+        for name, entry in native.scenario_suites(tests):
+            self.assertEqual(targets.get(name), entry)
+            registered.extend(native.scenario_files(entry))
+            if entry.parent != tests:
+                expected.update(entry.parent.glob('*.rs'))
+        self.assertCountEqual(registered, expected)
+
     def test_grouped_case_filter_searches_only_original_case_names(self):
         names = ['beam_engine::cast_beam', 'beam_engine::cast', 'other::cast_beam']
         selected = native.selected_case_batches(names, {'beam_engine'}, 'beam')

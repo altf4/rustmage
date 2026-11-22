@@ -1,8 +1,6 @@
-mod support;
-
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn cast_x(game: &mut Game, card: CardId, x: u32) {
     act(game, Action::AnnounceCast { card });

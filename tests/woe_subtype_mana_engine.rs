@@ -1,10 +1,9 @@
 //! A subtype grant follows effective characteristics in the layer-six and funding worlds.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const GREEN: Mana = [0, 0, 0, 0, 1, 0];
 const FOOD: Card = Card::from_catalogue_id(5246);

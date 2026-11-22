@@ -1,10 +1,9 @@
 //! A resolution branch can compare a legal target's effective power.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const CONTROL_IF_SMALL_OR_LIZARD: CardRules = CardRules {
     effect: Effect::Spell(

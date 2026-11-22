@@ -1,10 +1,9 @@
 //! Triggered tap additions belong to their exact providers, including after a copy.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const BLUE: Mana = [0, 1, 0, 0, 0, 0];
 const GREEN: Mana = [0, 0, 0, 0, 1, 0];

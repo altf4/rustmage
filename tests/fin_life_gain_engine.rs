@@ -1,9 +1,8 @@
 //! Additive and doubling life-gain effects act on the same real life event.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const DOUBLE: CardRules = CardRules {
     effect: Effect::Permanent,

@@ -1,10 +1,9 @@
 //! Cast one half of a physical split card and preserve exact zone identity.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const SPLIT: Card = Card::from_catalogue_id(2879); // Murder.
 const LEFT: Card = Card::from_catalogue_id(3027); // Opt, {U}.

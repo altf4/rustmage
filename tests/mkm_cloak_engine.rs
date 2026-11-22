@@ -1,10 +1,9 @@
 //! Private hand and library choices produce exact cloaked entries.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const HAND: CardRules = CardRules {
     effect: Effect::Spell(TargetPlan::NONE, &[Instruction::CloakFromHand]),

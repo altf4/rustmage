@@ -315,14 +315,26 @@ def compiled_tests(log, target):
     return binaries
 
 
+def scenario_suites(tests):
+    for main in tests.glob('*/main.rs'):
+        yield main.parent.name, main
+    for entry in tests.glob('suite_*.rs'):
+        yield entry.stem.removeprefix('suite_'), entry
+
+
+def scenario_files(entry):
+    """Suite entry points declare sibling scenario files; shared fixtures live in subdirectories."""
+    for name in re.findall(r'^mod (\w+);$', entry.read_text(encoding='utf-8'), re.M):
+        path = entry.with_name(name+'.rs')
+        if path.is_file():
+            yield path
+
+
 def grouped_modules(tests, selector):
     """Globs match former target names. An exact suite name selects the Cargo target."""
-    result = {}
-    for main in tests.glob('*/main.rs'):
-        if main.parent.name != selector:
-            result[main.parent.name] = {path.stem for path in main.parent.glob('*.rs')
-                                        if path != main and fnmatch.fnmatchcase(path.stem, selector)}
-    return result
+    return {name: {path.stem for path in scenario_files(entry)
+                   if fnmatch.fnmatchcase(path.stem, selector)}
+            for name, entry in scenario_suites(tests) if name != selector}
 
 
 def selected_case_batches(listed_names, modules, case_filter):

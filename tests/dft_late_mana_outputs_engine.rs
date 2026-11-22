@@ -1,11 +1,10 @@
 //! Late output choices must finish real payments; soft resolution choices may decline.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
 use std::collections::BTreeSet;
-use support::*;
 
 const RED: Mana = [0, 0, 0, 1, 0, 0];
 const BLUE: Mana = [0, 1, 0, 0, 0, 0];

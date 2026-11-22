@@ -1,8 +1,6 @@
-mod support;
-
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::engine::*;
-use support::*;
 
 fn reach(game: &mut Game, ready: impl Fn(&Game) -> bool) {
     for _ in 0..24 {

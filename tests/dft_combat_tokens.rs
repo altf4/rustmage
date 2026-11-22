@@ -1,11 +1,10 @@
 //! Actual token creation gets a source-independent requirement for this combat only.
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
 use std::sync::OnceLock;
-use support::*;
 
 const HASTE: KeywordGrant = KeywordGrant {
     condition: None,

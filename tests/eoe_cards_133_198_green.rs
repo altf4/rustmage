@@ -1,9 +1,8 @@
 //! Paid green card scenarios for the last twelve EOE 133–198 admissions.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const LANDER: Card = Card::from_catalogue_id(5238);
 

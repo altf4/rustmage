@@ -1,7 +1,6 @@
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::Keywords, engine::*};
-use support::*;
 
 #[test]
 fn fiery_annihilation_cannot_exile_equipment_when_its_creature_target_gains_hexproof() {

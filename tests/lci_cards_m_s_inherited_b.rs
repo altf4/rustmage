@@ -1,8 +1,7 @@
 //! Focused outcomes for the inherited Panicked Altisaur through Seeker of Sunlight.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn activate(card: CardId, ability: u16) -> Action {
     Action::AnnounceActivate {

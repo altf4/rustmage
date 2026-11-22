@@ -1,10 +1,9 @@
 //! Additional phase order and actual combat-damage callback receipts.
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const EXTRA_UPKEEP: CardRules = CardRules {
     effect: Effect::Creature(2, 2),

@@ -1,7 +1,6 @@
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::engine::*;
-use support::*;
 #[test]
 fn waived_mana_costs_still_allow_teamwork() {
     let p = Player::P0;

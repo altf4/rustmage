@@ -1,9 +1,8 @@
 //! Paid exercises of replacement-created token groups and their exact source departure.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const TREASURE: Card = Card(5302);
 const SOURCE_NAME: &str = "Mysterio's Phantasm";

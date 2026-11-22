@@ -1,10 +1,9 @@
 //! Pre-event subtype union and legendary creature death receipts.
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const OUTLAWS: &[&str] = &["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"];
 const DRAIN: CardRules = CardRules {

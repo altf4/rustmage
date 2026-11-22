@@ -1,10 +1,9 @@
 //! Replacement-to-entry handoffs have one owner for the suspended program.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::CounterKind;
 use rustmage_core::engine::*;
-use support::*;
 
 fn resolve_top(game: &mut Game) {
     act(game, Action::Pass);

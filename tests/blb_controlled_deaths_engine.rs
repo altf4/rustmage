@@ -1,10 +1,9 @@
 //! Per-controller creature death history used by a resolving draw amount.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const SACRIFICE: Instruction = Instruction::ChooseObjects {
     kind: EffectChoiceKind::Sacrifice,

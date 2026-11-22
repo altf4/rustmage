@@ -1,9 +1,8 @@
 //! Paid casts and unlocked-door rules for Duskmourn's white and blue Rooms.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const PLAYER: Player = Player::P0;
 const OPPONENT: Player = Player::P1;

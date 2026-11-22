@@ -1,9 +1,8 @@
 //! Actual Tarkir: Dragonstorm A–G definitions and their printed outcomes.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 fn activate_target(g: &mut Game, source: CardId, ability: u16, target: CardId) {
     act(

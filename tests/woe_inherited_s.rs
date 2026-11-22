@@ -1,9 +1,8 @@
 //! Paid outcome proofs for inherited S-name cards in Wilds of Eldraine.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const FOOD: Card = Card::from_catalogue_id(5246);
 const RAT: Card = Card::from_catalogue_id(5323);

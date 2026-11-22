@@ -1,10 +1,9 @@
 //! Exact death counters use the simultaneous pre-event characteristics.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const GAIN_ONE: &[Instruction] = &[Instruction::GainLife(PlayerSet::Controller, 1)];
 const PLUS_ONE: CardRules = CardRules {

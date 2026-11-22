@@ -1,11 +1,10 @@
 //! A paid late-output child must carry its exact completed activation use into
 //! the virtual parent world, without paying costs again or banning repeatables.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const W: Mana = [1, 0, 0, 0, 0, 0];
 const U: Mana = [0, 1, 0, 0, 0, 0];

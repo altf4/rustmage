@@ -1,10 +1,9 @@
 //! Power-qualified casting from the library and exact once-per-turn providers.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules, generic, object, one};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const ASSEMBLE: CardRules = CardRules {
     effect: Effect::Permanent,

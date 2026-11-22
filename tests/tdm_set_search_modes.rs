@@ -1,10 +1,9 @@
 //! Focused F08/F12 acceptance: actual Siege and Lotuslight definitions.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 // Engine compatibility only: no actual TDM definition is overlaid. Opt supplies
 // its ordinary printed U/instant header to a narrow generic ability copier.

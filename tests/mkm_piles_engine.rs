@@ -1,10 +1,9 @@
 //! A public library partition with a reward based on actual graveyard arrivals.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const THOPTER: Card = Card::test_index(5266);
 const ZERO_THOPTER: CardRules = CardRules {

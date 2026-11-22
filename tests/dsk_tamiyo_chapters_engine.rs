@@ -1,10 +1,9 @@
 //! Exact repeated mill receipts and paid card copies within a Saga chapter.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const MILL_CHAPTER: &[Instruction] = &[
     Instruction::Mill(PlayerSet::Controller, MillAmount::Fixed(2)),

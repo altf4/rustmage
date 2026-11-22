@@ -1,12 +1,11 @@
 //! Shared additional/alternative and target/scalar costs. No TDM definitions.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::CardName;
 use rustmage_core::PermanentType;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const FREE_GROUPS: &[StaticAbilityGroup] = &[StaticAbilityGroup {
     line: 0,

@@ -1,10 +1,9 @@
 //! A granted activation reserves the exact controlled attachment it sacrifices.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const DECONSTRUCT: ActivatedAbility = ActivatedAbility {
     exhaust: false,

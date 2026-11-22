@@ -1,11 +1,10 @@
 //! Discard outcomes remain exact through replacement, independent triggers,
 //! and immediate casting permissions.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const FREE_CAST: CardRules = CardRules {
     effect: Effect::Spell(

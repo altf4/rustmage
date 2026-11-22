@@ -1,9 +1,8 @@
 //! Complete printed-rule outcomes for the six inherited DFT artifacts.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 fn idle(g: &Game) -> bool {
     g.state.pending == Pending::Priority

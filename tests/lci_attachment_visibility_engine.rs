@@ -1,10 +1,9 @@
 //! A library-top look belongs to the exact attached ability's recipient.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const LANTERN: CardRules = CardRules {
     effect: Effect::Permanent,

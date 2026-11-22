@@ -1,10 +1,9 @@
 //! Exact physical-source returns and projected entry-face contracts.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const FRONT: &str = "Brigid, Clachan's Heart";
 const BACK: &str = "Brigid, Doun's Mind";

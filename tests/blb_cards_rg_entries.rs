@@ -1,9 +1,8 @@
 //! Entry filters, library choices and exact nondeath departures on authored cards.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn cast_card(game: &mut Game, player: Player, name: &str) -> CardId {
     game.state.players[player.index()].mana = [8; 6];

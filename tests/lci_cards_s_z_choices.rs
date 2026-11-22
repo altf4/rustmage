@@ -1,8 +1,7 @@
 //! Discover, private opponent decisions, and printed zone changes.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn candidate(game: &mut Game, player: Player, name: &str) -> CardId {
     spawn(game, player, Card::from_name(name).unwrap(), Zone::Hand)

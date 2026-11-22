@@ -1,11 +1,10 @@
 //! Remaining TDM mana, copy, cost, graveyard and damage world foundations.
 //! Complete typed fixtures establish rules without ordinary card admissions.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const CREATURE: TargetPlan = TargetPlan::Single(TargetSpec::one(TargetRule::Creature));
 const fn ability(program: &'static [Instruction]) -> ActivatedAbility {

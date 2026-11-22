@@ -1,10 +1,9 @@
 //! Suspect designations follow exact battlefield objects through shared rules.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const CREATURE_TARGET: TargetPlan = TargetPlan::Single(TargetSpec::one(TargetRule::Creature));
 const ATTACHED_PROHIBITION: CardRules = CardRules {

@@ -1,9 +1,8 @@
 //! Paid machine definitions: chosen types, XX, exhaust, restricted mana and attachments.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 fn activation(card: CardId, ability: u16) -> Action {
     Action::AnnounceActivate {

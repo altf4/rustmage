@@ -1,9 +1,8 @@
 //! Chandra, Cursecloth and Daretti: actual whole-card outcomes and owned choices.
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 fn activation(card: CardId, ability: u16) -> Action {
     Action::AnnounceActivate {
         card,

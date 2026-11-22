@@ -1,10 +1,9 @@
 //! Acquired nonmana instances retain immutable identity through funding previews.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const fn activation(exhaust: bool, once: bool, amount: u16) -> ActivatedAbility {
     ActivatedAbility {

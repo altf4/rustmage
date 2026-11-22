@@ -1,10 +1,9 @@
 //! Independent hidden exile entitlements and explicit graveyard casting routes.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const ALL_CREATURES: CreatureFilter = CreatureFilter {
     relation: -1,

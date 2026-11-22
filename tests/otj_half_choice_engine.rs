@@ -1,10 +1,9 @@
 //! Targeted quotas round up and freeze before a simultaneous sacrifice or discard.
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const OPPONENT: TargetSpec = TargetSpec::one(TargetRule::Player {
     opponent_only: true,

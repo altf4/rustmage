@@ -1,9 +1,8 @@
 //! Inherited Bloomburrow typal abilities, hybrid costs, and rule histories.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn next(game: &mut Game) {
     choose(game, |action| {

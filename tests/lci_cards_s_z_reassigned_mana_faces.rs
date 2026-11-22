@@ -1,8 +1,7 @@
 //! Tarrian's one-use permissions and The Myriad Pools' exact spent mana.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const BLUE: Mana = [0, 1, 0, 0, 0, 0];
 const BLACK: Mana = [0, 0, 1, 0, 0, 0];

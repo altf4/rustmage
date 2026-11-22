@@ -1,9 +1,8 @@
 //! Exact exile receipts, normal timing and independent paid/free play routes.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const PLAYER_COMBAT_DAMAGE: TriggerCondition = TriggerCondition::PlayerDamaged {
     subject: DamageSubject::Source,

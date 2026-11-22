@@ -1,9 +1,8 @@
 //! Printed Mount/Vehicle abilities wired to the accepted engine baseline.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 fn drain(g: &mut Game) {
     for _ in 0..96 {
         if g.state.stack.is_empty()

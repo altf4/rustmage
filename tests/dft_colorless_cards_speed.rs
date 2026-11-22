@@ -1,8 +1,7 @@
 //! Printed max-speed artifact effects, ordinary costs and exact draw/discard order.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::engine::*;
-use support::*;
 
 fn drain(g: &mut Game) {
     for _ in 0..48 {

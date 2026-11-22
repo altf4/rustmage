@@ -1,10 +1,9 @@
 //! Actual damage batches and exact graveyard results used by MKM triggers.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const CLUE: Card = Card::from_catalogue_id(5296);
 const DAMAGE_OBSERVER: CardRules = CardRules {

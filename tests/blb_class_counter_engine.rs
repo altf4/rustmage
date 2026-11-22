@@ -1,5 +1,5 @@
 //! Class levels change live ward grants and actor-scoped counter replacement.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
@@ -8,7 +8,6 @@ use rustmage_core::engine::characteristic_query::CharacteristicQuery;
 use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::engine::replacements::ResumeMode;
 use rustmage_core::engine::*;
-use support::*;
 
 const DOUBLE: ReplacementSpec = ReplacementSpec::DoubleCountersPlacedByController {
     condition: StatValue::SourceClassLevelAtLeast(3),

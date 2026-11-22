@@ -1,10 +1,9 @@
 //! Paid scenarios for the green and multicolored Duskmourn manifest family.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardRules, object};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn cast_named(game: &mut Game, player: Player, name: &str) -> CardId {
     let card = put(game, player, name, Zone::Hand);

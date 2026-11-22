@@ -1,10 +1,9 @@
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{
     cards::{CountFilter, CountZone, StatValue},
     engine::*,
 };
-use support::*;
 
 #[test]
 fn huskburster_swarm_ignores_creature_types_of_face_down_exiled_cards() {

@@ -1,9 +1,7 @@
-mod support;
-
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::engine::characteristic_layers::AnimationTypeMode;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 #[path = "tla_cards_multicolor/earth.rs"]
 mod earth;

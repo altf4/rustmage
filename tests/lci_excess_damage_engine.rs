@@ -1,11 +1,10 @@
 //! Excess damage observers see one completed event and its exact recipients.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::engine::characteristic_layers::AnimationTypeMode;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const TREASURE: Card = Card::from_catalogue_id(5302);
 const EXCESS: TriggeredAbility = TriggeredAbility {

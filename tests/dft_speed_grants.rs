@@ -1,12 +1,11 @@
 //! Exact self-granted max-speed templates in actual and speculative payment worlds.
 //! Fixtures retain existing physical metadata and admit no ordinary DFT card.
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::engine::*;
-use support::*;
 
 const MAX_GROUP: &[StaticAbilityGroup] = &[StaticAbilityGroup {
     line: 0,

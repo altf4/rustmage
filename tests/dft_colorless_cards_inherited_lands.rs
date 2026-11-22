@@ -1,9 +1,8 @@
 //! Actual action outcomes for all twenty inherited DFT land identities.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const BASICS: [(&str, usize); 5] = [
     ("Plains", 0),

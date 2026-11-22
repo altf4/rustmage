@@ -1,12 +1,11 @@
 //! Actual provenance allocations and fixed-output guided payment continuations.
 //! Immutable overlays preserve every fixture's physical identity, types and costs.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::CardName;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const GREEN: Mana = [0, 0, 0, 0, 1, 0];
 const RED: Mana = [0, 0, 0, 1, 0, 0];

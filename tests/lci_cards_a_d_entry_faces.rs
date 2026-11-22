@@ -1,9 +1,8 @@
 //! The printed entry, transformation, exile permission and ward abilities.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const BAT: Card = Card::from_catalogue_id(5276);
 const GNOME: Card = Card::from_catalogue_id(5267);

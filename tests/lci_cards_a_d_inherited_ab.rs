@@ -1,9 +1,8 @@
 //! Rules evidence for previously admitted LCI identities from Abrade through Braided Net.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const TREASURE: Card = Card::from_catalogue_id(5302);
 

@@ -1,13 +1,11 @@
 //! Live land and Ally grants and the exact subtype of a triggering spell.
-#[path = "support/otj_e_l.rs"]
-mod steps;
-mod support;
+use crate::otj_e_l as steps;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::engine::characteristic_layers::AnimationTypeMode;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const ALLIES: CountFilter = CountFilter {
     zone: CountZone::Battlefield,

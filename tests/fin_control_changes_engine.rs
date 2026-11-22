@@ -1,9 +1,8 @@
 //! Shared control-loss events, including the simultaneous cleanup action.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const TREASURE: Card = Card(5302);
 const WATCH: CardRules = CardRules {

@@ -1,8 +1,6 @@
-mod support;
-
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn activate(game: &mut Game, source: CardId, ability: u16, target: Option<Target>) {
     act(

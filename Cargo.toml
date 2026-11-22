@@ -4,6 +4,7 @@ default-members = ["."]
 resolver = "3"
 
 [package]
+autotests = false
 name = "rustmage"
 version = "0.1.0"
 edition = "2024"
@@ -106,3 +107,164 @@ test = false
 name = "benchmark"
 path = "src/bin/benchmark.rs"
 test = false
+
+# Register suite entry points so individual scenario files keep their provenance paths.
+[[test]]
+name = "affordability_performance"
+path = "tests/affordability_performance.rs"
+
+[[test]]
+name = "blb_complete_games"
+path = "tests/blb_complete_games.rs"
+
+[[test]]
+name = "blb_scenarios"
+path = "tests/suite_blb_scenarios.rs"
+
+[[test]]
+name = "bug_regressions"
+path = "tests/suite_bug_regressions.rs"
+
+[[test]]
+name = "dft_card_scenarios"
+path = "tests/suite_dft_card_scenarios.rs"
+
+[[test]]
+name = "dft_rules_scenarios"
+path = "tests/suite_dft_rules_scenarios.rs"
+
+[[test]]
+name = "dsk_complete_games"
+path = "tests/dsk_complete_games.rs"
+
+[[test]]
+name = "dsk_scenarios"
+path = "tests/suite_dsk_scenarios.rs"
+
+[[test]]
+name = "ecl_black_red_cards"
+path = "tests/ecl_black_red_cards.rs"
+
+[[test]]
+name = "ecl_green_other_cards"
+path = "tests/ecl_green_other_cards.rs"
+
+[[test]]
+name = "ecl_scenarios"
+path = "tests/suite_ecl_scenarios.rs"
+
+[[test]]
+name = "ecl_shared_cards"
+path = "tests/ecl_shared_cards.rs"
+
+[[test]]
+name = "ecl_white_blue_cards"
+path = "tests/ecl_white_blue_cards.rs"
+
+[[test]]
+name = "eoe_complete_games"
+path = "tests/eoe_complete_games.rs"
+
+[[test]]
+name = "eoe_scenarios"
+path = "tests/suite_eoe_scenarios.rs"
+
+[[test]]
+name = "fin_scenarios"
+path = "tests/suite_fin_scenarios.rs"
+
+[[test]]
+name = "lci_complete_games"
+path = "tests/lci_complete_games.rs"
+
+[[test]]
+name = "lci_scenarios"
+path = "tests/suite_lci_scenarios.rs"
+
+[[test]]
+name = "mandatory_loops"
+path = "tests/mandatory_loops.rs"
+
+[[test]]
+name = "mkm_complete_games"
+path = "tests/mkm_complete_games.rs"
+
+[[test]]
+name = "mkm_scenarios"
+path = "tests/suite_mkm_scenarios.rs"
+
+[[test]]
+name = "otj_complete_games"
+path = "tests/otj_complete_games.rs"
+
+[[test]]
+name = "otj_scenarios"
+path = "tests/suite_otj_scenarios.rs"
+
+[[test]]
+name = "spm_complete_games"
+path = "tests/spm_complete_games.rs"
+
+[[test]]
+name = "spm_scenarios"
+path = "tests/suite_spm_scenarios.rs"
+
+[[test]]
+name = "tdm_card_scenarios"
+path = "tests/suite_tdm_card_scenarios.rs"
+
+[[test]]
+name = "tdm_complete_games"
+path = "tests/tdm_complete_games.rs"
+
+[[test]]
+name = "tdm_rules_scenarios"
+path = "tests/suite_tdm_rules_scenarios.rs"
+
+[[test]]
+name = "tla_complete_games"
+path = "tests/tla_complete_games.rs"
+
+[[test]]
+name = "tla_scenarios"
+path = "tests/suite_tla_scenarios.rs"
+
+[[test]]
+name = "tmt_games"
+path = "tests/tmt_games.rs"
+
+[[test]]
+name = "tmt_scenarios"
+path = "tests/suite_tmt_scenarios.rs"
+
+[[test]]
+name = "trk_complete_games"
+path = "tests/trk_complete_games.rs"
+
+[[test]]
+name = "trk_named_cards_and_cards_a_d"
+path = "tests/trk_named_cards_and_cards_a_d/main.rs"
+
+[[test]]
+name = "trk_rules_a_e"
+path = "tests/trk_rules_a_e/main.rs"
+
+[[test]]
+name = "trk_rules_f_z"
+path = "tests/trk_rules_f_z/main.rs"
+
+[[test]]
+name = "trk_scenarios_e_s"
+path = "tests/trk_scenarios_e_s/main.rs"
+
+[[test]]
+name = "trk_scenarios_t_z"
+path = "tests/trk_scenarios_t_z/main.rs"
+
+[[test]]
+name = "woe_complete_games"
+path = "tests/woe_complete_games.rs"
+
+[[test]]
+name = "woe_scenarios"
+path = "tests/suite_woe_scenarios.rs"

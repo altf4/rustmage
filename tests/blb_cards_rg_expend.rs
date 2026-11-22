@@ -1,9 +1,8 @@
 //! Bloomburrow card-level Expend outcomes and the source's paid Stash receipt.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn settle_expend(game: &mut Game, recipient: CardId, discard: bool) {
     for _ in 0..48 {

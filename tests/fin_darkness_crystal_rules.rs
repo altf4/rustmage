@@ -1,11 +1,10 @@
 //! Linked opposing-creature death replacements and countered exile entry.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::characteristic_layers::AnimationTypeMode;
 use rustmage_core::engine::*;
-use support::*;
 
 const REPLACEMENT: CardRules = CardRules {
     effect: Effect::Permanent,

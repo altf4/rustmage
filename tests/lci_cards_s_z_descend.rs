@@ -1,8 +1,7 @@
 //! Exact graveyard cards, costs, turn history, and last-known power.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn candidate(game: &mut Game, player: Player, name: &str, zone: Zone) -> CardId {
     spawn(game, player, Card::from_name(name).unwrap(), zone)

@@ -1,10 +1,9 @@
 //! A resolution cost can consume an exact once-per-turn use without a second prompt.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const RUMMAGE: CardRules = CardRules {
     effect: Effect::Creature(2, 2),

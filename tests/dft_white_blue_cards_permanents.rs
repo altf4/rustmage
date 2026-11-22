@@ -1,9 +1,8 @@
 //! Real W/U permanent outcomes: entry effects, live characteristics and paid costs.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 fn drain(g: &mut Game) {
     for _ in 0..64 {
         if g.state.pending == Pending::Priority

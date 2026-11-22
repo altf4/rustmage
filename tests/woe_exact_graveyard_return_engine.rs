@@ -1,10 +1,9 @@
 //! Sacrifice results bound a mandatory, non-targeted graveyard return batch.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const TOKEN: Card = Card::test_index(5286);
 const CONQUEST: CardRules = CardRules {

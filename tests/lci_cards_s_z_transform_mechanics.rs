@@ -1,9 +1,8 @@
 //! Complete two-face scenarios for Explore, survivor selection and paid mana provenance.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const GNOME_SOLDIER: Card = Card::from_catalogue_id(5573);
 

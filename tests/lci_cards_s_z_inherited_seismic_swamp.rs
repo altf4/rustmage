@@ -1,9 +1,8 @@
 //! Remaining printed obligations for inherited Seismic Monstrosaur through Swamp.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{CardName, cards::*, engine::*};
-use support::*;
 
 const MAP: Card = Card::from_catalogue_id(5284);
 

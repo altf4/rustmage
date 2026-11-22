@@ -1,10 +1,9 @@
 //! A creation replacement changes quantities of matching recipes in the same event.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const SPIRIT: Card = Card(5326);
 const FOOD: Card = Card(5246);

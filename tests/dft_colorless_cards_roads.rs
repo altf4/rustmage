@@ -1,8 +1,7 @@
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const ROADS: [(&str, usize); 5] = [
     ("Country Roads", 0),

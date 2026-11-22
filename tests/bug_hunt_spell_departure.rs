@@ -1,11 +1,10 @@
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{
     PermanentType,
     cards::{Keywords, TargetPredicate, TargetRule},
     engine::*,
 };
-use support::*;
 
 #[test]
 fn cast_discount_excludes_the_exact_departing_spell_in_both_counted_zones() {

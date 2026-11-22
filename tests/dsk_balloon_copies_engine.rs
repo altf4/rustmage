@@ -1,12 +1,11 @@
 //! Copiable exceptions and exact delayed cleanup for temporary token creation.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules, one};
 use rustmage_core::cards::*;
 use rustmage_core::engine::characteristic_layers::AnimationTypeMode;
 use rustmage_core::engine::*;
-use support::*;
 
 const PLAYER: Player = Player::P0;
 const WHITE: u8 = 1;

@@ -1,10 +1,9 @@
 //! Main-relative extra phases and repeated source-independent combat untaps.
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const PROGRAM: &[Instruction] = &[
     Instruction::AdditionalCombatsAfterCurrentMain(2),

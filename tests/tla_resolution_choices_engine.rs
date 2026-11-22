@@ -1,10 +1,9 @@
 //! Ordered public choices, private searches, and exact immediate cast offers.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardRules, one};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const KEEP: CardRules = CardRules {
     effect: Effect::Spell(

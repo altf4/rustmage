@@ -1,8 +1,7 @@
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::CounterKind;
 use rustmage_core::engine::*;
-use support::*;
 
 #[test]
 fn one_shield_prevents_the_simultaneous_combat_damage_from_both_blockers() {

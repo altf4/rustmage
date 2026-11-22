@@ -1,10 +1,9 @@
 //! A non-targeted controlled exile choice binds the exact chosen permanent.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const CHOOSE_EXILE: CardRules = CardRules {
     effect: Effect::Spell(

@@ -1,11 +1,10 @@
 //! A resolved grant gives one player normal play and private access to their
 //! current library top for the turn.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const GRANT: CardRules = CardRules {
     effect: Effect::Spell(

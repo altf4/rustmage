@@ -1,10 +1,9 @@
 //! Historical exact subtype entries and copies of one opposing token-entry batch.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const HISTORY: CardRules = CardRules {
     effect: Effect::Creature(2, 2),

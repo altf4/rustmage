@@ -1,10 +1,9 @@
 //! Public face-down causes, private identities, and their exact payment routes.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const PRINTED: ManaCost = ManaCost {
     colored: [0, 1, 0, 0, 0, 0],

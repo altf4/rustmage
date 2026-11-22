@@ -1,8 +1,7 @@
 //! Card-level proofs for multicolor effects, a land observer and the large Spacecraft.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn passes(game: &mut Game) {
     act(game, Action::Pass);

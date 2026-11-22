@@ -1,9 +1,8 @@
 //! Whole-card private entitlements and live Goblin combat/mana rules.
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 fn idle(g: &Game) -> bool {
     g.state.pending == Pending::Priority
         && g.state.stack.is_empty()

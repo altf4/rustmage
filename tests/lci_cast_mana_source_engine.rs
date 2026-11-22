@@ -1,9 +1,8 @@
 //! Mana source rules observe the committed payment, not a possible funding plan.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const WHITE_TWO: Mana = [2, 0, 0, 0, 0, 0];
 

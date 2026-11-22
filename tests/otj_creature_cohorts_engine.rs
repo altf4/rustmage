@@ -1,10 +1,9 @@
 //! Resolution-time keyword recipients and counter amounts use exact live facts.
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const REMOVE: CardRules = CardRules {
     effect: Effect::Spell(

@@ -1,10 +1,9 @@
 //! Conditional modal options are checked when announcing the spell.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const DAMAGE: SpellMode = SpellMode {
     text: "Deal 3 damage to a creature",

@@ -1,11 +1,10 @@
 //! A live provider's alternative mana base for independently authorized spells.
-mod support;
 
+use crate::support::*;
 use rustmage::PaidCastOrigin;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
 use std::num::NonZeroU32;
-use support::*;
 
 const COLORS: Mana = [1, 1, 1, 1, 1, 0];
 const WHITE: Mana = [1, 0, 0, 0, 0, 0];

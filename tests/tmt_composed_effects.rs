@@ -1,9 +1,8 @@
 //! Paid scenarios for the casting, attachment and linked movement integration.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 fn drain(g: &mut Game, target: Option<CardId>) {
     for _ in 0..40 {

@@ -1,10 +1,9 @@
 //! Layer-six activation grants use the recipient's actual rules and tap cost.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const FRESH_TOKEN: TargetRule = TargetRule::Filtered {
     base: &TargetRule::Filtered {

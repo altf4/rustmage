@@ -1,10 +1,9 @@
 //! Private choice ownership, exact spell taxes and lasting exile permission.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules, one};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const CHOSEN_TYPE_TAX: CardRules = CardRules {
     effect: Effect::Creature(2, 2),

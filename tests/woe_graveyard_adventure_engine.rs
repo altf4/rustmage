@@ -1,10 +1,9 @@
 //! Exact Adventure-only permission follows the recipient's next actual turn.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const TRAIN_TROOPS: Card = Card::from_catalogue_id(5199);
 const ADVENTURER: CardRules = CardRules {

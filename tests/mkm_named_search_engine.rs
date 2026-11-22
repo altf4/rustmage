@@ -1,10 +1,9 @@
 //! Optional private zone searches with independent exact name slots.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const NAMES: [&str; 2] = ["Short Bow", "Swiftfoot Boots"];
 const FIND: CardRules = CardRules {

@@ -1,10 +1,9 @@
 //! Paid scenarios for the admitted green and multicolored Duskmourn cards.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const PLAYER: Player = Player::P0;
 const OTHER: Player = Player::P1;

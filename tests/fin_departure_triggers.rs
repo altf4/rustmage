@@ -1,11 +1,10 @@
 //! Pre-event permanent death filters and power-qualified draw packets.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::characteristic_layers::AnimationTypeMode;
 use rustmage_core::engine::*;
-use support::*;
 
 const BATCH_OBSERVER: CardRules = CardRules {
     effect: Effect::Creature(3, 5),

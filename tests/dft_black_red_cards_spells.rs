@@ -1,9 +1,8 @@
 //! Complete printed obligations for the first black/red Aetherdrift spell family.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 fn cleanup(g: &mut Game) {
     g.state.step = Step::End;

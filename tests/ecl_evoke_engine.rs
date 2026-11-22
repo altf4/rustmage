@@ -1,10 +1,9 @@
 //! Evoke is an alternative-cost receipt; mana-spent ETBs use only actual payments.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const EVOKE: ManaCost = ManaCost {
     colored: [0, 0, 0, 0, 1, 0],

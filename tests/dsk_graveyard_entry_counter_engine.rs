@@ -1,10 +1,9 @@
 //! Conditional self-casts keep their entry counters on the exact spell.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardRules, one};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const PLAYER: Player = Player::P0;
 const SPRINTER: CardRules = CardRules {

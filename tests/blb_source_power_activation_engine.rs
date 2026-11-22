@@ -1,10 +1,9 @@
 //! A live activation power restriction participates in real and projected legality.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const RULES: CardRules = CardRules {
     effect: Effect::Creature(2, 2),

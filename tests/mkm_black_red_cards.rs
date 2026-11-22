@@ -1,5 +1,4 @@
 //! Authored Murders at Karlov Manor gameplay for collectors 73 through 147.
-mod support;
 
 use rustmage as _;
 
@@ -21,8 +20,8 @@ mod red;
 #[path = "mkm_black_red_cards/inherited.rs"]
 mod inherited;
 
+use crate::support::{act, choose, pay};
 use rustmage_core::{cards::*, engine::*};
-use support::{act, choose, pay};
 
 fn pass_pair(game: &mut Game) {
     act(game, Action::Pass);

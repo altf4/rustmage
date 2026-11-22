@@ -1,8 +1,7 @@
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::PermanentType;
 use rustmage_core::engine::*;
-use support::*;
 
 #[test]
 fn muldrotha_can_cast_modal_back_as_artifact_after_creature_slot_is_used() {

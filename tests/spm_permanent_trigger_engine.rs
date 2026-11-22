@@ -1,10 +1,9 @@
 //! A graveyard activation grants a private combat trigger to its exact recipient.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const DEALT_TO_PLAYER: TriggerCondition = TriggerCondition::PlayerDamaged {
     subject: DamageSubject::Source,

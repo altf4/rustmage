@@ -1,9 +1,8 @@
 //! Paid scenarios for the remaining green and multicolored Duskmourn cards.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn progress_until(game: &mut Game, ready: impl Fn(&Game) -> bool) {
     for _ in 0..120 {

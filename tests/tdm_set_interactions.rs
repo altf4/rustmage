@@ -1,9 +1,8 @@
 //! Set-only outcomes composing independently verified actual TDM definitions.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 fn checked(g: &mut Game, action: Action) {
     let actor = g.actor().unwrap();

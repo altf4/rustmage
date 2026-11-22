@@ -1,9 +1,8 @@
 //! Printed class levels, typed attachment and per-event Supply counters.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn activate(game: &mut Game, source: CardId, slot: u16) {
     choose(game, |action| match *action {

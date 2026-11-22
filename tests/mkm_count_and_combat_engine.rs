@@ -1,10 +1,9 @@
 //! Public combat requirements and exact quantities across relevant zones.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 #[test]
 fn names_count_controlled_creature_tokens_and_hidden_exile_cannot_contribute() {

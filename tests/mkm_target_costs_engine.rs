@@ -1,10 +1,9 @@
 //! Cast a spell with a colored surcharge per additional target.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const WU: Mana = [1, 1, 0, 0, 0, 0];
 const WWUU: Mana = [2, 2, 0, 0, 0, 0];

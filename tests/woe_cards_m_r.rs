@@ -1,10 +1,9 @@
 //! Paid gameplay scenarios for Wilds of Eldraine cards from M through R.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::engine::replacements::TokenGroupView;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const RAT: Card = Card::from_catalogue_id(5323);
 const MONSTER: Card = Card::from_catalogue_id(5330);

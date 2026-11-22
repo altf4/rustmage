@@ -1,11 +1,10 @@
 //! Live private library access, distinct printed/granted Plot prices, and exact pending X.
-mod support;
 use std::num::NonZeroU32;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const LIBRARY_PLOT: CardRules = CardRules {
     effect: Effect::Permanent,

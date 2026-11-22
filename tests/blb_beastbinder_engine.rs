@@ -1,10 +1,9 @@
 //! Power-restricted blocking and controller-timed, exact layer-six and layer-seven effects.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::engine::funding::FundingGoal;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const BEASTBINDER: CardRules = CardRules {
     effect: Effect::Creature(1, 3),

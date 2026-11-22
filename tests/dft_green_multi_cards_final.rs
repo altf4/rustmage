@@ -1,9 +1,8 @@
 //! Final linked-copy, exhaust, delayed-trigger and restricted-mana card outcomes.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 fn idle(g: &Game) -> bool {
     g.state.stack.is_empty()
         && g.state.resolving.is_none()

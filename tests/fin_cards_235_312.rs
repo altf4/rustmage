@@ -1,9 +1,8 @@
 //! Rules scenarios for the authored Final Fantasy definitions in rows 235–312.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn pass_pair(game: &mut Game) {
     act(game, Action::Pass);

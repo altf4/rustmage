@@ -1,8 +1,6 @@
-mod support;
-
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn begin(game: &mut Game, card: CardId, promise: bool) {
     let beneficiary = promise.then(|| game.actor().unwrap().other());

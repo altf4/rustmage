@@ -1,10 +1,9 @@
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{
     cards::{CounterKind, Counters},
     engine::*,
 };
-use support::*;
 
 #[test]
 fn jace_plot_should_allow_casting_the_back_face_on_a_later_turn() {

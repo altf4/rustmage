@@ -1,6 +1,6 @@
 //! Exact turn histories used by guards, cost reduction, and resolving effects.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{
     cards::{
@@ -13,7 +13,6 @@ use rustmage_core::{
         *,
     },
 };
-use support::*;
 
 const SACRIFICE_DISCOUNT: SpellReduction = SpellReduction {
     source_only: true,

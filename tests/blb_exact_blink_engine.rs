@@ -1,10 +1,9 @@
 //! Blink effects keep their own entry results and exact delayed return links.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules, one};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const CREATURE_NONTOKEN: TargetPlan = one(TargetRule::Filtered {
     base: &TargetRule::Creature,

@@ -1,10 +1,9 @@
 //! Paid card scenarios for Edge of Eternities collectors 067–080.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const BLUE: Mana = [0, 1, 0, 0, 0, 0];
 const TWO_BLUE: Mana = [0, 2, 0, 0, 0, 0];

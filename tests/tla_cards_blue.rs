@@ -1,9 +1,8 @@
 //! Avatar mono-blue definitions exercised through the normal game API.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 #[path = "tla_cards_blue/waterbend.rs"]
 mod waterbend;

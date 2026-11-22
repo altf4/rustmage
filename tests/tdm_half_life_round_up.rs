@@ -1,11 +1,10 @@
 //! Shared rounded-up loss; the existing rounded-down instruction remains distinct.
 //! Typed fixtures establish the engine dependency without admitting Betor.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const UP_OPPONENT: CardRules = CardRules {
     effect: Effect::Spell(

@@ -1,9 +1,8 @@
 //! Public reveals that move cards to hand and a live permission through defender.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const REVEAL: CardRules = CardRules {
     effect: Effect::Spell(

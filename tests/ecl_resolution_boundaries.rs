@@ -1,9 +1,8 @@
 //! Generic boundaries exposed by the full ECL candidate scenarios.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 macro_rules! form_aura {
     ($form:expr) => {

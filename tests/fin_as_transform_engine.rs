@@ -1,8 +1,7 @@
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const FRONT: &str = "Brigid, Clachan's Heart";
 const BACK: &str = "Brigid, Doun's Mind";

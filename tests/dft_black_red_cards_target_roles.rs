@@ -1,9 +1,8 @@
 //! Paid Trade/Junker spells preserve independently declared controller roles.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 fn drain(g: &mut Game) {
     for _ in 0..64 {
         g.prepare_triggers();

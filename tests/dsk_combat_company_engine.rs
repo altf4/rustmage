@@ -1,10 +1,9 @@
 //! Declaration-wide attack and block restrictions through the action surface.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const TOKEN: &str = "@token/cat_beast_2_2_white";
 const COMPANY: CardRules = CardRules {

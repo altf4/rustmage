@@ -1,9 +1,8 @@
 //! Attacks, ordinal casts, and live typal damage on the real cards.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn target(target: Target) -> Action {
     Action::ChooseTarget { target }

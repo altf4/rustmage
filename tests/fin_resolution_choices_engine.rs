@@ -1,9 +1,8 @@
 //! Exact non-targeted resolution choices for zone moves and counters.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const ANY: SacrificeFilter = SacrificeFilter {
     keywords: Keywords::NONE,

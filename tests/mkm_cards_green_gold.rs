@@ -1,9 +1,8 @@
 //! Authored Murders at Karlov Manor card scenarios for collectors 148–219.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 #[path = "mkm_cards_green_gold/evidence.rs"]
 mod evidence;

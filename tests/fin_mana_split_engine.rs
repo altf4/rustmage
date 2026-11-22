@@ -1,11 +1,10 @@
 //! Exact, bounded source-power mana choices and their guided funding continuations.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::{cards::*, engine::*};
 use std::collections::HashSet;
-use support::*;
 
 const ZERO: Mana = [0; 6];
 const SPLIT_ABILITY: ActivatedAbility = ActivatedAbility {

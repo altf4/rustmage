@@ -1,12 +1,11 @@
 //! Attached land mana triggers preserve color choices in execution and funding.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardRules, one};
 use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::{cards::*, engine::*};
 use std::collections::{BTreeSet, HashSet};
-use support::*;
 
 const WHITE: Mana = [1, 0, 0, 0, 0, 0];
 const BLUE: Mana = [0, 1, 0, 0, 0, 0];

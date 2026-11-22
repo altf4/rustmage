@@ -1,10 +1,9 @@
 //! Actual creature departures belong to their last battlefield controller.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const DEPARTURES: CardRules = CardRules {
     effect: Effect::Spell(

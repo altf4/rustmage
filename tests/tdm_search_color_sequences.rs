@@ -1,11 +1,10 @@
 //! Owned top-exile, optional-discard and private constrained-search continuations.
 //! Typed fixtures establish engine behavior without admitting TDM definitions.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 const BREACH: CardRules = CardRules {
     effect: Effect::Permanent,
     triggers: &[

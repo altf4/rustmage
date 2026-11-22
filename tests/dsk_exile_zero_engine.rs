@@ -1,11 +1,10 @@
 //! An exact provider's optional zero mana alternative for a separately legal exile cast.
-mod support;
+use crate::support::*;
 use rustmage::RoomDoor;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
 use std::num::NonZeroU32;
-use support::*;
 
 const ROOM: Card = Card::from_catalogue_id(176); // Anthem of Champions
 const LEFT: Card = Card::from_catalogue_id(1024); // Deeproot Pilgrimage

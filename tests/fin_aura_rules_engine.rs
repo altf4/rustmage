@@ -1,9 +1,8 @@
 //! Damage observations and attached activation restrictions are independent.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const NONEQUIP: EquipmentSpec = EquipmentSpec {
     stats: Stats {

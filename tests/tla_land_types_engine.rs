@@ -1,10 +1,9 @@
 //! Land type changes in the battlefield, prospective entry, and cleanup.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardRules, one};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const ARTIFACT_LANDS: CardRules = CardRules {
     effect: Effect::Creature(3, 3),

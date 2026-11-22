@@ -1,9 +1,8 @@
 //! Inherited Bloomburrow land choices, mana, and token costs.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn announce(game: &mut Game, card: CardId, ability: u16) {
     act(

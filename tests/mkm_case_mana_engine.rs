@@ -1,10 +1,9 @@
 //! Case spell mana flexibility preserves costs, restrictions, and actual mana.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const AUDITOR: Card = Card::from_catalogue_id(660); // Case File Auditor
 const CASE: Card = Card::from_catalogue_id(664); // Case of the Gateway Express, {1}{W}

@@ -1,12 +1,11 @@
 //! Only actual damage recipients retain the lasting life-gain prohibition.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::engine::*;
-use support::*;
 
 #[test]
 fn a_live_nonpositive_life_rule_only_prevents_the_life_based_loss() {

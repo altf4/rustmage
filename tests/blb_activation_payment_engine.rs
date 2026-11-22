@@ -1,9 +1,8 @@
 //! Tap substitutions pay a locked activation cost without mana or a tap symbol.
-mod support;
+use crate::support::*;
 use rustmage::{Card, CardName};
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const DRAW: ActivatedAbility = ActivatedAbility {
     exhaust: false,

@@ -1,10 +1,9 @@
 //! Nontargeting destruction of a simultaneous set of current permanents.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const BOTH_KINDS: BattlefieldFilter = BattlefieldFilter {
     kinds: 16 | 32,

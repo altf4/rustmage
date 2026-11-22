@@ -1,9 +1,8 @@
 //! Owned manifest choices and the exact permanents produced by a resolution.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const ENCHANT_CREATURE: AuraSpec = AuraSpec {
     kinds: 1,

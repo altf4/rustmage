@@ -1,10 +1,9 @@
 //! A positive division can have zero targets when its target plan allows it.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const FAMILIAR: Card = Card::from_catalogue_id(1630);
 const OPTIONAL_FIXED: CardRules = CardRules {

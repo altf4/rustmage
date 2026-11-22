@@ -1,7 +1,6 @@
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::CounterKind, engine::*};
-use support::*;
 
 #[test]
 fn the_phoenix_with_two_attack_requirements_gets_tomiks_one_slot() {

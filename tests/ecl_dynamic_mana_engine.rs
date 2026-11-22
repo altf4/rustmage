@@ -1,10 +1,9 @@
 //! Projected colors, dynamic production and mana lots use the same owned rules world.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 const BASE: ActivatedAbility = ActivatedAbility {
     exhaust: false,
     guard: ActivationGuard::Always,

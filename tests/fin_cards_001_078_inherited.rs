@@ -1,9 +1,8 @@
 //! Named native outcomes for the previously admitted cards in FIN rows 1–78.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn reach(game: &mut Game, wanted: impl Fn(&Action) -> bool) {
     for _ in 0..48 {

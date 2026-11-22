@@ -1,10 +1,9 @@
 //! One nontargeting destruction batch, followed by exact recipients' searches.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const DESTROY: CardRules = CardRules {
     effect: Effect::Spell(

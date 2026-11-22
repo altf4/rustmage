@@ -1,10 +1,9 @@
 //! Case designation, trigger timing, and live rewards on exact permanents.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules, object, one};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const CASE: Card = Card::from_catalogue_id(667); // Case of the Pilfered Proof
 const GORGON: Card = Card::from_catalogue_id(665); // Case of the Gorgon's Kiss
