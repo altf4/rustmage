@@ -673,7 +673,12 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
 pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
     world: &W,
 ) -> Option<AbilityEvaluation> {
-    (world.has_ability_removal()
+    needs_ability_evaluation(world).then(|| evaluate_abilities(world))
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn needs_ability_evaluation<W: CharacteristicWorld + ?Sized>(world: &W) -> bool {
+    world.has_ability_removal()
         || world.game().state.self_granted_abilities.as_ref().is_some_and(|rows| {
             rows.iter().any(|grant| {
                 let game = world.game();
@@ -748,37 +753,36 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
                         _ => false,
                     })
                 })
-        })
-        || world.roles().is_some_and(|r| {
-            r.harnessed.iter().any(|reference| {
-                world.reference(reference.card) == *reference
-                    && world.object(reference.card).zone == Zone::Battlefield
-                    && world
-                        .object(reference.card)
-                        .card
-                        .static_ability_groups()
-                        .iter()
-                        .any(|group| {
-                            group.fragments.iter().any(|fragment| {
-                                matches!(fragment, StaticAbilityFragment::HarnessedTrigger(_))
-                            })
+        }) || world.roles().is_some_and(|r| {
+        r.harnessed.iter().any(|reference| {
+            world.reference(reference.card) == *reference
+                && world.object(reference.card).zone == Zone::Battlefield
+                && world
+                    .object(reference.card)
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .any(|group| {
+                        group.fragments.iter().any(|fragment| {
+                            matches!(fragment, StaticAbilityFragment::HarnessedTrigger(_))
                         })
-            }) || r.source_linked_effects.iter().any(|row| {
-                row.kind == SourceLinkedEffectKind::GrantHexproof && source_linked_effects::active(world, row)
-            }) || r.keyword_effects.iter().any(|row| {
-                (matches!(
-                    world.object(row.recipient.card).zone,
-                    Zone::Battlefield | Zone::Stack
-                ) || matches!(row.origin, KeywordEffectOrigin::Counter { .. }))
-                    && keyword_counters::applies(world, row)
-                    && world.reference(row.recipient.card) == row.recipient
-            }) || r.animations.iter().any(|row| {
-                row.keywords != Keywords::NONE
-                    && world.object(row.object.card).zone == Zone::Battlefield
-                    && world.reference(row.object.card) == row.object
-            })
-        }))
-    .then(|| evaluate_abilities(world))
+                    })
+        }) || r.source_linked_effects.iter().any(|row| {
+            row.kind == SourceLinkedEffectKind::GrantHexproof
+                && source_linked_effects::active(world, row)
+        }) || r.keyword_effects.iter().any(|row| {
+            (matches!(
+                world.object(row.recipient.card).zone,
+                Zone::Battlefield | Zone::Stack
+            ) || matches!(row.origin, KeywordEffectOrigin::Counter { .. }))
+                && keyword_counters::applies(world, row)
+                && world.reference(row.recipient.card) == row.recipient
+        }) || r.animations.iter().any(|row| {
+            row.keywords != Keywords::NONE
+                && world.object(row.object.card).zone == Zone::Battlefield
+                && world.reference(row.object.card) == row.object
+        })
+    })
 }
 
 // Tests count full evaluations to guard the cost of whole-board scans.

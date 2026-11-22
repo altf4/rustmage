@@ -82,6 +82,32 @@ fn pay_selected(game: &mut Game, options: &AutoTapOptions) -> AutoTapResult {
 }
 
 #[test]
+fn an_external_ability_layer_hands_off_before_permanent_pricing() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    game.state.players[0].mana = [0; 6];
+    put(&mut game, player, "Food Fight", Zone::Battlefield);
+    for _ in 0..12 {
+        let creature = put(&mut game, player, "Llanowar Elves", Zone::Battlefield);
+        game.state.objects[creature as usize].summoning_sick = true;
+    }
+    let island = put(&mut game, player, "Island", Zone::Battlefield);
+    let spell = put(&mut game, player, "Spectral Sailor", Zone::Hand);
+    act(&mut game, Action::AnnounceCast { card: spell });
+    Game::take_auto_tap_inventory_counts();
+    let before = game.snapshot();
+    let result = pay_selected(&mut game, &Default::default());
+    assert_eq!(result.status, AutoTapStatus::NeedsDecision);
+    assert_eq!(game.snapshot(), before);
+    assert_eq!(Game::take_auto_tap_inventory_counts(), (0, 0));
+    act(&mut game, Action::TapMana { card: island });
+    assert_eq!(
+        pay_selected(&mut game, &Default::default()).status,
+        AutoTapStatus::Completed
+    );
+}
+
+#[test]
 fn lethal_treasure_trigger_is_avoided_with_floating_or_untapped_treasure() {
     for empty_library in [false, true] {
         for floating in [true, false] {

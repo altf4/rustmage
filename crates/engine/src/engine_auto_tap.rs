@@ -118,6 +118,7 @@ impl Game {
                 || r.basic_land_types.len() > MAX_INTERACTING_PROVIDERS
                 || r.creature_types.len() > MAX_INTERACTING_PROVIDERS
                 || r.keyword_effects.len() > MAX_INTERACTING_PROVIDERS
+                || r.harnessed.len() > MAX_INTERACTING_PROVIDERS
         }) || state.attachment_sources.len() > MAX_INTERACTING_PROVIDERS
             || state
                 .self_granted_abilities
@@ -137,7 +138,9 @@ impl Game {
         let mut interacting = Vec::new();
         for &id in &state.static_sources {
             let object = &state.objects[id as usize];
-            if object.zone != Zone::Battlefield || self.is_face_down(self.object_ref(id)) {
+            if !matches!(object.zone, Zone::Battlefield | Zone::Command)
+                || self.is_face_down(self.object_ref(id))
+            {
                 continue;
             }
             let groups = object.card.static_ability_groups();
@@ -172,7 +175,7 @@ impl Game {
             world.state.static_sources = interacting;
             Cow::Owned(world)
         };
-        (!world.has_ability_removal()).then_some(world)
+        (!ability_evaluation::needs_ability_evaluation(world.as_ref())).then_some(world)
     }
 
     /// Positive values indicate a recognized benefit, negative values an immediate
@@ -182,12 +185,20 @@ impl Game {
         &self,
         a: &Announcement,
         reserved_life: i128,
+        known_printed: bool,
     ) -> std::cmp::Ordering {
         use std::cmp::Ordering;
         if a.item.kind != StackKind::Spell {
             return Ordering::Equal;
         }
         let payer = a.item.controller;
+        let face_down: HashSet<_> = self
+            .state
+            .manifest
+            .iter()
+            .flat_map(|state| &state.permanents)
+            .map(|row| row.object)
+            .collect();
         let count = self
             .state
             .cast_sources
@@ -196,7 +207,7 @@ impl Game {
                 let object = &self.state.objects[id as usize];
                 object.zone == Zone::Battlefield
                     && object.controller == payer
-                    && !self.is_face_down(self.object_ref(id))
+                    && !face_down.contains(&self.object_ref(id))
                     && object.card.triggers().iter().any(|t| {
                         matches!(
                             t.condition,
@@ -213,7 +224,6 @@ impl Game {
                             ]
                         )
                     })
-                    && self.printed_abilities_available(id)
             })
             .count();
         if count == 0 {
@@ -222,8 +232,10 @@ impl Game {
             || self.state.players[payer.index()].library.len() < count
         {
             Ordering::Less
-        } else {
+        } else if known_printed {
             Ordering::Greater
+        } else {
+            Ordering::Equal
         }
     }
 
@@ -237,6 +249,14 @@ impl Game {
     ) -> TapInputs {
         let payer = a.item.controller;
         let mut inputs = TapInputs::default();
+        let mut concealed_draws = HashSet::new();
+        let mut cursor = self.state.cast_rollback.as_deref();
+        while let Some(attempt) = cursor {
+            if !attempt.costs_complete {
+                concealed_draws.extend(attempt.deferred_draws.iter().map(|draw| draw.object));
+            }
+            cursor = attempt.parent.as_deref();
+        }
         let mut reserved: HashSet<_> = options.protected_sources.iter().copied().collect();
         a.visit_declared_cost_objects(|object| {
             reserved.insert(object);
@@ -254,7 +274,7 @@ impl Game {
             let id = index as CardId;
             if object.zone == Zone::Hand
                 && object.owner == payer
-                && !self.attempt_draw_is_face_down(self.object_ref(id))
+                && !concealed_draws.contains(&self.object_ref(id))
                 && !object.card.is_land()
                 && a.item
                     .source
@@ -568,7 +588,9 @@ impl Game {
             .with_live_characteristics(self, a.item.controller);
         let mut pool = self.available_mana(a.item.controller, purpose);
         let reserved_life = a.unpaid_auto_tap_life();
-        let treasure_preference = self.auto_tap_treasure_preference(a, reserved_life);
+        let inventory = self.auto_tap_inventory_world();
+        let treasure_preference =
+            self.auto_tap_treasure_preference(a, reserved_life, inventory.is_some());
         let avoid_treasure = treasure_preference.is_lt();
         let mut treasure_pool = [0u32; 6];
         let mut followup_pool = pool;
@@ -589,7 +611,6 @@ impl Game {
                 }
             }
         }
-        let inventory = self.auto_tap_inventory_world();
         let mut inputs = inventory.as_ref().map_or_else(TapInputs::default, |world| {
             world.auto_tap_inputs(a, purpose, options, avoid_treasure, reserved_life)
         });
@@ -671,6 +692,7 @@ impl Game {
                 .auto_tap_treasure_preference(
                     branch.state.announcing.as_ref().unwrap(),
                     reserved_life,
+                    false,
                 )
                 .is_lt()
         {
