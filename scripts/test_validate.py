@@ -274,6 +274,81 @@ class ValidatorTests(unittest.TestCase):
         self.assertEqual(stale.read_bytes(), b'stale library from an earlier build')
         self.assertTrue((target/'debug/incremental/fixture.o').is_file())
 
+    def native_artifact_fixture(self, command):
+        directory = Path(command[command.index('--report') + 1]).parent
+        target = Path(self.commands[-1][1]['CARGO_TARGET_DIR'])/'debug'
+        library = target/'deps'/validate.library_name()
+        benchmark = target/validate.executable_name('benchmark')
+        library.parent.mkdir(parents=True, exist_ok=True)
+        library.write_bytes(self.library_bytes)
+        benchmark.write_bytes(b'benchmark fixture')
+        header = dict(reason='compiler-artifact', manifest_path=str(self.root/'Cargo.toml'),
+                      profile={'test': False}, fresh=True)
+        messages = [
+            dict(header, target={'name': 'rustmage', 'kind': ['rlib', 'cdylib']},
+                 executable=None, filenames=[str(library.with_suffix('.rlib')), str(library)]),
+            dict(header, target={'name': 'benchmark', 'kind': ['bin']},
+                 executable=str(benchmark), filenames=[str(benchmark)]),
+        ]
+        (directory/'native.json').write_text(json.dumps({
+            'success': True, 'terminal': True, 'active_processes': [],
+            'retired_native_test_binaries': 1, 'retired_native_test_bytes': 32,
+        }))
+        return directory/'native-compile.log', messages
+
+    def test_ci_uses_test_profile_receipts_for_simulation_standard_and_python(self):
+        def emit_receipts(command):
+            if 'scripts/run_native_tests.py' in command:
+                log, messages = self.native_artifact_fixture(command)
+                # Batched native runs repeat receipts for shared artifacts.
+                log.write_text('Compiling rustmage\n' + '\n'.join(map(json.dumps, messages * 2)))
+
+        self.on_command = emit_receipts
+        for platform in ['linux', 'darwin', 'win32']:
+            with self.subTest(platform=platform), patch.object(validate.sys, 'platform', platform):
+                retire = ['--retire-native-binaries'] if platform == 'darwin' else []
+                status, path, report, commands = self.invoke('--test-artifacts', '--python', 'smoke', *retire)
+                self.assertEqual(status, 0)
+                self.assertFalse(any(command[:2] == ['cargo', 'build'] for command, _ in commands))
+                debug = Path(report['target'])/'debug'
+                binary = str(debug/validate.executable_name('benchmark'))
+                self.assertEqual([command for command, _ in commands if command[0] == binary],
+                                 [[binary, '10'], [binary, '--standard-smoke', '1']])
+                library, consumed = self.python_libraries[-1]
+                self.assertEqual(consumed, self.library_bytes)
+                self.assertEqual(library, path.parent/'libraries'/validate.library_name())
+                self.assertFalse(library.samefile(debug/'deps'/validate.library_name()))
+                self.assertEqual(report['shared_libraries'], {str(library): validate.sha(library)})
+                self.assertEqual(report['retired_native_test_binaries'], int(bool(retire)))
+
+    def test_ci_rejects_stale_files_without_matching_cargo_receipts(self):
+        def run_with_invalid_receipt(command):
+            if 'scripts/run_native_tests.py' in command:
+                log, messages = self.native_artifact_fixture(command)
+                library, executable = messages
+                if fault == 'missing binary':
+                    messages.remove(executable)
+                elif fault == 'other package':
+                    library['manifest_path'] = str(self.root/'crates/engine/Cargo.toml')
+                elif fault == 'test harness':
+                    executable['profile'] = {'test': True}
+                elif fault == 'other filename':
+                    library['filenames'] = [str(self.directory/'old'/validate.library_name())]
+                log.write_text('\n'.join(map(json.dumps, messages)))
+
+        self.on_command = run_with_invalid_receipt
+        for fault in ('missing binary', 'other package', 'test harness', 'other filename'):
+            with self.subTest(fault=fault):
+                status, _, report, _ = self.invoke('--test-artifacts', '--python', 'smoke')
+                self.assertNotEqual(status, 0)
+                self.assertIn('native test compilation did not report', report['error'])
+                self.assertEqual(report['shared_libraries'], {})
+                self.assertEqual(self.python_libraries, [])
+                self.assertEqual(report['phases'][-1]['name'], 'native assurance')
+
+    def test_ci_profile_and_release_are_mutually_exclusive(self):
+        self.assert_rejected_before_execution('--release', '--test-artifacts')
+
     def test_ci_retires_only_completed_test_executables_before_release(self):
         target = self.directory/'ci-target'
         executable = target/'debug/deps'/('trk_fixture-123' +
