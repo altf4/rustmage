@@ -5647,18 +5647,22 @@ impl Game {
 
     fn visit_actions(&self, mut emit: impl FnMut(Action) -> bool) -> bool {
         if self.state.entry_batch.is_some() {
-            return self.visit_unfiltered_actions(|action| {
+            return self.visit_unfiltered_actions(&mut |action| {
                 self.mana_action_payable(&action)
                     && self.cast_entry_action_fundable(&action)
                     && emit(action)
             });
         }
         if self.state.mana_lots.is_none() {
-            return self.visit_unfiltered_actions(emit);
+            return self.visit_unfiltered_actions(&mut emit);
         }
-        self.visit_unfiltered_actions(|action| self.mana_action_payable(&action) && emit(action))
+        self.visit_unfiltered_actions(&mut |action| {
+            self.mana_action_payable(&action) && emit(action)
+        })
     }
-    fn visit_unfiltered_actions(&self, mut emit: impl FnMut(Action) -> bool) -> bool {
+
+    // Share this generator across action listing, legality checks, and indexed lookup.
+    fn visit_unfiltered_actions(&self, mut emit: &mut dyn FnMut(Action) -> bool) -> bool {
         let s = &self.state;
         let Some(actor) = self.semantic_actor() else {
             return false;
