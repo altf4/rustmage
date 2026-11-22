@@ -191,7 +191,14 @@ fn a_painful_source_preserves_life_committed_to_the_enclosing_activation() {
         game.state.players[0].mana = [0, 0, 0, 0, 0, 1];
         put(&mut game, player, "Starting Town", Zone::Battlefield);
         let draw = put(&mut game, player, "Lunar Convocation", Zone::Battlefield);
-        act(&mut game, activate(draw, 0));
+        act(
+            &mut game,
+            Action::AnnounceActivate {
+                card: draw,
+                ability: 0,
+                counter_payment: Default::default(),
+            },
+        );
         let before = game.snapshot();
         let response = pay_selected(
             &mut game,
