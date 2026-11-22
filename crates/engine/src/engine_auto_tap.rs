@@ -3,7 +3,13 @@ use super::ability_world::CharacteristicWorld;
 use super::auto_tap_solver::{self, Mode, Pools, Source, SpendBonus};
 use super::*;
 use crate::cards::CastFilter;
+use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
+
+#[cfg(feature = "test-support")]
+thread_local! {
+    static INVENTORY_COUNTS: std::cell::Cell<(usize, usize)> = const { std::cell::Cell::new((0, 0)) };
+}
 
 /// Caller preferences apply to this request only. Source identities include their incarnation.
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -63,6 +69,7 @@ impl AutoTapResult {
 
 /// Only immutable costs and public resource data enter the assignment algorithm.
 /// Keep the action for each mode in the same order as its solver input.
+#[derive(Default)]
 struct TapInputs {
     sources: Vec<Source>,
     actions: Vec<Vec<Action>>,
@@ -81,6 +88,87 @@ fn deterministic_output(recipe: ManaProduction) -> bool {
 }
 
 impl Game {
+    #[cfg(feature = "test-support")]
+    pub fn take_auto_tap_inventory_counts() -> (usize, usize) {
+        INVENTORY_COUNTS.with(|counts| counts.replace((0, 0)))
+    }
+
+    /// Most continuous effects never change a mana ability or its cost. Remove those
+    /// providers from the index consulted during pricing; the real game still validates
+    /// each selected action. Only cheap, unconditional source guards are priced against
+    /// this narrower index. A dense, interacting layer state is left to manual payment.
+    fn auto_tap_inventory_world(&self) -> Option<Cow<'_, Game>> {
+        use crate::cards::StaticAbilityFragment as F;
+        const MAX_INTERACTING_PROVIDERS: usize = 8;
+        let state = &self.state;
+        // Some of the engine's exact queries evaluate a whole layer or scan an unbounded
+        // sparse registry. Avoid building one such evaluation for each ready resource.
+        if state.roles.as_ref().is_some_and(|r| {
+            !r.resolved_ability_modifications.is_empty()
+                || !r.ability_removal_sources.is_empty()
+                || !r.source_linked_effects.is_empty()
+                || r.characteristic_sources.len() > MAX_INTERACTING_PROVIDERS
+                || r.animations.len() > MAX_INTERACTING_PROVIDERS
+                || r.basic_land_types.len() > MAX_INTERACTING_PROVIDERS
+                || r.creature_types.len() > MAX_INTERACTING_PROVIDERS
+                || r.keyword_effects.len() > MAX_INTERACTING_PROVIDERS
+        }) || state.attachment_sources.len() > MAX_INTERACTING_PROVIDERS
+            || state
+                .self_granted_abilities
+                .as_ref()
+                .is_some_and(|rows| rows.len() > MAX_INTERACTING_PROVIDERS)
+            || state
+                .entry_values
+                .as_ref()
+                .is_some_and(|rows| rows.len() > MAX_INTERACTING_PROVIDERS)
+            || state
+                .manifest
+                .as_ref()
+                .is_some_and(|m| m.permanents.len() > MAX_INTERACTING_PROVIDERS)
+        {
+            return None;
+        }
+        let mut interacting = Vec::new();
+        for &id in &state.static_sources {
+            let object = &state.objects[id as usize];
+            if object.zone != Zone::Battlefield || self.is_face_down(self.object_ref(id)) {
+                continue;
+            }
+            let groups = object.card.static_ability_groups();
+            let price_neutral = !groups.is_empty()
+                && groups.iter().all(|group| {
+                    group.fragments.iter().all(|fragment| {
+                        matches!(
+                            fragment,
+                            F::DeathBaronLord
+                                | F::StaticModifier(..)
+                                | F::ScalingModifier(..)
+                                | F::IntrinsicKeywords(_)
+                                | F::ControlledCreatureScaling { .. }
+                                | F::ControlledLegendaryCreatureBonus(_)
+                                | F::ControlledCreatureBonusPerSubtype { .. }
+                                | F::CreatureGroupBonus { .. }
+                                | F::CreatureGroupScaling { .. }
+                        )
+                    })
+                });
+            if !price_neutral {
+                interacting.push(id);
+                if interacting.len() > MAX_INTERACTING_PROVIDERS {
+                    return None;
+                }
+            }
+        }
+        let world = if interacting.len() == state.static_sources.len() {
+            Cow::Borrowed(self)
+        } else {
+            let mut world = self.clone();
+            world.state.static_sources = interacting;
+            Cow::Owned(world)
+        };
+        (!world.has_ability_removal()).then_some(world)
+    }
+
     /// Positive values indicate a recognized benefit, negative values an immediate
     /// loss from its compulsory draw or life payment. Use the public number of cards
     /// in the library, including every applicable live observer.
@@ -142,11 +230,7 @@ impl Game {
         reserved_life: i128,
     ) -> TapInputs {
         let payer = a.item.controller;
-        let mut inputs = TapInputs {
-            sources: Vec::new(),
-            actions: Vec::new(),
-            followups: Vec::new(),
-        };
+        let mut inputs = TapInputs::default();
         let mut reserved: HashSet<_> = options.protected_sources.iter().copied().collect();
         a.visit_declared_cost_objects(|object| {
             reserved.insert(object);
@@ -182,6 +266,18 @@ impl Game {
             if !open || object.tapped || reserved.contains(&self.object_ref(id)) {
                 continue;
             }
+            #[cfg(feature = "test-support")]
+            INVENTORY_COUNTS.with(|counts| {
+                let (ready, interacting) = counts.get();
+                counts.set((
+                    ready + 1,
+                    interacting
+                        + usize::from(
+                            !self.state.static_sources.is_empty()
+                                || !self.state.attachment_sources.is_empty(),
+                        ),
+                ));
+            });
             let creature = self.is_creature(id);
             if creature
                 && object.summoning_sick
@@ -255,7 +351,7 @@ impl Game {
                 let index = index as u16;
                 let cost = ability.cost;
                 if ability.origin != ActivationOrigin::Battlefield
-                    || ability.guard.reveals_secret_creature_type()
+                    || ability.guard != crate::cards::ActivationGuard::Always
                     || object.card.self_granted_activation_template(index)
                     || object.card.grants_activation(index)
                 {
@@ -486,7 +582,10 @@ impl Game {
                 }
             }
         }
-        let inputs = self.auto_tap_inputs(a, purpose, options, avoid_treasure, reserved_life);
+        let inventory = self.auto_tap_inventory_world();
+        let inputs = inventory.as_ref().map_or_else(TapInputs::default, |world| {
+            world.auto_tap_inputs(a, purpose, options, avoid_treasure, reserved_life)
+        });
         let bonus = SpendBonus {
             distinct_colors: if options.prefer_distinct_colors == 0
                 && a.item.kind == StackKind::Spell
@@ -517,7 +616,9 @@ impl Game {
             &inputs.followups,
             bonus,
         ) else {
-            result.status = AutoTapStatus::InsufficientSupportedMana;
+            if inventory.is_some() {
+                result.status = AutoTapStatus::InsufficientSupportedMana;
+            }
             return Ok((result, None));
         };
         // One branch executes the selected actions. A rejected payment or an unexpected
