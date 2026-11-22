@@ -123,6 +123,32 @@ class Game:
         return self.request("act", actor=observation["actor"], revision=observation["revision"],
                             action=action, viewer=observation["actor"])["observation"]
 
+    def _mana_request(self, op, observation, options):
+        if observation["viewer"] != observation["actor"]:
+            raise EngineError("auto-tap requires the acting player's observation")
+        attempt = observation.get("attempt")
+        if attempt is None:
+            raise EngineError("auto-tap requires a payment attempt")
+        return self.request(op, actor=observation["actor"], revision=observation["revision"],
+                            attempt_id=attempt["attempt_id"], options=options)
+
+    def plan_mana_payment(self, observation, **options):
+        """Preview a mana payment for this observation's actor, revision and attempt.
+
+        The report includes the status, proposed raw actions and mana allocation.
+        Pass follow_up to hold mana for a cost or protected_sources to keep specific
+        objects available. See docs/staged-payment-attempts.md for the wire format.
+        """
+        return self._mana_request("plan_mana_payment", observation, options)["auto_tap"]
+
+    def auto_pay_mana(self, observation, **options):
+        """Plan and apply one mana payment atomically. Returns the response envelope.
+
+        response["auto_tap"] holds the report and response["observation"] is the
+        requesting actor's resulting view. A declined plan has an empty action trace.
+        """
+        return self._mana_request("auto_pay_mana", observation, options)
+
     def snapshot(self):
         return self.request("snapshot")["snapshot"]
 

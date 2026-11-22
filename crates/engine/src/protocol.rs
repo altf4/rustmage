@@ -1,6 +1,6 @@
 //! Optional JSON control plane shared by ctypes and the diagnostic CLI. There is
 //! no networking. Native Rust rollouts call Game directly, bypassing serialization.
-use crate::{Action, Config, Game, Observation, Player, Snapshot};
+use crate::{Action, AutoTapOptions, AutoTapResult, Config, Game, Observation, Player, Snapshot};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
@@ -22,6 +22,8 @@ pub enum Request {
         action: Action,
         viewer: Player,
     },
+    PlanManaPayment(AutoTapRequest),
+    AutoPayMana(AutoTapRequest),
     Snapshot,
     Restore {
         snapshot: u64,
@@ -31,14 +33,35 @@ pub enum Request {
     },
 }
 
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct AutoTapRequest {
+    pub actor: Player,
+    pub revision: u64,
+    pub attempt_id: u64,
+    #[serde(default)]
+    pub options: AutoTapOptions,
+}
+
 #[derive(Serialize)]
 pub struct Response {
     pub schema: u32,
     pub revision: u64,
     pub observation: Option<Observation>,
     pub snapshot: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub auto_tap: Option<AutoTapResult>,
     pub error: Option<String>,
     pub capacity: Option<crate::CapacityExceeded>,
+}
+
+impl Response {
+    fn engine_error(&mut self, error: crate::Error) -> String {
+        if let crate::Error::CapacityExceeded(capacity) = &error {
+            self.capacity = Some(*capacity);
+        }
+        error.to_string()
+    }
 }
 
 #[derive(Clone)]
@@ -82,6 +105,7 @@ impl Session {
             revision: self.game.revision(),
             observation: None,
             snapshot: None,
+            auto_tap: None,
             error: None,
             capacity: None,
         };
@@ -100,12 +124,7 @@ impl Session {
                 if result.is_ok() {
                     response.observation = Some(self.game.observe(viewer));
                 }
-                result.map_err(|e| {
-                    if let crate::Error::CapacityExceeded(capacity) = &e {
-                        response.capacity = Some(*capacity);
-                    }
-                    e.to_string()
-                })
+                result.map_err(|e| response.engine_error(e))
             }
             Request::Act {
                 actor,
@@ -121,13 +140,31 @@ impl Session {
                 if result.is_ok() {
                     response.observation = Some(self.game.observe(viewer));
                 }
-                result.map_err(|e| {
-                    if let crate::Error::CapacityExceeded(capacity) = &e {
-                        response.capacity = Some(*capacity);
-                    }
-                    e.to_string()
-                })
+                result.map_err(|e| response.engine_error(e))
             }
+            Request::PlanManaPayment(request) => self
+                .game
+                .plan_mana_payment(
+                    request.actor,
+                    request.revision,
+                    request.attempt_id,
+                    &request.options,
+                )
+                .map(|plan| response.auto_tap = Some(plan))
+                .map_err(|e| response.engine_error(e)),
+            Request::AutoPayMana(request) => self
+                .game
+                .auto_pay_mana(
+                    request.actor,
+                    request.revision,
+                    request.attempt_id,
+                    &request.options,
+                )
+                .map(|plan| {
+                    response.auto_tap = Some(plan);
+                    response.observation = Some(self.game.observe(request.actor));
+                })
+                .map_err(|e| response.engine_error(e)),
             Request::Snapshot => {
                 let id = self.next_snapshot;
                 match id.checked_add(1) {
@@ -146,12 +183,10 @@ impl Session {
                 }
             }
             Request::Restore { snapshot } => match self.snapshots.get(&snapshot) {
-                Some(saved) => self.game.restore(saved).map_err(|e| {
-                    if let crate::Error::CapacityExceeded(capacity) = &e {
-                        response.capacity = Some(*capacity);
-                    }
-                    e.to_string()
-                }),
+                Some(saved) => self
+                    .game
+                    .restore(saved)
+                    .map_err(|e| response.engine_error(e)),
                 None => Err("unknown snapshot".into()),
             },
             Request::DropSnapshot { snapshot } => match self.snapshots.remove(&snapshot) {

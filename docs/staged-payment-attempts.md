@@ -99,6 +99,45 @@ Once a locked payment request is visible, the shared smoke policy scores mana co
 
 Set-only workload callers document additional coverage preferences in their test source and record semantic journals. SPM postpones generic activations until its own main phase, reserves a declared tap-cost source, avoids repeating an already-used Crew ability in the same turn, and estimates normal-cast resources from the current pool plus one mana per distinct land with an offered concrete mana action. Fetch lands do not count before their nonmana fetch ability resolves, and alternative colors from one land do not count as separate sources. It prefers Araña as an exile-permission setup within that estimate, an offered exile cast, and an offered web-slinging route only with a currently tapped creature and sufficient estimated mana. TMT uses the same current-resource estimate for fixed hand-ability proposals and chooses hybrid routes matching its current pool and basic lands. TRK mulligans an opening hand with fewer than three lands, bottoms excess lands before its most expensive remaining spells while preserving Support Mission when another nonland can be bottomed, and prefers Support Mission within its current resource estimate. These are caller choices, not engine admission restrictions; all natural outcomes, replay checks, mechanic gates and existing primitive-decision limits remain required.
 
+## Optional auto-tapper
+
+After choosing a spell or activation and declaring its modes, targets, X and other choices, an agent can ask Rustmage to handle its mana payment. Call the helper with the acting player's observation once the attempt has a locked cost. The agent can activate some mana sources manually first. Ordinary action menus, observations and individual steps continue to use the staged contract.
+
+In Python, preview and execution take the same observation and keyword options. Execution recomputes the payment against the receiving game. For example, an agent can prefer to leave two blue mana available and keep a particular blocker untapped.
+
+```python
+options = {
+    "follow_up": {"colored": [0, 2, 0, 0, 0, 0], "generic": 0},
+    "protected_sources": [blocker["reference"]],
+}
+plan = game.plan_mana_payment(observation, **options)
+if plan["status"] in ("completed", "paid"):
+    result = game.auto_pay_mana(observation, **options)
+    observation = result["observation"]
+    journal.extend(result["auto_tap"]["actions"])
+```
+
+Both JSON operations on `rm_request` require `actor`, `revision` and `attempt_id`. Read those fields from `observation.actor`, `observation.revision` and `observation.attempt.attempt_id`. The optional `options` object accepts these fields.
+
+| Option | Meaning |
+| --- | --- |
+| `protected_sources` | Array of object references the helper should keep available. Use the observed `reference` with both `card` and `generation`. |
+| `follow_up` | Preferred fixed cost for a subsequent play. The `colored` array uses W, U, B, R, G, C order. `generic` is a separate amount. |
+| `allow_treasure` | Defaults to true. Set false to preserve Treasures. |
+| `allow_life_payment` | Defaults to false. Set true to allow supported sources with a life payment. |
+| `prefer_distinct_colors` | Desired number of distinct colors spent, from 0 through 5. The default of 0 leaves the decision to the helper. Colorless mana contributes zero colors. |
+
+`plan_mana_payment` returns the `auto_tap` report at the input revision. `auto_pay_mana` returns that same report plus the requesting actor's resulting `observation`. The outer `revision` is the current game revision. The plan's `actions` contain ordinary raw actions in application order, including source activations and the actual payment. Apply them one at a time with `act` when collecting observations between steps. A successful execution advances the revision for each primitive action.
+
+| Report status | Meaning |
+| --- | --- |
+| `completed` | The proposed payment completes this attempt. |
+| `paid` | The proposed payment settles the mana component. Consult the resulting observation for remaining decisions. |
+| `needs_decision` | The caller must handle a decision at this point. |
+| `insufficient_supported_mana` | The supported sources and allowed choices yielded no payment. The caller may choose another manual route. |
+
+The report also supplies the attempt identity, the input revision and the proposed mana vector in `payment`. A declined plan has an empty action trace and execution leaves the game and revision untouched. Stale observations and mismatched attempt IDs raise `EngineError`. The preview can guide manual selection while the same attempt remains open. After a restore or new decision, use a fresh observation. Each clone owns its state and computes its own plan.
+
 ## Coverage and verification
 
 The shared machinery covers spell announcements and ordinary, granted, acquired, inherited and borrowed activations, including nested mana abilities and craft. Alternate/additional costs reuse the same typed rules and concrete payment routines. Combat taxes, face-up payments, plot/foretell, room unlocks and resolution-time payment windows use their existing action families and current-state funding helpers; their specialized controls should not be mistaken for generic spell cancellation. This change does not implement unsupported card mechanics. In particular, bestow is not implemented by the matched source baseline, so no bestow-specific permission coverage is claimed.
