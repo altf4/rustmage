@@ -5,6 +5,9 @@ use super::*;
 use crate::cards::CastFilter;
 use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
+#[path = "engine_auto_tap_followup.rs"]
+mod followup;
+pub use followup::AutoTapFollowUp;
 
 #[cfg(feature = "test-support")]
 thread_local! {
@@ -17,6 +20,8 @@ thread_local! {
 pub struct AutoTapOptions {
     pub protected_sources: Vec<ObjectRef>,
     pub follow_up: Option<ManaCost>,
+    /// An observed source and normal spell or printed battlefield activation to hold available.
+    pub follow_up_action: Option<AutoTapFollowUp>,
     pub allow_treasure: bool,
     pub allow_life_payment: bool,
     /// Prefer spending up to this many distinct colors on this spell or ability.
@@ -28,6 +33,7 @@ impl Default for AutoTapOptions {
         Self {
             protected_sources: Vec::new(),
             follow_up: None,
+            follow_up_action: None,
             allow_treasure: true,
             allow_life_payment: false,
             prefer_distinct_colors: 0,
@@ -526,6 +532,7 @@ impl Game {
         if options.prefer_distinct_colors > 5 {
             return Err(Error::IllegalAction);
         }
+        let followup = self.auto_tap_followup(attempt.player, attempt.source, options)?;
         let mut result = AutoTapResult::new(attempt_id, revision);
         let Some(a) = self.state.announcing.as_ref() else {
             return Ok((result, None));
@@ -583,7 +590,7 @@ impl Game {
             }
         }
         let inventory = self.auto_tap_inventory_world();
-        let inputs = inventory.as_ref().map_or_else(TapInputs::default, |world| {
+        let mut inputs = inventory.as_ref().map_or_else(TapInputs::default, |world| {
             world.auto_tap_inputs(a, purpose, options, avoid_treasure, reserved_life)
         });
         let bonus = SpendBonus {
@@ -604,16 +611,14 @@ impl Game {
             },
             treasure: treasure_preference.is_gt(),
         };
-        let Some(solution) = auto_tap_solver::solve(
+        let Some(solution) = inputs.solve_with_followup(
             cost,
             Pools {
                 eligible: pool,
                 treasure: treasure_pool,
                 followup: followup_pool,
             },
-            &inputs.sources,
-            options.follow_up,
-            &inputs.followups,
+            followup,
             bonus,
         ) else {
             if inventory.is_some() {

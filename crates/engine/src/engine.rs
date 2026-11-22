@@ -306,7 +306,7 @@ pub const ACTION_CONTRACT: &str = "staged_attempts_v1";
 mod auto_tap;
 #[path = "engine_auto_tap_solver.rs"]
 mod auto_tap_solver;
-pub use auto_tap::{AutoTapOptions, AutoTapResult, AutoTapStatus};
+pub use auto_tap::{AutoTapFollowUp, AutoTapOptions, AutoTapResult, AutoTapStatus};
 #[path = "engine_attempts.rs"]
 pub mod attempts;
 pub use attempts::{

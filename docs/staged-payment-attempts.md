@@ -122,10 +122,13 @@ Both JSON operations on `rm_request` require `actor`, `revision` and `attempt_id
 | Option | Meaning |
 | --- | --- |
 | `protected_sources` | Array of object references the helper should keep available. Use the observed `reference` with both `card` and `generation`. |
+| `follow_up_action` | Name a spell in the payer's visible hand with `{"kind":"cast","object":ref}`, or a printed ability on their visible battlefield permanent with `{"kind":"activate","object":ref,"ability":1}`. Use the object's observed `reference` and zero-based printed ability slot. |
 | `follow_up` | Preferred fixed cost for a subsequent play. The `colored` array uses W, U, B, R, G, C order. `generic` is a separate amount. |
 | `allow_treasure` | Defaults to true. Set false to preserve Treasures. |
 | `allow_life_payment` | Defaults to false. Set true to allow supported sources with a life payment. |
 | `prefer_distinct_colors` | Desired number of distinct colors spent, from 0 through 5. The default of 0 leaves the decision to the helper. Colorless mana contributes zero colors. |
+
+Choose one of `follow_up` and `follow_up_action`. A named action estimates its fixed printed mana cost. Its timing, targets and remaining costs are handled when the agent actually proposes the later play. A tap ability also favors keeping its source untapped. The current payment can still use that permanent when required to complete the cast or earn its printed spending benefit. Use `protected_sources` for a binding reservation. Stale object incarnations, hidden sources, unavailable or out-of-range printed activation slots, and costs requiring a variable or hybrid declaration are rejected before payment.
 
 `plan_mana_payment` returns the `auto_tap` report at the input revision. `auto_pay_mana` returns that same report plus the requesting actor's resulting `observation`. The outer `revision` is the current game revision. The plan's `actions` contain ordinary raw actions in application order, including source activations and the actual payment. Apply them one at a time with `act` when collecting observations between steps. A successful execution advances the revision for each primitive action.
 

@@ -136,8 +136,8 @@ class Game:
         """Preview a mana payment for this observation's actor, revision and attempt.
 
         The report includes the status, proposed raw actions and mana allocation.
-        Pass follow_up to hold mana for a cost or protected_sources to keep specific
-        objects available. See docs/staged-payment-attempts.md for the wire format.
+        Pass follow_up for a mana cost, follow_up_action for a visible spell or
+        activation, or protected_sources to keep specific objects available. See docs/staged-payment-attempts.md for the wire format.
         """
         return self._mana_request("plan_mana_payment", observation, options)["auto_tap"]
 
