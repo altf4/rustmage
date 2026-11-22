@@ -552,7 +552,7 @@ impl Game {
         if options.prefer_distinct_colors > 5 {
             return Err(Error::IllegalAction);
         }
-        let followup = self.auto_tap_followup(attempt.player, attempt.source, options)?;
+        let followup = self.auto_tap_followup(attempt.player, options)?;
         let mut result = AutoTapResult::new(attempt_id, revision);
         let Some(a) = self.state.announcing.as_ref() else {
             return Ok((result, None));

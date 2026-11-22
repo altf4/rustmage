@@ -44,7 +44,7 @@ fn a_named_counterspell_can_pay_for_its_response_to_the_first_cast() {
         lands.map(|id| game.object_view(id).tapped),
         [false, false, true, true]
     );
-    let target = Target::Stack(game.state.stack.last().unwrap().id);
+    let target = Target::Spell(spell);
     act(&mut game, Action::AnnounceCast { card: response });
     act(&mut game, Action::ChooseTarget { target });
     if game.legal_actions().contains(&Action::FinishTargets) {
@@ -169,4 +169,60 @@ fn invalid_or_concealed_action_hints_are_identical_transactional_errors() {
             assert_eq!(branch.revision(), revision);
         }
     }
+}
+
+#[test]
+fn current_cost_consistency_for_named_activations_and_bound_sacrifices() {
+    let payer = Player::P0;
+    for (name, repeatable) in [("Isolinear Processor", false), ("Crawling Barrens", true)] {
+        let mut game = scenario(payer);
+        let source = put(&mut game, payer, name, Zone::Battlefield);
+        let object = game.object_ref(source);
+        act(
+            &mut game,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 1,
+                counter_payment: Default::default(),
+            },
+        );
+        let hint = named(AutoTapFollowUp::Activate { object, ability: 1 });
+        if repeatable {
+            pay_with(&mut game, &hint);
+        } else {
+            assert_declined_hint(&mut game, &hint);
+        }
+    }
+    let mut game = scenario(payer);
+    let offering = put(&mut game, payer, "Isolinear Processor", Zone::Battlefield);
+    let spell = put(&mut game, payer, "Realm-Scorcher Hellkite", Zone::Hand);
+    let object = game.object_ref(offering);
+    act(&mut game, Action::AnnounceCast { card: spell });
+    act(
+        &mut game,
+        Action::ChooseBargain {
+            sacrifice: Some(object),
+        },
+    );
+    assert_declined_hint(
+        &mut game,
+        &named(AutoTapFollowUp::Activate { object, ability: 1 }),
+    );
+}
+
+fn assert_declined_hint(game: &mut Game, hint: &AutoTapOptions) {
+    let actor = game.actor().unwrap();
+    let attempt = game.attempt_view(actor).unwrap().attempt_id;
+    let revision = game.revision();
+    let state = game.snapshot();
+    assert!(matches!(
+        game.plan_mana_payment(actor, revision, attempt, hint),
+        Err(Error::IllegalAction)
+    ));
+    assert!(matches!(
+        game.auto_pay_mana(actor, revision, attempt, hint),
+        Err(Error::IllegalAction)
+    ));
+    assert_eq!(game.snapshot(), state);
+    assert_eq!(game.revision(), revision);
 }

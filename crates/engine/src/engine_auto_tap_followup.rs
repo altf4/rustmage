@@ -21,7 +21,6 @@ impl Game {
     pub(super) fn auto_tap_followup(
         &self,
         payer: Player,
-        current_source: Option<ObjectRef>,
         options: &AutoTapOptions,
     ) -> Result<FollowUp, Error> {
         let Some(action) = options.follow_up_action else {
@@ -49,7 +48,6 @@ impl Game {
                 if object.zone != Zone::Hand
                     || object.owner != payer
                     || self.object_ref(id) != reference
-                    || Some(reference) == current_source
                     || self.attempt_draw_is_face_down(reference)
                 {
                     return Err(Error::IllegalAction);
@@ -60,6 +58,11 @@ impl Game {
                     || card.x_symbols() != 0
                     || card.has_hybrid_cost()
                     || card.has_target_cost_modifier()
+                    || self
+                        .state
+                        .announcing
+                        .as_ref()
+                        .is_some_and(|a| a.commits_followup_object(reference, Zone::Hand, false))
                 {
                     return Err(Error::IllegalAction);
                 }
@@ -93,6 +96,9 @@ impl Game {
                     || card.activation_target_reduction(ability).is_some()
                     || card.activation_target_color_discount(ability) != 0
                     || card.activation_target_counter_discount(ability).is_some()
+                    || self.state.announcing.as_ref().is_some_and(|a| {
+                        a.commits_followup_object(reference, Zone::Battlefield, definition.cost.tap)
+                    })
                     || !self.activation_cost_available(
                         id,
                         definition,
@@ -113,6 +119,129 @@ impl Game {
                 })
             }
         }
+    }
+}
+
+impl Announcement {
+    /// Whether the known payment consumes the exact object, or taps a source that must stay untapped.
+    /// References such as a Behold witness or the provider of a casualty grant remain available.
+    fn commits_followup_object(&self, object: ObjectRef, zone: Zone, needs_untapped: bool) -> bool {
+        let same_source = self.item.source.filter(|s| s.object == object);
+        if let Some(source) = same_source {
+            match self.item.kind {
+                StackKind::Spell => return true,
+                StackKind::ActivatedAbility { ability }
+                    if self.activation_cost_route == ActivationCostRoute::Printed =>
+                {
+                    let cost = source.card.activation(ability).cost;
+                    if cost.sacrifice
+                        || cost.exile_self
+                        || cost.discard
+                        || needs_untapped && cost.tap
+                    {
+                        return true;
+                    }
+                }
+                _ => {}
+            }
+        }
+        if self.item.attached_activation_exile_cost() == Some(object)
+            || self.item.attached_activation_sacrifice_cost() == Some(object)
+            || needs_untapped && self.item.attached_activation_tap_cost() == Some(object)
+        {
+            return true;
+        }
+
+        if !self.additional_paid
+            && let Some(spec) = self.additional_cost()
+        {
+            if zone == Zone::Hand && spec.kind == EffectChoiceKind::DiscardHand
+                || same_source.is_some()
+                    && matches!(spec.kind, EffectChoiceKind::ExileSourceAndNamed { .. })
+            {
+                return true;
+            }
+            let selected = self.additional == Some(object)
+                || self
+                    .additional_group
+                    .as_ref()
+                    .is_some_and(|group| group.contains(&object));
+            if selected && !self.additional_life {
+                let kind = spec.in_zone(zone).kind.payment_kind();
+                if matches!(kind, EffectChoiceKind::TapPermanents(_)) {
+                    if needs_untapped {
+                        return true;
+                    }
+                } else if !kind.chooses_cost_creature()
+                    && kind.counter_requirement().is_none()
+                    && !matches!(
+                        kind,
+                        EffectChoiceKind::Behold
+                            | EffectChoiceKind::BeholdMany(_)
+                            | EffectChoiceKind::BlightCost(_)
+                    )
+                {
+                    return true;
+                }
+            }
+        }
+        if self
+            .forage
+            .as_ref()
+            .is_some_and(|f| f.selected.contains(&object))
+            || self
+                .casualty
+                .iter()
+                .flat_map(|rows| rows.iter())
+                .any(|row| row.pay && !row.paid && row.sacrifice == Some(object))
+            || self
+                .item
+                .craft_materials
+                .as_ref()
+                .is_some_and(|rows| rows.contains(&object))
+        {
+            return true;
+        }
+        if needs_untapped
+            && (self.harmonizer.flatten() == Some(object)
+                || self
+                    .conspire
+                    .iter()
+                    .flat_map(|rows| rows.iter())
+                    .any(|row| {
+                        row.pay
+                            && !row.paid
+                            && (row.first_object == Some(object)
+                                || row.objects.is_some_and(|pair| pair.contains(&object)))
+                    })
+                || self.convoke.as_ref().is_some_and(|f| {
+                    f.selected.iter().any(|row| row.object == object)
+                        || f.improvised.contains(&object)
+                        || f.substituted.contains(&object)
+                }))
+        {
+            return true;
+        }
+        self.cast_costs.as_ref().is_some_and(|costs| {
+            needs_untapped && costs.teammates.contains(&object)
+                || costs
+                    .origin_forage
+                    .as_ref()
+                    .is_some_and(|f| f.selected.contains(&object))
+                || costs
+                    .clauses
+                    .iter()
+                    .filter(|row| !row.paid)
+                    .any(|row| match row.clause {
+                        CastCostClause::OriginDiscard(Some(r))
+                        | CastCostClause::SneakReturn(Some(r))
+                        | CastCostClause::WebSlingingReturn(Some(r))
+                        | CastCostClause::BeamMeUpReturn(Some(r), _) => r == object,
+                        CastCostClause::CraftSource => same_source.is_some(),
+                        CastCostClause::Harmonize(r) => needs_untapped && r == object,
+                        _ => false,
+                    })
+        })
     }
 }
 
