@@ -67,7 +67,6 @@ struct TapInputs {
     sources: Vec<Source>,
     actions: Vec<Vec<Action>>,
     followups: Vec<ManaCost>,
-    treasure_bonus: bool,
 }
 
 fn deterministic_output(recipe: ManaProduction) -> bool {
@@ -82,18 +81,66 @@ fn deterministic_output(recipe: ManaProduction) -> bool {
 }
 
 impl Game {
+    /// Positive values indicate a recognized benefit, negative values an immediate
+    /// loss from its compulsory draw or life payment. Use the public number of cards
+    /// in the library, including every applicable live observer.
+    fn auto_tap_treasure_preference(&self, a: &Announcement) -> std::cmp::Ordering {
+        use std::cmp::Ordering;
+        if a.item.kind != StackKind::Spell {
+            return Ordering::Equal;
+        }
+        let payer = a.item.controller;
+        let count = self
+            .state
+            .cast_sources
+            .iter()
+            .filter(|&&id| {
+                let object = &self.state.objects[id as usize];
+                object.zone == Zone::Battlefield
+                    && object.controller == payer
+                    && !self.is_face_down(self.object_ref(id))
+                    && object.card.triggers().iter().any(|t| {
+                        matches!(
+                            t.condition,
+                            TriggerCondition::TreasureManaSpent(&TriggerCondition::SpellCast {
+                                relation: CastRelation::You,
+                                filter: CastFilter::Any,
+                                ordinal: None
+                            })
+                        ) && matches!(
+                            t.program,
+                            [
+                                Instruction::Draw(PlayerSet::Controller, 1),
+                                Instruction::LoseLife(PlayerSet::Controller, 1)
+                            ]
+                        )
+                    })
+                    && self.printed_abilities_available(id)
+            })
+            .count();
+        if count == 0 {
+            Ordering::Equal
+        } else if self.state.players[payer.index()].life <= count as i128
+            || self.state.players[payer.index()].library.len() < count
+        {
+            Ordering::Less
+        } else {
+            Ordering::Greater
+        }
+    }
+
     fn auto_tap_inputs(
         &self,
         a: &Announcement,
         purpose: mana_lots::Purpose,
         options: &AutoTapOptions,
+        avoid_treasure: bool,
     ) -> TapInputs {
         let payer = a.item.controller;
         let mut inputs = TapInputs {
             sources: Vec::new(),
             actions: Vec::new(),
             followups: Vec::new(),
-            treasure_bonus: false,
         };
         let mut reserved: HashSet<_> = options.protected_sources.iter().copied().collect();
         reserved.extend(a.additional);
@@ -131,32 +178,6 @@ impl Game {
             {
                 continue;
             }
-            // The known Treasure payoff draws one and loses one. Spending differently can
-            // avoid a lethal mandatory trigger when the caster is out of cards or at one life.
-            if a.item.kind == StackKind::Spell
-                && !inputs.treasure_bonus
-                && self.state.players[payer.index()].life > 1
-                && !self.state.players[payer.index()].library.is_empty()
-                && object.card.triggers().iter().any(|t| {
-                    matches!(
-                        t.condition,
-                        TriggerCondition::TreasureManaSpent(&TriggerCondition::SpellCast {
-                            relation: CastRelation::You,
-                            filter: CastFilter::Any,
-                            ordinal: None
-                        })
-                    ) && matches!(
-                        t.program,
-                        [
-                            Instruction::Draw(PlayerSet::Controller, 1),
-                            Instruction::LoseLife(PlayerSet::Controller, 1)
-                        ]
-                    )
-                })
-                && self.printed_abilities_available(id)
-            {
-                inputs.treasure_bonus = true;
-            }
             if !open || object.tapped || reserved.contains(&self.object_ref(id)) {
                 continue;
             }
@@ -170,6 +191,9 @@ impl Game {
                 continue;
             }
             let treasure = self.subtypes(id).has(object.card, "Treasure");
+            if treasure && avoid_treasure {
+                continue;
+            }
             let expendable = treasure && object.is_token() && !creature && options.allow_treasure;
             let mut source = Source {
                 modes: Vec::new(),
@@ -437,23 +461,29 @@ impl Game {
         let purpose = self
             .purpose_for_item(&a.item)
             .with_live_characteristics(self, a.item.controller);
-        let pool = self.available_mana(a.item.controller, purpose);
+        let mut pool = self.available_mana(a.item.controller, purpose);
+        let treasure_preference = self.auto_tap_treasure_preference(a);
+        let avoid_treasure = treasure_preference.is_lt();
         let mut treasure_pool = [0u32; 6];
         let mut followup_pool = pool;
         for lot in self.mana_lots(a.item.controller) {
             if lot.quality.eligible(purpose) {
                 for (i, amount) in lot.amounts.into_iter().enumerate() {
                     let amount = u32::try_from(amount).expect("subset of representable pool");
-                    if lot.quality.treasure_source {
+                    if lot.quality.treasure_source && avoid_treasure {
+                        pool[i] -= amount;
+                    } else if lot.quality.treasure_source {
                         treasure_pool[i] += amount;
                     }
-                    if lot.quality.restriction != ManaRestrictionView::Unrestricted {
+                    if lot.quality.restriction != ManaRestrictionView::Unrestricted
+                        || lot.quality.treasure_source && avoid_treasure
+                    {
                         followup_pool[i] -= amount;
                     }
                 }
             }
         }
-        let inputs = self.auto_tap_inputs(a, purpose, options);
+        let inputs = self.auto_tap_inputs(a, purpose, options, avoid_treasure);
         let bonus = SpendBonus {
             distinct_colors: if a.item.kind == StackKind::Spell
                 && a.item.source.is_some_and(|source| {
@@ -469,7 +499,7 @@ impl Game {
             } else {
                 options.prefer_distinct_colors
             },
-            treasure: inputs.treasure_bonus,
+            treasure: treasure_preference.is_gt(),
         };
         let Some(solution) = auto_tap_solver::solve(
             cost,
@@ -524,6 +554,14 @@ impl Game {
         let pay = Action::PayCosts {
             payment: solution.payment,
         };
+        if !avoid_treasure
+            && solution.prefer_treasure
+            && branch
+                .auto_tap_treasure_preference(branch.state.announcing.as_ref().unwrap())
+                .is_lt()
+        {
+            return Ok((result, None));
+        }
         match branch.apply(actor, pay.clone()) {
             Ok(()) => actions.push(pay.clone()),
             Err(Error::IllegalAction | Error::WrongActor | Error::GameOver) => {
@@ -531,22 +569,16 @@ impl Game {
             }
             Err(error) => return Err(error),
         }
+        let lot_debits = branch.auto_tap_lot_debits(treasure_preference);
         while let Some(range) = branch.mana_lot_spend_range() {
             if range.action != pay || branch.actor() != Some(actor) {
                 return Ok((result, None));
             }
-            let lot = &branch.mana_lots(attempt.player)[range.lot];
-            let take = if solution.prefer_treasure {
-                lot.quality.treasure_source
-            } else {
-                // A narrow, expiring lot is less useful for future payments. Lots
-                // carrying a spell benefit are useful immediately on eligible spells.
-                lot.quality.retention == crate::ManaRetention::Step
-                    && (lot.quality.restriction != ManaRestrictionView::Unrestricted
-                        || matches!(purpose, mana_lots::Purpose::Spell(_))
-                            && lot.quality.spell_bonus != ManaSpellBonusView::None)
-            };
-            let amount = if take { range.maximum } else { range.minimum };
+            let desired = lot_debits[range.lot][range.color].clamp(range.minimum, range.maximum);
+            let amount = range.values.as_ref().map_or(desired, |values| {
+                let next = values.partition_point(|v| *v < desired);
+                values.get(next).copied().unwrap_or(range.maximum)
+            });
             let action = Action::ChooseManaLotSpend { amount };
             branch.apply(actor, action.clone())?;
             actions.push(action);

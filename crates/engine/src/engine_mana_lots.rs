@@ -1284,6 +1284,64 @@ impl Game {
             values,
         })
     }
+
+    /// Plan concrete debits once for the bounded-quality classes of this payment.
+    /// Entries use the same original lot indices as ChooseManaLotSpend's ranges.
+    pub(super) fn auto_tap_lot_debits(&self, treasure: std::cmp::Ordering) -> Vec<Mana> {
+        let Some(choice) = self
+            .state
+            .mana_lots
+            .as_ref()
+            .and_then(|s| s.choice.as_ref())
+        else {
+            return Vec::new();
+        };
+        let request = &choice.request;
+        let rank = |q: Quality| {
+            let desired_producer = match treasure {
+                std::cmp::Ordering::Equal => false,
+                std::cmp::Ordering::Greater => q.treasure_source,
+                std::cmp::Ordering::Less => !q.treasure_source,
+            };
+            let bonus = q.grants_haste(request.purpose)
+                || matches!(request.purpose, Purpose::Spell(_))
+                    && q.spell_bonus == ManaSpellBonusView::Uncounterable
+                || matches!(request.purpose, Purpose::Spell(facts) if facts.kinds & (4 | 8) != 0 && facts.card.colors() & 8 != 0)
+                    && q.spell_bonus == ManaSpellBonusView::CopyRedInstantSorcery;
+            let expiry = match q.retention {
+                ManaRetention::Step => 2,
+                ManaRetention::Combat => 1,
+                ManaRetention::Turn => 0,
+            };
+            usize::from(desired_producer) * 12
+                + usize::from(bonus) * 6
+                + expiry * 2
+                + usize::from(q.restriction != ManaRestrictionView::Unrestricted)
+        };
+        let mut classes: [Vec<&SpendingLot>; 24] = std::array::from_fn(|_| Vec::new());
+        for group in &request.groups {
+            if group.lot.quality.eligible(request.purpose) {
+                classes[rank(group.lot.quality)].push(group);
+            }
+        }
+        let mut remaining = request.payment.map(u128::from);
+        let mut debit = vec![[0; 6]; request.lots.len()];
+        for (priority, groups) in classes.iter().enumerate().rev() {
+            if priority == rank(Quality::ORDINARY) {
+                for (left, amount) in remaining.iter_mut().zip(request.fungible) {
+                    *left = left.saturating_sub(amount);
+                }
+            }
+            for group in groups {
+                for (color, left) in remaining.iter_mut().enumerate() {
+                    let amount = (*left).min(group.lot.amounts[color]);
+                    debit[group.first][color] = amount as u32;
+                    *left -= amount;
+                }
+            }
+        }
+        debit
+    }
     fn has_source_mana_trigger(card: Card, granted: bool) -> bool {
         card.triggers().iter().any(|ability| {
             ability.condition.is_granted() == granted
