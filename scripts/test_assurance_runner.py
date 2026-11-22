@@ -39,9 +39,12 @@ class AssuranceRunnerTests(unittest.TestCase):
                 '[lib]\npath="lib.rs"\ntest=false\n'
                 '[profile.test]\ndebug=false\nincremental=false\n')
             (root/'lib.rs').write_text('pub fn answer() -> u8 { 42 }\n')
-            for name in ['first', 'second']:
-                (root/f'tests/{name}.rs').write_text(
-                    '#[test] fn actual_case() { assert_eq!(rustmage::answer(), 42); }\n')
+            first = root/'tests/first'
+            first.mkdir()
+            (first/'main.rs').write_text('mod alpha;\nmod second_module;\n')
+            case = '#[test] fn actual_case() { assert_eq!(rustmage::answer(), 42); }\n'
+            for path in (first/'alpha.rs', first/'second_module.rs', root/'tests/second.rs'):
+                path.write_text(case)
             target = directory/'target'
             report = directory/'native.json'
             wrapper = os.environ.get('RUSTC_WRAPPER', str(ROOT/'scripts/rustc_guard.py'))
@@ -56,7 +59,7 @@ class AssuranceRunnerTests(unittest.TestCase):
             result = json.loads(report.read_text())
             self.assertEqual(status, 0, str(directory)+'\n'+json.dumps(result))
             self.assertEqual(len(result['compile_batches']), 2)
-            self.assertEqual(result['expected_tests'], 2)
+            self.assertEqual(result['expected_tests'], 3)
             self.assertEqual(result['retired_native_test_binaries'], 2)
             self.assertTrue(all(not Path(row['binary']).exists() for row in result['binaries']))
             self.assertTrue(list((target/'debug/deps').glob('librustmage*.rlib')))
@@ -64,6 +67,17 @@ class AssuranceRunnerTests(unittest.TestCase):
             libraries = [json.loads(line) for line in second_compile if line.startswith('{')]
             self.assertTrue(any(row.get('fresh') and 'lib' in row.get('target', {}).get('kind', [])
                                 for row in libraries), 'second batch rebuilt its shared library')
+            # One glob matches both a legacy module name and a standalone target.
+            # The case substring need not start at the module boundary.
+            focused = ['run_native_tests.py', '--target-dir', str(target), '--report', str(report),
+                       '--test-target', 'second*', '--filter', 'tual_']
+            with patch.object(native, 'ROOT', root), patch.object(sys, 'argv', focused), \
+                    patch.object(native.signal, 'signal'), \
+                    patch.dict(os.environ, {'RUSTC_WRAPPER': wrapper}), \
+                    contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(native.main(), 0)
+            self.assertCountEqual([row['test'] for row in json.loads(report.read_text())['tests']],
+                                  ['actual_case', 'second_module::actual_case'])
             passed = True
         finally:
             if passed:

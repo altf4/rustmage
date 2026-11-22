@@ -190,8 +190,8 @@ def run_command(command, *, env, log, timeout):
                 orphaned_processes=orphaned, seconds=time.monotonic()-started, log=str(log))
 
 
-def list_compiled_tests(binary, *, target, filter_name, env, log):
-    command = [str(binary), filter_name, '--list', '--format=terse']
+def list_compiled_tests(binary, *, target, filter_name, env, log, skip=()):
+    command = [str(binary), filter_name, '--list', '--format=terse', *skip]
     try:
         return run_command(command, env=env, log=log, timeout=5)
     except PermissionError as error:
@@ -315,6 +315,20 @@ def compiled_tests(log, target):
     return binaries
 
 
+def grouped_module_skips(tests, selector):
+    """Match former single-file targets inside directory-based test suites."""
+    result = {}
+    for main in sorted(tests.glob('*/main.rs')):
+        suite = main.parent.name
+        if fnmatch.fnmatchcase(suite, selector):
+            continue  # A request for the entire Cargo target includes every case.
+        modules = {path.stem for path in main.parent.glob('*.rs') if path != main}
+        selected = {module for module in modules if fnmatch.fnmatchcase(module, selector)}
+        if selected:
+            result[suite] = sorted(modules - selected)
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--target-dir', type=Path, required=True)
@@ -322,7 +336,7 @@ def main():
     parser.add_argument('--compile-timeout', type=float, default=1800)
     parser.add_argument('--test-timeout', type=float, default=45)
     parser.add_argument('--suite-timeout', type=float, default=240)
-    parser.add_argument('--test-target', help='compile only this integration target')
+    parser.add_argument('--test-target', help='select integration targets or grouped scenario modules by name or glob')
     parser.add_argument('--filter', default='', help='execute matching cases in selected targets')
     parser.add_argument('--retire-binaries', action='store_true',
                         help='compile, execute and remove test executables in bounded batches')
@@ -350,9 +364,11 @@ def main():
     started = time.monotonic()
     try:
         compile_log = args.report.with_name('native-compile.log')
-        batches = [[args.test_target or '*']]
+        selector = args.test_target or '*'
+        batches = [[selector]]
+        module_skips = grouped_module_skips(ROOT/'tests', selector) if args.test_target else {}
         compile_seconds = 0
-        if args.retire_binaries:
+        if args.retire_binaries or module_skips:
             metadata_log = args.report.with_name('native-metadata.log')
             result['metadata'] = run_command(
                 ['cargo', 'metadata', '--no-deps', '--format-version=1'],
@@ -362,12 +378,16 @@ def main():
                 return 1
             package = next(p for p in json.loads(metadata_log.read_text())['packages']
                            if Path(p['manifest_path']).resolve() == ROOT/'Cargo.toml')
-            names = sorted(t['name'] for t in package['targets']
-                           if 'test' in t['kind']
-                           and fnmatch.fnmatchcase(t['name'], args.test_target or '*'))
+            direct = sorted(t['name'] for t in package['targets']
+                            if 'test' in t['kind'] and fnmatch.fnmatchcase(t['name'], selector))
+            names = sorted(set(direct) | module_skips.keys())
             if not names:
                 raise RuntimeError('no integration test targets selected')
-            batches = [names[i:i+args.batch_size] for i in range(0, len(names), args.batch_size)]
+            if args.retire_binaries:
+                batches = [names[i:i+args.batch_size] for i in range(0, len(names), args.batch_size)]
+            else:
+                # Pass broad globs to Cargo intact to bound Windows command-line length.
+                batches = [([selector] if direct else []) + list(module_skips)]
         expected = 0
         complete = True
         index = 0
@@ -399,17 +419,18 @@ def main():
                                         or {name for name, _ in binaries} != set(batch)):
                 raise RuntimeError('compiled test targets do not match the selected batch')
             suite_start = time.monotonic()
-            for _, binary in binaries:
+            for target_name, binary in binaries:
+                skip = []
+                for module in module_skips.get(target_name, ()):
+                    skip.extend(['--skip', module+'::'])
                 listing = args.report.with_name(f'native-list-{index}.log')
                 listed = list_compiled_tests(binary, target=target, filter_name=args.filter,
-                                             env=env, log=listing)
+                                             env=env, log=listing, skip=skip)
                 if listed['exit']:
                     return 1
                 names = [line.removesuffix(': test') for line in listing.read_text().splitlines()
                          if line.endswith(': test')]
                 if not names:
-                    if args.test_target:
-                        raise RuntimeError('selected target/filter contains no tests')
                     index += 1
                     continue
                 expected += len(names)
@@ -421,7 +442,7 @@ def main():
                     complete = False
                     break
                 execution = run_suite(
-                    [str(binary), args.filter, '--include-ignored', '--test-threads=1'],
+                    [str(binary), args.filter, '--include-ignored', '--test-threads=1', *skip],
                     env=env, log=args.report.with_name(f'native-execution-{index}.log'),
                     timeout=remaining, test_timeout=args.test_timeout)
                 output = Path(execution['log']).read_text()
@@ -451,6 +472,8 @@ def main():
                 print(f'Native batch {batch_index+1}/{len(batches)} passed; retired {count} executables',
                       flush=True)
         result['expected_tests'] = expected
+        if complete and args.test_target and expected == 0:
+            raise RuntimeError('selected target/filter contains no tests')
         result['success'] = complete and expected > 0 and len(result['tests']) == expected
         print(f"Native assurance: {len(result['tests'])}/{expected} cases in {result['execution_seconds']:.3f}s", flush=True)
         return 0 if result['success'] else 1

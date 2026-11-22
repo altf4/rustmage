@@ -1,3 +1,6 @@
+#[path = "../../examples/support/standard.rs"]
+mod standard;
+
 use rustmage::{Card, Config, DeckRules, Game, Player};
 use std::hint::black_box;
 use std::time::Instant;
@@ -35,9 +38,14 @@ fn named_decks(path: &str) -> Vec<(String, Vec<Card>)> {
         .collect()
 }
 
-fn main() {
-    let games: usize = std::env::args()
-        .nth(1)
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let mut args = std::env::args().skip(1);
+    let first = args.next();
+    if first.as_deref() == Some("--standard-smoke") {
+        let games = args.next().as_deref().unwrap_or("1").parse()?;
+        return standard::run(games);
+    }
+    let games: usize = first
         .unwrap_or_else(|| "1000".into())
         .parse()
         .expect("game count");
@@ -49,8 +57,8 @@ fn main() {
         vec![Card::HillGiant; 4],
     ]
     .concat();
-    let archive = std::env::args().nth(2);
-    let verify = std::env::args().nth(3).is_some_and(|argument| {
+    let archive = args.next();
+    let verify = args.next().is_some_and(|argument| {
         assert_eq!(argument, "verify", "optional third argument must be verify");
         true
     });
@@ -151,4 +159,5 @@ fn main() {
         "note": "native smoke policy and observation construction included; optional named decks rotate adjacent matchups through both seats; setup and gameplay timed, archive loading excluded; no model, tensor encoding, or per-decision JSON; verify mode also times owned raw/index branch and restore checks; sampled gameplay is not complete card-interaction coverage or XMage parity"
         })
     );
+    Ok(())
 }
