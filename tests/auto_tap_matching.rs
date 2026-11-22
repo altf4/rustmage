@@ -1,5 +1,5 @@
 //! Exercise the pure payment policy against independent exhaustive allocations.
-use rustmage_core::cards::{Mana, ManaCost};
+use rustmage::{Mana, ManaCost};
 #[path = "../crates/engine/src/engine_auto_tap_solver.rs"]
 mod auto_tap_solver;
 use auto_tap_solver::{Mode, Pools, Solution, Source, SpendBonus, solve};
