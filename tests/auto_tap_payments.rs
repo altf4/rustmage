@@ -365,3 +365,82 @@ fn exact_allocation_can_be_outside_the_indexed_representatives() {
     let plan = verified_payment(&mut game, &AutoTapOptions::default());
     assert_eq!(plan.payment, Some(payment));
 }
+
+#[test]
+fn preview_scales_across_ordinary_and_crowded_jeskai_boards() {
+    // A fixed three-mana cast isolates the cost of a wider source inventory
+    // from the cost of applying a longer primitive trace. Timing is diagnostic.
+    for sources in [3, 24, 96] {
+        let payer = Player::P0;
+        let mut game = window(payer);
+        for i in 0..sources {
+            let name = ["Stomping Ground", "Steam Vents", "Azorius Guildgate"][i % 3];
+            put(&mut game, payer, name, Zone::Battlefield);
+        }
+        announce_spell(&mut game, payer, "Narset, Jeskai Waymaster");
+        let (_, revision, attempt_id) = request(&game);
+        let options = AutoTapOptions::default();
+        Game::reset_payment_planning_work();
+        let first = game
+            .plan_mana_payment(payer, revision, attempt_id, &options)
+            .unwrap();
+        assert_eq!(first.status, AutoTapStatus::Completed);
+        assert_eq!(first.actions.len(), 4);
+        let mut latency = [0; 100];
+        for sample in &mut latency {
+            let start = std::time::Instant::now();
+            let plan = game
+                .plan_mana_payment(payer, revision, attempt_id, &options)
+                .unwrap();
+            *sample = start.elapsed().as_nanos();
+            assert_eq!(plan, first);
+        }
+        latency.sort_unstable();
+        eprintln!(
+            "sources={sources} samples=100 preview_p50_ns={} preview_p99_ns={}",
+            latency[49], latency[98]
+        );
+        let work = Game::payment_planning_work();
+        assert_eq!(
+            (
+                work.projected_moves,
+                work.projected_steps,
+                work.continuation_plans
+            ),
+            (0, 0, 0)
+        );
+        assert_eq!(game.revision(), revision);
+    }
+}
+
+#[test]
+fn unrelated_static_abilities_leave_mana_discovery_available_on_a_crowded_board() {
+    // The missing green pip forces the inventory scan without applying any taps.
+    // Each size adds both eligible lands and unrelated continuous effects.
+    let payer = Player::P0;
+    for count in [4, 16, 64] {
+        let mut game = window(payer);
+        for _ in 0..count {
+            put(&mut game, payer, "Island", Zone::Battlefield);
+            put(&mut game, payer, "Death Baron", Zone::Battlefield);
+        }
+        announce_spell(&mut game, payer, "Bear Cub");
+        let (_, rev, id) = request(&game);
+        let options = AutoTapOptions::default();
+        let root = game.snapshot();
+        let mut latency = [0; 100];
+        for sample in &mut latency {
+            let start = std::time::Instant::now();
+            let plan = game.plan_mana_payment(payer, rev, id, &options).unwrap();
+            *sample = start.elapsed().as_nanos();
+            assert_eq!(plan.status, AutoTapStatus::InsufficientSupportedMana);
+            assert!(plan.actions.is_empty());
+        }
+        latency.sort_unstable();
+        eprintln!(
+            "islands={count} death_barons={count} samples=100 inventory_p50_ns={} inventory_p99_ns={}",
+            latency[49], latency[98]
+        );
+        assert_eq!(game.snapshot(), root);
+    }
+}

@@ -133,6 +133,49 @@ fn assert_no_projection() {
 }
 
 #[test]
+fn auto_pay_settles_only_the_selected_mana_clause_of_a_casualty_cast() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    put(
+        &mut game,
+        player,
+        "Silverquill, the Disputant",
+        Zone::Battlefield,
+    );
+    let spell = put(&mut game, player, "Divination", Zone::Hand);
+    let bear = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let payment = [0, 1, 0, 0, 0, 2];
+    game.state.players[0].mana = payment;
+    act(&mut game, Action::AnnounceCast { card: spell });
+    let id = game.attempt_view(player).unwrap().attempt_id;
+    let original = game.snapshot();
+    let rev = game.revision();
+    let options = Default::default();
+    let decline = game.auto_pay_mana(player, rev, id, &options).unwrap();
+    assert_eq!(decline.status, AutoTapStatus::NeedsDecision);
+    assert!(decline.actions.is_empty());
+    assert_eq!((game.revision(), game.snapshot()), (rev, original));
+    act(&mut game, Action::ChooseCasualty { pay: true });
+    enter_ordered(&mut game);
+    clause(&mut game, CastCostClause::Mana);
+    let mut manual = game.clone();
+    same_step(&mut manual, Action::PayCosts { payment });
+    let paid = game
+        .auto_pay_mana(player, game.revision(), id, &options)
+        .unwrap();
+    assert_eq!(paid.status, AutoTapStatus::Paid);
+    assert_eq!(paid.actions, vec![Action::PayCosts { payment }]);
+    assert_eq!(game.snapshot(), manual.snapshot());
+    assert!(game.state.stack.is_empty());
+    assert_eq!(game.object_view(bear).zone, Zone::Battlefield);
+    clause(&mut game, CastCostClause::Casualty(0));
+    let object = game.object_ref(bear);
+    same_step(&mut game, Action::PayCasualty { object });
+    assert_eq!(game.object_view(bear).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(spell).zone, Zone::Stack);
+}
+
+#[test]
 fn teamwork_ordered_costs_cannot_replace_the_initial_mana_payment() {
     for player in [Player::P0, Player::P1] {
         for funded in [false, true] {
