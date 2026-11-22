@@ -74,7 +74,7 @@ impl Announcement {
     }
 
     /// Objects already selected to pay the enclosing spell or activation.
-    pub(super) fn visit_declared_cost_objects(&self, mut add: impl FnMut(ObjectRef)) {
+    pub(in crate::engine) fn visit_declared_cost_objects(&self, mut add: impl FnMut(ObjectRef)) {
         if let Some(object) = self.additional {
             add(object);
         }
