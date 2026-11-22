@@ -169,6 +169,16 @@ python3 scripts/resource_guard.py -- cargo build --release --bin benchmark
 python3 scripts/benchmark.py --games 10000 --repeats 5 --output ~/.cache/rustmage-staged-native-benchmark.json
 ```
 
+To compare the optional helper on the same seeds and decks, run a second sample.
+
+```sh
+python3 scripts/benchmark.py --auto-tap --games 10000 --repeats 5 --output ~/.cache/rustmage-staged-auto-tap-benchmark.json
+```
+
+The native binary also accepts `benchmark 10 verify --auto-tap` for the default deck and `benchmark 10 path/to/decks.json verify --auto-tap` for a named archive. The assisted caller requests one automatic payment per attempt when it first sees a locked cost and an open mana or payment stage. On a decline it immediately resumes the smoke policy. Every returned primitive counts against the existing 100,000-decision game bound.
+
+The sample's `decisions` field always counts primitive actions. In manual mode each primitive is one caller decision. In assisted samples, `auto_tap.caller_decisions` counts manual primitives plus every helper request, including declined requests. The `auto_tap` object breaks out each status, manual and assisted primitive counts, and the p50 and p99 end-to-end nanoseconds for all helper calls. These are nearest-rank percentiles across the sample, with null for an empty sample. The timer covers planning and execution inside the native helper. Verify mode separately replays its semantic trace on an owned game, checks indexed choices where represented, restores, and checks raw replay. Restore advances the revision, so replay comparisons use a peer at the same fresh revision when checking new attempt identities. These checks contribute to gameplay wall time and run outside the helper latency timer.
+
 Its fixed freeform deck and native caller exclude model inference, tensor encoding, JSON and Python. Report that scope with its host/compiler metadata and samples; it does not measure the complete Standard pool or collection pipeline. Add the contract, schema, library hash and smoke-policy rules above to the experiment's provenance.
 
 The TDM corpus uses `TDM_FROZEN_TERMINAL_STAGED_V2`, caller `TDM_STAGED_SMOKE_V1`, and trace schema 3. Its receipts bind the action contract, observation schema, shared policy and execution-input hashes, retry policy, and unchanged 4096 primitive-decision limit. The six Standard pairings, 48 Standard games, four separate Cutter Freeform games, eight natural mechanic gates, decks, seeds, and three benchmark repetitions remain fixed. Completed and failed attempt IDs are counted once; accepted submission commands and incomplete submissions are counted separately. Full raw replay must reproduce these counts, and benchmark repetitions must match the verified case counts as well as its decisions and outcome. Reading those existing outcome rows is included in the measured benchmark work.
