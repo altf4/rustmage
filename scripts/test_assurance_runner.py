@@ -35,11 +35,26 @@ class AssuranceRunnerTests(unittest.TestCase):
         targets = {t['name']: Path(t['src_path']) for t in package['targets'] if 'test' in t['kind']}
         registered = list(targets.values())
         expected = set(tests.glob('*.rs'))
+        # Complete games, timing/loop checks and existing ECL shards run independently.
+        standalone = set(tests.glob('*_complete_games.rs'))
+        standalone.update(tests/name for name in (
+            'tmt_games.rs', 'affordability_performance.rs', 'mandatory_loops.rs',
+            'ecl_black_red_cards.rs', 'ecl_green_other_cards.rs',
+            'ecl_shared_cards.rs', 'ecl_white_blue_cards.rs',
+        ))
+        suites = set()
         for name, entry in native.scenario_suites(tests):
             self.assertEqual(targets.get(name), entry)
-            registered.extend(native.scenario_files(entry))
+            modules = list(native.scenario_files(entry))
+            self.assertTrue(modules, f'{entry} must declare sibling scenario modules')
+            suites.add(entry)
+            registered.extend(modules)
             if entry.parent != tests:
                 expected.update(entry.parent.glob('*.rs'))
+        unexpected = set(targets.values()) - suites - standalone
+        self.assertFalse(unexpected, 'Group ordinary regressions in their owning suite or '
+                         'tests/suite_bug_regressions.rs. Unexpected standalone Cargo targets: '
+                         f'{sorted(path.name for path in unexpected)}')
         self.assertCountEqual(registered, expected)
 
     def test_grouped_case_filter_searches_only_original_case_names(self):

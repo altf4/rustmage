@@ -31,9 +31,10 @@ The Cargo workspace keeps the shared engine, per-set definitions and integration
 tests in separate compilation units. Applications still use one `rustmage`
 dependency. See the repository's [authoring and validation instructions](AGENTS.md).
 
+For a bug fix or feature, follow the [focused development workflow](AGENTS.md#everyday-bug-fixes-and-features).
 Card and rules scenarios keep their source paths under `tests/`. Declare each
-new scenario module in its set's suite entry point so Cargo links it with the
-other scenarios. The native test runner accepts individual scenario names via
+new scenario module in its set or rules suite so Cargo links it with the other
+scenarios. The native test runner accepts individual scenario names via
 `--test-target`. For example, to run the Bloomburrow food-layer tests directly
 with Cargo, use `python3 scripts/resource_guard.py -- cargo test --test blb_scenarios blb_food_layers_engine::`.
 
