@@ -30,7 +30,7 @@ pub use rustmage_core::engine::temporary_copy::RetainedActivationOrigin;
 pub use rustmage_core::engine::turn_cast_grants::ColoredSpellReductionView;
 pub use rustmage_core::engine::{
     ACTION_CONTRACT, AttemptDrawView, AttemptFailureReason, AttemptOutcome, AttemptOutcomeView,
-    AttemptStage, AttemptView,
+    AttemptStage, AttemptView, AutoTapOptions, AutoTapResult, AutoTapStatus,
 };
 pub use rustmage_core::engine::{
     AbilityAvailabilityView, AbilityResolutionView, AbilitySourceTimestampView, Action,
