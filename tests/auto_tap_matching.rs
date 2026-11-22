@@ -178,7 +178,28 @@ fn generic_spends_painless_colorless_and_preserves_the_archdruid() {
             colored: unit(4, 1),
             generic: 0,
         },
-        &[archdruid.clone(), elves],
+        &[archdruid.clone(), elves.clone()],
+    )
+    .unwrap();
+    assert_eq!(p.taps, vec![(1, 0)]);
+    let cub = ManaCost {
+        colored: unit(4, 1),
+        generic: 1,
+    };
+    let board = [archdruid.clone(), elves];
+    assert_eq!(ordinary(cub, &board).unwrap().taps, vec![(0, 0)]);
+    let held = unit(5, 1);
+    let p = solve(
+        cub,
+        Pools {
+            eligible: held,
+            followup: held,
+            ..Default::default()
+        },
+        &board,
+        None,
+        &[],
+        SpendBonus::default(),
     )
     .unwrap();
     assert_eq!(p.taps, vec![(1, 0)]);

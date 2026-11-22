@@ -467,6 +467,72 @@ impl<'a, 'b> Draft<'a, 'b> {
         true
     }
 
+    /// A late bundle can replace an earlier tap in the completed allocation.
+    /// Remove redundant activations against the actual remaining pool in one
+    /// backward pass, retaining any Treasure provenance the payment earned.
+    fn release_surplus_sources(&mut self, treasure_bonus: bool) {
+        let inventory = self.inventory;
+        if !self
+            .taps
+            .iter()
+            .any(|&(s, m)| total(inventory.sources[s].modes[m].mana) > 1)
+        {
+            return;
+        }
+        let mut tagged = inventory.pools.treasure.map(u64::from);
+        let mut unrestricted = inventory.pools.followup.map(u64::from);
+        for &(s, m) in &self.taps {
+            let source = &inventory.sources[s];
+            for (c, n) in source.modes[m].mana.into_iter().enumerate() {
+                if source.treasure {
+                    tagged[c] += u64::from(n);
+                }
+                if source.followup_eligible {
+                    unrestricted[c] += u64::from(n);
+                }
+            }
+        }
+        for &(s, m) in self.taps.iter().rev() {
+            let source = &inventory.sources[s];
+            let mode = source.modes[m];
+            if mode
+                .mana
+                .iter()
+                .zip(self.pool)
+                .any(|(&n, left)| u64::from(n) > left)
+            {
+                continue;
+            }
+            if treasure_bonus
+                && self.used_treasure
+                && source.treasure
+                && !(0..TYPES).any(|c| self.payment[c] > 0 && tagged[c] > u64::from(mode.mana[c]))
+            {
+                continue;
+            }
+            self.used[s] = false;
+            self.pain -= usize::from(mode.pain);
+            self.treasures -= usize::from(mode.sacrifice);
+            self.variable -= usize::from(source.variable);
+            self.creatures -= usize::from(source.creature);
+            self.capacity.add(inventory.kinds[s], 1);
+            for (c, n) in mode.mana.into_iter().enumerate().filter(|&(_, n)| n > 0) {
+                let n = u64::from(n);
+                self.pool[c] -= n;
+                self.capacity.take(1 << c, n);
+                if source.treasure {
+                    tagged[c] -= n;
+                }
+                if source.followup_eligible {
+                    unrestricted[c] -= n;
+                }
+            }
+        }
+        self.taps.retain(|&(s, _)| self.used[s]);
+        self.followup_pool =
+            std::array::from_fn(|c| unrestricted[c].saturating_sub(u64::from(self.payment[c])));
+    }
+
     fn residual(&self) -> Totals {
         let mut capacity = self.capacity.clone();
         for c in 0..TYPES {
@@ -581,6 +647,7 @@ pub(super) fn solve(
             if !draft.pay(bonus.treasure) {
                 continue;
             }
+            draft.release_surplus_sources(bonus.treasure);
             let residual = draft.residual();
             let earned_treasure = bonus.treasure && draft.used_treasure;
             let score = Score {
