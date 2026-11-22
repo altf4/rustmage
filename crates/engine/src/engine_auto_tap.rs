@@ -143,13 +143,9 @@ impl Game {
             followups: Vec::new(),
         };
         let mut reserved: HashSet<_> = options.protected_sources.iter().copied().collect();
-        reserved.extend(a.additional);
-        reserved.extend(
-            a.additional_group
-                .iter()
-                .flat_map(|group| group.iter().copied()),
-        );
-        reserved.extend(a.convoke.iter().flat_map(|c| c.objects()));
+        a.visit_declared_cost_objects(|object| {
+            reserved.insert(object);
+        });
         reserved.extend(a.item.attached_activation_tap_cost());
         if let Some(source) = a.item.source
             && let StackKind::ActivatedAbility { ability } = a.item.kind

@@ -8,6 +8,63 @@ use support::*;
 
 const BLUE: [u32; 6] = [0, 1, 0, 0, 0, 0];
 
+#[test]
+fn reserving_a_declared_harmonizer_leaves_the_later_tap_payable() {
+    let payer = Player::P0;
+    for another_land in [false, true] {
+        let mut game = scenario(payer);
+        game.state.players[0].mana = [0, 0, 0, 2, 0, 3];
+        let elves = put(&mut game, payer, "Llanowar Elves", Zone::Battlefield);
+        if another_land {
+            put(&mut game, payer, "Forest", Zone::Battlefield);
+        }
+        let spell = put(&mut game, payer, "Channeled Dragonfire", Zone::Graveyard);
+        act(&mut game, Action::AnnounceHarmonize { card: spell });
+        let harmonizer = game.object_ref(elves);
+        act(
+            &mut game,
+            Action::ChooseHarmonizer {
+                object: Some(harmonizer),
+            },
+        );
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Player(payer.other()),
+            },
+        );
+        if game.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut game, Action::FinishTargets);
+        }
+        let root = game.snapshot();
+        let plan = pay_selected(&mut game, &Default::default());
+        if another_land {
+            assert_eq!(plan.status, AutoTapStatus::Paid);
+            assert!(!game.state.objects[elves as usize].tapped);
+            let costs = game
+                .state
+                .announcing
+                .as_ref()
+                .unwrap()
+                .cast_costs
+                .as_ref()
+                .unwrap();
+            let clause = costs
+                .clauses
+                .iter()
+                .position(|row| row.clause == CastCostClause::Harmonize(harmonizer))
+                .unwrap() as u16;
+            act(&mut game, Action::ChooseCastCost { clause });
+            settle(&mut game);
+            assert!(game.state.objects[elves as usize].tapped);
+            assert_eq!(game.state.players[1].life, 18);
+        } else {
+            assert_eq!(plan.status, AutoTapStatus::InsufficientSupportedMana);
+            assert_eq!(game.snapshot(), root);
+        }
+    }
+}
+
 fn pay_selected(game: &mut Game, options: &AutoTapOptions) -> AutoTapResult {
     let actor = game.actor().unwrap();
     let id = game.attempt_view(actor).unwrap().attempt_id;

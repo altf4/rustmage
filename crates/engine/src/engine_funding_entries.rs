@@ -52,6 +52,29 @@ impl Announcement {
         if let Some(source) = self.item.source {
             add(source.object);
         }
+        self.visit_declared_cost_objects(&mut add);
+        if let Some(permission) = &self.limited_cast_permission {
+            add(permission.source());
+        }
+        if let Some(grant) = &self.item.attachment_trigger {
+            add(grant.grantor);
+            add(grant.recipient);
+        }
+        if let Some(object) = self.item.attached_activation_tap_cost() {
+            add(object);
+        }
+        if let Some(object) = self.item.source_attachment {
+            add(object);
+        }
+        for target in &self.item.targets {
+            if let Some(object) = target.object {
+                add(object);
+            }
+        }
+    }
+
+    /// Objects already selected to pay the enclosing spell or activation.
+    pub(super) fn visit_declared_cost_objects(&self, mut add: impl FnMut(ObjectRef)) {
         if let Some(object) = self.additional {
             add(object);
         }
@@ -127,24 +150,6 @@ impl Announcement {
         }
         if let Some(object) = self.harmonizer.flatten() {
             add(object);
-        }
-        if let Some(permission) = &self.limited_cast_permission {
-            add(permission.source());
-        }
-        if let Some(grant) = &self.item.attachment_trigger {
-            add(grant.grantor);
-            add(grant.recipient);
-        }
-        if let Some(object) = self.item.attached_activation_tap_cost() {
-            add(object);
-        }
-        if let Some(object) = self.item.source_attachment {
-            add(object);
-        }
-        for target in &self.item.targets {
-            if let Some(object) = target.object {
-                add(object);
-            }
         }
         if let Some(objects) = &self.item.craft_materials {
             for &object in objects.iter() {
