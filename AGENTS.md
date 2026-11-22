@@ -4,6 +4,40 @@ The goal is complete Standard gameplay in a fast deterministic in-process librar
 with legal actions, hidden information and efficient owned branching/rollback.
 Catalogue entries or partial card implementations do not satisfy it.
 
+## Everyday bug fixes and features
+
+- Search the existing tests for the behavior and the nearest shared fixture.
+  If a case already exposes the bug, use it. If existing assertions miss it,
+  extend a related assertion or table row, or add a small deterministic
+  case that fails for the reported reason. For a feature, cover its new observable
+  behavior. Add branch, privacy or rollback cases when those contracts change.
+- Put ordinary Rust regressions in the owning rules or set suite. Use
+  `bug_regressions` for cross-set bugs without a closer home. A new `#[test]`
+  in an existing module shares its executable. If a new scenario file is needed,
+  declare it once with `mod <file_stem>;` in the suite entry point. Reserve new
+  Cargo test targets for distinct suites or independently run workloads.
+- During a fix, select **both** the suite and case. Confirm the reproducer fails
+  on the original code and passes with the fix. An existing failure report for
+  the same case and inputs can supply the first result. Confirm the named test ran.
+  This example selects one draw-replacement regression.
+
+  ```sh
+  python3 scripts/resource_guard.py -- cargo test --test bug_regressions bug_hunt_archaic_draw::archaic_discards_after_its_draw_replacement_choice -- --exact
+  ```
+
+  A case filter alone can still build every integration target. Keep the same
+  worktree, Cargo target directory, test profile and features for both runs.
+  Let the focused test command build what it needs. A separate preliminary
+  `cargo build` or `cargo check` adds another pass. After the fix, drop the case
+  filter to run the rest of the already linked suite. For shared-engine changes,
+  run the affected suites together. Batch related edits before broad validation
+  and let CI cover the full test profile on the PR.
+  Use release locally when the change needs production behavior or speed
+  measurements. For script-only or documentation changes, start with the
+  corresponding script tests or documentation checks.
+
+## Card implementation and repository checks
+
 - Author new card behavior directly in `src/card_definitions/<set>/<slug>.rs`, with its
   paired provenance JSON. Read the complete XMage implementation and Oracle body.
   Reuse typed effects/targets/costs; add generic or bespoke Rust effects as useful.
