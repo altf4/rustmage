@@ -1,10 +1,9 @@
 //! Lifetime activation limits survive turn changes without behaving like exhaust.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const BASE_ABILITY: ActivatedAbility = ActivatedAbility {
     exhaust: false,

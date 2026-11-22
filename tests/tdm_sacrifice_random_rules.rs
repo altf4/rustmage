@@ -1,11 +1,10 @@
 //! Nonmana sacrifice-X declarations and exact random graveyard play permissions.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::CardName;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const SAC: AdditionalCost = AdditionalCost {
     kind: EffectChoiceKind::SacrificeManaValue { value: None },

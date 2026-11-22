@@ -1,11 +1,10 @@
 //! Attachment attack triggers and independent defenders for reanimated attackers.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const AURA_TARGETS: TargetPlan = TargetPlan::Single(TargetSpec::one(TargetRule::Object {
     zone: TargetZone::Battlefield,

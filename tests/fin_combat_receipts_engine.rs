@@ -1,10 +1,9 @@
 //! Combat receipts from exact Crew costs, declarations and defending players.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::engine::characteristic_layers::AnimationTypeMode;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const PILOT: CardRules = CardRules {
     effect: Effect::Creature(4, 3),

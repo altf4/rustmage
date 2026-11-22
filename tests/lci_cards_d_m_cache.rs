@@ -1,8 +1,7 @@
 //! Explorer's Cache moves counters and observes the dying creature's exact counter kind.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 #[test]
 fn explorers_cache_moves_one_counter_at_sorcery_speed_and_replaces_it_after_the_creature_dies() {

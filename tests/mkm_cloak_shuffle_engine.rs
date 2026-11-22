@@ -1,10 +1,9 @@
 //! Concealed cohorts preserve actual moves and hide their old public identities.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const DISGUISE: CardRules = CardRules {
     effect: Effect::Creature(2, 2),

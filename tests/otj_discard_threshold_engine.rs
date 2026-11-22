@@ -1,10 +1,9 @@
 //! A private mandatory discard continues with its actual result and pre-move mana value.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const DISCARD: CardRules = CardRules {
     effect: Effect::Spell(

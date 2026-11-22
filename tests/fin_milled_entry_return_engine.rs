@@ -1,9 +1,8 @@
 //! Milled cards enter together and one delayed trigger returns that exact cohort.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const ENCOUNTER: CardRules = CardRules {
     effect: Effect::Spell(

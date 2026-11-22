@@ -1,10 +1,9 @@
 //! Opt-in frozen cast facts for scalar consumers; no authored card overlays.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 macro_rules! observer {
     ($program:expr) => {

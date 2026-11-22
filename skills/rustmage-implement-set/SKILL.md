@@ -18,6 +18,13 @@ crate; integration tests link those libraries. Users still depend only on
 Cache reuse across these packages requires the workspace split. Keep card
 behavior and catalogue/name tables in their own packages.
 
+When a mechanic adds legal choices, extend the shared traversal behind
+`Game::visit_actions`. Keep the large `visit_unfiltered_actions` visitor
+non-generic (`&mut dyn FnMut(Action) -> bool`) so listing, raw legality checks
+and indexed lookup compile one generator. Keep funding filters in the wrapper.
+Preserve action order and stop as soon as the visitor returns `true`. An owned
+branch must resolve the same choice by index as by raw action.
+
 Before starting a set, pull the latest `main` from the remote and base the set
 branch on that revision. Inspect active branches, issues and open PRs. Read the
 whole selected set's Oracle/XMage evidence before beginning card implementation.
@@ -100,7 +107,10 @@ progress tracker in `README.md`, reflecting the final verified supported-card
 counts and set completion status.
 
 Assign one validation owner and one owner per shared mechanic. Give agents
-disjoint card files and integration-test targets. While a guarded build runs on
+disjoint card and scenario files within the set's existing suites. The integrator
+registers each new scenario module once in its suite. Keep `autotests = false`
+and add a Cargo test target only for a new suite or a separately run workload
+such as complete games. While a guarded build runs on
 the frozen integration checkout, agents prepare scenarios and review code in
 isolated worktrees. After the engine checkpoint, they also author independent
 batches. Queue commits and integrate them once the running job terminates.
@@ -133,8 +143,8 @@ that require a clean target.
 Choose validation by changed behavior and integration state.
 
 - **Author loop.** Run focused rules tests and affected regressions for each
-  coherent card family or mechanic. Batch related test targets under the guard
-  on the same reusable Cargo target. Build them in one invocation when supported.
+  coherent card family or mechanic. Use the test profile and select the scenario
+  by module name or case filter. Batch related suites under the same guard.
 - **Shared-rule checkpoint.** Test the mechanic and its affected consumers/contracts
   before expanding dependent card work. Broaden to native assurance when impact is
   wide or uncertain. Finish the core implementation's acceptance and reviews on
@@ -143,8 +153,10 @@ Choose validation by changed behavior and integration state.
   runs. Assemble the set and README tracker, regenerate links, and refresh and
   check affected execution-input manifests, including Tarkir's via
   `scripts/tdm_execution_inputs.py`. Run focused regressions for affected sets.
-  Set `CARGO_TARGET_DIR` to the reusable target and preflight production with
+  If a change touches test-only features or production-only code paths, an early
+  check can catch errors before full acceptance. Use the same Cargo target for
   `python3 scripts/resource_guard.py -- cargo check --release -p rustmage --lib --bin benchmark`.
+  For ordinary card changes, let acceptance build the production targets once.
   Freeze the candidate and run `python3 scripts/validate.py --release --python smoke`
   with the verified reusable target and checkout-specific checks before opening
   the PR. Batch related fixes, verify them with focused tests, and repeat full
@@ -152,6 +164,10 @@ Choose validation by changed behavior and integration state.
   frozen inputs.
 - **Set acceptance.** Retain the complete-set game and interaction requirements
   below. Focused author checks never establish full-set acceptance.
+- **GitHub CI.** Use `python3 scripts/validate.py --test-artifacts --python smoke`.
+  Run native simulation, Standard gameplay and Python smoke using the artifacts
+  from native assurance. Reserve release builds and ThinLTO for local production
+  checks such as completed-set acceptance. Keep the existing Cargo profiles.
 
 Run Cargo through `python3 scripts/resource_guard.py -- cargo ...`. The
 validation runners enter it automatically. Preserve its single build/test
@@ -160,9 +176,8 @@ build-slot wait, compilation, test execution and benchmark time. Diagnose slow
 focused runs from their own logs.
 After an ordinary assertion failure, collect remaining failures from the same
 compiled binaries where practical. Keep the failing result and enforce the
-guard and existing timeouts. If relinking dominates, use Cargo's `--timings`
-under the guard to evaluate grouping small related scenarios into fewer
-integration-test targets.
+guard and existing timeouts. When proposing a build optimization, use the
+before/after comparison in the testing reference.
 
 Keep execution inputs fixed until their consuming job terminates. Poll the same
 running process after observation timeouts. Reuse the worktree's development cache

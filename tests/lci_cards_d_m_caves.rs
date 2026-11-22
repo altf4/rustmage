@@ -1,8 +1,7 @@
 //! The five hidden Caves share a paid, sorcery-speed discover activation.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 #[test]
 fn hidden_caves_enter_tapped_produce_their_colors_and_sacrifice_to_discover_four() {

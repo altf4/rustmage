@@ -1,10 +1,9 @@
 //! Optional graveyard exile pays one exact, owned reflexive event.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const SPECTER: CardRules = CardRules {
     effect: Effect::Creature(3, 3),

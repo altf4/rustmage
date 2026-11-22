@@ -1,9 +1,8 @@
 //! Actual TDM G–S definitions: printed outcomes and representative owned contracts.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 fn idle(g: &Game) -> bool {
     g.outcome().is_some()

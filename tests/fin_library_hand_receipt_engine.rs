@@ -1,10 +1,9 @@
 //! Private selections expose only actual selected hand moves to their follow-up.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::engine::zone_replacements;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const TAKE: CardRules = CardRules {
     effect: Effect::Spell(

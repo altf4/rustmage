@@ -1,9 +1,8 @@
 //! Forage routes, exact graveyard links, and Squirrel or Food qualification.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn food(game: &mut Game, player: Player) -> CardId {
     game.create_tokens(player, Card::from_catalogue_id(5246), 1, false);

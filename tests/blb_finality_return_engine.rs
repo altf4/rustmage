@@ -1,10 +1,9 @@
 //! Exact mandatory graveyard selection after a paid optional sacrifice.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const END_STEP_RETURN: CardRules = CardRules {
     effect: Effect::Permanent,

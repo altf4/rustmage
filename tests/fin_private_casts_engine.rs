@@ -1,9 +1,8 @@
 //! Immediate play permissions preserve hand and face-down exile privacy.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const DAMAGE_OFFER: CardRules = CardRules {
     effect: Effect::Permanent,

@@ -1,10 +1,9 @@
 //! Ordered nonmana X, projected artifact funding and owned exact selections.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const WHITE: Mana = [1, 0, 0, 0, 0, 0];
 const TWO_GENERIC: Mana = [0, 0, 0, 0, 0, 2];

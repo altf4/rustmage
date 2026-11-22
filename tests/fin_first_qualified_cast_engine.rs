@@ -1,10 +1,9 @@
 //! First qualified creature casts and exact, live cast-entry counter receipts.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const DOG_OR_WOLF: &[&str] = &["Dog", "Wolf"];
 const WOLF: CardRules = CardRules {

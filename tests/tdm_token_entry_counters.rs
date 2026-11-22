@@ -1,11 +1,10 @@
 //! E85: fixed token factories share the pre-entry event pipeline with cards and
 //! recipes, while ordinary factories retain their direct no-provider path.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const DRAGON: Card = Card(5293);
 const SPIRIT: Card = Card(5326);

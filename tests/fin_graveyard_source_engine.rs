@@ -1,9 +1,8 @@
 //! An optional exact source sacrifice has its own target announcement.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const YOUR_GRAVEYARD: TargetRule = TargetRule::Object {
     zone: TargetZone::Graveyard,

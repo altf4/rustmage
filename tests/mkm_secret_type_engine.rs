@@ -1,10 +1,9 @@
 //! A secret choice is private until the linked activation's reveal cost is paid.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const ATTACKING_TOKEN: TargetRule = TargetRule::Filtered {
     base: &TargetRule::Filtered {

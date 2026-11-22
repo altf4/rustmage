@@ -42,11 +42,38 @@ def source_files():
             if raw and (ROOT/os.fsdecode(raw)).is_file()}
 
 
-def snapshot_library(target, report_dir):
+def verify_test_artifacts(compile_log, library, benchmark):
+    """Require this native test run's Cargo receipts for both downstream inputs."""
+    found = set()
+    with compile_log.open(encoding='utf-8') as lines:
+        for line in lines:
+            try:
+                message = json.loads(line)
+            except json.JSONDecodeError:
+                continue  # Cargo also prints plain-text progress and diagnostics.
+            if (message.get('reason') != 'compiler-artifact'
+                    or Path(message.get('manifest_path', '')) != ROOT/'Cargo.toml'
+                    or message.get('profile', {}).get('test') is not False):
+                continue
+            target = message['target']
+            files = {Path(path) for path in message['filenames']}
+            if target['name'] == 'rustmage' and 'cdylib' in target['kind'] and library in files:
+                found.add(library)
+            if (target['name'] == 'benchmark' and target['kind'] == ['bin']
+                    and message.get('executable') and Path(message['executable']) == benchmark
+                    and benchmark in files):
+                found.add(benchmark)
+    for path in (library, benchmark):
+        if path not in found:
+            raise RuntimeError(f'native test compilation did not report {path}')
+        if path.resolve() != path or not path.is_file():
+            raise RuntimeError(f'expected a regular Cargo test-profile output at {path}')
+
+
+def snapshot_library(source, report_dir):
     """Publish a copy, never a hardlink into the mutable Cargo target."""
-    source = target/'release'/library_name()
     if not source.is_file() or source.is_symlink():
-        raise RuntimeError('release build did not produce a regular '+library_name())
+        raise RuntimeError(f'build did not produce a regular shared library at {source}')
     directory = report_dir/'libraries'
     directory.mkdir()
     library = directory/source.name
@@ -58,11 +85,15 @@ def snapshot_library(target, report_dir):
     return library, digest
 
 
-def native_retirement(native_report):
-    """Record reclamation from the terminal native runner."""
-    native = json.loads(native_report.read_text())
+def completed_native_report(path):
+    native = json.loads(path.read_text())
     if not native.get('success') or not native.get('terminal') or native.get('active_processes'):
         raise RuntimeError('native assurance is not terminal and successful; preserve outputs')
+    return native
+
+
+def native_retirement(native):
+    """Record reclamation from the terminal native runner."""
     count = native.get('retired_native_test_binaries')
     reclaimed = native.get('retired_native_test_bytes')
     if not isinstance(count, int) or count <= 0 or not isinstance(reclaimed, int) or reclaimed < 0:
@@ -75,12 +106,15 @@ def native_retirement(native_report):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     windows = sys.platform == 'win32'
-    parser.add_argument('--release', action='store_true',
-                        help='also build production library and run the bounded native benchmark')
+    profiles = parser.add_mutually_exclusive_group()
+    profiles.add_argument('--release', action='store_true',
+                          help='also build the production library and run the bounded native benchmark')
+    profiles.add_argument('--test-artifacts', action='store_true',
+                          help='run simulation, Standard gameplay and requested Python checks with native test outputs')
     parser.add_argument('--python', choices=['none', 'smoke', 'full'], default='none',
-                        help='run binding assurance against this run\'s release library')
+                        help='run binding assurance against the shared library from this validation')
     parser.add_argument('--games', type=int, default=10,
-                        help='native benchmark games, only with --release (default: 10)')
+                        help='native benchmark games with --release or --test-artifacts (default: 10)')
     parser.add_argument('--retire-native-binaries', action='store_true',
                         help='build/run/remove native test executables in bounded batches')
     parser.add_argument('--timeout', type=float,
@@ -95,8 +129,8 @@ def main(argv=None):
     args = parser.parse_args(arguments)
     if args.games < 1 or (not math.isfinite(args.timeout) or args.timeout <= 0):
         parser.error('--games and --timeout must be positive')
-    if args.retire_native_binaries and not (args.release or args.python != 'none'):
-        parser.error('--retire-native-binaries requires a subsequent release build')
+    if args.retire_native_binaries and not (args.release or args.test_artifacts or args.python != 'none'):
+        parser.error('--retire-native-binaries requires a subsequent build or artifact check')
     os.chdir(ROOT)
     if managed_context() is None:
         exec_process([sys.executable, str(ROOT/'scripts/resource_guard.py'), '--',
@@ -154,13 +188,20 @@ def main(argv=None):
                              + (['--retire-binaries'] if args.retire_native_binaries else []),
          native_compile_timeout + native_suite_timeout + 20),
     ]
-    if args.release or args.python != 'none':
+    profile_dir = target/('debug' if args.test_artifacts else 'release')
+    benchmark = profile_dir/executable_name('benchmark')
+    source_library = (profile_dir/'deps' if args.test_artifacts else profile_dir)/library_name()
+    if args.release or (args.python != 'none' and not args.test_artifacts):
         # A cold Windows release still compiles the whole pool independently of
         # the test profile. Reserve time for it after the complete native suite.
-        commands.append(('release build', ['cargo', 'build', '--release', '--lib', '--bin', 'benchmark'],
-                         1800 if windows else 900))
-    if args.release:
-        commands.append(('simulation sample', [str(target/'release'/executable_name('benchmark')), str(args.games)], 15))
+        release_build = ['cargo', 'build', '--release', '--lib']
+        if args.release:
+            release_build.extend(['--bin', 'benchmark'])
+        commands.append(('release build', release_build, 1800 if windows else 900))
+    if args.release or args.test_artifacts:
+        commands.append(('simulation sample', [str(benchmark), str(args.games)], 15))
+    if args.test_artifacts:
+        commands.append(('Standard gameplay', [str(benchmark), '--standard-smoke', '1'], 30))
     if args.python != 'none':
         commands.append(('Python assurance', [sys.executable, 'scripts/python_tests.py',
                                                '--suite', args.python,
@@ -187,16 +228,20 @@ def main(argv=None):
             if phase['exit']:
                 print(Path(phase['log']).read_text()[-12000:], flush=True)
                 break
-            if name == 'native assurance' and args.retire_native_binaries:
-                count, reclaimed = native_retirement(report_dir/'native.json')
-                report['retired_native_test_binaries'] = count
-                report['retired_native_test_bytes'] = reclaimed
-                print(f'Retired {count} completed native test executables ({reclaimed} allocated bytes)',
-                      flush=True)
-            if name == 'release build':
+            if name == 'native assurance' and (args.retire_native_binaries or args.test_artifacts):
+                native = completed_native_report(report_dir/'native.json')
+                if args.retire_native_binaries:
+                    count, reclaimed = native_retirement(native)
+                    report['retired_native_test_binaries'] = count
+                    report['retired_native_test_bytes'] = reclaimed
+                    print(f'Retired {count} completed native test executables ({reclaimed} allocated bytes)',
+                          flush=True)
+                if args.test_artifacts:
+                    verify_test_artifacts(report_dir/'native-compile.log', source_library, benchmark)
+            if name == ('native assurance' if args.test_artifacts else 'release build'):
                 if active_peers():
-                    raise RuntimeError('release build left active processes; preserve outputs')
-                library, digest = snapshot_library(target, report_dir)
+                    raise RuntimeError(f'{name} left active processes; preserve outputs')
+                library, digest = snapshot_library(source_library, report_dir)
                 report['shared_libraries'][str(library)] = digest
                 env['RUSTMAGE_LIBRARY'] = str(library)
             if name == 'simulation sample':

@@ -1,10 +1,9 @@
 //! Casting, resolving, and branching evidence costs with exact graveyard objects.
-mod support;
 
+use crate::support::*;
 use rustmage::PaidCastOrigin;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const RED: Mana = [0, 0, 0, 1, 0, 0];
 const NO_FILTER: SacrificeFilter = SacrificeFilter {

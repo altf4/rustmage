@@ -1,10 +1,9 @@
 //! Resolved characteristic additions and a multi-layer creature Aura.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const CREATURE: TargetPlan = TargetPlan::Single(TargetSpec::one(TargetRule::Creature));
 const CREATURE_KIND: u16 = 1;

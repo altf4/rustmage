@@ -1,9 +1,8 @@
 //! Paid casts and activations for the first authored EOE red cards.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn resolve_top(game: &mut Game) {
     act(game, Action::Pass);

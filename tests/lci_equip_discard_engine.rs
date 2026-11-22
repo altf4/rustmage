@@ -1,10 +1,9 @@
 //! Discarding a card is a separate cost route for one equip ability.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const FLAIL: CardRules = CardRules {
     effect: Effect::Permanent,

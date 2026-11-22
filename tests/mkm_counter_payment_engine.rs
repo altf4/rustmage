@@ -1,10 +1,9 @@
 //! An optional counter placement cost on a target is distinct from its reward.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const LOCK: CardRules = CardRules {
     effect: Effect::Creature(0, 4),

@@ -17,10 +17,10 @@ import time
 
 if __package__:
     from .resource_limits import bounded_group, managed_context
-    from .build_platform import allocated_bytes, exec_process
+    from .build_platform import allocated_bytes, argument_batches, exec_process
 else:
     from resource_limits import bounded_group, managed_context
-    from build_platform import allocated_bytes, exec_process
+    from build_platform import allocated_bytes, argument_batches, exec_process
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -315,6 +315,47 @@ def compiled_tests(log, target):
     return binaries
 
 
+def scenario_suites(tests):
+    for main in tests.glob('*/main.rs'):
+        yield main.parent.name, main
+    for entry in tests.glob('suite_*.rs'):
+        yield entry.stem.removeprefix('suite_'), entry
+
+
+def scenario_files(entry):
+    """Suite entry points declare sibling scenario files; shared fixtures live in subdirectories."""
+    for name in re.findall(r'^mod (\w+);$', entry.read_text(encoding='utf-8'), re.M):
+        path = entry.with_name(name+'.rs')
+        if path.is_file():
+            yield path
+
+
+def grouped_modules(tests, selector):
+    """Globs match former target names. An exact suite name selects the Cargo target."""
+    return {name: {path.stem for path in scenario_files(entry)
+                   if fnmatch.fnmatchcase(path.stem, selector)}
+            for name, entry in scenario_suites(tests) if name != selector}
+
+
+def selected_case_batches(listed_names, modules, case_filter):
+    if not listed_names:
+        return
+    if modules is None:
+        # The listing was already filtered by libtest for this ordinary Cargo target.
+        yield listed_names, [case_filter]
+        return
+    selected = []
+    for name in listed_names:
+        module, separator, original_case = name.partition('::')
+        if separator and module in modules and case_filter in original_case:
+            selected.append(name)
+    if len(selected) == len(listed_names):
+        yield selected, []  # Every listed case belongs to the selection.
+    else:
+        for batch in argument_batches(selected):
+            yield batch, ['--exact', *batch]
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--target-dir', type=Path, required=True)
@@ -322,7 +363,7 @@ def main():
     parser.add_argument('--compile-timeout', type=float, default=1800)
     parser.add_argument('--test-timeout', type=float, default=45)
     parser.add_argument('--suite-timeout', type=float, default=240)
-    parser.add_argument('--test-target', help='compile only this integration target')
+    parser.add_argument('--test-target', help='select original test targets by name or glob, or name a complete suite exactly')
     parser.add_argument('--filter', default='', help='execute matching cases in selected targets')
     parser.add_argument('--retire-binaries', action='store_true',
                         help='compile, execute and remove test executables in bounded batches')
@@ -350,9 +391,11 @@ def main():
     started = time.monotonic()
     try:
         compile_log = args.report.with_name('native-compile.log')
-        batches = [[args.test_target or '*']]
+        selector = args.test_target or '*'
+        batches = [[selector]]
+        groups = grouped_modules(ROOT/'tests', selector) if args.test_target or args.filter else {}
         compile_seconds = 0
-        if args.retire_binaries:
+        if args.retire_binaries or args.test_target:
             metadata_log = args.report.with_name('native-metadata.log')
             result['metadata'] = run_command(
                 ['cargo', 'metadata', '--no-deps', '--format-version=1'],
@@ -362,12 +405,15 @@ def main():
                 return 1
             package = next(p for p in json.loads(metadata_log.read_text())['packages']
                            if Path(p['manifest_path']).resolve() == ROOT/'Cargo.toml')
-            names = sorted(t['name'] for t in package['targets']
-                           if 'test' in t['kind']
-                           and fnmatch.fnmatchcase(t['name'], args.test_target or '*'))
-            if not names:
+            available = {t['name'] for t in package['targets'] if 'test' in t['kind']}
+            direct = {name for name in available if fnmatch.fnmatchcase(name, selector)}
+            selected = (direct - groups.keys()) | {name for name in available if groups.get(name)}
+            if not selected:
                 raise RuntimeError('no integration test targets selected')
-            batches = [names[i:i+args.batch_size] for i in range(0, len(names), args.batch_size)]
+            if args.retire_binaries or selected != direct:
+                names = sorted(selected)
+                batches = [names[i:i+args.batch_size] for i in range(0, len(names), args.batch_size)]
+        separate_compile_logs = args.retire_binaries or len(batches) > 1
         expected = 0
         complete = True
         index = 0
@@ -382,12 +428,12 @@ def main():
                 command.extend(['--test', name])
             command.extend(['--no-run', '--message-format=json'])
             log = (args.report.with_name(f'native-compile-{batch_index}.log')
-                   if args.retire_binaries else compile_log)
+                   if separate_compile_logs else compile_log)
             compiled = run_command(command, env=env, log=log, timeout=remaining_compile)
             result['compile_batches'].append(compiled)
             compile_seconds += compiled['seconds']
             result['compile'] = dict(compiled, seconds=compile_seconds)
-            if args.retire_binaries:
+            if separate_compile_logs:
                 with compile_log.open('a' if batch_index else 'w') as output:
                     output.write(log.read_text())
                 result['compile']['log'] = str(compile_log)
@@ -399,47 +445,46 @@ def main():
                                         or {name for name, _ in binaries} != set(batch)):
                 raise RuntimeError('compiled test targets do not match the selected batch')
             suite_start = time.monotonic()
-            for _, binary in binaries:
+            for target_name, binary in binaries:
+                modules = groups.get(target_name)
                 listing = args.report.with_name(f'native-list-{index}.log')
-                listed = list_compiled_tests(binary, target=target, filter_name=args.filter,
-                                             env=env, log=listing)
+                index += 1
+                listed = list_compiled_tests(binary, target=target, env=env, log=listing,
+                                             filter_name=args.filter if modules is None else '')
                 if listed['exit']:
                     return 1
-                names = [line.removesuffix(': test') for line in listing.read_text().splitlines()
-                         if line.endswith(': test')]
-                if not names:
-                    if args.test_target:
-                        raise RuntimeError('selected target/filter contains no tests')
-                    index += 1
-                    continue
-                expected += len(names)
-                remaining = (args.suite_timeout - result['execution_seconds']
-                             - (time.monotonic()-suite_start))
-                if remaining <= 0:
-                    result['budget_exceeded'] = True
-                    print(f'Native suite execution budget exhausted ({args.suite_timeout:g}s)', flush=True)
-                    complete = False
-                    break
-                execution = run_suite(
-                    [str(binary), args.filter, '--include-ignored', '--test-threads=1'],
-                    env=env, log=args.report.with_name(f'native-execution-{index}.log'),
-                    timeout=remaining, test_timeout=args.test_timeout)
-                output = Path(execution['log']).read_text()
-                tests, accounted = suite_results(names, output)
-                for test in tests:
-                    test['binary'] = str(binary)
-                result['tests'].extend(tests)
-                result['binaries'].append(dict(binary=str(binary), expected=len(names), execution=execution))
-                index += 1
-                if execution['exit'] or not accounted:
-                    complete = False
-                    if execution.get('timeout_scope') == 'suite':
+                listed_names = [line.removesuffix(': test') for line in listing.read_text().splitlines()
+                                if line.endswith(': test')]
+                for names, case_args in selected_case_batches(listed_names, modules, args.filter):
+                    expected += len(names)
+                    remaining = (args.suite_timeout - result['execution_seconds']
+                                 - (time.monotonic()-suite_start))
+                    if remaining <= 0:
                         result['budget_exceeded'] = True
                         print(f'Native suite execution budget exhausted ({args.suite_timeout:g}s)', flush=True)
-                    elif execution.get('timeout_scope') == 'case':
-                        print(f"Native case deadline exceeded ({args.test_timeout:g}s): "
-                              f"{execution['timed_out_case']}", flush=True)
-                    print(output[-12000:], flush=True)
+                        complete = False
+                        break
+                    execution = run_suite(
+                        [str(binary), *case_args, '--include-ignored', '--test-threads=1'],
+                        env=env, log=args.report.with_name(f'native-execution-{len(result["binaries"])}.log'),
+                        timeout=remaining, test_timeout=args.test_timeout)
+                    output = Path(execution['log']).read_text()
+                    tests, accounted = suite_results(names, output)
+                    for test in tests:
+                        test['binary'] = str(binary)
+                    result['tests'].extend(tests)
+                    result['binaries'].append(dict(binary=str(binary), expected=len(names), execution=execution))
+                    if execution['exit'] or not accounted:
+                        complete = False
+                        if execution.get('timeout_scope') == 'suite':
+                            result['budget_exceeded'] = True
+                            print(f'Native suite execution budget exhausted ({args.suite_timeout:g}s)', flush=True)
+                        elif execution.get('timeout_scope') == 'case':
+                            print(f"Native case deadline exceeded ({args.test_timeout:g}s): "
+                                  f"{execution['timed_out_case']}", flush=True)
+                        print(output[-12000:], flush=True)
+                        break
+                if not complete:
                     break
             result['execution_seconds'] += time.monotonic()-suite_start
             if not complete:
@@ -451,6 +496,8 @@ def main():
                 print(f'Native batch {batch_index+1}/{len(batches)} passed; retired {count} executables',
                       flush=True)
         result['expected_tests'] = expected
+        if complete and args.test_target and expected == 0:
+            raise RuntimeError('selected target/filter contains no tests')
         result['success'] = complete and expected > 0 and len(result['tests']) == expected
         print(f"Native assurance: {len(result['tests'])}/{expected} cases in {result['execution_seconds']:.3f}s", flush=True)
         return 0 if result['success'] else 1

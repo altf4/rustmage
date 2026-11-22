@@ -1,16 +1,13 @@
 //! Edge of Eternities card scenarios for collector numbers 029 through 042.
-#[path = "eoe_cards_001_066/scenario.rs"]
-mod common;
-mod support;
 
-use common::*;
+use crate::common::*;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{
     cards::authored::{CardExtras, CardRules},
     cards::*,
     engine::*,
 };
-use support::*;
 
 fn counter_cost(game: &Game, card: CardId) -> Action {
     Action::ChooseCreatureCounterCost {

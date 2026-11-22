@@ -1,10 +1,9 @@
 //! Death batches retain signed last-known power for a copiable token base.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const SPIRIT: Card = Card::from_catalogue_id(5326);
 const RAT: Card = Card::from_catalogue_id(5323);

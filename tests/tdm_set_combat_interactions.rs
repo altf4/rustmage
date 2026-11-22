@@ -1,9 +1,8 @@
 //! Actual TDM combat providers composed without fixture rule overlays.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const LIMIT: usize = 256;
 

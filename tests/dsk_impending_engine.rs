@@ -1,10 +1,9 @@
 //! Impending records a paid cast decision on the exact resulting permanent.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const SOURCE: &str = "Appendage Amalgam";
 const BLACK: Mana = [0, 0, 1, 0, 0, 0];

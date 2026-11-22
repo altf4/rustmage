@@ -1,12 +1,11 @@
 //! CR702.16 / CR702.147 shared-engine obligations; no TDM card admissions.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::engine::*;
-use support::*;
 
 const CREATURE: TargetPlan = TargetPlan::Single(TargetSpec::one(TargetRule::Creature));
 const fn ability(

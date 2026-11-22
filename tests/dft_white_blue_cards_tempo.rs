@@ -1,9 +1,8 @@
 //! Paid outcomes for white/blue removal, selection, cycling and exchange spells.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 fn drain(g: &mut Game) {
     for _ in 0..64 {

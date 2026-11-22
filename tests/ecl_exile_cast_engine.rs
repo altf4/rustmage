@@ -1,10 +1,9 @@
 //! Exact exile permissions and current ordered casting continuations.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 fn card(name: &str) -> Card {
     Card::from_name(name).unwrap()
 }

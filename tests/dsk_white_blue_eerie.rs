@@ -1,9 +1,8 @@
 //! Actual enchantment entry, Eerie, and Room door interactions.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const PLAYER: Player = Player::P0;
 const OPPONENT: Player = Player::P1;

@@ -27,6 +27,33 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class AssuranceRunnerTests(unittest.TestCase):
+    def test_every_scenario_file_has_one_cargo_target(self):
+        tests = ROOT/'tests'
+        metadata = json.loads(subprocess.check_output(
+            ['cargo', 'metadata', '--no-deps', '--format-version=1'], cwd=ROOT))
+        package = next(p for p in metadata['packages'] if Path(p['manifest_path']) == ROOT/'Cargo.toml')
+        targets = {t['name']: Path(t['src_path']) for t in package['targets'] if 'test' in t['kind']}
+        registered = list(targets.values())
+        expected = set(tests.glob('*.rs'))
+        for name, entry in native.scenario_suites(tests):
+            self.assertEqual(targets.get(name), entry)
+            registered.extend(native.scenario_files(entry))
+            if entry.parent != tests:
+                expected.update(entry.parent.glob('*.rs'))
+        self.assertCountEqual(registered, expected)
+
+    def test_grouped_case_filter_searches_only_original_case_names(self):
+        names = ['beam_engine::cast_beam', 'beam_engine::cast', 'other::cast_beam']
+        selected = native.selected_case_batches(names, {'beam_engine'}, 'beam')
+        case = 'beam_engine::cast_beam'
+        self.assertEqual(list(selected), [([case], ['--exact', case])])
+        self.assertEqual(list(native.selected_case_batches(names, {'beam_engine'}, 'beam_engine')), [])
+        many = ['beam::' + 'x'*200 + str(i) for i in range(150)]
+        batches = list(native.selected_case_batches(many + ['other::x'], {'beam'}, 'x'))
+        self.assertGreater(len(batches), 1)
+        self.assertEqual([name for cases, _ in batches for name in cases], many)
+        self.assertTrue(all(args == ['--exact', *cases] for cases, args in batches))
+
     def test_real_guarded_native_batches_link_run_and_retire(self):
         cache = Path(os.environ.get('XDG_CACHE_HOME', Path.home()/'.cache'))
         directory = Path(tempfile.mkdtemp(prefix='rustmage-batch-probe-', dir=cache)).resolve()
@@ -39,9 +66,12 @@ class AssuranceRunnerTests(unittest.TestCase):
                 '[lib]\npath="lib.rs"\ntest=false\n'
                 '[profile.test]\ndebug=false\nincremental=false\n')
             (root/'lib.rs').write_text('pub fn answer() -> u8 { 42 }\n')
-            for name in ['first', 'second']:
-                (root/f'tests/{name}.rs').write_text(
-                    '#[test] fn actual_case() { assert_eq!(rustmage::answer(), 42); }\n')
+            first = root/'tests/group_second'
+            first.mkdir()
+            (first/'main.rs').write_text('mod alpha;\nmod also_second;\n')
+            case = '#[test] fn actual_case() { assert_eq!(rustmage::answer(), 42); }\n'
+            for path in (first/'alpha.rs', first/'also_second.rs', root/'tests/second.rs'):
+                path.write_text(case)
             target = directory/'target'
             report = directory/'native.json'
             wrapper = os.environ.get('RUSTC_WRAPPER', str(ROOT/'scripts/rustc_guard.py'))
@@ -56,7 +86,7 @@ class AssuranceRunnerTests(unittest.TestCase):
             result = json.loads(report.read_text())
             self.assertEqual(status, 0, str(directory)+'\n'+json.dumps(result))
             self.assertEqual(len(result['compile_batches']), 2)
-            self.assertEqual(result['expected_tests'], 2)
+            self.assertEqual(result['expected_tests'], 3)
             self.assertEqual(result['retired_native_test_binaries'], 2)
             self.assertTrue(all(not Path(row['binary']).exists() for row in result['binaries']))
             self.assertTrue(list((target/'debug/deps').glob('librustmage*.rlib')))
@@ -64,6 +94,18 @@ class AssuranceRunnerTests(unittest.TestCase):
             libraries = [json.loads(line) for line in second_compile if line.startswith('{')]
             self.assertTrue(any(row.get('fresh') and 'lib' in row.get('target', {}).get('kind', [])
                                 for row in libraries), 'second batch rebuilt its shared library')
+            # The glob also happens to match the suite name. Only its matching
+            # former target and the separate standalone target were requested.
+            # The case substring need not start at the module boundary.
+            focused = ['run_native_tests.py', '--target-dir', str(target), '--report', str(report),
+                       '--test-target', '*second', '--filter', 'tual_']
+            with patch.object(native, 'ROOT', root), patch.object(sys, 'argv', focused), \
+                    patch.object(native.signal, 'signal'), \
+                    patch.dict(os.environ, {'RUSTC_WRAPPER': wrapper}), \
+                    contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(native.main(), 0)
+            self.assertCountEqual([row['test'] for row in json.loads(report.read_text())['tests']],
+                                  ['actual_case', 'also_second::actual_case'])
             passed = True
         finally:
             if passed:

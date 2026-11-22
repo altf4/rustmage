@@ -1,10 +1,9 @@
 //! Retain exact library bottoms while moving both opaque batches in one event.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const EXILE_TRIGGER_SOURCE: &str = "Hill Giant";
 const RULES: CardRules = CardRules {

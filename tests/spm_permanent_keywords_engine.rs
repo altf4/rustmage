@@ -1,9 +1,8 @@
 //! A resolved subtype grant includes noncreatures and follows exact recipients.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const GRANT: Keywords = Keywords::FLYING
     .union(Keywords::FIRST_STRIKE)

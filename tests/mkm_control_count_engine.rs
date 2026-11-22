@@ -1,10 +1,9 @@
 //! A targeted control batch remembers only actual changes of controller.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const CONTROL_BATCH: CardRules = CardRules {
     effect: Effect::Spell(

@@ -1,11 +1,10 @@
 //! Prevention effects with after-damage work and Aura-controlled redirection.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const PREVENT: ReplacementSpec = ReplacementSpec::PreventSelfDamageWithCounters;
 const PREVENTING_CREATURE: CardRules = CardRules {

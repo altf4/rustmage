@@ -1,11 +1,10 @@
 //! A live retention rule filters the pool without changing mana provenance.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const MIXED: Mana = [0, 1, 0, 2, 0, 0];
 const TWO_RED: Mana = [0, 0, 0, 2, 0, 0];

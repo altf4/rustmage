@@ -1,11 +1,10 @@
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::engine::{
     ability_world::CharacteristicWorld,
     funding::{FundingGoal, FundingState},
     *,
 };
-use support::*;
 
 fn shock_land_from_library(other_cards: usize) -> (Game, CardId, Vec<CardId>) {
     let p = Player::P0;

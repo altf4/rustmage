@@ -1,12 +1,10 @@
 //! Inherited A–D Outlaws definitions exercised through real game actions.
-#[path = "support/otj_e_l.rs"]
-mod scenarios;
-mod support;
+use crate::otj_e_l as scenarios;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
 use scenarios::{announce_activation, choose_targets, resolve, saddle, tokens};
-use support::*;
 
 fn pass_pair(game: &mut Game) {
     act(game, Action::Pass);

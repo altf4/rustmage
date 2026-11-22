@@ -1,11 +1,10 @@
 //! Additive entry-copy subtypes remain copiable on subsequent copies.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const ADDITIVE_COPY: CardRules = CardRules {
     effect: Effect::Creature(2, 2),

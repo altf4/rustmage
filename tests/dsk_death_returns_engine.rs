@@ -1,10 +1,9 @@
 //! Exact death receipts for immediate returns and delayed sacrifices.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const CREATURE: TargetPlan = TargetPlan::Single(TargetSpec::one(TargetRule::Creature));
 const WATCHER: CardRules = CardRules {

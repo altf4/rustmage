@@ -1,6 +1,7 @@
 //! Scenario helpers for the Edge of Eternities 001–066 card targets.
 #![allow(dead_code)]
-use super::*;
+use crate::support::{act, choose, pay};
+use rustmage_core::{cards::*, engine::*};
 
 pub(super) fn pass_pair(game: &mut Game) {
     act(game, Action::Pass);

@@ -1,11 +1,10 @@
 //! A private search result can be cast once during resolution or go to hand.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const TUTOR: CardRules = CardRules {
     effect: Effect::Spell(

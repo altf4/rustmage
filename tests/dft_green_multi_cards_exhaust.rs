@@ -1,9 +1,8 @@
 //! Printed exhaust, Vehicle and green entry outcomes using the frozen shared engine.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 fn drain(g: &mut Game) {
     for _ in 0..96 {
         if g.state.stack.is_empty()

@@ -1,10 +1,9 @@
 //! Public name choices and bounded private three-zone search share owned resolution state.
-mod support;
+use crate::support::*;
 use rustmage::{Card, CardName};
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const SEARCH: CardRules = CardRules {
     effect: Effect::Spell(

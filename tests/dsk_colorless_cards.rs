@@ -1,9 +1,8 @@
 //! Paid rules scenarios for the physical Duskmourn artifacts.
-mod support;
 
+use crate::support::*;
 use rustmage::{RoomChange, RoomDoor};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const P: Player = Player::P0;
 

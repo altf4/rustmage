@@ -1,12 +1,11 @@
 //! Colored reductions and exact-incarnation counter-bound land types.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const BLUE: Mana = [0, 1, 0, 0, 0, 0];
 const RED: Mana = [0, 0, 0, 1, 0, 0];

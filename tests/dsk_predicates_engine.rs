@@ -1,10 +1,9 @@
 //! Target qualifications and effective signed power in live and projected worlds.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const UNTAPPED_CREATURES: TargetRule = TargetRule::Filtered {
     base: &TargetRule::creature_you_control(),

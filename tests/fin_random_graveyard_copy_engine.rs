@@ -1,11 +1,10 @@
 //! Owned random graveyard exile and sequential tapped-copy entries.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::engine::zone_replacements;
 use rustmage_core::rng::Rng;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const RANDOM_COPY: CardRules = CardRules {
     effect: Effect::Creature(7, 7),

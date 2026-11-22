@@ -1,11 +1,10 @@
 //! Outcome-gated linked exile and layer-ordered activation grants.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const ZERO: Mana = [0; 6];
 const BLUE: Mana = [0, 1, 0, 0, 0, 0];

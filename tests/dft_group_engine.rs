@@ -1,10 +1,9 @@
 //! Independent group membership and layer-six keyword-loss outcomes.
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const CREATURES: BattlefieldFilter = BattlefieldFilter {
     kinds: 1,

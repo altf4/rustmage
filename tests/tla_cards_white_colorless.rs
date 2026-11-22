@@ -7,11 +7,10 @@ mod choices;
 mod combat;
 #[path = "tla_cards_white_colorless/permanents.rs"]
 mod permanents;
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn pass_pair(game: &mut Game) {
     act(game, Action::Pass);

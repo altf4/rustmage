@@ -1,9 +1,8 @@
 //! The opposing-hand guard samples only the other seat's current hand count.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 #[test]
 fn opponent_hand_qualifies_independently_of_the_sources_controller() {

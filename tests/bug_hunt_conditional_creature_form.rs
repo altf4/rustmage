@@ -1,7 +1,6 @@
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::CounterKind, engine::*};
-use support::*;
 
 #[test]
 fn conditional_creature_form_replaces_planeswalker_type_until_opponents_turn() {

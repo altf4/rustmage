@@ -1,9 +1,8 @@
 //! A legendary creature sacrifice is a live actual and projected cost.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const BLUE: Mana = [0, 1, 0, 0, 0, 0];
 const FEE: Mana = [0, 1, 0, 0, 0, 2];

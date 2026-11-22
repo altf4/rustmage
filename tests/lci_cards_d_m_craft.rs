@@ -1,8 +1,7 @@
 //! LCI Craft faces, granted attacks, and equipment behavior through actual costs.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn named(game: &mut Game, player: Player, name: &str, zone: Zone) -> CardId {
     spawn(game, player, Card::from_name(name).unwrap(), zone)

@@ -1,7 +1,6 @@
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::engine::*;
-use support::*;
 
 #[test]
 fn this_turn_delayed_triggers_observe_cleanup_actions_until_the_turn_advances() {

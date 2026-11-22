@@ -1,10 +1,9 @@
 //! Paid outcomes for the final Spider-Man card cohort.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 fn pass_pair(game: &mut Game) {
     act(game, Action::Pass);

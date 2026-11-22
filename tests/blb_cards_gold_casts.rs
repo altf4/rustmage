@@ -1,9 +1,8 @@
 //! Printed cast, play, and exact replay routes on six Bloomburrow permanents.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn pass_pair(game: &mut Game) {
     act(game, Action::Pass);

@@ -1,12 +1,9 @@
 //! Edge of Eternities card scenarios for collector numbers 015 through 028.
-#[path = "eoe_cards_001_066/scenario.rs"]
-mod common;
-mod support;
 
-use common::*;
+use crate::common::*;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 #[test]
 fn sunborn_doubles_knight_luminary_on_both_cast_routes_and_lifelinks_in_combat() {

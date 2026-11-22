@@ -1,9 +1,8 @@
 //! Creature-powered effects use the actual sources and one damage batch.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const SWEEP: CardRules = CardRules {
     effect: Effect::Spell(

@@ -1,7 +1,6 @@
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::CounterKind, engine::*};
-use support::*;
 
 fn resolve_howl(gift: bool, target_creature: bool, shield: bool) -> (Game, CardId) {
     let p = Player::P0;

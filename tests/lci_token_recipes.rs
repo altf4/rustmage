@@ -1,9 +1,8 @@
 //! Actual token creation retains each pinned Ixalan recipe's characteristics.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const ANGEL: Card = Card::from_catalogue_id(5569);
 const DINOSAUR: Card = Card::from_catalogue_id(5570);

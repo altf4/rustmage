@@ -1,10 +1,9 @@
 //! The target's battlefield name and controller bind a private resolution search.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const EXILE_SEARCH: CardRules = CardRules {
     effect: Effect::Spell(

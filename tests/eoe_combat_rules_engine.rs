@@ -1,10 +1,9 @@
 //! Edge of Eternities combat restrictions, block events and prevention.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const DRONE: CardRules = CardRules {
     effect: Effect::Creature(1, 1),

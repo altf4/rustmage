@@ -1,12 +1,11 @@
 //! Layer-six activation inheritance, exact ability instances and mana funding.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::characteristic_layers::AnimationTypeMode;
 use rustmage_core::engine::*;
-use support::*;
 
 const PLAYER: Player = Player::P0;
 const ZERO: Mana = [0; 6];

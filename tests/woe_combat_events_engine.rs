@@ -1,10 +1,9 @@
 //! Blocking pairs and newly blocked attackers are separate historical events.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const PAIR_OBSERVER: CardRules = CardRules {
     effect: Effect::Creature(1, 3),

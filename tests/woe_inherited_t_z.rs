@@ -1,9 +1,8 @@
 //! Paid outcome proofs for the inherited Wilds definitions from T through Z.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const FOOD: Card = Card::from_catalogue_id(5246);
 const WICKED: Card = Card::from_catalogue_id(5248);

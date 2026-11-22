@@ -1,9 +1,8 @@
 //! A post-mill choice records the actual public card returned to hand.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const GREETER: CardRules = CardRules {
     effect: Effect::Creature(1, 1),

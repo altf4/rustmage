@@ -1,12 +1,10 @@
 //! Outlaws of Thunder Junction card scenarios, K through L.
-#[path = "support/otj_e_l.rs"]
-mod otj;
-mod support;
+use crate::otj_e_l as otj;
 
+use crate::support::*;
 use otj::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 #[test]
 fn kaervek_copies_only_an_own_black_graveyard_card_and_charges_life_on_cast() {

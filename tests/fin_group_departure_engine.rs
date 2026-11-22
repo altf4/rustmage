@@ -1,12 +1,11 @@
 //! Dynamic group unions and exact predeparture quantities and observers.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::engine::characteristic_query::CharacteristicQuery;
 use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const ARTIFICERS: CountFilter = CountFilter {
     zone: CountZone::Battlefield,

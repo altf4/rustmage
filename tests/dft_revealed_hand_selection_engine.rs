@@ -1,10 +1,9 @@
 //! Positive-kind public hand choices; no ordinary card admission is needed.
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const TARGET_OPPONENT: TargetPlan = TargetPlan::Single(TargetSpec::one(TargetRule::Player {
     opponent_only: true,

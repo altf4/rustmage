@@ -1,9 +1,8 @@
 //! Starcage's acquired ability pairs link only their own exile events.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const COPY_ARTIFACT: CardRules = CardRules {
     effect: Effect::Creature(2, 2),

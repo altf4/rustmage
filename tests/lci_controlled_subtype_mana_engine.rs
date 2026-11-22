@@ -1,10 +1,9 @@
 //! An external tap-mana template pays life from the exact receiving source.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::CardName;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const BLUE: Mana = [0, 1, 0, 0, 0, 0];
 const COLORLESS: Mana = [0, 0, 0, 0, 0, 1];

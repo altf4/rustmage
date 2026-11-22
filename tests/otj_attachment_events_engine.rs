@@ -1,10 +1,9 @@
 //! Committed attachment events and exact attachment-duration control.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const CONTROL: CardRules = CardRules {
     effect: Effect::Creature(2, 2),

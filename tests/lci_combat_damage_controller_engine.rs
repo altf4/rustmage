@@ -1,9 +1,8 @@
 //! The damaged controller observes one actual combat batch and captures its attacker.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const TREASURE: Card = Card(5302);
 const BALL: CardRules = CardRules {

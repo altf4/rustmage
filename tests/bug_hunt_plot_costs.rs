@@ -1,7 +1,6 @@
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 #[test]
 fn plotting_dragons_prey_must_still_check_its_target_cost_increase() {

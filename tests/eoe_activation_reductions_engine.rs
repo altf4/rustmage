@@ -1,11 +1,10 @@
 //! Actual and projected generic reductions share live characteristics and a locked total.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules, one};
 use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const TARGETED: ActivatedAbility = ActivatedAbility {
     cost: ActivationCost {

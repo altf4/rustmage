@@ -1,8 +1,7 @@
 //! Four LCI artifact fronts and their exact crafted or transformed backs.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const TREASURE: Card = Card(5302);
 const COLORLESS: Mana = [0, 0, 0, 0, 0, 1];

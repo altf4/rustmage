@@ -1,10 +1,9 @@
 //! Permanent Equipment form, layered ability replacement, and exact acquisition.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const EQUIPMENT_NAME: &str = "Testforge, Last Hammer";
 const SOURCE_NAME: &str = "A Realm Reborn";

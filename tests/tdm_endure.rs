@@ -1,11 +1,10 @@
 //! CR701.63: the enduring permanent's controller chooses; prohibited counters
 //! force a Spirit. These scenarios use actual Anafenza death triggers.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const STEAL: CardRules = CardRules {
     effect: Effect::Spell(

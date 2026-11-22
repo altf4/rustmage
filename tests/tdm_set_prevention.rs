@@ -1,9 +1,8 @@
 //! Actual TDM chosen-source prevention, damage-controller and departed-source outcomes.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 fn idle(g: &Game) -> bool {
     g.state.pending == Pending::Priority

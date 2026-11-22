@@ -1,8 +1,7 @@
 //! Real-card obligations for inherited LCI cards from Synapse through Waylaying.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const GNOME: Card = Card(5267);
 const MAP: Card = Card(5284);

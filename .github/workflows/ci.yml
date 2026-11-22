@@ -129,25 +129,18 @@ jobs:
           # check_sources reads immutable blobs with one git cat-file process.
           # No full XMage working tree or Java build is needed.
 
-      - name: Cache compiled Rust artifacts
-        if: steps.scope.outputs.code == 'true' && runner.os != 'Windows'
+      - name: Cache compiled Rust test artifacts
+        if: steps.scope.outputs.code == 'true'
         uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
         with:
-          path: ~/.cache/rustmage-ci/rustmage-targets
-          key: rustmage-workspace-v1-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-${{ hashFiles('.cargo/config.toml', 'scripts/rustc_guard.py') }}-${{ github.sha }}
+          path: |
+            ${{ steps.build_paths.outputs.target }}/debug
+            ${{ steps.build_paths.outputs.target }}/.rustc_info.json
+            ${{ steps.build_paths.outputs.target }}/rustmage-compile-inputs.json
+          key: rustmage-tests-v1-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-${{ hashFiles('.cargo/config.toml', 'scripts/rustc_guard.py') }}-${{ github.sha }}
           restore-keys: |
-            rustmage-workspace-v1-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-${{ hashFiles('.cargo/config.toml', 'scripts/rustc_guard.py') }}-
-            rustmage-workspace-v1-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-
-
-      - name: Cache compiled Rust artifacts on Windows
-        if: steps.scope.outputs.code == 'true' && runner.os == 'Windows'
-        uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
-        with:
-          path: ${{ steps.build_paths.outputs.target }}
-          key: rustmage-workspace-v2-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-${{ hashFiles('.cargo/config.toml', 'scripts/rustc_guard.py') }}-${{ github.sha }}
-          restore-keys: |
-            rustmage-workspace-v2-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-${{ hashFiles('.cargo/config.toml', 'scripts/rustc_guard.py') }}-
-            rustmage-workspace-v2-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-
+            rustmage-tests-v1-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-${{ hashFiles('.cargo/config.toml', 'scripts/rustc_guard.py') }}-
+            rustmage-tests-v1-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-
 
       - name: Restore timestamps of verified unchanged compile inputs
         if: steps.scope.outputs.code == 'true'
@@ -167,11 +160,7 @@ jobs:
           if [[ "$RUNNER_OS" == "macOS" ]]; then
             retire=(--retire-native-binaries)
           fi
-          python scripts/validate.py --release --python smoke "${retire[@]}" 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
-
-      - name: Run Standard gameplay through the native guard
-        if: steps.scope.outputs.code == 'true'
-        run: python scripts/resource_guard.py -- cargo run --release --example standard -- 1
+          python scripts/validate.py --test-artifacts --python smoke "${retire[@]}" 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
 
       - name: Record compile inputs for the next compatible cache
         if: success() && steps.scope.outputs.code == 'true'

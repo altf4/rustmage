@@ -1,11 +1,10 @@
 //! Live exact Equipment links used by continuous abilities and targets.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const HASTE: CardRules = CardRules {
     effect: Effect::Creature(3, 3),

@@ -1,0 +1,29 @@
+#[path = "../support/mod.rs"]
+mod support;
+
+mod trk_engine_t_z_followups;
+mod trk_engine_t_z_more;
+mod trk_extra_turn_begun_engine;
+mod trk_federation_engine;
+mod trk_first_spell_engine;
+mod trk_gray_copy_engine;
+mod trk_gwyndala_equipment_engine;
+mod trk_hand_size_engine;
+mod trk_infinite_diversity_engine;
+mod trk_inner_light_damage_engine;
+mod trk_kira_entry_engine;
+mod trk_library_top_artifact_engine;
+mod trk_life_gain_multiplier_engine;
+mod trk_lwaxana_trigger_engine;
+mod trk_m_benga_engine;
+mod trk_nog_stage_engine;
+mod trk_peace_engine;
+mod trk_phasing_engine;
+mod trk_promotion_counter;
+mod trk_self_exile_cast_engine;
+mod trk_source_permissions_engine;
+mod trk_surly_surgeon_engine;
+mod trk_token_substitution_engine;
+mod trk_treasure_sacrifice_engine;
+mod trk_untapped_entry_engine;
+mod trk_vulcan_mind_meld_engine;

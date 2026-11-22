@@ -1,9 +1,8 @@
 //! Definition-level scenarios for admitted EOE red cards in collectors 133–170.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn resolve_top(game: &mut Game) {
     act(game, Action::Pass);

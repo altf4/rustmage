@@ -1,7 +1,6 @@
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::engine::*;
-use support::*;
 #[test]
 fn bilbos_attack_permission_allows_mammoth_bellow_for_harmonize() {
     let p = Player::P0;

@@ -1,8 +1,6 @@
-mod support;
-
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::engine::*;
-use support::*;
 
 #[test]
 fn collector_cage_hides_exiled_card_from_player_who_only_controlled_it_before_exile() {

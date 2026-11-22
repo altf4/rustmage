@@ -1,10 +1,9 @@
 //! Top-library spell permissions use the chosen face and the declared stack X.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const EXPENSIVE: CastFilter = CastFilter::ManaValueMinimum {
     filter: &CastFilter::Any,

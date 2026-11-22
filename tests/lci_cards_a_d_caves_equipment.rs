@@ -1,9 +1,8 @@
 //! Cave mana and quantities, modal resolution, exact Equip routes and costs.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const BAT: Card = Card::from_catalogue_id(5276);
 const TREASURE: Card = Card::from_catalogue_id(5302);

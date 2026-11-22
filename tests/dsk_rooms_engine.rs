@@ -1,13 +1,12 @@
 //! Rules fixtures for permanent split spells and exact Room door state.
-mod support;
 
+use crate::support::*;
 use rustmage::{PermanentType, RoomDoor};
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::engine::characteristic_query::CharacteristicQuery;
 use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const ROOM: Card = Card::from_catalogue_id(176); // Anthem of Champions
 const LEFT: Card = Card::from_catalogue_id(1024); // Deeproot Pilgrimage, {1}{U}

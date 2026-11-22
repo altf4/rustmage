@@ -1,7 +1,6 @@
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::engine::*;
-use support::*;
 
 #[test]
 fn active_player_has_the_first_simultaneous_death_replacement_choice() {

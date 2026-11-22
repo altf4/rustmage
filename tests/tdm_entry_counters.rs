@@ -1,13 +1,12 @@
 //! Entry counters and subsequent counter events share replacements but retain
 //! distinct event boundaries. Typed fixtures leave all TDM admission unchanged.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::engine::*;
-use support::*;
 
 const GRAVE: TargetRule = TargetRule::Object {
     zone: TargetZone::Graveyard,

@@ -1,10 +1,9 @@
 //! A mandatory land recovery consumes the exact public mill receipt and tests the actual hand move.
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const TREASURE: Card = Card::from_catalogue_id(5302);
 const NATURALIST: CardRules = CardRules {

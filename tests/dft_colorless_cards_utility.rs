@@ -1,9 +1,8 @@
 //! Three artifact cards with paid abilities and an intervening entry condition.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 fn action(card: CardId, ability: u16) -> Action {
     Action::AnnounceActivate {

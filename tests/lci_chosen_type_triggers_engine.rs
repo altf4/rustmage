@@ -1,10 +1,9 @@
 //! Chosen-type multipliers count once at the triggering event.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const PROVIDER: CardRules = CardRules {
     effect: Effect::Creature(4, 4),

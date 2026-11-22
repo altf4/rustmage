@@ -1,10 +1,9 @@
 //! Owned private entry groups and repeated blink choices.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const REPEAT_BLINK: CardRules = CardRules {
     effect: Effect::Spell(

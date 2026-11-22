@@ -1,9 +1,8 @@
 //! Exact offspring recipes and Bloomburrow's first own-target triggers.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn drain(game: &mut Game, decision: impl Fn(&Action) -> bool) {
     for _ in 0..48 {

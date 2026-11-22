@@ -1,9 +1,8 @@
 //! Ordered mixed-zone Craft with live colors and exact material re-entry.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn named(name: &str) -> Card {
     Card::from_name(name).unwrap()

@@ -1,5 +1,3 @@
-mod support;
-
 use rustmage as _;
 
 #[path = "tla_cards_red/cave.rs"]
@@ -26,7 +24,7 @@ fn reach(
         if ready(game) {
             return;
         }
-        support::choose(game, |action| {
+        crate::support::choose(game, |action| {
             matches!(action, Action::Pass | Action::PutTrigger { .. })
         });
     }

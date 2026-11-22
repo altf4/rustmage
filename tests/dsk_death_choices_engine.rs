@@ -1,10 +1,9 @@
 //! Exact departure counters and non-targeted return choices across graveyards.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const EITHER_GRAVEYARD: CardRules = CardRules {
     effect: Effect::Spell(

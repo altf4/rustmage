@@ -1,9 +1,8 @@
 //! The revealed library cohort is owned and each mandatory pick commits in order.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const MEMORIES: CardRules = CardRules {
     effect: Effect::Spell(

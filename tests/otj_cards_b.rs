@@ -1,12 +1,10 @@
 //! Actual B-range Outlaws definitions and interacting rules.
-#[path = "support/otj_e_l.rs"]
-mod scenarios;
-mod support;
+use crate::otj_e_l as scenarios;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*, rng::Rng};
 use scenarios::{MERCENARY, TREASURE, announce_activation, choose_targets, resolve, tokens};
-use support::*;
 
 fn pass_pair(game: &mut Game) {
     act(game, Action::Pass);

@@ -2,7 +2,7 @@
   "files": {
     ".cargo/config.toml": "15eb9c942b20a13e850e6f6636617364cd8cec07e24f3cb3a792b5d56cb4aaba",
     "Cargo.lock": "8046c1dcce70f68e7d7efb3e96b57203d4a4fa2c70d94762d7e8effef3ff148f",
-    "Cargo.toml": "5f76b580a1850cca39e97b6d6cd841e98b9af9e40d37d0c2c7f34314e17f4d73",
+    "Cargo.toml": "179bb71e94aef00aa853a66036a17ee8b3052b196332fe403f1736bc5c247d17",
     "crates/cards/afr/Cargo.toml": "29618d050404d0ad8ad4057a8d0b8dcbfe61e48c98cee8355ffa1402c8f4df6e",
     "crates/cards/afr/src/lib.rs": "8e3080768f09c94563ff66b738abe44c5754293070dd99b8c400640d08a87234",
     "crates/cards/big/Cargo.toml": "659f2cbe21b6b628893289456a3ad89076921ff71e623040f13b13152d9f3718",
@@ -105,7 +105,7 @@
     "crates/engine/src/cards_test_counter_providers.rs": "2d91004d92efb2d525713640801a62bfa5cbbe1905e2299ddd468dfb359c971b",
     "crates/engine/src/catalogue.rs": "35f9a5d4ad79e032afd90f22851eab8f4e07852248f1466c8f0f991aa9c5db24",
     "crates/engine/src/catalogue_accessors.rs": "1f752b32626085d1c54b822efed00dcc4d6c88023d0c85fce8f9d49d125cef19",
-    "crates/engine/src/engine.rs": "81afc3ba43ac3220317ea9f02c4907e23eee0619a4324f1999a965f4eacbc8f2",
+    "crates/engine/src/engine.rs": "65cda70ed5ca2ffba7489bda8a9533595e71fa817562667855b88b9cbb5b382b",
     "crates/engine/src/engine_ability_evaluation.rs": "c4e2c18c0853c7417403116ac774f3392f38b72d6072fb8352c29bd8e79e9d97",
     "crates/engine/src/engine_ability_order.rs": "6804efd98f6d370a150aa4dfd8c51c30cec9d0a627e1eebf8bc3b2a1c5cfecb5",
     "crates/engine/src/engine_ability_resolutions.rs": "12653141bd7d534427e02f0b7404c19a86f6224f1a8d2952a4747605e30e5b3e",
@@ -363,9 +363,10 @@
     "examples/tdm_games.rs": "d5ad8e7893c4ff6b5c938fa97d806e78723f085895ba3c5a20fc5a3c5f0a07f4",
     "rust-toolchain.toml": "495c69d1db93f25f53e3d0d2d40d812313366cc368de317871c2ace6c6ffafa4",
     "scripts/tdm_execution_inputs.py": "354c57b93d69a56e6443b53062da1a69a7d990a372906ea1508182753e0b044b",
-    "src/bin/benchmark.rs": "132e6732f4c2c608fa220caa4f7764ce79af3a38f58e25353182fa13b8665ed2",
+    "src/bin/benchmark.rs": "aaa0c6a31f39447ca79f907e87019e77a66365832bf57ae6bbc3a25f347f859d",
     "src/bin/coverage.rs": "281e3fefae34d3134bef6fa1c9a779fc364a8a11b6cef26d1f970c55e553ce45",
     "src/bin/rustmage.rs": "d3a31dac86212f72adacb2b3bd5ae0247fddc915aa4a76e052108322f116f3a2",
+    "src/bin/support/standard.rs": "50d3139c47f9abd18b619d1d1ce1c963c08ba7ece45c804d56c431d0da8f7374",
     "src/card_definitions/afr/vampire_spawn.json": "d1a3a9939f30d0eaad046f076cecdbd334d49b13f123cea3aeeb1dae56636cec",
     "src/card_definitions/afr/vampire_spawn.rs": "8f0123f1adab93037293b68b0626270bd928260054f1564d505fb012db854d52",
     "src/card_definitions/big/ancient_cornucopia.json": "2706a8d2e0ef39b3c813caefe5336c5fb4d69ea9d19bd5c13485fda7fe959414",
@@ -12410,5 +12411,5 @@
   },
   "schema": 1,
   "scope": "Workspace library Rust, provenance and build inputs plus TDM acceptance entrypoints; shared harness is independently self-hashed.",
-  "source_count": 12407
+  "source_count": 12408
 }

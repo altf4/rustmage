@@ -1,10 +1,9 @@
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{
     cards::{CounterKind, Counters},
     engine::*,
 };
-use support::*;
 
 fn hulk_combat_with_pending_enrage(blocker_name: &str) -> (Game, CardId) {
     let p = Player::P0;

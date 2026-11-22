@@ -1,10 +1,9 @@
 //! Paid Web-slinging and exact tapped-creature return on the split engine.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules, one};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const GREEN: Mana = [0, 0, 0, 0, 1, 0];
 const WEB_COST: ManaCost = ManaCost {

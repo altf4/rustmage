@@ -1,11 +1,10 @@
 //! Entry form and counters share a transaction, while the returned card's
 //! copiable values retain its ordinary physical definition.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const fn own_graveyard(kinds: u8) -> TargetRule {
     TargetRule::Object {

@@ -1,9 +1,8 @@
 //! A dynamic Ward cost samples live power and exact pre-departure power.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const WARD: CardRules = CardRules {
     effect: Effect::Creature(2, 2),

@@ -1,9 +1,8 @@
 //! Authored black and red Rooms, their independent doors, and their exact effects.
-mod support;
 
+use crate::support::*;
 use rustmage::RoomDoor;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const BLACK: usize = 2;
 const RED: usize = 3;

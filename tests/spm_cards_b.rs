@@ -1,9 +1,8 @@
 //! Paid Spider-Man card scenarios for the second authored batch.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 #[path = "spm_cards_b/admitted_creatures.rs"]
 mod admitted_creatures;

@@ -1,11 +1,10 @@
 //! Exact exile-play permissions and creature entry batches from exile.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const CREATURES_OR_LANDS: TargetPlan = TargetPlan::Single(TargetSpec {
     rule: TargetRule::Object {

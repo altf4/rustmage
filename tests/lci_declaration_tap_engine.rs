@@ -1,9 +1,8 @@
 //! Declaration-only subtype triggers and simultaneous permanent tap receipts.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const GNOME: Card = Card(5267);
 const MERFOLK: Card = Card(5398);

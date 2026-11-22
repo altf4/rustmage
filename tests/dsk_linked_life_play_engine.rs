@@ -1,10 +1,9 @@
 //! Live own-turn permission and printed costs for exactly linked exile objects.
-mod support;
+use crate::support::*;
 use rustmage::RoomDoor;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const SOURCE: CardRules = CardRules {
     effect: Effect::Creature(2, 2),

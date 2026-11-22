@@ -1,9 +1,8 @@
 //! Paid scenarios for green and multicolored Duskmourn Rooms and their interactions.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const SMOKY_ROOM: &str = "Smoky Lounge // Misty Salon";
 

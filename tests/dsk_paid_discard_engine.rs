@@ -1,10 +1,9 @@
 //! Paid discard characteristics follow the exact successful cost event and its copies.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules, one};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const DRAW_DAMAGE: CardRules = CardRules {
     effect: Effect::Spell(

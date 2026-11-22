@@ -31,6 +31,12 @@ The Cargo workspace keeps the shared engine, per-set definitions and integration
 tests in separate compilation units. Applications still use one `rustmage`
 dependency. See the repository's [authoring and validation instructions](AGENTS.md).
 
+Card and rules scenarios keep their source paths under `tests/`. Declare each
+new scenario module in its set's suite entry point so Cargo links it with the
+other scenarios. The native test runner accepts individual scenario names via
+`--test-target`. For example, to run the Bloomburrow food-layer tests directly
+with Cargo, use `python3 scripts/resource_guard.py -- cargo test --test blb_scenarios blb_food_layers_engine::`.
+
 ## Examples and bindings
 
 - [Rust examples](examples/) show how to drive games and branch game state.
@@ -38,31 +44,54 @@ dependency. See the repository's [authoring and validation instructions](AGENTS.
 
 ## Build and run
 
-Install Rust through rustup (the repository pins 1.98.0, matching CI) and Python
-3.10 or newer. In a Python
-virtual environment, install the portable build supervisor:
+Install Rust through rustup (the repository pins 1.98.0) and Python 3.10 or
+newer. From the checkout root, with a Python virtual environment active, run
 
 ```sh
 python -m pip install -r scripts/requirements-build.txt
 python scripts/link_catalogue.py
-python scripts/resource_guard.py -- cargo build --release --lib --bin rustmage --example standard
-python scripts/resource_guard.py -- cargo run --release --example standard -- 1
 ```
 
-These commands work in native macOS, Linux and Windows terminals with the virtual
-environment activated (`python3` can be used instead of `python`). The example
-plays a Standard game and prints its terminal outcome. The `rustmage` executable
-is a JSON-lines diagnostic client; it expects a configuration on stdin.
+**Native library for Rust, C or Python.** Build the library and print the
+absolute path to the shared library for this platform.
 
-Build outputs are reused under `~/.cache/rustmage-targets` unless
-`CARGO_TARGET_DIR` is set. Reports remain under `~/.cache/rustmage-build-reports`.
+```sh
+python scripts/resource_guard.py -- cargo build --release --lib
+python -c "from pathlib import Path; from scripts.build_platform import cargo_environment, library_name; print(Path(cargo_environment()['CARGO_TARGET_DIR']).resolve() / 'release' / library_name())"
+```
 
-Full validation also requires the pinned XMage Git objects (see CI's source-fetch
-step). Set `RUSTMAGE_XMAGE_SOURCE` to that checkout and run:
+For Python, put the checkout's `python` directory on `PYTHONPATH` and pass the
+printed path to `Game(..., library=...)` or set `RUSTMAGE_LIBRARY` to it.
+The filename is `librustmage.so` on Linux, `librustmage.dylib` on macOS and
+`rustmage.dll` on Windows.
+
+**Standard gameplay.** To play one game and print its terminal outcome, run
+
+```sh
+python scripts/resource_guard.py -- cargo run --release --bin benchmark -- --standard-smoke 1
+```
+
+**Diagnostic CLI.** To build the optional JSON-lines client, which reads its
+configuration from stdin, run
+
+```sh
+python scripts/resource_guard.py -- cargo build --release --bin rustmage
+```
+
+The guard uses a per-checkout target directory under
+`~/.cache/rustmage-targets` by default and honors `CARGO_TARGET_DIR`. Reports
+are stored under `~/.cache/rustmage-build-reports`. Setting `XDG_CACHE_HOME`
+changes the cache root.
+
+For local release validation, set `RUSTMAGE_XMAGE_SOURCE` to a checkout with
+the pinned XMage Git objects and run
 
 ```sh
 python scripts/validate.py --release --python smoke
 ```
+
+GitHub CI runs `python scripts/validate.py --test-artifacts --python smoke`.
+It reuses the native test build for simulation, Standard gameplay and Python.
 
 ## Standard
 

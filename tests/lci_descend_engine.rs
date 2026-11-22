@@ -1,11 +1,10 @@
 //! Descended is per-owner turn history of physical arrivals. Live graveyard
 //! characteristics also govern activation legality and mana funding.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const WATCHER: CardRules = CardRules {
     effect: Effect::Creature(2, 2),

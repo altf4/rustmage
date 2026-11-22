@@ -1,13 +1,12 @@
 //! Opposing creature death links return only exact cards in the Treasure form.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::engine::*;
-use support::*;
 
 const RETURNER: CardRules = CardRules {
     effect: Effect::Creature(2, 2),

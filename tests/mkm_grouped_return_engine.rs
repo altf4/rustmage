@@ -1,10 +1,9 @@
 //! Independent graveyard roles return in one exact animated batch.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const fn graveyard(kinds: u8) -> TargetRule {
     TargetRule::Object {

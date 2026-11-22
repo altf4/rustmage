@@ -1,9 +1,8 @@
 //! A required search selects a zone before applying the public or hidden rules.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::authored::CardRules, cards::*, engine::*};
-use support::*;
 
 const FIND_ARTIFACT: CardRules = CardRules {
     effect: Effect::Spell(

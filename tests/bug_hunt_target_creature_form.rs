@@ -1,7 +1,6 @@
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::Keywords, engine::*};
-use support::*;
 
 #[test]
 fn setting_a_creature_form_does_not_prolong_another_effects_animation() {

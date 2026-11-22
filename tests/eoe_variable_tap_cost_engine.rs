@@ -1,9 +1,8 @@
 //! Nonmana X is declared against complete projected mana and tap payments.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardRules, one};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const STARFORGE: ActivatedAbility = ActivatedAbility {
     cost: ActivationCost {

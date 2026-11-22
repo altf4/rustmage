@@ -1,10 +1,9 @@
 //! Signed, effective powers constrain a private selection from a public reveal.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const RIP: Card = Card::GrizzlyBears;
 const RIP_RULES: CardRules = CardRules {

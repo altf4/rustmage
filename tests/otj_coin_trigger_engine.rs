@@ -1,11 +1,10 @@
 //! A coin result creates a fresh ability with the original cast facts.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::rng::Rng;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const ARTIFACT: SacrificeFilter = SacrificeFilter {
     keywords: Keywords::NONE,

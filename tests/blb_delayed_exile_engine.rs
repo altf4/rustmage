@@ -1,9 +1,8 @@
 //! Delayed step packets own separate exact batches of exiled cards.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const EXILE: &[Instruction] = &[
     Instruction::ExileTopLibraryRemember {

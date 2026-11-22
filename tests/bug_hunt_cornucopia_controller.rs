@@ -1,8 +1,6 @@
-mod support;
-
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::engine::*;
-use support::*;
 
 #[test]
 fn ancient_cornucopia_tracks_each_controllers_choice() {

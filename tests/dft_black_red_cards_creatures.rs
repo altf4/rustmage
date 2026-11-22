@@ -1,9 +1,8 @@
 //! Whole-card outcomes for the black/red creature and activation family.
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 fn activation(card: CardId, ability: u16) -> Action {
     Action::AnnounceActivate {

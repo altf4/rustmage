@@ -1,10 +1,9 @@
 //! Resolution captures a public generic discount for the remainder of the turn.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const WHITE_BLUE: u8 = 0b00011;
 const BLACK_RED: u8 = 0b01100;

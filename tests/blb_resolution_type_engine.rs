@@ -1,10 +1,9 @@
 //! Each repeated mass destruction chooses independently during resolution.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::PermanentType;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const TYPES: &[PermanentType] = &[PermanentType::Artifact, PermanentType::Enchantment];
 const TWO_DESTRUCTIONS: CardRules = CardRules {

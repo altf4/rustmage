@@ -1,10 +1,9 @@
 //! Noncombat damage floors and turn history use the source at the damage event.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const RED: u8 = 1 << 3;
 const BLUE: u8 = 1 << 1;

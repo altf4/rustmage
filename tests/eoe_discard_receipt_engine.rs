@@ -1,11 +1,10 @@
 //! Mandatory discard receipts record completed events, including an empty batch.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const DISCARD: CardRules = CardRules {
     effect: Effect::Spell(

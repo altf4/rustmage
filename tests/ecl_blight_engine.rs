@@ -1,9 +1,8 @@
 //! Mandatory, resolution and nonmana-X blight use real announcements and payment.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 const FILTER: SacrificeFilter = SacrificeFilter {
     keywords: Keywords::NONE,
     source_only: false,

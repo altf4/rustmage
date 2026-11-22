@@ -1,11 +1,10 @@
 //! Warp's selected alternative, payment and exact-object delayed permission.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const RED: ManaCost = ManaCost {
     colored: [0, 0, 0, 1, 0, 0],

@@ -1,9 +1,8 @@
 //! Rules evidence for admitted LCI identities from Captivating Cave through Diamond Pick-Axe.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const MAP: Card = Card::from_catalogue_id(5284);
 const TREASURE: Card = Card::from_catalogue_id(5302);

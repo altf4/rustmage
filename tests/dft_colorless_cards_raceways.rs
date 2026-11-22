@@ -1,9 +1,8 @@
 //! Actual land entries, max-speed activations, chosen mana and cycling.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 fn announce_ability(card: CardId, ability: u16) -> Action {
     Action::AnnounceActivate {

@@ -1,10 +1,9 @@
 //! Counter transfers and active-player resolution payments use the replacement scheduler.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const TRANSFER: CardRules = CardRules {
     effect: Effect::Permanent,

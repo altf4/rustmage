@@ -1,12 +1,10 @@
 //! Outlaws of Thunder Junction card scenarios, H through J.
-#[path = "support/otj_e_l.rs"]
-mod otj;
-mod support;
+use crate::otj_e_l as otj;
 
+use crate::support::*;
 use otj::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn tap_for(game: &mut Game, card: CardId, ability: u16, production: Mana) {
     act(

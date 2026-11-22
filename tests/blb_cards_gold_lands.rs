@@ -1,9 +1,8 @@
 //! Villages and Three Tree City, including typal histories and restricted mana.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const COLORLESS: Mana = [0, 0, 0, 0, 0, 1];
 

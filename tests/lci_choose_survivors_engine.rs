@@ -1,9 +1,8 @@
 //! The trigger controller chooses one untargeted survivor per player before a single destruction batch.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const GLYPHBRIDGE: CardRules = CardRules {
     effect: Effect::Permanent,

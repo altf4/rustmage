@@ -1,9 +1,8 @@
 //! An additional untargeted choice owns one exact live or last-known creature.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules, one};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const CHOICE: CardRules = CardRules {
     effect: Effect::Spell(

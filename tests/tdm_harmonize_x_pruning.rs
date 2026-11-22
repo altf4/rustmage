@@ -1,13 +1,12 @@
 //! Conservative mana capacity counts alternative ways to tap one exact source
 //! once. Exact funding still determines X, colors and shared cost participants.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::engine::*;
 use std::time::Instant;
-use support::*;
 
 const ZERO: Mana = [0; 6];
 const U3: Mana = [0, 3, 0, 0, 0, 0];

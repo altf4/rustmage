@@ -1,10 +1,9 @@
 //! Completed-cast subtype history and mana-value-capped next-spell copies.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const SHRINK_SPELL: &str = "Slice from the Shadows";
 const COPY_SOURCE: &str = "Gilded Lotus";

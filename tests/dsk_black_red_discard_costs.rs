@@ -1,9 +1,8 @@
 //! Authored Duskmourn discard, additional-cost, and reflexive trigger interactions.
-mod support;
 
+use crate::support::*;
 use rustmage::AdditionalCostRoute;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn pass_pair(game: &mut Game) {
     act(game, Action::Pass);

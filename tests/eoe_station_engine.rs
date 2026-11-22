@@ -1,10 +1,9 @@
 //! Station's exact paid subject, threshold abilities and projected mana.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const TALL: CardRules = CardRules {
     effect: Effect::Creature(2, 5),

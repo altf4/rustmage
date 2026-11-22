@@ -1,9 +1,8 @@
 //! Combat, entry, and triggered choices on seven Bloomburrow creatures.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn advance(game: &mut Game, ready: impl Fn(&Game) -> bool) {
     for _ in 0..32 {

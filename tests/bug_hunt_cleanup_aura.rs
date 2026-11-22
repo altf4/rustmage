@@ -1,8 +1,6 @@
-mod support;
-
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::engine::*;
-use support::*;
 
 #[test]
 fn sheltered_by_ghosts_falling_off_grants_cleanup_priority() {

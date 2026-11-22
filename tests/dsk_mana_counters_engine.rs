@@ -1,10 +1,9 @@
 //! Immediate mana production followed by an owned source counter placement.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const BLUE: Mana = [0, 1, 0, 0, 0, 0];
 const BLACK: Mana = [0, 0, 1, 0, 0, 0];

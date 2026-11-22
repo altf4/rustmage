@@ -1,12 +1,10 @@
 //! Outlaws of Thunder Junction card scenarios, E through G.
-#[path = "support/otj_e_l.rs"]
-mod otj;
-mod support;
+use crate::otj_e_l as otj;
 
+use crate::support::*;
 use otj::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 #[test]
 fn emergent_haunting_uses_both_intervening_conditions_and_surveys() {

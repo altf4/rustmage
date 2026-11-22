@@ -1,10 +1,9 @@
 //! Card-level play permissions, exact delayed copies, and the two R/G Seasons.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::PermanentType;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 fn drain(game: &mut Game, decision: impl Fn(&Action) -> bool) {
     for _ in 0..64 {

@@ -1,12 +1,9 @@
 //! Edge of Eternities card scenarios for collector numbers 043 through 054.
-#[path = "eoe_cards_001_066/scenario.rs"]
-mod common;
-mod support;
 
-use common::*;
+use crate::common::*;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 #[test]
 fn wedgelight_rammer_creates_a_robot_that_can_station_it_despite_summoning_sickness() {

@@ -1,12 +1,11 @@
 //! Grouped reveal costs retain only their paid type/exile outcomes on the spell.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::funding::FundingState;
 use rustmage_core::engine::*;
 use std::collections::HashSet;
-use support::*;
 const CREATURES: SacrificeFilter = SacrificeFilter {
     keywords: Keywords::NONE,
     source_only: false,

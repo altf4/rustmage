@@ -1,10 +1,9 @@
 //! Exact attachment returns after earlier spell modes, with no priority between modes.
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const GRAVE: TargetRule = TargetRule::Object {
     zone: TargetZone::Graveyard,

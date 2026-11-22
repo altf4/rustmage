@@ -1,10 +1,9 @@
 //! Paid mana receipts participate in the same projected entry world as their parent.
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const BASE: ActivatedAbility = ActivatedAbility {
     exhaust: false,

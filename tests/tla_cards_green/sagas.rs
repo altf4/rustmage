@@ -1,4 +1,5 @@
-use crate::{reach, support::*};
+use super::reach;
+use crate::support::*;
 use rustmage_core::{cards::*, engine::*};
 
 fn pick_target(game: &mut Game, target: Target) {

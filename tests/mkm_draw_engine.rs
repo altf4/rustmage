@@ -1,10 +1,9 @@
 //! Completed draws, temporary abilities, and the empty-library replacement.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules, one};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const LIBRARY_EMPTY: StatValue = StatValue::ControllerLibraryEmpty;
 const EMPTY_BASE: BaseStatSetter = BaseStatSetter {

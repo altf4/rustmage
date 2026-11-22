@@ -1,10 +1,9 @@
 //! Resolution-time donations, live ownership counts, and exact opposing reentry.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const ALLY: Card = Card::from_catalogue_id(5272);
 const IROH: CardRules = CardRules {

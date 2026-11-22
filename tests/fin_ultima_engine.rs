@@ -1,9 +1,8 @@
 //! Counter-bound land characteristics and mana event receipts.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const COLORLESS: Mana = [0, 0, 0, 0, 0, 1];
 const BLUE_AND_COLORLESS: Mana = [0, 1, 0, 0, 0, 1];

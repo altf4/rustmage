@@ -1,10 +1,9 @@
 //! Paid card scenarios for Edge of Eternities collectors 123–132.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 fn until(g: &mut Game, ready: impl Fn(&Game) -> bool) {
     for _ in 0..80 {

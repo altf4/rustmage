@@ -1,10 +1,9 @@
 //! Event-relative target rules distinguish a live entrant from departure LKI.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardRules, one};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const GRAVE_CREATURE: TargetRule = TargetRule::Object {
     zone: TargetZone::Graveyard,

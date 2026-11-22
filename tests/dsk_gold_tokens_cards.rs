@@ -1,9 +1,8 @@
 //! Paid scenarios for the green and multicolored Duskmourn token and creature cards.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const BLUE: u8 = 1 << 1;
 const BLACK: u8 = 1 << 2;

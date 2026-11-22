@@ -1,11 +1,10 @@
 //! Result continuations and sampled mill quantities. These typed scenario
 //! definitions exercise shared rules without changing any card admission.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const ANY_CREATURE: TargetRule = TargetRule::Creature;
 const GRAVE_CREATURE: TargetRule = TargetRule::Object {

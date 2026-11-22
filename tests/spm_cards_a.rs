@@ -1,11 +1,10 @@
 //! Paid Spider-Man rules scenarios for collector-group members 001–048.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::cast_costs::CastCostClause;
 use rustmage_core::engine::*;
-use support::*;
 
 const P: Player = Player::P0;
 const O: Player = Player::P1;

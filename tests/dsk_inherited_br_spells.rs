@@ -1,9 +1,8 @@
 //! Paid card scenarios for inherited black and red Duskmourn spells and cycling.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const PLAYER: Player = Player::P0;
 const OTHER: Player = Player::P1;

@@ -1,9 +1,8 @@
 //! A scaled token copy spell protects and counts the settled battlefield group.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const OWN_PERMANENT: TargetRule = TargetRule::Object {
     zone: TargetZone::Battlefield,

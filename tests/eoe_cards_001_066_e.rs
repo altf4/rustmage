@@ -1,12 +1,9 @@
 //! Edge of Eternities card scenarios for collector numbers 055 through 066.
-#[path = "eoe_cards_001_066/scenario.rs"]
-mod common;
-mod support;
 
-use common::*;
+use crate::common::*;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 #[test]
 fn divert_disaster_counters_unless_paid_and_awards_the_lander_to_its_caster() {

@@ -1,10 +1,9 @@
 //! Expend is based on payment order and actual mana paid for spells.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const EXPEND_FOUR: TriggeredAbility = TriggeredAbility {
     condition: TriggerCondition::Expend(4),

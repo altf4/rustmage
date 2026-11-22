@@ -1,10 +1,9 @@
 //! Repeated target groups use their own legal target and exact controller history.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const NONLAND: TargetSpec = TargetSpec::one(TargetRule::Object {
     zone: TargetZone::Battlefield,

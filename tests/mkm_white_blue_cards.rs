@@ -1,5 +1,4 @@
 //! Rules scenarios for the white and blue Murders at Karlov Manor cards.
-mod support;
 
 use rustmage as _;
 

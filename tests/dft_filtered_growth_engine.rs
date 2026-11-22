@@ -1,10 +1,9 @@
 //! Generic signed group growth; fixtures preserve physical catalogue metadata.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 const GROUP: CountFilter = CountFilter {
     zone: CountZone::Battlefield,
     relation: -1,

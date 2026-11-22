@@ -1,9 +1,8 @@
 //! Paid death, attack, and activation scenarios for inherited Duskmourn permanents.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const PLAYER: Player = Player::P0;
 const OTHER: Player = Player::P1;

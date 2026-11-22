@@ -1,10 +1,9 @@
 //! Grouped Aura targets, exact attached sacrifice payments and live attachment scaling.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const OPPONENT_CREATURE: TargetRule = TargetRule::Object {
     zone: TargetZone::Battlefield,

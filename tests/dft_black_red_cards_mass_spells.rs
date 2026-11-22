@@ -1,9 +1,8 @@
 //! Whole-card naming, mass return and main-relative combat schedules.
-mod support;
+use crate::support::*;
 use rustmage::CardName;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 fn drain(g: &mut Game) {
     for _ in 0..64 {
         g.prepare_triggers();

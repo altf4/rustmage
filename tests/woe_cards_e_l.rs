@@ -1,9 +1,8 @@
 //! Paid scenarios for authored Wilds of Eldraine cards, E through L.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const FOOD: Card = Card::from_catalogue_id(5246);
 const TREASURE: Card = Card::from_catalogue_id(5302);

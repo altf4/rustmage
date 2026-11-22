@@ -1,12 +1,11 @@
 //! Rule fixtures for effective subtype bonuses and live, projected mana.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::engine::funding::FundingGoal;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const GREEN: Mana = [0, 0, 0, 0, 1, 0];
 const TWO_GREEN: Mana = [0, 0, 0, 0, 2, 0];

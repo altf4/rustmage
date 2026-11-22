@@ -1,10 +1,9 @@
 //! Power-qualified trigger multiplicity and block legality.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardRules, generic, one};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const PROVIDER: Card = Card::from_catalogue_id(1033); // Delney, Streetwise Lookout
 const PROVIDER_RULES: CardRules = CardRules {

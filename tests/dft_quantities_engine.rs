@@ -1,10 +1,9 @@
 //! Shared counter parity and one-shot signed group base-stat sampling.
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const EVEN: StepGuard = StepGuard::Expression {
     value: StatValue::Parity {

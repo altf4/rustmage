@@ -1,10 +1,9 @@
 //! Exact permanent type effects and a controller-owned activation granted to a land.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const ARTIFACT_CREATURE: CardRules = CardRules {
     effect: Effect::Creature(1, 1),

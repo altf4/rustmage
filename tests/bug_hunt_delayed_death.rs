@@ -1,8 +1,6 @@
-mod support;
-
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::engine::*;
-use support::*;
 
 #[test]
 fn grim_javelineer_tracks_the_watched_permanent_after_it_stops_being_a_creature() {

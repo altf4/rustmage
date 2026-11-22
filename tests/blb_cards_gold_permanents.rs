@@ -1,9 +1,8 @@
 //! Permanent interaction and layered rules on seven Bloomburrow creatures.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const BLUE: Mana = [0, 1, 0, 0, 0, 0];
 const GREEN: Mana = [0, 0, 0, 0, 1, 0];

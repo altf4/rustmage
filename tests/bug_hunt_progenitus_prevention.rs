@@ -1,8 +1,6 @@
-mod support;
-
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::engine::*;
-use support::*;
 
 #[test]
 fn progenitus_protection_prevents_pyroclasm_without_asking() {

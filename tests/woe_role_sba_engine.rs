@@ -1,11 +1,10 @@
 //! Role uniqueness and illegal Aura attachments are checked in the same SBA.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::engine::replacements::TokenGroupView;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const PROTECT: CardRules = CardRules {
     effect: Effect::Spell(

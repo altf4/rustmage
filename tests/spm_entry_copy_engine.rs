@@ -1,12 +1,11 @@
 //! As-entry copy exceptions and the independent trigger linked to a graveyard copy.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::engine::*;
-use support::*;
 
 const BATTLEFIELD_COPY: CardRules = CardRules {
     effect: Effect::Creature(1, 1),

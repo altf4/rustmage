@@ -1,10 +1,9 @@
 //! Animation-granted static abilities follow the exact object and current controller.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const BLUE_RED: u8 = 0b01010;
 const BLUE_BLACK: u8 = 0b00110;

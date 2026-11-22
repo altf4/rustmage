@@ -1,9 +1,8 @@
 //! Food type changes, granted abilities, entry replacements and departure LKI.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules, one};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const FOOD_ABILITY: ActivatedAbility = ActivatedAbility {
     exhaust: false,

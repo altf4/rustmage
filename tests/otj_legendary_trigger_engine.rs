@@ -1,10 +1,9 @@
 //! Legendary-creature trigger multiplicity follows the actual source.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const PROVIDER: CardRules = CardRules {
     effect: Effect::Permanent,

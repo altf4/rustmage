@@ -1,10 +1,9 @@
 //! Printed attachment costs are independent of the granted template's source costs.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const UNTAP: ActivatedAbility = ActivatedAbility {
     cost: ActivationCost {

@@ -1,9 +1,8 @@
 //! Real declaration, tap, damage and artifact-trigger consumers.
-mod support;
 
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const GNOME: Card = Card::from_catalogue_id(5267);
 const TREASURE: Card = Card::from_catalogue_id(5302);
