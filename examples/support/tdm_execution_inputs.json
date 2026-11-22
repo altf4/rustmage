@@ -122,7 +122,7 @@
     "crates/engine/src/engine_attack_trigger_observers.rs": "334f831f1a2a94c27d54d36c17c47a699f23fee2e8685b08426d27482481f390",
     "crates/engine/src/engine_attacking_exile.rs": "05aaae9f82d910903d1a0080ca38dc3445548ddedcf50bd3102fd4f86dfbbb28",
     "crates/engine/src/engine_attempts.rs": "f28959d8fa955a18935b33168ab83f7a782d2b9d3811a245245056d109a82a80",
-    "crates/engine/src/engine_auto_tap.rs": "78c1f9af052a94c630787412c1e407801a2e4c4aa6c5ae77ff57c8bf485c96db",
+    "crates/engine/src/engine_auto_tap.rs": "5420803209cf4e64dbdff8b693ffd169caa6c685dbd6bb2e550550dd477ab4fd",
     "crates/engine/src/engine_auto_tap_followup.rs": "f944b9d883f280965a28a91b7f9118098a15768dd4076ff1f64d85383d1e089c",
     "crates/engine/src/engine_auto_tap_solver.rs": "066dde86b81149e8cd2151cc772dc76b90f1ae8bed1a89e93aebfc7567081ca2",
     "crates/engine/src/engine_bargain.rs": "9657cbc33a816cd7f6c0f4e5755beab8f42b8fbaa1560e956c037564dec1effd",

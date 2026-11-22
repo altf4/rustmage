@@ -103,7 +103,7 @@ impl Game {
     /// providers from the index consulted during pricing; the real game still validates
     /// each selected action. Only cheap, unconditional source guards are priced against
     /// this narrower index. A dense, interacting layer state is left to manual payment.
-    fn auto_tap_inventory_world(&self) -> Option<Cow<'_, Game>> {
+    fn auto_tap_inventory_world(&self, payer: Player) -> Option<Cow<'_, Game>> {
         use crate::cards::StaticAbilityFragment as F;
         const MAX_INTERACTING_PROVIDERS: usize = 8;
         let state = &self.state;
@@ -147,6 +147,8 @@ impl Game {
             let price_neutral = !groups.is_empty()
                 && groups.iter().all(|group| {
                     group.fragments.iter().all(|fragment| {
+                        // A chosen basic land type changes only its own source. Even
+                        // subtype-counting mana recipes inspect only the payer's board.
                         matches!(
                             fragment,
                             F::DeathBaronLord
@@ -158,7 +160,8 @@ impl Game {
                                 | F::ControlledCreatureBonusPerSubtype { .. }
                                 | F::CreatureGroupBonus { .. }
                                 | F::CreatureGroupScaling { .. }
-                        )
+                        ) || (matches!(fragment, F::ChosenBasicLandType)
+                            && object.controller != payer)
                     })
                 });
             if !price_neutral {
@@ -588,7 +591,7 @@ impl Game {
             .with_live_characteristics(self, a.item.controller);
         let mut pool = self.available_mana(a.item.controller, purpose);
         let reserved_life = a.unpaid_auto_tap_life();
-        let inventory = self.auto_tap_inventory_world();
+        let inventory = self.auto_tap_inventory_world(a.item.controller);
         let treasure_preference =
             self.auto_tap_treasure_preference(a, reserved_life, inventory.is_some());
         let avoid_treasure = treasure_preference.is_lt();

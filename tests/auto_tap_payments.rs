@@ -1,6 +1,7 @@
 //! Agent-assisted payments use the same primitive actions and rules as manual play.
 mod support;
 use rustmage::{AutoTapOptions, AutoTapResult, AutoTapStatus, ManaCost};
+use rustmage_core::cards::{BasicLandType, EntryChoiceValue};
 use rustmage_core::engine::*;
 use support::*;
 
@@ -93,6 +94,55 @@ fn jeskai_three_duals_and_overlap_pay_the_actual_cast_in_both_seats() {
                 paid.payment.unwrap()
             );
         }
+    }
+}
+
+#[test]
+fn opposing_passage_leaves_the_payers_island_available_for_opt() {
+    for payer in [Player::P0, Player::P1] {
+        let opponent = payer.other();
+        let mut game = window(opponent);
+        game.state.players[payer.index()].mana = [0; 6];
+        let passage = put(&mut game, opponent, "Multiversal Passage", Zone::Hand);
+        act(&mut game, Action::PlayLand { card: passage });
+        act(
+            &mut game,
+            Action::ChooseEntryValue {
+                value: EntryChoiceValue::BasicLandType(BasicLandType::Island),
+            },
+        );
+        act(&mut game, Action::ChooseEntryLife { pay: true });
+        act(&mut game, Action::Pass);
+        assert_eq!(game.actor(), Some(payer));
+
+        let mut only_passage = game.clone();
+        announce_spell(&mut only_passage, payer, "Opt");
+        let (_, revision, attempt) = request(&only_passage);
+        let declined = only_passage
+            .auto_pay_mana(payer, revision, attempt, &Default::default())
+            .unwrap();
+        assert_eq!(declined.status, AutoTapStatus::InsufficientSupportedMana);
+        assert_eq!(only_passage.revision(), revision);
+
+        let island = put(&mut game, payer, "Island", Zone::Battlefield);
+        let mut granted = game.clone();
+        put(&mut granted, opponent, "Food Fight", Zone::Battlefield);
+        announce_spell(&mut granted, payer, "Opt");
+        let (_, revision, attempt) = request(&granted);
+        assert_eq!(
+            granted
+                .plan_mana_payment(payer, revision, attempt, &Default::default())
+                .unwrap()
+                .status,
+            AutoTapStatus::NeedsDecision
+        );
+
+        let opt = announce_spell(&mut game, payer, "Opt");
+        let result = verified_payment(&mut game, &Default::default());
+        assert!(result.actions.contains(&Action::TapMana { card: island }));
+        assert_eq!(result.payment, Some([0, 1, 0, 0, 0, 0]));
+        assert_eq!(game.object_view(opt).zone, Zone::Stack);
+        assert!(!game.object_view(passage).tapped);
     }
 }
 

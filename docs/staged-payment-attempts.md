@@ -151,6 +151,8 @@ Each tap has its own cost and output. The helper can keep a high-output Elvish A
 
 The assignment uses at most 63 nonempty mana-type groups, a fixed number of follow-up reservations, and bulk arithmetic for floating quantities. Its work is linear in the number of supplied source modes and visible cost descriptions. Multi-mana outputs are kept together and assigned heuristically. Execution through the rules engine also includes the cost of each selected primitive, its receipts, and applicable continuous effects. If pricing fresh sources would require repeated whole-board ability evaluations, the helper can still spend eligible floating mana. Otherwise it returns `needs_decision`, and the caller can tap manually in the same window. Both preview and commit validate one selected sequence on an owned branch. Declines leave the original mana window available for manual play.
 
+Multiversal Passage changes only its own land type. When an opponent controls it, that choice lets the helper price the payer's lands as usual. For example, it can tap the payer's Island to cast Opt. A Passage controlled by the payer still uses the manual fallback when its chosen type is active.
+
 Arena developer Ian Adams discusses the design with PowrDragn beginning at 6:30. Rustmage defines its own deterministic tie-breakers. [Developer interview](https://www.youtube.com/watch?v=AcY_H74tVXg&t=390s)
 
 ## Coverage and verification
