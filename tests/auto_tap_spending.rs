@@ -181,3 +181,31 @@ fn two_painful_sources_do_not_spend_the_last_life() {
     assert_eq!(game.snapshot(), before);
     assert_eq!(game.revision(), revision);
 }
+
+#[test]
+fn a_painful_source_preserves_life_committed_to_the_enclosing_activation() {
+    let player = Player::P0;
+    for available_life in [3, 4] {
+        let mut game = scenario(player);
+        game.state.players[0].life = available_life;
+        game.state.players[0].mana = [0, 0, 0, 0, 0, 1];
+        put(&mut game, player, "Starting Town", Zone::Battlefield);
+        let draw = put(&mut game, player, "Lunar Convocation", Zone::Battlefield);
+        act(&mut game, activate(draw, 0));
+        let before = game.snapshot();
+        let response = pay_selected(
+            &mut game,
+            &AutoTapOptions {
+                allow_life_payment: true,
+                ..Default::default()
+            },
+        );
+        if available_life == 3 {
+            assert_eq!(response.status, AutoTapStatus::InsufficientSupportedMana);
+            assert_eq!(game.snapshot(), before);
+        } else {
+            assert_eq!(response.status, AutoTapStatus::Completed);
+            assert_eq!(game.state.players[0].life, 1);
+        }
+    }
+}

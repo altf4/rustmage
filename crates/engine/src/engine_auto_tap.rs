@@ -84,7 +84,11 @@ impl Game {
     /// Positive values indicate a recognized benefit, negative values an immediate
     /// loss from its compulsory draw or life payment. Use the public number of cards
     /// in the library, including every applicable live observer.
-    fn auto_tap_treasure_preference(&self, a: &Announcement) -> std::cmp::Ordering {
+    fn auto_tap_treasure_preference(
+        &self,
+        a: &Announcement,
+        reserved_life: i128,
+    ) -> std::cmp::Ordering {
         use std::cmp::Ordering;
         if a.item.kind != StackKind::Spell {
             return Ordering::Equal;
@@ -120,7 +124,7 @@ impl Game {
             .count();
         if count == 0 {
             Ordering::Equal
-        } else if self.state.players[payer.index()].life <= count as i128
+        } else if self.state.players[payer.index()].life <= reserved_life + count as i128
             || self.state.players[payer.index()].library.len() < count
         {
             Ordering::Less
@@ -135,6 +139,7 @@ impl Game {
         purpose: mana_lots::Purpose,
         options: &AutoTapOptions,
         avoid_treasure: bool,
+        reserved_life: i128,
     ) -> TapInputs {
         let payer = a.item.controller;
         let mut inputs = TapInputs {
@@ -294,7 +299,8 @@ impl Game {
                     || object.card.activation_put_counter(index).is_some()
                     || (cost.life != 0
                         && (!options.allow_life_payment
-                            || self.state.players[payer.index()].life <= i128::from(cost.life)))
+                            || self.state.players[payer.index()].life
+                                <= reserved_life + i128::from(cost.life)))
                     || cost.sacrifice && !expendable
                     || !self.activation_cost_available(
                         id,
@@ -458,7 +464,8 @@ impl Game {
             .purpose_for_item(&a.item)
             .with_live_characteristics(self, a.item.controller);
         let mut pool = self.available_mana(a.item.controller, purpose);
-        let treasure_preference = self.auto_tap_treasure_preference(a);
+        let reserved_life = a.unpaid_auto_tap_life();
+        let treasure_preference = self.auto_tap_treasure_preference(a, reserved_life);
         let avoid_treasure = treasure_preference.is_lt();
         let mut treasure_pool = [0u32; 6];
         let mut followup_pool = pool;
@@ -479,9 +486,10 @@ impl Game {
                 }
             }
         }
-        let inputs = self.auto_tap_inputs(a, purpose, options, avoid_treasure);
+        let inputs = self.auto_tap_inputs(a, purpose, options, avoid_treasure, reserved_life);
         let bonus = SpendBonus {
-            distinct_colors: if a.item.kind == StackKind::Spell
+            distinct_colors: if options.prefer_distinct_colors == 0
+                && a.item.kind == StackKind::Spell
                 && a.item.source.is_some_and(|source| {
                     source.card.entry_counter_rules().iter().any(|rule| {
                         matches!(
@@ -521,13 +529,14 @@ impl Game {
             if inputs.sources[source].modes[mode].pain
                 && let Action::ActivateMana { card, ability, .. } = &action
                 && branch.state.players[attempt.player.index()].life
-                    <= i128::from(
-                        branch.state.objects[*card as usize]
-                            .card
-                            .activation(*ability)
-                            .cost
-                            .life,
-                    )
+                    <= reserved_life
+                        + i128::from(
+                            branch.state.objects[*card as usize]
+                                .card
+                                .activation(*ability)
+                                .cost
+                                .life,
+                        )
             {
                 return Ok((result, None));
             }
@@ -553,7 +562,10 @@ impl Game {
         if !avoid_treasure
             && solution.prefer_treasure
             && branch
-                .auto_tap_treasure_preference(branch.state.announcing.as_ref().unwrap())
+                .auto_tap_treasure_preference(
+                    branch.state.announcing.as_ref().unwrap(),
+                    reserved_life,
+                )
                 .is_lt()
         {
             return Ok((result, None));
@@ -598,5 +610,38 @@ impl Game {
         result.actions = actions;
         result.payment = Some(solution.payment);
         Ok((result, Some(branch)))
+    }
+}
+
+impl Announcement {
+    /// Life already committed by the enclosing action is unavailable for optional source costs.
+    fn unpaid_auto_tap_life(&self) -> i128 {
+        let mut life = match (self.item.kind, self.item.source) {
+            (StackKind::ActivatedAbility { ability }, Some(source)) => {
+                i128::from(source.card.activation(ability).cost.life)
+            }
+            _ => 0,
+        };
+        let mut additional_paid = false;
+        if let Some(costs) = &self.cast_costs {
+            for row in &costs.clauses {
+                match row.clause {
+                    CastCostClause::Life(amount) | CastCostClause::AlternativeLife(amount)
+                        if !row.paid =>
+                    {
+                        life += i128::from(amount);
+                    }
+                    CastCostClause::Additional => additional_paid = row.paid,
+                    _ => {}
+                }
+            }
+        }
+        if !additional_paid
+            && let Some(spec) = self.additional_cost()
+            && (self.additional_life || matches!(spec.kind, EffectChoiceKind::PayLife(_)))
+        {
+            life += i128::from(spec.kind.additional_life_payment().unwrap_or(0));
+        }
+        life
     }
 }
