@@ -83,12 +83,15 @@ The guard uses a per-checkout target directory under
 are stored under `~/.cache/rustmage-build-reports`. Setting `XDG_CACHE_HOME`
 changes the cache root.
 
-Full validation also requires the pinned XMage Git objects. Set
-`RUSTMAGE_XMAGE_SOURCE` to the checkout prepared by CI's source-fetch step and run
+For local release validation, set `RUSTMAGE_XMAGE_SOURCE` to a checkout with
+the pinned XMage Git objects and run
 
 ```sh
 python scripts/validate.py --release --python smoke
 ```
+
+GitHub CI runs `python scripts/validate.py --test-artifacts --python smoke`.
+It reuses the native test build for simulation, Standard gameplay and Python.
 
 ## Standard
 

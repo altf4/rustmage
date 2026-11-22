@@ -14,9 +14,13 @@ Catalogue entries or partial card implementations do not satisfy it.
   catalogue/module-link artifacts at integration. Avoid manual generated edits.
 - Keep the Cargo boundaries: shared rules/state in `crates/engine/`, authored
   card files in `src/card_definitions/<set>/` compiled by generated per-set crates,
-  and card scenarios in separate integration-test targets. Consumers declare only
+  and scenario modules grouped by set or rules family. Register each new scenario
+  file once in its suite and keep Cargo test autodiscovery disabled. Consumers declare only
   `rustmage`; ship one native library. Never add card definitions or mutable
   catalogue/name/admission data to the engine's compilation.
+- Extend the shared legal-action generator in `Game::visit_unfiltered_actions`.
+  Keep its callback non-generic so listing, legality checks and indexed lookup
+  share one compiled traversal. Preserve emission order and early exit.
 - Before implementing a set, audit all its cards and identify every engine fix,
   shared mechanic and necessary engine improvement. Implement, test and review
   those changes first; then regenerate linkage, warm a stable guarded test cache,
@@ -27,8 +31,10 @@ Catalogue entries or partial card implementations do not satisfy it.
 - Test actual rules interactions, legality/privacy, transactional failures and
   owned raw/index branch/restore. Prefer existing scenario helpers over new bots;
   do not require parser mutation suites for authored Rust cards.
-- Run `python3 scripts/link_catalogue.py` and
-  `python3 scripts/validate.py --release --python smoke`.
+- For local set acceptance, run `python3 scripts/link_catalogue.py` and
+  `python3 scripts/validate.py --release --python smoke`. GitHub CI uses
+  `python3 scripts/validate.py --test-artifacts --python smoke` so simulation,
+  Standard gameplay and Python reuse the native test build.
   Keep execution inputs fixed until consuming jobs actually terminate. Poll the
   same running process after observation timeouts. Never delete active outputs.
 - Clean disposable completed build/test files promptly. Preserve every required

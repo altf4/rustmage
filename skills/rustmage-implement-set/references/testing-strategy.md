@@ -67,22 +67,39 @@ baseline stable while writing cards. Avoid cycling profiles, feature sets or
 compiler flags. Normal card and test edits should reuse the engine; investigate
 unexpected engine recompilation rather than accepting it as routine.
 
-A test filter selects execution within a compiled integration target; it does not
-compile just one function. Put new set cases in that set's own integration target,
-reuse `tests/support/mod.rs`, and select it with `--test-target` in
-`scripts/run_native_tests.py`. Test helpers use the internal fixture feature.
-Production users continue to declare only the `rustmage` dependency.
+### Register scenarios once
 
-The native runner applies compile, suite and per-test timeouts and enters the
-resource guard automatically. Select a target and filter for focused checks.
-Use a stable cache name unique to the authoring worktree.
+Find the set or rules-family suite in the root `Cargo.toml`. For example,
+`dft_rules_scenarios` links `tests/suite_dft_rules_scenarios.rs`. To add a new
+scenario file there, put it beside the suite entry point and declare it with a
+plain `mod <file_stem>;` line. Directory-style suites such as
+`tests/trk_rules_a_e/main.rs` use the same sibling convention. The suite
+declares shared fixtures once. Scenario files can import them from `crate::support`.
+
+Keep existing scenario source paths and names used by provenance and focused
+test selectors. Leave `autotests = false` in place. When a new set needs its
+first suite, register one `[[test]]` with `name = "<set>_scenarios"` and
+`path = "tests/suite_<set>_scenarios.rs"`, then add ordinary cases as modules.
+Preserve independently run workloads such as complete games. The infrastructure
+test `test_every_scenario_file_has_one_cargo_target` detects missing and duplicate
+registrations. All modules in a suite share one test executable and link step.
+
+### Select the cases to run
+
+The native runner's `--test-target` accepts a scenario module name or glob, or
+an exact suite name. A case filter narrows execution within the compiled suite.
+For example, the command below builds the DFT rules suite and runs one crew case.
+
+The native runner enters the resource guard automatically. Use the same target
+as the validator and keep the report for each run in a separate directory.
 
 ```sh
-rustmage_author_cache="$HOME/.cache/rustmage-authoring/your-worktree"
-mkdir -p "$rustmage_author_cache"
-rustmage_run_dir="$(mktemp -d "$rustmage_author_cache/run-XXXXXX")"
+rustmage_target="$(python3 -c 'from scripts.build_platform import cargo_environment; print(cargo_environment()["CARGO_TARGET_DIR"])')"
+rustmage_reports="${XDG_CACHE_HOME:-$HOME/.cache}/rustmage-authoring"
+mkdir -p "$rustmage_reports"
+rustmage_run_dir="$(mktemp -d "$rustmage_reports/run-XXXXXX")"
 python3 scripts/run_native_tests.py \
-  --target-dir "$rustmage_author_cache/target" \
+  --target-dir "$rustmage_target" \
   --report "$rustmage_run_dir/native.json" \
   --test-target dft_crew \
   --filter crew_choice_raw_index_and_restore_branches_keep_owned_pending_and_events
@@ -93,15 +110,25 @@ cases executed and passed. Keep logs in a new directory for each run. Omit the
 target and filter for a shared-rule checkpoint with broad impact, using the same
 Cargo target. Keep inputs fixed until the consuming process terminates.
 
-## Keep acceptance builds cached too
+## Choose validation artifacts by workload
 
-The validator reuses `CARGO_TARGET_DIR` when set, otherwise a stable per-worktree
-cache. Use `--target-dir` to select the authoring cache explicitly:
+**GitHub CI.** Run `python3 scripts/validate.py --test-artifacts --python smoke`.
+Native assurance builds the benchmark and shared library in the test profile.
+The validator checks both against that run's Cargo artifact records, runs the
+native simulation and Standard smoke with the benchmark, and loads the
+snapshotted library for Python. Keep all three checks on these artifacts.
+Omitting `--test-artifacts` from the Python smoke command requests a release
+library and compiles the card pool a second time.
+
+**Local completed-set acceptance.** Use the production profile, including its
+ThinLTO setting. Build only the release library and benchmark needed for this
+workload. The validator reuses `CARGO_TARGET_DIR` when set, otherwise a stable
+per-worktree cache. To use the authoring target explicitly, run
 
 ```sh
 python3 scripts/link_catalogue.py
 python3 scripts/validate.py --release --python smoke \
-  --target-dir "$rustmage_author_cache/target"
+  --target-dir "$rustmage_target"
 ```
 
 Keep debug/test/release outputs in their normal Cargo profile subdirectories.
@@ -112,7 +139,8 @@ Targets and `XDG_CACHE_HOME` must be outside the source checkout. The runner rej
 legacy validation targets with `report/result.json` because their original shared
 library paths remain pinned. Choose a new mutable cache instead.
 
-Inspect older checkouts before assuming this interface exists. A runner that
+On older branches, check the suite targets in `Cargo.toml` and the flags in
+`scripts/validate.py` before using these examples. A runner that
 creates fresh targets or deletes compiler outputs needs that tooling fixed first;
 setting an environment variable cannot override a runner that replaces it.
 
@@ -147,10 +175,8 @@ while proceeding with independent work. A shared core dependency still needs its
 own integrated acceptance and two independent nonauthor reviews before expanding
 the dependent batch.
 
-The integrator runs `python3 scripts/link_catalogue.py` and the required
-`python3 scripts/validate.py --release` with the runner's verified reusable-target
-option on the assembled, frozen candidate. Include Python/FFI checks when required
-by the checkout or affected interface, and retain required benchmarks. Do not turn off
+The integrator runs the local completed-set acceptance commands above on the
+assembled, frozen candidate. Retain the Python/FFI checks and benchmarks. Do not turn off
 checks, use metadata-only provenance, or substitute a focused pass for merge
 acceptance. Validate the final executable inputs after review fixes; read-only
 reviews do not each need a duplicate build. Reuse prior acceptance only when its
@@ -169,6 +195,16 @@ compile time, scenario execution and benchmarks. Use native compile logs and
 A slow compile needs a build/cadence diagnosis; a stalled scenario needs its own
 bounded reproduction. Do not automatically start another full suite, raise
 timeouts or restart a job merely because tool observation timed out.
+
+For a proposed build-time optimization, compare before and after on the same
+host, toolchain and guard settings. Give each revision its own empty target
+outside the checkout. Time the same full workload, record the Cargo profile and
+targets, and report compilation and linking separately from queue and test time.
+For changes to action generation, also run each revision's optimized benchmark
+with the same decks, seeds and game count. Include Freeform and a representative
+Standard deck workload, compare decision counts and gameplay throughput over
+repeated runs, and verify raw/index/restore behavior. Keep these cold trials
+separate from routine card authoring.
 
 Keep reusable author targets while the worktree is active. Once jobs terminate
 and the worktree is retired, clean disposable outputs while preserving reports,
