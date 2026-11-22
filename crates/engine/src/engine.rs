@@ -302,6 +302,11 @@ pub mod observation_schema;
 pub const OBSERVATION_SCHEMA: u32 = observation_schema::VERSION;
 /// Choices validate the next supplied step, without proving payment completion.
 pub const ACTION_CONTRACT: &str = "staged_attempts_v1";
+#[path = "engine_auto_tap.rs"]
+mod auto_tap;
+#[path = "engine_auto_tap_solver.rs"]
+mod auto_tap_solver;
+pub use auto_tap::{AutoTapOptions, AutoTapResult, AutoTapStatus};
 #[path = "engine_attempts.rs"]
 pub mod attempts;
 pub use attempts::{

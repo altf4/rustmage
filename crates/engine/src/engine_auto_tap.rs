@@ -1,0 +1,520 @@
+//! Optional caller policy for one locked spell or activation. The action menu never invokes it.
+use super::ability_world::CharacteristicWorld;
+use super::auto_tap_solver::{self, Mode, Source, SpendBonus};
+use super::*;
+use crate::cards::CastFilter;
+use std::collections::{HashMap, HashSet};
+
+/// Caller preferences apply to this request only. Source identities include their incarnation.
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct AutoTapOptions {
+    pub protected_sources: Vec<ObjectRef>,
+    pub follow_up: Option<ManaCost>,
+    pub allow_treasure: bool,
+    pub allow_life_payment: bool,
+    /// Prefer spending up to this many distinct colors on this spell or ability.
+    pub prefer_distinct_colors: u8,
+}
+
+impl Default for AutoTapOptions {
+    fn default() -> Self {
+        Self {
+            protected_sources: Vec::new(),
+            follow_up: None,
+            allow_treasure: true,
+            allow_life_payment: false,
+            prefer_distinct_colors: 0,
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum AutoTapStatus {
+    Completed,
+    Paid,
+    NeedsDecision,
+    InsufficientSupportedMana,
+}
+
+/// A successful preview and its execution at the same revision have the same primitive trace.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct AutoTapResult {
+    pub status: AutoTapStatus,
+    pub attempt_id: u64,
+    /// Revision at the start of planning, before any returned primitive.
+    pub revision: u64,
+    pub actions: Vec<Action>,
+    pub payment: Option<Mana>,
+}
+
+impl AutoTapResult {
+    fn new(attempt_id: u64, revision: u64) -> Self {
+        Self {
+            status: AutoTapStatus::NeedsDecision,
+            attempt_id,
+            revision,
+            actions: Vec::new(),
+            payment: None,
+        }
+    }
+}
+
+/// Only immutable costs and public resource data enter the assignment algorithm.
+/// Keep the action for each mode in the same order as its solver input.
+struct TapInputs {
+    sources: Vec<Source>,
+    actions: Vec<Vec<Action>>,
+    followups: Vec<ManaCost>,
+    treasure_bonus: bool,
+}
+
+fn deterministic_output(recipe: ManaProduction) -> bool {
+    matches!(
+        recipe.base(),
+        ManaProduction::Fixed(_)
+            | ManaProduction::Choice { .. }
+            | ManaProduction::ChosenColor
+            | ManaProduction::ChosenColorAmount(_)
+            | ManaProduction::CountSubtype { .. }
+    )
+}
+
+impl Game {
+    fn auto_tap_inputs(
+        &self,
+        a: &Announcement,
+        purpose: mana_lots::Purpose,
+        options: &AutoTapOptions,
+    ) -> TapInputs {
+        let payer = a.item.controller;
+        let mut inputs = TapInputs {
+            sources: Vec::new(),
+            actions: Vec::new(),
+            followups: Vec::new(),
+            treasure_bonus: false,
+        };
+        let mut reserved: HashSet<_> = options.protected_sources.iter().copied().collect();
+        reserved.extend(a.additional);
+        reserved.extend(
+            a.additional_group
+                .iter()
+                .flat_map(|group| group.iter().copied()),
+        );
+        reserved.extend(a.convoke.iter().flat_map(|c| c.objects()));
+        reserved.extend(a.item.attached_activation_tap_cost());
+        if let Some(source) = a.item.source
+            && let StackKind::ActivatedAbility { ability } = a.item.kind
+            && source.card.activation(ability).cost.tap
+        {
+            reserved.insert(source.object);
+        }
+        let open = !self.attempt_mana_window_closed();
+        let mut subtype_yields = HashMap::new();
+        let mut restricted = self
+            .mana_lots(payer)
+            .iter()
+            .any(|lot| lot.quality.restriction != ManaRestrictionView::Unrestricted);
+        for (index, object) in self.state.objects.iter().enumerate() {
+            let id = index as CardId;
+            if object.zone == Zone::Hand
+                && object.owner == payer
+                && !object.card.is_land()
+                && !self.attempt_draw_is_face_down(self.object_ref(id))
+                && !a
+                    .item
+                    .source
+                    .is_some_and(|source| source.object == self.object_ref(id))
+            {
+                let (colored, generic) = object.card.cost();
+                inputs.followups.push(ManaCost { colored, generic });
+            }
+            if object.zone != Zone::Battlefield
+                || object.controller != payer
+                || self.is_face_down(self.object_ref(id))
+            {
+                continue;
+            }
+            // Smaug's optional payoff is a property of a live cast observer, not of a card name.
+            if a.item.kind == StackKind::Spell
+                && !inputs.treasure_bonus
+                && object.card.triggers().iter().any(|t| {
+                    matches!(
+                        t.condition,
+                        TriggerCondition::TreasureManaSpent(&TriggerCondition::SpellCast {
+                            relation: CastRelation::You,
+                            filter: CastFilter::Any,
+                            ordinal: None
+                        })
+                    )
+                })
+                && self.printed_abilities_available(id)
+            {
+                inputs.treasure_bonus = true;
+            }
+            if !open || object.tapped || reserved.contains(&self.object_ref(id)) {
+                continue;
+            }
+            let creature = self.is_creature(id);
+            if creature
+                && object.summoning_sick
+                && !self.activation_keywords(id).contains(Keywords::HASTE)
+                || self.named_activation_generic_increase(id) != 0
+                || self.activation_prohibited(payer, id)
+            {
+                continue;
+            }
+            let treasure = self.subtypes(id).has(object.card, "Treasure");
+            let mut source = Source {
+                modes: Vec::new(),
+                creature,
+                variable: false,
+                treasure: false,
+            };
+            let mut actions = Vec::new();
+            self.visit_intrinsic_mana(id, payer, &mut |action| {
+                if matches!(action, Action::TapMana { .. }) {
+                    let mut mana = [0; 6];
+                    mana[self.intrinsic_mana_color(id).unwrap()] = 1;
+                    source.modes.push(Mode { mana, pain: false });
+                    actions.push(action);
+                }
+                false
+            });
+            // These grants include additional basic land types on duals and triomes.
+            for grant in self.granted_mana(id) {
+                if !deterministic_output(grant.production)
+                    || grant.sacrifice
+                        && (!treasure || !options.allow_treasure || self.sacrifice_prohibited(id))
+                {
+                    continue;
+                }
+                if let Some(quality) = self.mana_quality(grant.production, id) {
+                    if !quality.eligible(purpose) {
+                        continue;
+                    }
+                    restricted |= quality.restriction != ManaRestrictionView::Unrestricted;
+                }
+                // A source with a free tap is reusable. Keep its free ability in preference to
+                // a granted self-sacrifice with an otherwise identical output.
+                grant
+                    .production
+                    .visit_at_start_with_fixed_choice(self, id, false, |mana| {
+                        if mana != [0; 6] && !source.modes.iter().any(|m| m.mana == mana && !m.pain)
+                        {
+                            source.modes.push(Mode { mana, pain: false });
+                            source.treasure |= grant.sacrifice;
+                            actions.push(Action::TapGrantedMana {
+                                card: id,
+                                grantor: grant.source,
+                                production: mana,
+                            });
+                        }
+                        false
+                    });
+            }
+            for (index, ability) in object.card.activations().iter().enumerate() {
+                let index = index as u16;
+                let cost = ability.cost;
+                if ability.origin != ActivationOrigin::Battlefield
+                    || ability.guard.reveals_secret_creature_type()
+                    || object.card.self_granted_activation_template(index)
+                    || object.card.grants_activation(index)
+                {
+                    continue;
+                }
+                let [Instruction::AddMana(recipe)] = ability.program else {
+                    // Keep ordinary visible utility activations in the follow-up cost sketches.
+                    if !ability.sorcery
+                        && ability.guard == crate::cards::ActivationGuard::Always
+                        && !ability.has_use_limit()
+                        && !ability.has_x_cost()
+                        && !cost.sacrifice
+                        && !cost.exile_self
+                        && !cost.discard
+                        && cost.additional.is_none()
+                        && cost.life == 0
+                        && cost.remove.is_none()
+                        && cost.loyalty.is_none()
+                        && (cost.generic != 0 || cost.colored != [0; 6])
+                        && !cost.tap
+                    {
+                        inputs.followups.push(ManaCost {
+                            colored: cost.colored,
+                            generic: cost.generic,
+                        });
+                    }
+                    continue;
+                };
+                if object.card.legacy_subtype_mana_activation(index)
+                    || !deterministic_output(*recipe)
+                    || !cost.tap
+                    || cost.colored != [0; 6]
+                    || cost.generic != 0
+                    || !cost.alternatives.is_empty()
+                    || cost.additional.is_some()
+                    || cost.remove.is_some()
+                    || cost.loyalty.is_some()
+                    || cost.discard
+                    || cost.exile_self
+                    || ability.has_x_cost()
+                    || object.card.activation_put_counter(index).is_some()
+                    || (cost.life != 0
+                        && (!options.allow_life_payment
+                            || self.state.players[payer.index()].life <= i128::from(cost.life)))
+                    || cost.sacrifice && (!treasure || !options.allow_treasure)
+                    || !self.activation_cost_available(
+                        id,
+                        ability,
+                        usize::from(index),
+                        payer,
+                        false,
+                    )
+                {
+                    continue;
+                }
+                if let Some(quality) = self.mana_quality(*recipe, id) {
+                    if !quality.eligible(purpose) {
+                        continue;
+                    }
+                    restricted |= quality.restriction != ManaRestrictionView::Unrestricted;
+                }
+                let domain = match recipe.base() {
+                    ManaProduction::CountSubtype { color, subtype } => {
+                        source.variable = true;
+                        *subtype_yields
+                            .entry((color, subtype))
+                            .or_insert_with(|| recipe.in_world(self, id))
+                    }
+                    _ => recipe.in_world(self, id),
+                };
+                domain.visit(|mana| {
+                    let pain = cost.life != 0;
+                    if mana != [0; 6]
+                        && !source
+                            .modes
+                            .iter()
+                            .any(|m| m.mana == mana && (!m.pain || pain))
+                    {
+                        source.modes.push(Mode { mana, pain });
+                        source.treasure |= cost.sacrifice;
+                        actions.push(Action::ActivateMana {
+                            card: id,
+                            ability: index,
+                            payment: [0; 6],
+                            counter_payment: Counters::default(),
+                            production: mana,
+                        });
+                    }
+                    false
+                });
+            }
+            if !source.modes.is_empty() {
+                inputs.sources.push(source);
+                inputs.actions.push(actions);
+            }
+        }
+        if restricted {
+            // A spell and a hypothetical follow-up may have different spending permissions.
+            // Only ordinary sources can be reused for an exact combined-cost reservation.
+            inputs.followups.clear();
+        }
+        inputs
+    }
+}
+impl Game {
+    /// Preview a payment without changing the live game or its revision.
+    pub fn plan_mana_payment(
+        &self,
+        actor: Player,
+        revision: u64,
+        attempt_id: u64,
+        options: &AutoTapOptions,
+    ) -> Result<AutoTapResult, Error> {
+        self.auto_tap_branch(actor, revision, attempt_id, options)
+            .map(|(result, _)| result)
+    }
+
+    /// Commit exactly one validated payment, retaining the normal per-action revisions and receipts.
+    pub fn auto_pay_mana(
+        &mut self,
+        actor: Player,
+        revision: u64,
+        attempt_id: u64,
+        options: &AutoTapOptions,
+    ) -> Result<AutoTapResult, Error> {
+        let (result, branch) = self.auto_tap_branch(actor, revision, attempt_id, options)?;
+        if let Some(branch) = branch {
+            *self = branch;
+        }
+        Ok(result)
+    }
+
+    fn auto_tap_branch(
+        &self,
+        actor: Player,
+        revision: u64,
+        attempt_id: u64,
+        options: &AutoTapOptions,
+    ) -> Result<(AutoTapResult, Option<Game>), Error> {
+        if self.revision() != revision {
+            return Err(Error::StaleRevision);
+        }
+        if self.actor() != Some(actor) {
+            return Err(if self.state.outcome.is_some() {
+                Error::GameOver
+            } else {
+                Error::WrongActor
+            });
+        }
+        let Some(attempt) = self.state.cast_rollback.as_ref().filter(|a| {
+            a.attempt_id == attempt_id
+                && attempt_id != 0
+                && self.shares_information(actor, a.player)
+        }) else {
+            return Err(Error::StaleRevision);
+        };
+        if options.prefer_distinct_colors > 5 {
+            return Err(Error::IllegalAction);
+        }
+        let mut result = AutoTapResult::new(attempt_id, revision);
+        let Some(a) = self.state.announcing.as_ref() else {
+            return Ok((result, None));
+        };
+        // A parent can be suspended during an entry, a replacement or another player's choice.
+        // A pay request does not authorize making declarations or committing a contributor selection.
+        if !matches!(self.state.pending, Pending::PayCosts { player } if player == attempt.player)
+            || a.item.controller != attempt.player
+            || Some(a.item.id) != attempt.context
+            || a.total_cost.is_none()
+            || a.production.is_some()
+            || self.state.entry_batch.is_some()
+            || self.state.replacements.is_some()
+            || self.mana_tap_bonus_pending()
+        {
+            return Ok((result, None));
+        }
+        let Some(request) = self.announcement_payment_request(actor) else {
+            return Ok((result, None));
+        };
+        if a.cast_costs.as_ref().is_some_and(|costs| {
+            costs.mana_paid
+                || costs.mana_closed && costs.active_clause() != Some(CastCostClause::Mana)
+        }) {
+            return Ok((result, None));
+        }
+        let cost = ManaCost {
+            colored: request.required,
+            generic: request.generic,
+        };
+        let purpose = self
+            .purpose_for_item(&a.item)
+            .with_live_characteristics(self, a.item.controller);
+        let pool = self.available_mana(a.item.controller, purpose);
+        let mut treasure_pool = [0u32; 6];
+        for lot in self.mana_lots(a.item.controller) {
+            if lot.quality.treasure_source && lot.quality.eligible(purpose) {
+                for (total, amount) in treasure_pool.iter_mut().zip(lot.amounts) {
+                    *total += u32::try_from(amount).expect("subset of representable pool");
+                }
+            }
+        }
+        let inputs = self.auto_tap_inputs(a, purpose, options);
+        let bonus = SpendBonus {
+            distinct_colors: if a.item.kind == StackKind::Spell
+                && a.item.source.is_some_and(|source| {
+                    source.card.entry_counter_rules().iter().any(|rule| {
+                        matches!(
+                            rule.amount,
+                            EntryCounterAmount::ColorsSpent
+                                | EntryCounterAmount::ColorsSpentKind(CounterKind::PlusOne)
+                        )
+                    })
+                }) {
+                5
+            } else {
+                options.prefer_distinct_colors
+            },
+            treasure: inputs.treasure_bonus,
+        };
+        let Some(solution) = auto_tap_solver::solve(
+            cost,
+            pool,
+            treasure_pool,
+            &inputs.sources,
+            options.follow_up,
+            &inputs.followups,
+            bonus,
+        ) else {
+            result.status = AutoTapStatus::InsufficientSupportedMana;
+            return Ok((result, None));
+        };
+        // One branch executes the selected actions. A rejected payment or an unexpected
+        // decision drops that branch, including its provisional taps and mana-window state.
+        let mut branch = self.clone();
+        let mut actions = Vec::with_capacity(solution.taps.len() + 1);
+        for (source, mode) in solution.taps {
+            let action = inputs.actions[source][mode].clone();
+            match branch.apply(actor, action.clone()) {
+                Ok(()) => actions.push(action),
+                Err(Error::IllegalAction | Error::WrongActor | Error::GameOver) => {
+                    return Ok((result, None));
+                }
+                Err(error) => return Err(error),
+            }
+            if !matches!(branch.state.pending, Pending::PayCosts { player } if player == attempt.player)
+                || branch.state.announcing.as_ref().map(|a| a.item.id) != attempt.context
+                || branch.state.entry_batch.is_some()
+                || branch.state.replacements.is_some()
+                || branch.mana_tap_bonus_pending()
+            {
+                return Ok((result, None));
+            }
+        }
+        let pay = Action::PayCosts {
+            payment: solution.payment,
+        };
+        match branch.apply(actor, pay.clone()) {
+            Ok(()) => actions.push(pay.clone()),
+            Err(Error::IllegalAction | Error::WrongActor | Error::GameOver) => {
+                return Ok((result, None));
+            }
+            Err(error) => return Err(error),
+        }
+        while let Some(range) = branch.mana_lot_spend_range() {
+            if range.action != pay || branch.actor() != Some(actor) {
+                return Ok((result, None));
+            }
+            let lot = &branch.mana_lots(attempt.player)[range.lot];
+            let take = if solution.prefer_treasure {
+                lot.quality.treasure_source
+            } else {
+                lot.quality.retention == crate::ManaRetention::Step
+            };
+            let amount = if take { range.maximum } else { range.minimum };
+            let action = Action::ChooseManaLotSpend { amount };
+            branch.apply(actor, action.clone())?;
+            actions.push(action);
+        }
+        let completed =
+            branch.state.last_attempt_outcome[attempt.player.index()].is_some_and(|outcome| {
+                outcome.attempt_id == attempt_id && outcome.outcome == AttemptOutcome::Completed
+            });
+        let paid = branch.state.announcing.as_ref().is_some_and(|a| {
+            Some(a.item.id) == attempt.context
+                && a.cast_costs.as_ref().is_some_and(|costs| costs.mana_paid)
+        });
+        if !completed && !paid {
+            return Ok((result, None));
+        }
+        result.status = if completed {
+            AutoTapStatus::Completed
+        } else {
+            AutoTapStatus::Paid
+        };
+        result.actions = actions;
+        result.payment = Some(solution.payment);
+        Ok((result, Some(branch)))
+    }
+}
