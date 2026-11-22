@@ -1,9 +1,8 @@
 //! Entering ordered costs retains the complete initial mana/source payment.
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const ZERO: Mana = [0; 6];
 const EXTRA: Mana = [0, 0, 0, 0, 0, 1];

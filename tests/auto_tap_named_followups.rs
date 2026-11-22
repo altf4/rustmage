@@ -1,8 +1,7 @@
 //! A named follow-up is a visible play. Its mana and source are preferences for this payment.
-mod support;
+use crate::support::*;
 use rustmage::{AutoTapFollowUp, AutoTapOptions, AutoTapStatus, ManaCost};
 use rustmage_core::engine::*;
-use support::*;
 
 fn named(action: AutoTapFollowUp) -> AutoTapOptions {
     AutoTapOptions {

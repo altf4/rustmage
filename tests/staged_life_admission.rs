@@ -1,8 +1,7 @@
 //! Mandatory known life is an immediate requirement of the selected cast route.
-mod support;
+use crate::support::*;
 use rustmage as _;
 use rustmage_core::engine::*;
-use support::*;
 
 #[test]
 fn an_independent_mana_additional_cost_keeps_low_life_declarations_available() {

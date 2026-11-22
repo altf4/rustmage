@@ -1,8 +1,7 @@
 //! Smoke payment choices use the current declaration and actual contributors.
-mod support;
+use crate::support::*;
 use rustmage::{Card, policy};
 use rustmage_core::engine::*;
-use support::*;
 
 fn smoke_step(game: &mut Game) -> Action {
     let view = game.observe(game.actor().unwrap());

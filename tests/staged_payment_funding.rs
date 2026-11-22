@@ -1,10 +1,9 @@
 //! Payment menus describe current choices; callers own future payment planning.
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
-use support::*;
 
 const CONVERTER: CardRules = CardRules {
     effect: Effect::Creature(2, 2),

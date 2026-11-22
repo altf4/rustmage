@@ -202,6 +202,10 @@ name = "otj_scenarios"
 path = "tests/suite_otj_scenarios.rs"
 
 [[test]]
+name = "payment_scenarios"
+path = "tests/suite_payment_scenarios.rs"
+
+[[test]]
 name = "spm_complete_games"
 path = "tests/spm_complete_games.rs"
 

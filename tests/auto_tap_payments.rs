@@ -1,9 +1,8 @@
 //! Agent-assisted payments use the same primitive actions and rules as manual play.
-mod support;
+use crate::support::*;
 use rustmage::{AutoTapOptions, AutoTapResult, AutoTapStatus, ManaCost};
 use rustmage_core::cards::{BasicLandType, EntryChoiceValue};
 use rustmage_core::engine::*;
-use support::*;
 
 fn window(player: Player) -> Game {
     let mut game = scenario(player);

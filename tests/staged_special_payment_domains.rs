@@ -1,10 +1,9 @@
 //! Special payments expose complete domains without enumerating all allocations.
-mod support;
 
+use crate::support::*;
 use rustmage::{ManaPaymentAction, ManaPaymentChoice};
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const MANY: ManaCost = ManaCost {
     colored: [0; 6],

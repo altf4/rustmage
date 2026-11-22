@@ -167,7 +167,7 @@ Repository validation uses warm build outputs and the guarded runner:
 
 ```sh
 python3 scripts/link_catalogue.py
-python3 scripts/resource_guard.py -- cargo test --test staged_declaration_choices
+python3 scripts/resource_guard.py -- cargo test --test payment_scenarios staged_declaration_choices::
 python3 scripts/validate.py --release --python smoke
 ```
 

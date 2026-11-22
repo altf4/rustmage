@@ -2,7 +2,7 @@
   "files": {
     ".cargo/config.toml": "15eb9c942b20a13e850e6f6636617364cd8cec07e24f3cb3a792b5d56cb4aaba",
     "Cargo.lock": "8046c1dcce70f68e7d7efb3e96b57203d4a4fa2c70d94762d7e8effef3ff148f",
-    "Cargo.toml": "179bb71e94aef00aa853a66036a17ee8b3052b196332fe403f1736bc5c247d17",
+    "Cargo.toml": "453e41b6f1cf8191ae8688f9e6b3ce439bd05898efa072326e0018c9c6879e7e",
     "crates/cards/afr/Cargo.toml": "29618d050404d0ad8ad4057a8d0b8dcbfe61e48c98cee8355ffa1402c8f4df6e",
     "crates/cards/afr/src/lib.rs": "8e3080768f09c94563ff66b738abe44c5754293070dd99b8c400640d08a87234",
     "crates/cards/big/Cargo.toml": "659f2cbe21b6b628893289456a3ad89076921ff71e623040f13b13152d9f3718",

@@ -1,10 +1,9 @@
 //! Opportunity costs and actual lot debits are observable through the same staged actions.
-mod support;
 
+use crate::support::*;
 use rustmage::{AutoTapOptions, AutoTapStatus, Card};
 use rustmage_core::cards::ManaRetention;
 use rustmage_core::engine::{mana_lots::Quality, *};
-use support::*;
 
 const BLUE: [u32; 6] = [0, 1, 0, 0, 0, 0];
 

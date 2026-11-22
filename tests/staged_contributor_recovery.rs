@@ -1,9 +1,8 @@
 //! Current Crew/Saddle/Station choices remain editable and explicitly recoverable.
-mod support;
+use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
-use support::*;
 
 const ZERO: Mana = [0; 6];
 const ONE: Mana = [0, 0, 0, 0, 0, 1];
