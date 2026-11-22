@@ -1,6 +1,6 @@
 //! Optional caller policy for one locked spell or activation. The action menu never invokes it.
 use super::ability_world::CharacteristicWorld;
-use super::auto_tap_solver::{self, Mode, Source, SpendBonus};
+use super::auto_tap_solver::{self, Mode, Pools, Source, SpendBonus};
 use super::*;
 use crate::cards::CastFilter;
 use std::collections::{HashMap, HashSet};
@@ -112,20 +112,15 @@ impl Game {
         }
         let open = !self.attempt_mana_window_closed();
         let mut subtype_yields = HashMap::new();
-        let mut restricted = self
-            .mana_lots(payer)
-            .iter()
-            .any(|lot| lot.quality.restriction != ManaRestrictionView::Unrestricted);
         for (index, object) in self.state.objects.iter().enumerate() {
             let id = index as CardId;
             if object.zone == Zone::Hand
                 && object.owner == payer
-                && !object.card.is_land()
                 && !self.attempt_draw_is_face_down(self.object_ref(id))
-                && !a
-                    .item
+                && !object.card.is_land()
+                && a.item
                     .source
-                    .is_some_and(|source| source.object == self.object_ref(id))
+                    .is_none_or(|source| source.object != self.object_ref(id))
             {
                 let (colored, generic) = object.card.cost();
                 inputs.followups.push(ManaCost { colored, generic });
@@ -136,9 +131,12 @@ impl Game {
             {
                 continue;
             }
-            // Smaug's optional payoff is a property of a live cast observer, not of a card name.
+            // The known Treasure payoff draws one and loses one. Spending differently can
+            // avoid a lethal mandatory trigger when the caster is out of cards or at one life.
             if a.item.kind == StackKind::Spell
                 && !inputs.treasure_bonus
+                && self.state.players[payer.index()].life > 1
+                && !self.state.players[payer.index()].library.is_empty()
                 && object.card.triggers().iter().any(|t| {
                     matches!(
                         t.condition,
@@ -147,6 +145,12 @@ impl Game {
                             filter: CastFilter::Any,
                             ordinal: None
                         })
+                    ) && matches!(
+                        t.program,
+                        [
+                            Instruction::Draw(PlayerSet::Controller, 1),
+                            Instruction::LoseLife(PlayerSet::Controller, 1)
+                        ]
                     )
                 })
                 && self.printed_abilities_available(id)
@@ -166,18 +170,24 @@ impl Game {
                 continue;
             }
             let treasure = self.subtypes(id).has(object.card, "Treasure");
+            let expendable = treasure && object.is_token() && !creature && options.allow_treasure;
             let mut source = Source {
                 modes: Vec::new(),
                 creature,
                 variable: false,
-                treasure: false,
+                treasure,
+                followup_eligible: true,
             };
             let mut actions = Vec::new();
             self.visit_intrinsic_mana(id, payer, &mut |action| {
                 if matches!(action, Action::TapMana { .. }) {
                     let mut mana = [0; 6];
                     mana[self.intrinsic_mana_color(id).unwrap()] = 1;
-                    source.modes.push(Mode { mana, pain: false });
+                    source.modes.push(Mode {
+                        mana,
+                        pain: false,
+                        sacrifice: false,
+                    });
                     actions.push(action);
                 }
                 false
@@ -185,8 +195,7 @@ impl Game {
             // These grants include additional basic land types on duals and triomes.
             for grant in self.granted_mana(id) {
                 if !deterministic_output(grant.production)
-                    || grant.sacrifice
-                        && (!treasure || !options.allow_treasure || self.sacrifice_prohibited(id))
+                    || grant.sacrifice && (!expendable || self.sacrifice_prohibited(id))
                 {
                     continue;
                 }
@@ -194,17 +203,20 @@ impl Game {
                     if !quality.eligible(purpose) {
                         continue;
                     }
-                    restricted |= quality.restriction != ManaRestrictionView::Unrestricted;
+                    source.followup_eligible &=
+                        quality.restriction == ManaRestrictionView::Unrestricted;
                 }
                 // A source with a free tap is reusable. Keep its free ability in preference to
                 // a granted self-sacrifice with an otherwise identical output.
                 grant
                     .production
                     .visit_at_start_with_fixed_choice(self, id, false, |mana| {
-                        if mana != [0; 6] && !source.modes.iter().any(|m| m.mana == mana && !m.pain)
-                        {
-                            source.modes.push(Mode { mana, pain: false });
-                            source.treasure |= grant.sacrifice;
+                        if mana != [0; 6] {
+                            source.modes.push(Mode {
+                                mana,
+                                pain: false,
+                                sacrifice: grant.sacrifice,
+                            });
                             actions.push(Action::TapGrantedMana {
                                 card: id,
                                 grantor: grant.source,
@@ -263,7 +275,7 @@ impl Game {
                     || (cost.life != 0
                         && (!options.allow_life_payment
                             || self.state.players[payer.index()].life <= i128::from(cost.life)))
-                    || cost.sacrifice && (!treasure || !options.allow_treasure)
+                    || cost.sacrifice && !expendable
                     || !self.activation_cost_available(
                         id,
                         ability,
@@ -278,7 +290,8 @@ impl Game {
                     if !quality.eligible(purpose) {
                         continue;
                     }
-                    restricted |= quality.restriction != ManaRestrictionView::Unrestricted;
+                    source.followup_eligible &=
+                        quality.restriction == ManaRestrictionView::Unrestricted;
                 }
                 let domain = match recipe.base() {
                     ManaProduction::CountSubtype { color, subtype } => {
@@ -291,14 +304,12 @@ impl Game {
                 };
                 domain.visit(|mana| {
                     let pain = cost.life != 0;
-                    if mana != [0; 6]
-                        && !source
-                            .modes
-                            .iter()
-                            .any(|m| m.mana == mana && (!m.pain || pain))
-                    {
-                        source.modes.push(Mode { mana, pain });
-                        source.treasure |= cost.sacrifice;
+                    if mana != [0; 6] {
+                        source.modes.push(Mode {
+                            mana,
+                            pain,
+                            sacrifice: cost.sacrifice,
+                        });
                         actions.push(Action::ActivateMana {
                             card: id,
                             ability: index,
@@ -314,11 +325,6 @@ impl Game {
                 inputs.sources.push(source);
                 inputs.actions.push(actions);
             }
-        }
-        if restricted {
-            // A spell and a hypothetical follow-up may have different spending permissions.
-            // Only ordinary sources can be reused for an exact combined-cost reservation.
-            inputs.followups.clear();
         }
         inputs
     }
@@ -352,6 +358,26 @@ impl Game {
     }
 
     fn auto_tap_branch(
+        &self,
+        actor: Player,
+        revision: u64,
+        attempt_id: u64,
+        options: &AutoTapOptions,
+    ) -> Result<(AutoTapResult, Option<Game>), Error> {
+        // Source queries can encounter the same recoverable numeric limits as a raw action.
+        // Planning never owns the live state; expose any such failure through the ordinary API.
+        match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            self.build_auto_tap_branch(actor, revision, attempt_id, options)
+        })) {
+            Ok(result) => result,
+            Err(payload) => match payload.downcast::<CapacitySignal>() {
+                Ok(signal) => Err(Error::CapacityExceeded(signal.0)),
+                Err(payload) => std::panic::resume_unwind(payload),
+            },
+        }
+    }
+
+    fn build_auto_tap_branch(
         &self,
         actor: Player,
         revision: u64,
@@ -413,10 +439,17 @@ impl Game {
             .with_live_characteristics(self, a.item.controller);
         let pool = self.available_mana(a.item.controller, purpose);
         let mut treasure_pool = [0u32; 6];
+        let mut followup_pool = pool;
         for lot in self.mana_lots(a.item.controller) {
-            if lot.quality.treasure_source && lot.quality.eligible(purpose) {
-                for (total, amount) in treasure_pool.iter_mut().zip(lot.amounts) {
-                    *total += u32::try_from(amount).expect("subset of representable pool");
+            if lot.quality.eligible(purpose) {
+                for (i, amount) in lot.amounts.into_iter().enumerate() {
+                    let amount = u32::try_from(amount).expect("subset of representable pool");
+                    if lot.quality.treasure_source {
+                        treasure_pool[i] += amount;
+                    }
+                    if lot.quality.restriction != ManaRestrictionView::Unrestricted {
+                        followup_pool[i] -= amount;
+                    }
                 }
             }
         }
@@ -440,8 +473,11 @@ impl Game {
         };
         let Some(solution) = auto_tap_solver::solve(
             cost,
-            pool,
-            treasure_pool,
+            Pools {
+                eligible: pool,
+                treasure: treasure_pool,
+                followup: followup_pool,
+            },
             &inputs.sources,
             options.follow_up,
             &inputs.followups,
@@ -456,6 +492,19 @@ impl Game {
         let mut actions = Vec::with_capacity(solution.taps.len() + 1);
         for (source, mode) in solution.taps {
             let action = inputs.actions[source][mode].clone();
+            if inputs.sources[source].modes[mode].pain
+                && let Action::ActivateMana { card, ability, .. } = &action
+                && branch.state.players[attempt.player.index()].life
+                    <= i128::from(
+                        branch.state.objects[*card as usize]
+                            .card
+                            .activation(*ability)
+                            .cost
+                            .life,
+                    )
+            {
+                return Ok((result, None));
+            }
             match branch.apply(actor, action.clone()) {
                 Ok(()) => actions.push(action),
                 Err(Error::IllegalAction | Error::WrongActor | Error::GameOver) => {
@@ -490,7 +539,12 @@ impl Game {
             let take = if solution.prefer_treasure {
                 lot.quality.treasure_source
             } else {
+                // A narrow, expiring lot is less useful for future payments. Lots
+                // carrying a spell benefit are useful immediately on eligible spells.
                 lot.quality.retention == crate::ManaRetention::Step
+                    && (lot.quality.restriction != ManaRestrictionView::Unrestricted
+                        || matches!(purpose, mana_lots::Purpose::Spell(_))
+                            && lot.quality.spell_bonus != ManaSpellBonusView::None)
             };
             let amount = if take { range.maximum } else { range.minimum };
             let action = Action::ChooseManaLotSpend { amount };

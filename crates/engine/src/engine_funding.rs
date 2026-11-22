@@ -6440,6 +6440,27 @@ impl Game {
     /// Current mana abilities, with materials and allocations left to callers.
     /// This visitor never constructs speculative FundingMove witnesses.
     pub(super) fn visit_local_mana_abilities(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
+        self.visit_local_mana_sources(0..self.state.objects.len(), emit)
+    }
+
+    /// Validate a raw tap in the same current mana window as the indexed menu. Visiting
+    /// just its supplied source avoids constructing every other permanent's payment choices.
+    pub(super) fn supplied_window_mana_action(&self, card: CardId, action: &Action) -> bool {
+        let id = card as usize;
+        let Some(a) = self.state.announcing.as_ref() else {
+            return false;
+        };
+        id < self.state.objects.len()
+            && self.funding_goal(a).requires_mana()
+            && self.visit_local_mana_sources(id..id + 1, &mut |candidate| &candidate == action)
+            && (self.state.mana_lots.is_none() || self.mana_action_payable(action))
+    }
+
+    fn visit_local_mana_sources(
+        &self,
+        sources: std::ops::Range<usize>,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
         // Resolution opens its own mana window even inside a suspended cast.
         if !matches!(self.state.pending, Pending::ResolutionMana { .. })
             && self.attempt_mana_window_closed()
@@ -6450,18 +6471,22 @@ impl Game {
             return false;
         };
         let mut seen = Vec::new();
-        let mut once = |action: Action| {
-            if seen.contains(&action) {
-                return false;
-            }
-            seen.push(action.clone());
-            emit(action)
-        };
-        for (id, object) in self.state.objects.iter().enumerate() {
+        for id in sources {
+            let object = &self.state.objects[id];
             let id = id as CardId;
             if self.attempt_draw_is_face_down(self.object_ref(id)) {
                 continue;
             }
+            // Every emitted action names this source. Duplicates can only occur
+            // between abilities of a single permanent.
+            seen.clear();
+            let mut once = |action: Action| {
+                if seen.contains(&action) {
+                    return false;
+                }
+                seen.push(action.clone());
+                emit(action)
+            };
             if self.visit_intrinsic_mana(id, actor, &mut once)
                 || self.visit_granted_mana(id, actor, &mut once)
                 || self.visit_borrowed_activations(id, actor, false, &mut |action| {

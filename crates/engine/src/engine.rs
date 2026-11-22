@@ -5499,7 +5499,15 @@ impl Game {
             if self.semantic_actor() != Some(actor) {
                 return Err(Error::WrongActor);
             }
-            let legal = if let Action::PayConspire { objects } = &action {
+            let legal = if let Action::TapMana { card }
+            | Action::TapGrantedMana { card, .. }
+            | Action::ActivateMana { card, .. } = &action
+                && matches!(self.state.pending, Pending::PayCosts { .. })
+                && self.state.entry_batch.is_none()
+                && self.state.replacements.is_none()
+            {
+                self.supplied_window_mana_action(*card, &action)
+            } else if let Action::PayConspire { objects } = &action {
                 self.conspire_payment_valid(*objects)
             } else if let Action::PayCosts { payment } = &action {
                 self.mana_payment_domain()
