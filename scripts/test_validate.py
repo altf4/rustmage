@@ -230,6 +230,8 @@ class ValidatorTests(unittest.TestCase):
                 self.assertEqual(timeouts[lint_index], lint_budget)
                 release_index = next(i for i, (command, _) in enumerate(commands)
                                      if command[:2] == ['cargo', 'build'])
+                self.assertEqual(commands[release_index][0],
+                                 ['cargo', 'build', '--release', '--lib', '--bin', 'benchmark'])
                 self.assertEqual(timeouts[release_index], release_budget)
                 self.assertEqual(report['timeout_seconds'], parent_budget)
                 self.assertLess(timeouts[index], parent_budget)
@@ -377,8 +379,10 @@ class ValidatorTests(unittest.TestCase):
         sentinel = reusable/'cached-object'
         sentinel.write_bytes(b'keep cached build')
         os.environ['CARGO_TARGET_DIR'] = str(reusable)
-        status, path, report, _ = self.invoke('--fresh', '--python', 'smoke')
+        status, path, report, commands = self.invoke('--fresh', '--python', 'smoke')
         self.assertEqual(status, 0)
+        self.assertEqual([command for command, _ in commands if command[:2] == ['cargo', 'build']],
+                         [['cargo', 'build', '--release', '--lib']])
         self.assertTrue(report['fresh_target'])
         target = Path(report['target'])
         self.assertNotEqual(target, reusable)

@@ -1,6 +1,8 @@
 """In-process rustmage binding. No server, socket, JVM, or third-party packages.
 
-Build with `cargo build --release`, then import with PYTHONPATH=python.
+See "Build and run" in README.md for the guarded library-only build and its
+platform-specific output path. Pass that path as Game(..., library=...) or set
+RUSTMAGE_LIBRARY. Add the checkout's python directory to PYTHONPATH to import.
 Each Game owns a native handle; different handles may run on different threads.
 The lock serializes ctypes calls (ctypes releases the GIL during native calls).
 """

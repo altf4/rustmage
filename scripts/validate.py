@@ -157,8 +157,10 @@ def main(argv=None):
     if args.release or args.python != 'none':
         # A cold Windows release still compiles the whole pool independently of
         # the test profile. Reserve time for it after the complete native suite.
-        commands.append(('release build', ['cargo', 'build', '--release', '--lib', '--bin', 'benchmark'],
-                         1800 if windows else 900))
+        release_build = ['cargo', 'build', '--release', '--lib']
+        if args.release:
+            release_build.extend(['--bin', 'benchmark'])
+        commands.append(('release build', release_build, 1800 if windows else 900))
     if args.release:
         commands.append(('simulation sample', [str(target/'release'/executable_name('benchmark')), str(args.games)], 15))
     if args.python != 'none':
