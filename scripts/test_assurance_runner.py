@@ -27,6 +27,14 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class AssuranceRunnerTests(unittest.TestCase):
+    def test_scenario_files_are_registered_in_their_suite(self):
+        for main in (ROOT/'tests').glob('*/main.rs'):
+            declarations = set(main.read_text().splitlines())
+            with self.subTest(suite=main.parent.name):
+                missing = [path.name for path in sorted(main.parent.glob('*.rs'))
+                           if path != main and f'mod {path.stem};' not in declarations]
+                self.assertEqual(missing, [], 'declare each scenario module in main.rs')
+
     def test_grouped_case_filter_searches_only_original_case_names(self):
         names = ['beam_engine::cast_beam', 'beam_engine::cast', 'other::cast_beam']
         selected = native.selected_case_batches(names, {'beam_engine'}, 'beam')

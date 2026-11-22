@@ -1,0 +1,32 @@
+#[path = "../support/mod.rs"]
+mod support;
+
+mod tdm_attached_activation_costs;
+mod tdm_behold_costs;
+mod tdm_cast_event_scalars;
+mod tdm_cast_routes;
+mod tdm_combat_callbacks;
+mod tdm_copy_suspend;
+mod tdm_cori_steel_cutter;
+mod tdm_counter_world;
+mod tdm_dynamic_tokens;
+mod tdm_endure;
+mod tdm_entry_counters;
+mod tdm_entry_modes;
+mod tdm_event_contexts;
+mod tdm_half_life_round_up;
+mod tdm_harmonize_x_pruning;
+mod tdm_mana_windows;
+mod tdm_optional_attachment;
+mod tdm_paid_mana_use_receipts;
+mod tdm_protection_decayed;
+mod tdm_remaining_world_rules;
+mod tdm_resolution_results;
+mod tdm_sacrifice_random_rules;
+mod tdm_search_color_sequences;
+mod tdm_set_combat_interactions;
+mod tdm_set_interactions;
+mod tdm_set_prevention;
+mod tdm_set_search_modes;
+mod tdm_static_rules;
+mod tdm_token_entry_counters;

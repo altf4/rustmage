@@ -1,0 +1,37 @@
+#[path = "../support/mod.rs"]
+mod support;
+
+mod dft_black_red_cards_creatures;
+mod dft_black_red_cards_discard_entries;
+mod dft_black_red_cards_exhaust_vehicles;
+mod dft_black_red_cards_final_support;
+mod dft_black_red_cards_gonti_howlsquad;
+mod dft_black_red_cards_grave_costs;
+mod dft_black_red_cards_mass_spells;
+mod dft_black_red_cards_speed;
+mod dft_black_red_cards_speed_enchantments;
+mod dft_black_red_cards_spells;
+mod dft_black_red_cards_target_roles;
+mod dft_black_red_cards_trigger_creatures;
+mod dft_black_red_cards_vehicles_mounts;
+mod dft_colorless_cards_inherited_artifacts;
+mod dft_colorless_cards_inherited_lands;
+mod dft_colorless_cards_machines;
+mod dft_colorless_cards_raceways;
+mod dft_colorless_cards_roads;
+mod dft_colorless_cards_speed;
+mod dft_colorless_cards_utility;
+mod dft_green_multi_cards_artifacts;
+mod dft_green_multi_cards_basics;
+mod dft_green_multi_cards_exhaust;
+mod dft_green_multi_cards_final;
+mod dft_green_multi_cards_gearhulks;
+mod dft_green_multi_cards_legends;
+mod dft_green_multi_cards_search;
+mod dft_green_multi_cards_vehicles;
+mod dft_white_blue_cards_activations;
+mod dft_white_blue_cards_final;
+mod dft_white_blue_cards_mounts;
+mod dft_white_blue_cards_permanents;
+mod dft_white_blue_cards_speed;
+mod dft_white_blue_cards_tempo;

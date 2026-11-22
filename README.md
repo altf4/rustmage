@@ -31,6 +31,12 @@ The Cargo workspace keeps the shared engine, per-set definitions and integration
 tests in separate compilation units. Applications still use one `rustmage`
 dependency. See the repository's [authoring and validation instructions](AGENTS.md).
 
+Add card and rules scenarios as modules in the set's integration suite under
+`tests/` and declare each module in the suite's `main.rs`. The guarded native
+test runner accepts the original scenario name with `--test-target`. For example,
+to run the Bloomburrow food-layer scenarios directly with Cargo, use
+`python3 scripts/resource_guard.py -- cargo test --test blb_scenarios blb_food_layers_engine::`.
+
 ## Examples and bindings
 
 - [Rust examples](examples/) show how to drive games and branch game state.
