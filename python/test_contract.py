@@ -128,6 +128,15 @@ class BindingContractTests(unittest.TestCase):
             snapshot = handle.snapshot()
             preview = handle.plan_mana_payment(view)
             self.assertEqual(preview["status"], "completed")
+            next_spell = next(obj["reference"] for obj in view["objects"]
+                              if obj["zone"] == "Hand" and obj["card"] == "Savannah Lions"
+                              and obj["reference"] != view["attempt"]["source"])
+            hold = {"kind": "cast", "object": next_spell}
+            self.assertEqual(handle.plan_mana_payment(view, follow_up_action=hold), preview)
+            with self.assertRaises(EngineError):
+                handle.auto_pay_mana(view, follow_up_action={"kind": "activate",
+                                                            "object": next_spell, "ability": 1})
+            self.assertEqual(handle.observe(actor), view)
             self.assertEqual(preview["revision"], view["revision"])
             self.assertEqual(preview["attempt_id"], fields["attempt_id"])
             self.assertEqual(preview["payment"], [1, 0, 0, 0, 0, 0])
