@@ -363,9 +363,10 @@
     "examples/tdm_games.rs": "d5ad8e7893c4ff6b5c938fa97d806e78723f085895ba3c5a20fc5a3c5f0a07f4",
     "rust-toolchain.toml": "495c69d1db93f25f53e3d0d2d40d812313366cc368de317871c2ace6c6ffafa4",
     "scripts/tdm_execution_inputs.py": "354c57b93d69a56e6443b53062da1a69a7d990a372906ea1508182753e0b044b",
-    "src/bin/benchmark.rs": "132e6732f4c2c608fa220caa4f7764ce79af3a38f58e25353182fa13b8665ed2",
+    "src/bin/benchmark.rs": "aaa0c6a31f39447ca79f907e87019e77a66365832bf57ae6bbc3a25f347f859d",
     "src/bin/coverage.rs": "281e3fefae34d3134bef6fa1c9a779fc364a8a11b6cef26d1f970c55e553ce45",
     "src/bin/rustmage.rs": "d3a31dac86212f72adacb2b3bd5ae0247fddc915aa4a76e052108322f116f3a2",
+    "src/bin/support/standard.rs": "50d3139c47f9abd18b619d1d1ce1c963c08ba7ece45c804d56c431d0da8f7374",
     "src/card_definitions/afr/vampire_spawn.json": "d1a3a9939f30d0eaad046f076cecdbd334d49b13f123cea3aeeb1dae56636cec",
     "src/card_definitions/afr/vampire_spawn.rs": "8f0123f1adab93037293b68b0626270bd928260054f1564d505fb012db854d52",
     "src/card_definitions/big/ancient_cornucopia.json": "2706a8d2e0ef39b3c813caefe5336c5fb4d69ea9d19bd5c13485fda7fe959414",
@@ -12410,5 +12411,5 @@
   },
   "schema": 1,
   "scope": "Workspace library Rust, provenance and build inputs plus TDM acceptance entrypoints; shared harness is independently self-hashed.",
-  "source_count": 12407
+  "source_count": 12408
 }

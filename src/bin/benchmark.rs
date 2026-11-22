@@ -1,4 +1,4 @@
-#[path = "../../examples/support/standard.rs"]
+#[path = "support/standard.rs"]
 mod standard;
 
 use rustmage::{Card, Config, DeckRules, Game, Player};

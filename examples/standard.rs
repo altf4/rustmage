@@ -1,6 +1,6 @@
 //! Complete self-play using only implemented, pinned Standard-legal cards.
 //! This exercises a supported deck, not the complete Standard card pool.
-#[path = "support/standard.rs"]
+#[path = "../src/bin/support/standard.rs"]
 mod standard;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
