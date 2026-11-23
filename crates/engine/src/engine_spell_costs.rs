@@ -508,6 +508,15 @@ impl Game {
                 return false;
             }
         }
+        if pay
+            && self.state.proposal_affordability
+            && !self.optional_mana_declaration_may_be_affordable(
+                a,
+                source.card.kicker_cost().expect("kicker declaration"),
+            )
+        {
+            return false;
+        }
         proposal
             .cost_options()
             .any(|cost| self.announcement_cost_fundable(&proposal, cost))
@@ -528,6 +537,15 @@ impl Game {
         base
     }
     pub(super) fn offspring_choice_fundable(&self, a: &Announcement, pay: bool) -> bool {
+        if pay && self.state.proposal_affordability {
+            let source = a.item.source.expect("offspring declaration has a spell");
+            if !self.optional_mana_declaration_may_be_affordable(
+                a,
+                source.card.offspring_cost().expect("offspring declaration"),
+            ) {
+                return false;
+            }
+        }
         if a.source_mana_alternative().is_some()
             || a.independent_additional_mana().is_some()
             || a.has_ordered_origin_payment()

@@ -136,6 +136,7 @@ pub(super) struct PaymentCapacity {
     sources: Vec<Source>,
     restrictions: Vec<(SpellRestriction, [u128; 64])>,
     floating_restrictions: Vec<(LotRestriction, [u128; 6])>,
+    material_changing_costs: bool,
 }
 
 impl PaymentCapacity {
@@ -345,6 +346,7 @@ impl PaymentCapacity {
         let mut histogram = [0u128; 64];
         let mut spell_histograms = [[0u128; 64]; SpellRestriction::ALL.len()];
         let mut has_restriction = [false; SpellRestriction::ALL.len()];
+        let mut material_changing_costs = false;
         for (id, object) in s.objects.iter().enumerate() {
             let controlled = object.zone == Zone::Battlefield && object.controller == actor;
             if !(controlled
@@ -418,16 +420,16 @@ impl PaymentCapacity {
                 if !can_tap {
                     continue;
                 }
-                if linked_returns
-                    && (ability.cost.sacrifice
-                        || ability.cost.exile_self
-                        || ability.cost.discard
-                        || ability.cost.remove.is_some()
-                        || ability.cost.loyalty.is_some()
-                        || object.card.activation_put_counter(index as u16).is_some())
-                {
+                let changes_materials = ability.cost.sacrifice
+                    || ability.cost.exile_self
+                    || ability.cost.discard
+                    || ability.cost.remove.is_some()
+                    || ability.cost.loyalty.is_some()
+                    || object.card.activation_put_counter(index as u16).is_some();
+                if linked_returns && changes_materials {
                     return None;
                 }
+                material_changing_costs |= changes_materials;
                 // Extra prerequisites only reduce capacity. Effects beyond producing mana
                 // can change what other sources may do during the payment window.
                 if !ability.cost.alternatives.is_empty()
@@ -481,6 +483,7 @@ impl PaymentCapacity {
             sources,
             restrictions,
             floating_restrictions: floating_spell_restrictions(game, actor),
+            material_changing_costs,
         })
     }
 
@@ -609,6 +612,57 @@ impl PaymentCapacity {
         }
         true
     }
+}
+
+/// Certify declaration routes whose remaining funding actions cannot deploy,
+/// return, or take control of material, or pay a cost that moves it. Live local
+/// forms and existing crew still need to be counted by the material predicate.
+pub(super) fn stable_optional_material_board(game: &Game, a: &Announcement) -> bool {
+    let Some(source) = a.item.source else {
+        return false;
+    };
+    let state = &game.state;
+    if !a.pay_window
+        || a.item.is_copy
+        || !a.item.cast.is_some_and(|cast| {
+            matches!(
+                cast.method,
+                CastMethod::Normal
+                    | CastMethod::Airbend
+                    | CastMethod::Flashback
+                    | CastMethod::GrantedFlashback
+                    | CastMethod::GrantedFixedFlashback(_)
+                    | CastMethod::GrantedZeroFlashback
+                    | CastMethod::Harmonize
+                    | CastMethod::GrantedHarmonize
+                    | CastMethod::Foretell
+                    | CastMethod::Mayhem
+                    | CastMethod::Plot
+                    | CastMethod::Warp
+            )
+        })
+        || a.limited_cast_permission.is_some()
+        || a.origin_additional_cost.is_some()
+        || a.origin_counter_cost.is_some()
+        || a.additional_cost().is_some()
+        || source.card.additional_cost().is_some()
+        || source.card.kicker_additional_cost().is_some()
+        || source.card.behold_cast().is_some()
+        || a.cast_costs.as_ref().is_some_and(|costs| {
+            costs
+                .clauses
+                .iter()
+                .any(|row| row.clause != CastCostClause::Mana)
+        })
+        || !state.attachment_sources.is_empty()
+        || state.roles.as_ref().is_some_and(|roles| {
+            !roles.characteristic_sources.is_empty() || !roles.live_static.is_empty()
+        })
+    {
+        return false;
+    }
+    PaymentCapacity::for_player(game, a.item.controller)
+        .is_some_and(|capacity| !capacity.material_changing_costs)
 }
 
 /// An immediate linked return only fires when its exact host leaves. For a

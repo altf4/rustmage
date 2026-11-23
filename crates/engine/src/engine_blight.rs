@@ -15,13 +15,14 @@ impl Game {
         mode < 64 && bits & (1u64 << mode) != 0
     }
 
-    pub(super) fn blight_intent_fundable(&self, _pay: bool) -> bool {
+    pub(super) fn blight_intent_fundable(&self, pay: bool) -> bool {
         let Some(a) = self.state.announcing.as_ref() else {
             return false;
         };
         a.item
             .source
             .is_some_and(|source| source.card.blight().is_some())
+            && (!pay || self.optional_creature_material_available(a, None))
     }
     pub(super) fn choose_blight(&mut self, pay: bool) {
         let improvise = improvise::potential(

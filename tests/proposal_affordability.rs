@@ -14,6 +14,64 @@ fn reject_at_priority(game: &mut Game, player: Player, action: Action) {
 }
 
 #[test]
+fn bargain_requires_a_possible_sacrifice_without_reserving_mana_sources() {
+    let player = Player::P0;
+    for enabled in [false, true] {
+        let mut game = scenario(player).with_proposal_affordability(enabled);
+        game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 0];
+        let spell = put(&mut game, player, "Torch the Tower", Zone::Hand);
+        put(
+            &mut game,
+            player.other(),
+            "Grizzly Bears",
+            Zone::Battlefield,
+        );
+        put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+        put(&mut game, player.other(), "Candy Trail", Zone::Battlefield);
+        let mut with_treasure = game.clone();
+        with_treasure.state.players[player.index()].mana = [0; 6];
+        let treasure =
+            rustmage_core::cards::Card::from_name("@token/b60f6cd3b44b22bd289fe4e2").unwrap();
+        with_treasure.create_tokens(player, treasure, 1, false);
+        let cast = Action::AnnounceCast { card: spell };
+        act(&mut game, cast.clone());
+        let pay = Action::DeclareBargain { pay: true };
+        assert_eq!(game.legal_actions().contains(&pay), !enabled);
+        if enabled {
+            reject_at_priority(&mut game, player, pay.clone());
+        }
+        act(&mut game, Action::DeclareBargain { pay: false });
+
+        // The same Treasure might be needed for both costs. Preserve the
+        // choice when there is material and the costs would need joint search.
+        act(&mut with_treasure, cast);
+        act(&mut with_treasure, pay);
+    }
+}
+
+#[test]
+fn optional_evidence_requires_enough_graveyard_mana_value() {
+    let player = Player::P0;
+    let mut game = scenario(player).with_proposal_affordability(true);
+    game.state.players[player.index()].mana = [0, 0, 2, 0, 0, 3];
+    let spell = put(&mut game, player, "Deadly Cover-Up", Zone::Hand);
+    put(&mut game, player, "Hill Giant", Zone::Graveyard);
+    put(&mut game, player, "Opt", Zone::Graveyard);
+    let mut funded = game.clone();
+    put(&mut funded, player, "Opt", Zone::Graveyard);
+    let cast = Action::AnnounceCast { card: spell };
+    act(&mut game, cast.clone());
+    let collect = Action::ChooseCollectEvidence { collect: true };
+    reject_at_priority(&mut game, player, collect.clone());
+    act(&mut game, Action::ChooseCollectEvidence { collect: false });
+    pay(&mut game);
+    assert_eq!(game.object_view(spell).zone, Zone::Stack);
+
+    act(&mut funded, cast);
+    act(&mut funded, collect);
+}
+
+#[test]
 fn linked_returns_only_disable_the_bound_when_funding_can_release_them() {
     let player = Player::P0;
     let mut game = scenario(player).with_proposal_affordability(true);
@@ -285,6 +343,92 @@ fn offspring_base_override_keeps_the_token_definition_for_funding() {
     });
     game.set_copy_recipe(game.object_ref(token), recipe);
     assert!(game.legal_actions().contains(&cast));
+}
+
+#[test]
+fn optional_blight_requires_a_controlled_creature_even_when_the_target_is_legal() {
+    let player = Player::P0;
+    for enabled in [false, true] {
+        let mut game = scenario(player).with_proposal_affordability(enabled);
+        let spell = put(&mut game, player, "Requiting Hex", Zone::Hand);
+        put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+
+        let mut with_enchantment = game.clone();
+        let object = put(
+            &mut with_enchantment,
+            player,
+            "Enduring Curiosity",
+            Zone::Battlefield,
+        );
+        let form = characteristic_layers::enchantment_noncreature_form(
+            with_enchantment.object_ref(object),
+            with_enchantment.next_role_timestamp(),
+        );
+        with_enchantment
+            .state
+            .roles
+            .get_or_insert_default()
+            .animations
+            .push(form);
+        assert!(!with_enchantment.is_creature(object));
+        act(&mut with_enchantment, Action::AnnounceCast { card: spell });
+        assert_eq!(
+            with_enchantment
+                .legal_actions()
+                .contains(&Action::ChooseBlight { pay: true }),
+            !enabled
+        );
+
+        let mut with_creature = game.clone();
+        let own = put(&mut with_creature, player, "Bear Cub", Zone::Battlefield);
+        with_creature.state.objects[own as usize].tapped = true;
+        act(&mut with_creature, Action::AnnounceCast { card: spell });
+        act(&mut with_creature, Action::ChooseBlight { pay: true });
+
+        act(&mut game, Action::AnnounceCast { card: spell });
+        let paid = Action::ChooseBlight { pay: true };
+        assert_eq!(game.legal_actions().contains(&paid), !enabled);
+        if enabled {
+            reject_at_priority(&mut game, player, paid);
+        }
+        act(&mut game, Action::ChooseBlight { pay: false });
+    }
+}
+
+#[test]
+fn optional_teamwork_counts_untapped_power_even_on_a_single_summoning_sick_creature() {
+    let player = Player::P0;
+    let mut game = scenario(player).with_proposal_affordability(true);
+    let spell = put(&mut game, player, "Repulsor Blast", Zone::Hand);
+    put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+    put(
+        &mut game,
+        player.other(),
+        "Elusive Otter",
+        Zone::Battlefield,
+    );
+    let elf = put(&mut game, player, "Llanowar Elves", Zone::Battlefield);
+    game.state.objects[elf as usize].summoning_sick = true;
+    let bear = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    game.state.objects[bear as usize].tapped = true;
+    for (bonus, enabled, offered) in [(0, true, false), (0, false, true), (1, true, true)] {
+        let mut branch = game.clone().with_proposal_affordability(enabled);
+        branch.state.objects[elf as usize].counters.plus_one = bonus;
+        act(&mut branch, Action::AnnounceCast { card: spell });
+        let paid = Action::ChooseTeamwork { pay: true };
+        let unpaid = Action::ChooseTeamwork { pay: false };
+        let actions = branch.legal_actions();
+        assert!(actions.contains(&unpaid));
+        assert_eq!(actions.contains(&paid), offered);
+        let choice = if offered { paid } else { unpaid };
+        let index = actions.iter().position(|action| action == &choice).unwrap();
+        let mut indexed = branch.clone();
+        indexed
+            .apply_index(player, indexed.revision(), index)
+            .unwrap();
+        act(&mut branch, choice);
+        assert_eq!(branch.snapshot(), indexed.snapshot());
+    }
 }
 
 #[test]
@@ -612,6 +756,77 @@ fn mana_for_activations_does_not_count_toward_a_spell() {
         &mut game,
         Action::PayCosts {
             payment: [0, 0, 0, 0, 0, 2],
+        },
+    );
+    assert_eq!(game.state.players[player.index()].spells_cast_this_turn, 1);
+}
+
+#[test]
+fn kicker_and_offspring_check_the_entire_spell_cost() {
+    let player = Player::P0;
+    for (name, decline, pay, base, full) in [
+        (
+            "Consult the Star Charts",
+            Action::ChooseKicker { pay: false },
+            Action::ChooseKicker { pay: true },
+            [0, 1, 0, 0, 0, 1],
+            [0, 2, 0, 0, 0, 2],
+        ),
+        (
+            "Starscape Cleric",
+            Action::ChooseOffspring { pay: false },
+            Action::ChooseOffspring { pay: true },
+            [0, 0, 1, 0, 0, 1],
+            [0, 0, 2, 0, 0, 3],
+        ),
+    ] {
+        for enabled in [false, true] {
+            let mut game = scenario(player).with_proposal_affordability(enabled);
+            game.state.players[player.index()].mana = base;
+            let spell = put(&mut game, player, name, Zone::Hand);
+            act(&mut game, Action::AnnounceCast { card: spell });
+            assert!(game.legal_actions().contains(&decline));
+            assert_eq!(game.legal_actions().contains(&pay), !enabled);
+            if enabled {
+                reject_at_priority(&mut game, player, pay.clone());
+            }
+            let mut declined = game.clone();
+            act(&mut declined, decline.clone());
+            act(&mut declined, Action::PayCosts { payment: base });
+            assert_eq!(
+                declined.state.players[player.index()].spells_cast_this_turn,
+                1
+            );
+
+            game.state.players[player.index()].mana = full;
+            act(&mut game, pay.clone());
+            act(&mut game, Action::PayCosts { payment: full });
+            assert_eq!(game.state.players[player.index()].spells_cast_this_turn, 1);
+        }
+    }
+}
+
+#[test]
+fn a_kicked_spell_keeps_its_exile_origin_when_pricing_mana() {
+    let player = Player::P0;
+    let mut game = scenario(player).with_proposal_affordability(true);
+    let spell = put(&mut game, player, "Consult the Star Charts", Zone::Exile);
+    game.grant_exile_play_permission(player, game.object_ref(spell), false);
+    game.state.players[player.index()].mana = [0, 2, 0, 0, 0, 1];
+    game.add_quality_mana(
+        player,
+        [0, 0, 0, 0, 0, 1],
+        Some(mana_lots::Quality {
+            restriction: ManaRestrictionView::CastFromExile,
+            ..mana_lots::Quality::ORDINARY
+        }),
+    );
+    act(&mut game, Action::AnnounceExile { card: spell });
+    act(&mut game, Action::ChooseKicker { pay: true });
+    act(
+        &mut game,
+        Action::PayCosts {
+            payment: [0, 2, 0, 0, 0, 2],
         },
     );
     assert_eq!(game.state.players[player.index()].spells_cast_this_turn, 1);

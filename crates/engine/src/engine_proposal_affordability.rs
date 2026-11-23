@@ -219,6 +219,79 @@ fn stable_sacrifice_kinds(game: &Game, actor: Player) -> Option<u16> {
     Some(kinds)
 }
 
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    /// Test a declared surcharge against an optimistic price for the entire
+    /// spell. Menus and raw actions share the declaration predicate.
+    pub(super) fn optional_mana_declaration_may_be_affordable(
+        &self,
+        a: &Announcement,
+        fee: ManaCost,
+    ) -> bool {
+        let source = a.item.source.expect("optional spell cost has a source");
+        let cast = a.item.cast.expect("optional spell cost has a cast");
+        // Origin permissions can supply material, alternate prices or flexible
+        // spending whose grant has already expired on the move to the stack.
+        if a.limited_cast_permission.is_some()
+            || a.origin_additional_cost.is_some()
+            || a.origin_counter_cost.is_some()
+            || cast.spend_any_mana
+            || cast.stash_origin
+            || !self.state.exile_links.is_empty()
+            || !matches!(
+                cast.method,
+                CastMethod::Normal
+                    | CastMethod::Airbend
+                    | CastMethod::Foretell
+                    | CastMethod::Flashback
+                    | CastMethod::GrantedFlashback
+                    | CastMethod::Harmonize
+                    | CastMethod::Warp
+                    | CastMethod::Mayhem
+                    | CastMethod::Free
+                    | CastMethod::Plot
+            )
+        {
+            return true;
+        }
+        let Some(capacity) = PaymentCapacity::for_player(self, a.item.controller) else {
+            return true;
+        };
+        let facts = ProposalPriceFacts::new(self, a.item.controller);
+        let extra = Game::with_kicker_cost(
+            Game::with_offspring_cost(fee, source.card, cast.offspring == Some(true)),
+            source.card,
+            cast.kicker == Some(true),
+        );
+        let permits = |base: ManaCost| {
+            let generic = u64::from(base.generic)
+                + u64::from(extra.generic)
+                + u64::from(a.item.x.unwrap_or(0)) * u64::from(a.payment_x_symbols());
+            let price = ManaCost {
+                generic: generic
+                    .saturating_sub(a.harmonize_discount)
+                    .min(u64::from(u32::MAX)) as u32,
+                colored: std::array::from_fn(|i| base.colored[i].saturating_add(extra.colored[i])),
+            };
+            self.spell_mana_lower_bound(
+                source.card,
+                source.id,
+                cast.origin,
+                cast.method,
+                price,
+                &facts,
+            )
+            .is_none_or(|cost| {
+                capacity.permits_spell(cost.colored, cost.generic, source.card, cast.origin)
+            })
+        };
+        // A selected option includes any declared mode and flash surcharges.
+        // Before cost selection, the ordinary iterator includes every alternative.
+        a.cost
+            .map_or_else(|| a.cost_options().any(permits), permits)
+    }
+}
+
 struct SpellProposal {
     card: CardId,
     face: CastFace,

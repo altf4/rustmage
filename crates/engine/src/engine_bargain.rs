@@ -20,7 +20,48 @@ impl Game {
         a.item
             .source
             .is_some_and(|source| source.card.has_bargain())
-            && (pay || self.bargain_choice_fundable(a, None))
+            && if pay {
+                self.bargain_material_may_be_available(a)
+            } else {
+                self.bargain_choice_fundable(a, None)
+            }
+    }
+
+    fn bargain_material_may_be_available(&self, a: &Announcement) -> bool {
+        let state = &self.state;
+        if !state.proposal_affordability {
+            return true;
+        }
+        let controlled = |object: &Object| {
+            object.zone == Zone::Battlefield && object.controller == a.item.controller
+        };
+        self.state
+            .objects
+            .iter()
+            .filter(|object| controlled(object))
+            .any(|object| {
+                object.is_token()
+                    || object.card.kind_mask() & (16 | 32) != 0
+                    || object
+                        .card
+                        .static_ability_groups()
+                        .iter()
+                        .any(|group| group.first_layer <= crate::cards::AbilityLayer::Type)
+            })
+            || state.roles.as_ref().is_some_and(|roles| {
+                // A current form can supply an artifact or enchantment even if
+                // neither type is printed. Credit it without a layered query.
+                roles
+                    .animations
+                    .iter()
+                    .any(|row| controlled(&state.objects[row.object.card as usize]))
+            })
+            || state.crew.as_ref().is_some_and(|crew| {
+                crew.animated
+                    .iter()
+                    .any(|row| controlled(&state.objects[row.card as usize]))
+            })
+            || !payment_capacity::stable_optional_material_board(self, a)
     }
     pub(super) fn initial_bargain_fundable(
         &self,
