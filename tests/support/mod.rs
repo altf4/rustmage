@@ -88,6 +88,7 @@ pub(crate) fn spawn(g: &mut Game, owner: Player, card: Card, zone: Zone) -> Card
     id
 }
 
+#[track_caller]
 pub(crate) fn act(g: &mut Game, action: Action) {
     g.apply(g.actor().expect("nonterminal scenario"), action.clone())
         .unwrap_or_else(|error| panic!("{action:?}: {error:?}; pending {:?}", g.state.pending));
@@ -163,6 +164,7 @@ pub(crate) fn settle(g: &mut Game) {
     panic!("48-action resolution budget exhausted");
 }
 
+#[track_caller]
 pub(crate) fn reject(g: &mut Game, action: Action) {
     let before = g.snapshot();
     let revision = g.revision();
@@ -172,6 +174,43 @@ pub(crate) fn reject(g: &mut Game, action: Action) {
     );
     assert_eq!(g.snapshot(), before);
     assert_eq!(g.revision(), revision);
+}
+
+/// Check an offered next step without committing it to the scenario's main path.
+#[track_caller]
+pub(crate) fn admit(g: &Game, action: Action) {
+    let actor = g.actor().expect("nonterminal scenario");
+    let index = g
+        .legal_actions()
+        .iter()
+        .position(|candidate| *candidate == action);
+    let before = g.snapshot();
+    let revision = g.revision();
+    let mut raw = g.clone();
+    if let Some(index) = index {
+        let mut indexed = g.clone();
+        act(&mut raw, action);
+        indexed.apply_index(actor, revision, index).unwrap();
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        indexed.restore(&before).unwrap();
+        assert_eq!(indexed.snapshot(), before);
+        assert_eq!(
+            indexed.apply_index(actor, revision, index),
+            Err(Error::StaleRevision)
+        );
+    } else {
+        // Large scalar domains publish bounded examples. Interior values use
+        // the raw numeric API and must still belong to the complete domain.
+        assert!(matches!(action, Action::ChooseX { value }
+            if g.x_choice().is_some_and(|domain| domain.contains(value))));
+        act(&mut raw, action);
+        raw.restore(&before).unwrap();
+        assert_eq!(raw.snapshot(), before);
+        assert_eq!(
+            raw.apply_index(actor, revision, 0),
+            Err(Error::StaleRevision)
+        );
+    }
 }
 
 pub(crate) fn stats(g: &Game, id: CardId) -> (i128, i128) {

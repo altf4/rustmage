@@ -549,7 +549,7 @@ fn toby_creates_the_restricted_beast_and_only_flies_its_own_creature_tokens_at_f
     attack.state.objects[beast as usize].summoning_sick = false;
     start_attacks(&mut attack);
     let attack_beast = Action::Attack { card: beast };
-    reject(&mut attack, attack_beast.clone());
+    admit(&attack, attack_beast.clone());
     let companion = put(&mut attack, PLAYER, "Bear Cub", Zone::Battlefield);
     act(&mut attack, attack_beast);
     reject(&mut attack, Action::FinishAttackers);
@@ -572,7 +572,7 @@ fn toby_creates_the_restricted_beast_and_only_flies_its_own_creature_tokens_at_f
         blocker: beast,
         attacker: first,
     };
-    reject(&mut block, block_beast.clone());
+    admit(&block, block_beast.clone());
     let companion = put(&mut block, PLAYER, "Bear Cub", Zone::Battlefield);
     act(&mut block, block_beast);
     reject(&mut block, Action::FinishBlockers);

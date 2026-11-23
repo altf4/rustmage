@@ -116,7 +116,10 @@ fn priority_forage_checks_sickness_and_can_sacrifice_tapped_food_for_split_mana(
         g.state.objects[source as usize].summoning_sick = false;
         child(&mut g, source, SPLIT);
         assert!(g.observe(p.other()).forage.is_none());
-        assert_eq!(g.observe(p).forage.unwrap().routes, vec![ForageRoute::Food]);
+        assert_eq!(
+            g.observe(p).forage.unwrap().routes,
+            vec![ForageRoute::ExileThree, ForageRoute::Food]
+        );
         reject(&mut g, Action::DeclineForage);
         route(&mut g, ForageRoute::Food);
         let food_action = pick(&g, food);
@@ -142,7 +145,7 @@ fn either_exact_forage_route_funds_a_cast_and_retains_or_reverses_its_mana_event
             let source = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
             let foreign = grave_cards(&mut g, p.other());
             let spell = put(&mut g, p, "Lightning Strike", Zone::Hand);
-            reject(&mut g, Action::AnnounceCast { card: spell });
+            admit(&g, Action::AnnounceCast { card: spell });
             let choices = if selected_route == ForageRoute::Food {
                 vec![put(&mut g, p, "Candy Trail", Zone::Battlefield)]
             } else {
@@ -151,7 +154,13 @@ fn either_exact_forage_route_funds_a_cast_and_retains_or_reverses_its_mana_event
             g.begin_combat_rollback(p);
             start_targeted_spell(&mut g, spell, Target::Player(p.other()));
             child(&mut g, source, SPLIT);
-            assert_eq!(g.observe(p).forage.unwrap().routes, vec![selected_route]);
+            assert!(
+                g.observe(p)
+                    .forage
+                    .unwrap()
+                    .routes
+                    .contains(&selected_route)
+            );
             route(&mut g, selected_route);
             let wrong = pick(&g, foreign[0]);
             reject(&mut g, wrong);
@@ -257,8 +266,8 @@ fn nested_route_keeps_a_food_mana_source_when_the_parent_needs_it() {
     let spell = put(&mut g, p, "Murder", Zone::Hand);
     start_targeted_spell(&mut g, spell, Target::Card(target));
     child(&mut g, source, BLACKS);
-    reject(
-        &mut g,
+    admit(
+        &g,
         Action::ChooseForageRoute {
             route: ForageRoute::Food,
         },

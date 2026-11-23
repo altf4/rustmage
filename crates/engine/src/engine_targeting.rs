@@ -38,6 +38,7 @@ pub(super) enum LimitedCastPermission {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl LimitedCastPermission {
+    #[cfg(feature = "test-support")]
     pub(super) fn source(self) -> ObjectRef {
         match self {
             Self::FreeHand(source) => source,
@@ -985,7 +986,7 @@ impl Announcement {
             .unwrap_or_else(|| {
                 self.cost_route_options()
                     .next()
-                    .expect("activation cost")
+                    .capacity("activation mana cost exhausted")
                     .activation_choice
                     .expect("activation route")
             })
@@ -1698,31 +1699,6 @@ impl Game {
         }
     }
 
-    pub(super) fn shared_type_target_completion(&self, a: &Announcement, target: Target) -> bool {
-        let TargetRule::Grouped { constraint, .. } = a.spec.rule else {
-            return true;
-        };
-        if !matches!(
-            constraint,
-            TargetGroupConstraint::SharedCardType | TargetGroupConstraint::SharedCreatureType
-        ) || a.spec.min < 2
-            || a.item.targets.iter().any(|bound| bound.group == a.group)
-        {
-            return true;
-        }
-        let Target::Card(id) = target else {
-            return false;
-        };
-        self.visit_item_targets(&a.item, a.spec.rule, |other| {
-            matches!(other, Target::Card(other_id) if other_id != id &&
-            if constraint == TargetGroupConstraint::SharedCreatureType {
-                self.share_creature_type(id, other_id)
-            } else {
-                self.current_kinds(other_id) & self.current_kinds(id) != 0
-            })
-        })
-    }
-
     pub(super) fn resolution_target_relations_hold(
         &self,
         item: &SpellView,
@@ -2147,7 +2123,11 @@ impl Game {
                 return;
             };
             let item = &announcement.item;
-            if spec.max > 0 && self.visit_item_targets(item, spec.rule, |_| true) {
+            if spec.max > 0 && self.visit_item_targets(item, spec.rule, |_| true)
+                || spec.min > 0 && !announcement.trigger
+            {
+                // A caller-driven declaration may expose a required group
+                // with no current target. Preserve it for explicit failure.
                 let player = item.controller;
                 self.state.announcing.as_mut().unwrap().spec = spec;
                 self.state.pending = Pending::Targets { player };
@@ -3702,7 +3682,7 @@ impl Game {
                             .card,
                         extra,
                     )
-                    .expect("validated scalar cost")
+                    .capacity("spell mana cost exhausted")
                 } else {
                     self.target_spell_cost_with_extra(
                         announcement.item.controller,
@@ -3715,7 +3695,7 @@ impl Game {
                         &announcement.item.targets,
                         extra,
                     )
-                    .expect("validated target spell cost")
+                    .capacity("spell mana cost exhausted")
                 };
                 let fees = self.locked_target_life_costs(announcement);
                 let evidence = self.target_evidence_threshold(announcement);
@@ -3938,6 +3918,9 @@ impl Game {
                 self.state.announcing = Some(announcement);
                 return;
             }
+        }
+        if !announcement.trigger {
+            self.mark_attempt_costs_complete(announcement.item.id);
         }
         if let Some(completion) = self.take_paid_contributor_completion(&announcement.item) {
             match completion {

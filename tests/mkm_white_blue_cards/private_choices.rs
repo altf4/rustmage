@@ -242,7 +242,7 @@ fn behind_the_mask_uses_only_its_linked_evidence_when_unraveler_pays_for_the_spe
     let first = put(&mut game, player, "Hill Giant", Zone::Graveyard);
     let second = put(&mut game, player, "Hill Giant", Zone::Graveyard);
     game.state.players[player.index()].mana = [0; 6];
-    reject(&mut game, Action::AnnounceCast { card: mask });
+    admit(&game, Action::AnnounceCast { card: mask });
     let alternative = Action::AnnounceCastWithEvidenceAlternative {
         object: game.object_ref(mask),
         provider: game.object_ref(unraveler),

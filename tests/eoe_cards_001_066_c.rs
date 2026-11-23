@@ -404,7 +404,7 @@ fn starport_security_locks_the_discount_when_announcing_and_checks_the_exact_tar
     game.add_counter(enemy, CounterKind::PlusOne, 1);
     game.add_counter(discount, CounterKind::Charge, 1);
     game.state.players[player.index()].mana = [1, 0, 0, 0, 0, 1];
-    reject(&mut game, activate.clone());
+    admit(&game, activate.clone());
     game.add_counter(discount, CounterKind::PlusOne, 1);
     game.state.objects[guard as usize].summoning_sick = true;
     reject(&mut game, activate.clone());
@@ -497,8 +497,8 @@ fn sunstar_counter_funding_prunes_land_taps_but_keeps_mana_that_adds_counters() 
     for _ in 0..24 {
         put(&mut lands, player, "Plains", Zone::Battlefield);
     }
-    assert!(!lands.legal_actions().contains(&activation));
-    reject(&mut lands, activation.clone());
+    assert!(lands.legal_actions().contains(&activation));
+    admit(&lands, activation.clone());
     let own = put(&mut lands, player, "Bear Cub", Zone::Battlefield);
     lands.add_counter(own, CounterKind::PlusOne, 1);
     activate(&mut lands, chaplain, 0, Some(enemy));

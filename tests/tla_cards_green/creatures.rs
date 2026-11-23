@@ -215,7 +215,7 @@ fn raucous_audience_funds_the_two_mana_cast_only_at_the_live_power_threshold() {
     let spell = put(&mut game, player, "Bear Cub", Zone::Hand);
     let announce = Action::AnnounceCast { card: spell };
     game.state.players[player.index()].mana = [0; 6];
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
     let mut ordinary = game.clone();
     act(&mut ordinary, mana(source, [0, 0, 0, 0, 1, 0]));
     assert_eq!(

@@ -97,8 +97,13 @@ fn live_lesson_flashback_requires_own_turn_control_and_own_graveyard() {
         act(&mut game, fixed(lesson));
         assert_eq!(game.snapshot(), indexed.snapshot());
         indexed.restore(&before).unwrap();
+        assert_eq!(indexed.snapshot(), before);
+        let mut replay = indexed.clone();
+        replay
+            .apply_index(player, replay.revision(), index)
+            .unwrap();
         act(&mut indexed, fixed(lesson));
-        assert_eq!(game.snapshot(), indexed.snapshot());
+        assert_eq!(replay.snapshot(), indexed.snapshot());
         pay(&mut game);
         let cast = game.state.stack.last().unwrap().cast.unwrap();
         assert_eq!(cast.method, CastMethod::GrantedFixedFlashback(ONE));
@@ -119,7 +124,7 @@ fn printed_cost_flashback_pays_the_printed_x_and_exiles_on_resolution() {
     let spell = put(&mut game, player, "Exsanguinate", Zone::Graveyard);
     game.state.players[player.index()].mana = [0, 0, 2, 0, 0, 3];
     act(&mut game, printed(spell));
-    reject(&mut game, Action::ChooseX { value: 4 });
+    admit(&game, Action::ChooseX { value: 4 });
     act(&mut game, Action::ChooseX { value: 3 });
     pay(&mut game);
     let packet = game.state.stack.last().unwrap();

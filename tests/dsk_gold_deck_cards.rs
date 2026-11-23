@@ -193,14 +193,14 @@ fn glimmers_reduce_enchantment_and_door_costs_without_reducing_colored_symbols()
 
     let creature = put(&mut game, player, "Bear Cub", Zone::Hand);
     game.state.players[player.index()].mana = [0, 0, 0, 0, 1, 0];
-    reject(&mut game, Action::AnnounceCast { card: creature });
+    admit(&game, Action::AnnounceCast { card: creature });
     let room = put(&mut game, player, "Smoky Lounge // Misty Salon", Zone::Hand);
     let announce = Action::AnnounceRoom {
         card: room,
         door: RoomDoor::Left,
         flash_surcharge: false,
     };
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
     game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 0];
     act(&mut game, announce);
     pay(&mut game);
@@ -223,7 +223,7 @@ fn glimmers_reduce_enchantment_and_door_costs_without_reducing_colored_symbols()
     settle(&mut one);
     one.state.players[player.index()].mana = [0, 1, 0, 0, 0, 1];
     reject(&mut one, unlock(room_ref, 1));
-    reject(&mut one, unlock(room_ref, 2));
+    admit(&one, unlock(room_ref, 2));
     one.state.players[player.index()].mana[5] = 2;
     act(&mut one, unlock(room_ref, 2));
     choose(&mut one, |action| {

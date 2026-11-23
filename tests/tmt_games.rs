@@ -26,6 +26,89 @@ fn deck(land: &str, names: &[&str]) -> Vec<Card> {
     assert_eq!(result.len(), 60);
     result
 }
+fn decision(view: &Observation) -> usize {
+    let actor = view.actor.unwrap();
+    let mut pool = view.players[actor.index()].mana;
+    for object in view.objects.iter().filter(|object| {
+        object.zone == Zone::Battlefield && object.controller == actor && !object.tapped
+    }) {
+        for (color, name) in ["Plains", "Island", "Swamp", "Mountain", "Forest"]
+            .iter()
+            .enumerate()
+        {
+            if object.card.name() == *name {
+                pool[color] += 1;
+            }
+        }
+    }
+    let budget = pool.iter().map(|&n| u64::from(n)).sum::<u64>();
+    let eligible: Vec<_> = view
+        .actions
+        .iter()
+        .enumerate()
+        .filter(|(_, action)| match action {
+            Action::AnnounceActivate { card, ability, .. } => view
+                .objects
+                .iter()
+                .find(|object| object.id == *card)
+                .is_none_or(|object| {
+                    if object.zone != Zone::Hand {
+                        return true;
+                    }
+                    let cost = object.card.activations()[usize::from(*ability)].cost;
+                    u64::from(cost.generic)
+                        + cost.colored.iter().map(|&n| u64::from(n)).sum::<u64>()
+                        <= budget
+                }),
+            Action::AnnounceCast { card } => view
+                .objects
+                .iter()
+                .any(|object| object.id == *card && object.card.fixed_mana_value() <= budget),
+            Action::AnnounceSneak { .. } => view.attack_declarations.iter().any(|attack| {
+                !attack.blocked
+                    && attack.defender.is_some()
+                    && view.objects.iter().any(|object| {
+                        object.id == attack.card
+                            && object.controller == actor
+                            && object.zone == Zone::Battlefield
+                    })
+            }),
+            _ => true,
+        })
+        .collect();
+    let actions: Vec<_> = eligible
+        .iter()
+        .map(|(_, action)| (**action).clone())
+        .collect();
+    let smoke = rustmage::policy::smoke_index_from_observation(view, &actions);
+    // Hybrid declarations now expose every rules route. Prefer the one matching
+    // this mono-color deck's current pool and untapped basic lands.
+    if let Some((index, _)) = eligible
+        .iter()
+        .filter_map(|(index, action)| {
+            let Action::ChooseSpellCost { cost } = action else {
+                return None;
+            };
+            let choice = view
+                .cost_choices
+                .iter()
+                .find(|choice| choice.index == *cost)?;
+            let deficit = choice
+                .cost
+                .colored
+                .iter()
+                .zip(pool)
+                .map(|(&need, available)| u64::from(need.saturating_sub(available)))
+                .sum::<u64>();
+            Some((*index, deficit))
+        })
+        .min_by_key(|&(_, deficit)| deficit)
+    {
+        return index;
+    }
+    eligible[smoke].0
+}
+
 #[test]
 fn tmt_five_color_set_only_natural_games_and_owned_replay() {
     let manifest: serde_json::Value =
@@ -128,6 +211,11 @@ fn tmt_five_color_set_only_natural_games_and_owned_replay() {
     let start = Instant::now();
     assert_eq!(expected_casts.len(), 45);
     let mut evidence = Evidence::default();
+    let directory = std::env::var_os("RUSTMAGE_TDM_EVIDENCE_DIR")
+        .map(|path| std::path::PathBuf::from(path).join("tmt"));
+    if let Some(directory) = &directory {
+        std::fs::create_dir_all(directory).unwrap();
+    }
     let mut controls = BTreeSet::new();
     for pair in 0..decks.len() {
         for seed in [0, 7, 41, 73] {
@@ -149,7 +237,7 @@ fn tmt_five_color_set_only_natural_games_and_owned_replay() {
                 let obs = game.observe(actor);
                 let actions = &obs.actions;
                 assert!(!actions.is_empty());
-                let index = rustmage::policy::smoke_index_from_observation(&obs, actions);
+                let index = decision(&obs);
                 let action = actions[index].clone();
                 assert!(!matches!(action, Action::Concede));
                 check_privacy(&obs, actor);
@@ -188,14 +276,19 @@ fn tmt_five_color_set_only_natural_games_and_owned_replay() {
                             serde_json::to_value(game.observe(viewer)).unwrap()
                         );
                     }
-                    let after = game.snapshot();
-                    game.restore(&before).unwrap();
+                    // Exercise restore on a disposable branch so the journal's game
+                    // and its later fresh replay allocate the same attempt IDs.
+                    let mut restored = game.clone();
+                    restored.restore(&before).unwrap();
+                    assert_eq!(restored.snapshot(), before);
                     assert_eq!(
-                        game.apply_index(actor, revision, index),
+                        restored.apply_index(actor, revision, index),
                         Err(Error::StaleRevision)
                     );
-                    game.apply(actor, action.clone()).unwrap();
-                    assert_eq!(game.snapshot(), after);
+                    let mut replay = restored.clone();
+                    replay.apply_index(actor, replay.revision(), index).unwrap();
+                    restored.apply(actor, action.clone()).unwrap();
+                    assert_eq!(restored.snapshot(), replay.snapshot());
                     evidence.branches += 1;
                 } else {
                     game.apply(actor, action.clone()).unwrap();
@@ -205,6 +298,20 @@ fn tmt_five_color_set_only_natural_games_and_owned_replay() {
                 evidence.transition(&obs, &after, &action);
                 journal.push((actor, action));
                 decisions += 1;
+            }
+            if let Some(directory) = &directory {
+                std::fs::write(
+                    directory.join(format!("{pair}-{seed}.json")),
+                    serde_json::to_vec_pretty(&serde_json::json!({
+                        "action_contract": rustmage::ACTION_CONTRACT,
+                        "observation_schema": rustmage::OBSERVATION_SCHEMA,
+                        "primitive_decision_limit": 25000,
+                        "config": config(), "actions": journal, "outcome": game.outcome(),
+                        "executed_so_far": evidence.executed, "casts_so_far": evidence.casts,
+                    }))
+                    .unwrap(),
+                )
+                .unwrap();
             }
             assert!(decisions > 50);
             let mut replay = Game::new(config()).unwrap();

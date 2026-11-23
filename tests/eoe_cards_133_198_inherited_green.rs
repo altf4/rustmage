@@ -189,7 +189,7 @@ fn fungal_colossus_costs_less_for_distinct_controlled_land_names() {
     put(&mut game, player.other(), "Swamp", Zone::Battlefield);
     let colossus = put(&mut game, player, "Fungal Colossus", Zone::Hand);
     game.state.players[player.index()].mana = [0, 0, 0, 0, 4, 0];
-    reject(&mut game, Action::AnnounceCast { card: colossus });
+    admit(&game, Action::AnnounceCast { card: colossus });
     let third_name = put(&mut game, player, "Mountain", Zone::Battlefield);
     game.state.objects[third_name as usize].tapped = true;
     cast(&mut game, colossus, None);

@@ -215,7 +215,7 @@ fn mandatory_cast_addition_only_substitutes_its_own_generic_mana() {
         game.state.objects[creature as usize].summoning_sick = true;
         let announcement = Action::AnnounceCast { card: spell };
         game.state.players[actor.index()].mana = [0, 1, 0, 0, 0, 1];
-        reject(&mut game, announcement.clone());
+        admit(&game, announcement.clone());
         game.state.players[actor.index()].mana[5] = 2;
         act(&mut game, announcement);
         act(&mut game, Action::BeginWaterbend);
@@ -279,7 +279,7 @@ fn optional_addition_retains_the_paid_declaration_for_resolution() {
     let spell = spawn(&mut game, actor, spell, Zone::Hand);
     game.state.players[actor.index()].mana = [0, 1, 0, 0, 0, 3];
     act(&mut game, Action::AnnounceCast { card: spell });
-    reject(&mut game, Action::ChooseWaterbendCost { pay: true });
+    admit(&game, Action::ChooseWaterbendCost { pay: true });
     let mut declined = game.clone();
     act(&mut declined, Action::ChooseWaterbendCost { pay: false });
     pay(&mut declined);
@@ -312,7 +312,40 @@ fn convoke_and_waterbend_share_one_funding_domain() {
     act(&mut game, Action::AnnounceCast { card: spell });
     act(&mut game, Action::BeginWaterbend);
     let blue_ref = game.object_ref(blue);
-    reject(&mut game, Action::ChooseWaterbender { object: blue_ref });
+    admit(&game, Action::ChooseWaterbender { object: blue_ref });
+    let mut missing_blue = game.clone();
+    act(
+        &mut missing_blue,
+        Action::ChooseWaterbender { object: blue_ref },
+    );
+    reject(
+        &mut missing_blue,
+        Action::ChooseConvoker {
+            object: blue_ref,
+            contribution: ConvokeContribution::Blue,
+        },
+    );
+    choose_waterbender(&mut missing_blue, first);
+    let object = missing_blue.object_ref(second);
+    reject(&mut missing_blue, Action::ChooseWaterbender { object });
+    reject(
+        &mut missing_blue,
+        Action::PayCosts {
+            payment: [0, 0, 0, 0, 0, 2],
+        },
+    );
+    act(&mut missing_blue, Action::SubmitAttempt);
+    assert_eq!(
+        missing_blue
+            .last_attempt_outcome_view(actor)
+            .unwrap()
+            .reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
+    assert_eq!(missing_blue.object_view(spell).zone, Zone::Hand);
+    for card in [blue, first, second] {
+        assert!(!missing_blue.object_view(card).tapped);
+    }
     act(
         &mut game,
         Action::ChooseConvoker {
@@ -343,7 +376,28 @@ fn additional_x_respects_target_capacity_and_leaves_mana_value_fixed() {
     let second_helper = put(&mut game, actor, "Bear Cub", Zone::Battlefield);
     game.state.players[actor.index()].mana = [0, 1, 0, 0, 0, 2];
     act(&mut game, Action::AnnounceCast { card: spell });
-    reject(&mut game, Action::ChooseX { value: 3 });
+    admit(&game, Action::ChooseX { value: 3 });
+    let mut missing = game.clone();
+    act(&mut missing, Action::ChooseX { value: 3 });
+    for card in [first, second] {
+        reject(
+            &mut missing,
+            Action::ChooseTarget {
+                target: Target::Card(card),
+            },
+        );
+    }
+    reject(&mut missing, Action::FinishTargets);
+    act(&mut missing, Action::SubmitAttempt);
+    let failure = missing.last_attempt_outcome_view(actor).unwrap();
+    assert_eq!(failure.outcome, AttemptOutcome::Failed);
+    assert_eq!(
+        failure.reason,
+        Some(AttemptFailureReason::UnsatisfiedDeclaration)
+    );
+    assert_eq!(missing.object_view(spell).zone, Zone::Hand);
+    assert_eq!(missing.object_ref(first), game.object_ref(first));
+    assert_eq!(missing.object_ref(second), game.object_ref(second));
     act(&mut game, Action::ChooseX { value: 2 });
     act(
         &mut game,
@@ -380,12 +434,12 @@ fn activation_x_enforces_the_printed_minimum_and_reserves_the_tap_symbol() {
     let source = put(&mut game, actor, "Goblin Piker", Zone::Battlefield);
     spawn(&mut game, actor, watcher, Zone::Battlefield);
     game.state.players[actor.index()].mana = [0; 6];
-    reject(&mut game, activate(source));
+    admit(&game, activate(source));
     let artifact = put(&mut game, actor, "Short Bow", Zone::Battlefield);
     let creature = put(&mut game, actor, "Bear Cub", Zone::Battlefield);
     act(&mut game, activate(source));
     reject(&mut game, Action::ChooseX { value: 0 });
-    reject(&mut game, Action::ChooseX { value: 3 });
+    admit(&game, Action::ChooseX { value: 3 });
     act(&mut game, Action::ChooseX { value: 2 });
     act(&mut game, Action::BeginWaterbend);
     let own_tap = waterbender(&game, source);
@@ -438,12 +492,13 @@ fn large_waterbend_x_counts_each_mana_or_waterbend_tap_once_with_a_live_exile_li
         game.x_choice().unwrap().intervals,
         [XInterval {
             minimum: 1,
-            maximum: 26
+            maximum: u32::MAX
         }]
     );
     assert!(game.observe(actor.other()).x_choice.is_none());
-    reject(&mut game, Action::ChooseX { value: 27 });
-    let choose_maximum = Action::ChooseX { value: 26 };
+    admit(&game, Action::ChooseX { value: 27 });
+    admit(&game, Action::ChooseX { value: 26 });
+    let choose_maximum = Action::ChooseX { value: u32::MAX };
     let checkpoint = game.snapshot();
     let mut indexed = game.clone();
     let index = indexed
@@ -488,10 +543,10 @@ fn waterbend_x_keeps_a_mana_sacrifice_that_returns_linked_contributors() {
         game.x_choice().unwrap().intervals,
         [XInterval {
             minimum: 1,
-            maximum: 4
+            maximum: u32::MAX
         }]
     );
-    reject(&mut game, Action::ChooseX { value: 5 });
+    admit(&game, Action::ChooseX { value: 5 });
     act(&mut game, Action::ChooseX { value: 4 });
     choose(
         &mut game,
@@ -538,10 +593,10 @@ fn scalar_x_counts_one_tap_per_land_with_flexible_grants_and_earthbending() {
         game.x_choice().unwrap().intervals,
         [XInterval {
             minimum: 0,
-            maximum: 12
+            maximum: u32::MAX
         }]
     );
-    reject(&mut game, Action::ChooseX { value: 13 });
+    admit(&game, Action::ChooseX { value: 13 });
     act(&mut game, Action::ChooseX { value: 12 });
     choose(
         &mut game,
@@ -647,7 +702,7 @@ fn resolution_waterbend_chooses_after_drawing() {
             .iter()
             .any(|a| matches!(a, Action::Discard { .. }))
     );
-    reject(&mut game, Action::BeginWaterbend);
+    admit(&game, Action::BeginWaterbend);
     act(&mut game, Action::TapMana { card: mountain });
     act(&mut game, Action::BeginWaterbend);
     choose_waterbender(&mut game, artifact);
@@ -849,6 +904,8 @@ fn linked_waterbend_rewinds_an_unpayable_foreign_mana_choice_to_exact_exile() {
             object: contribution,
         },
     );
+    act(&mut game, Action::EndManaWindow);
+    act(&mut game, Action::SubmitAttempt);
     assert!(matches!(game.state.pending, Pending::ManaRollback { .. }));
     let saved = game.snapshot();
     for keep in [false, true] {
@@ -873,7 +930,7 @@ fn linked_waterbend_rewinds_an_unpayable_foreign_mana_choice_to_exact_exile() {
             raw.state.players[player.index()].turn_facts.bent_elements,
             0
         );
-        assert_eq!(raw.legal_actions().contains(&cast), !keep);
+        admit(&raw, cast.clone());
         assert_eq!(raw.object_ref(returning) == returned_card, !keep);
     }
 }

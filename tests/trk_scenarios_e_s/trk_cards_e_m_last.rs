@@ -328,7 +328,7 @@ fn marooned_paid_entry_taps_and_enchanted_creature_cannot_beam_up() {
         flash_surcharge: false,
         provider: None,
     };
-    reject(&mut game, beam.clone());
+    admit(&game, beam.clone());
     let other = put(&mut game, player, "Hill Giant", Zone::Battlefield);
     assert!(game.legal_actions().contains(&beam));
     act(&mut game, beam);

@@ -230,8 +230,11 @@ fn officer_grants_cumulative_land_play_and_graveyard_origin_with_owned_restore()
     assert_eq!(raw.snapshot(), indexed.snapshot());
     drop(parent);
     indexed.restore(&checkpoint).unwrap();
+    assert_eq!(indexed.snapshot(), checkpoint);
+    let mut replay = indexed.clone();
+    activate(&mut replay, source, 1);
     activate(&mut indexed, source, 1);
-    assert_eq!(indexed.snapshot(), raw.snapshot());
+    assert_eq!(indexed.snapshot(), replay.snapshot());
 
     assert!(raw.has_subtype(source, "Officer"));
     assert!(raw.has_subtype(source, "Ferengi"));

@@ -4,8 +4,8 @@ use crate::cards::{ChoiceColor, ManaSplit};
 use ability_world::CharacteristicWorld;
 
 /// Exact capacity bounds for one color. The other receives the remaining amount.
-/// A guided payment additionally requires checked membership in the enclosing
-/// payment. The legal subset of a guided range may be noncontiguous.
+/// The complete range is admissible without an enclosing-payment proof.
+/// `guided` is retained for wire compatibility and is always false.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct ManaSplitChoiceView {
@@ -26,7 +26,7 @@ impl ManaSplitChoiceView {
         }
     }
     /// Checks the allocation and storage bounds. Use the game membership query
-    /// to also check any guided payment.
+    /// for the current choice's representation bounds.
     pub fn contains_allocation(self, production: Mana) -> bool {
         let amount = production[self.first.index()];
         (self.minimum_first..=self.maximum_first).contains(&amount)
@@ -37,6 +37,7 @@ impl ManaSplitChoiceView {
 /// Try a closed range without materializing its individual choices. A range
 /// whose componentwise upper supplies cannot fund the goal can be discarded.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[cfg(feature = "test-support")]
 pub(super) fn visit_split_range(
     split: ManaSplit,
     minimum: u32,
@@ -184,6 +185,7 @@ impl ManaOutput {
             recipe => recipe.in_world_for_controller(world, source.card, self.controller),
         }
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn unselected_split<W: CharacteristicWorld + ?Sized>(
         &self,
         world: &W,
@@ -344,16 +346,14 @@ impl Game {
             total: split.total,
             minimum_first,
             maximum_first,
-            guided: !self.mana_output_escaping() && self.mana_output_parent_goal().is_some(),
+            guided: false,
         })
     }
 
-    /// Exact membership for the current split, including any enclosing payment.
+    /// Exact membership for the current split and its representation bounds.
     pub fn mana_split_production_legal(&self, production: Mana) -> bool {
-        self.mana_split_choice().is_some_and(|choice| {
-            choice.contains_allocation(production)
-                && (!choice.guided || self.mana_output_choice_fundable(production))
-        })
+        self.mana_split_choice()
+            .is_some_and(|choice| choice.contains_allocation(production))
     }
 
     fn visit_mana_split_choices(
@@ -364,55 +364,15 @@ impl Game {
         let split = choice.split();
         let min = choice.minimum_first;
         let max = choice.maximum_first;
-        let legal = |mana| !choice.guided || self.mana_output_choice_fundable(mana);
         if max - min < 64 {
-            return (min..=max).any(|amount| {
-                let mana = split.production(amount);
-                legal(mana) && emit(mana)
-            });
+            return (min..=max).any(|amount| emit(split.production(amount)));
         }
-        let preferred = self.mana_output_parent_goal().map_or(min, |goal| {
-            let first = split.first.index();
-            let missing = goal.required[first]
-                .saturating_sub(self.state.players[goal.actor.index()].mana[first]);
-            self.mana_split_tap_receipt()
-                .unreplaced_required(u128::from(missing))
-                .clamp(u128::from(min), u128::from(max)) as u32
-        });
-        let points = [min, min + (max - min) / 2, max, preferred];
-        let mut offered = false;
-        for (index, &amount) in points.iter().enumerate() {
-            if points[..index].contains(&amount) {
-                continue;
-            }
-            let mana = split.production(amount);
-            if legal(mana) {
-                offered = true;
-                if emit(mana) {
-                    return true;
-                }
-            }
-        }
-        if offered || !choice.guided {
-            return false;
-        }
-        // Filter-dependent payment routes can make the valid subset disjoint.
-        // Find an exact witness when representative points miss all of it.
-        let mut accepted = false;
-        visit_split_range(
-            split,
-            min,
-            max,
-            &mut |upper| self.mana_split_output_may_fund(upper),
-            &mut |mana| {
-                if !legal(mana) {
-                    return false;
-                }
-                accepted = emit(mana);
-                true
-            },
-        );
-        accepted
+        // Large domains remain parameterized; representatives are conveniences.
+        let points = [min, min + (max - min) / 2, max];
+        points
+            .into_iter()
+            .enumerate()
+            .any(|(i, amount)| !points[..i].contains(&amount) && emit(split.production(amount)))
     }
 
     /// One domain for the observation and checked raw/index actions. Only an

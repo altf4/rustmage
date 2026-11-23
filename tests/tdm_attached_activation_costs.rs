@@ -143,7 +143,23 @@ fn aura_controller_cannot_activate_the_other_players_creatures_ability_and_cost_
         ability: 0,
     };
     g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 4];
-    reject(&mut g, action.clone());
+    admit(&g, action.clone());
+    let mut unpaid = g.clone();
+    act(&mut unpaid, action.clone());
+    reject(
+        &mut unpaid,
+        Action::PayCosts {
+            payment: [0, 0, 0, 0, 0, 4],
+        },
+    );
+    act(&mut unpaid, Action::EndManaWindow);
+    act(&mut unpaid, Action::SubmitAttempt);
+    assert_eq!(
+        unpaid.last_attempt_outcome_view(p).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
+    assert_eq!(unpaid.object_view(aura), g.object_view(aura));
+    assert_eq!(unpaid.state.players[p.index()].mana, [0, 0, 0, 0, 0, 4]);
     g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 5];
     act(&mut g, Action::Pass);
     assert_eq!(g.actor(), Some(p.other()));

@@ -271,8 +271,8 @@ fn target_color_discount_filters_real_targets_and_direct_activation_costs() {
     g.state.players[0].mana = [0; 6];
     assert!(g.legal_actions().iter().any(|a| matches!(a, Action::Activate { card, target: Some(Target::Card(t)), payment, .. } if *card == equipment && *t == cheap && *payment == [0;6])));
     act(&mut g, activate(equipment));
-    reject(
-        &mut g,
+    admit(
+        &g,
         Action::ChooseTarget {
             target: Target::Card(expensive),
         },
@@ -383,8 +383,8 @@ fn target_subtype_surcharge_can_avoid_dragons_but_requires_extra_mana_to_choose_
         let spell = put(&mut g, p, "Murder", Zone::Hand);
         g.state.players[p.index()].mana = [0, 0, 2, 0, 0, 1];
         act(&mut g, Action::AnnounceCast { card: spell });
-        reject(
-            &mut g,
+        admit(
+            &g,
             Action::ChooseTarget {
                 target: Target::Card(dragon),
             },
@@ -404,7 +404,7 @@ fn target_subtype_surcharge_is_unavoidable_with_only_dragons_and_locks_before_pa
     let dragon = put(&mut g, Player::P1, "Shivan Dragon", Zone::Battlefield);
     let spell = put(&mut g, Player::P0, "Murder", Zone::Hand);
     g.state.players[0].mana = [0, 0, 2, 0, 0, 1];
-    reject(&mut g, Action::AnnounceCast { card: spell });
+    admit(&g, Action::AnnounceCast { card: spell });
     g.state.players[0].mana[5] = 3;
     act(&mut g, Action::AnnounceCast { card: spell });
     target(&mut g, dragon);
@@ -434,10 +434,10 @@ fn activation_x_life_uses_one_resource_world_and_real_tap_life_and_mana_payment(
                 g.x_choice().unwrap().intervals,
                 vec![XInterval {
                     minimum: 0,
-                    maximum: 4
+                    maximum: u32::MAX
                 }]
             );
-            reject(&mut g, Action::ChooseX { value: 5 });
+            admit(&g, Action::ChooseX { value: 5 });
             act(&mut g, Action::ChooseX { value: x });
             pay(&mut g);
             choose_life_row(&mut g, x);
@@ -480,10 +480,31 @@ fn activation_exact_x_targets_caps_the_domain_pays_exile_and_handles_zero_and_di
                 g.x_choice().unwrap().intervals,
                 vec![XInterval {
                     minimum: 0,
-                    maximum: 2
+                    maximum: u32::MAX
                 }]
             );
-            reject(&mut g, Action::ChooseX { value: 3 });
+            admit(&g, Action::ChooseX { value: 3 });
+            let mut missing = g.clone();
+            act(&mut missing, Action::ChooseX { value: 3 });
+            for card in [a, b] {
+                reject(
+                    &mut missing,
+                    Action::ChooseTarget {
+                        target: Target::Card(card),
+                    },
+                );
+            }
+            reject(&mut missing, Action::FinishTargets);
+            act(&mut missing, Action::SubmitAttempt);
+            let failure = missing.last_attempt_outcome_view(p).unwrap();
+            assert_eq!(failure.outcome, AttemptOutcome::Failed);
+            assert_eq!(
+                failure.reason,
+                Some(AttemptFailureReason::UnsatisfiedDeclaration)
+            );
+            assert_eq!(missing.object_view(source).zone, Zone::Graveyard);
+            assert_eq!(missing.object_view(a), g.object_view(a));
+            assert_eq!(missing.object_view(b), g.object_view(b));
             act(&mut g, Action::ChooseX { value: x });
             if x > 0 {
                 reject(&mut g, Action::FinishTargets);
@@ -539,8 +560,8 @@ fn target_subtype_increase_precedes_harmonize_reduction_in_proposal_and_real_pay
             object: Some(object),
         },
     );
-    reject(
-        &mut g,
+    admit(
+        &g,
         Action::ChooseTarget {
             target: Target::Card(dragon),
         },
@@ -607,10 +628,10 @@ fn activation_x_life_accounts_for_life_spent_by_the_required_costed_mana_child()
         g.x_choice().unwrap().intervals,
         vec![XInterval {
             minimum: 0,
-            maximum: 3
+            maximum: u32::MAX
         }]
     );
-    reject(&mut g, Action::ChooseX { value: 4 });
+    admit(&g, Action::ChooseX { value: 4 });
     act(&mut g, Action::ChooseX { value: 2 });
     act(
         &mut g,
@@ -641,11 +662,14 @@ fn activation_x_life_declaration_and_unpaid_costs_are_owned_and_restore_without_
     let saved = parent.snapshot();
     let revision = parent.revision();
     let action = Action::ChooseX { value: 3 };
+    // The full scalar domain carries interior X=3; concrete indexed representatives include X=0.
+    let indexed_action = Action::ChooseX { value: 0 };
     let index = parent
         .legal_actions()
         .iter()
-        .position(|a| *a == action)
+        .position(|a| *a == indexed_action)
         .unwrap();
+    admit(&parent, indexed_action);
     let mut raw = parent.clone();
     let mut indexed = parent.clone();
     let sibling = parent.clone();
@@ -658,6 +682,9 @@ fn activation_x_life_declaration_and_unpaid_costs_are_owned_and_restore_without_
     assert_eq!(raw.snapshot(), saved);
     act(&mut raw, action.clone());
     indexed.apply_index(Player::P0, revision, index).unwrap();
+    indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.snapshot(), saved);
+    act(&mut indexed, action.clone());
     pay(&mut raw);
     pay(&mut indexed);
     choose_life_row(&mut raw, 3);
@@ -731,7 +758,20 @@ fn target_color_reduction_keeps_named_tax_wide_until_the_final_payable_total() {
                     [0, 0, 0, 0, 0, u32::MAX - total]
                 );
             } else {
-                reject(&mut g, activate(equipment));
+                act(&mut g, activate(equipment));
+                let before = g.snapshot();
+                let revision = g.revision();
+                assert!(matches!(
+                    g.apply(
+                        p,
+                        Action::ChooseTarget {
+                            target: Target::Card(creature)
+                        }
+                    ),
+                    Err(Error::CapacityExceeded(_))
+                ));
+                assert_eq!(g.snapshot(), before);
+                assert_eq!(g.revision(), revision);
             }
         }
     }
@@ -905,10 +945,10 @@ fn behold_instead_generic_cost_preserves_colored_mana_and_decline_fee() {
     let mut g = scenario(Player::P0);
     let spell = put(&mut g, Player::P0, "Opt", Zone::Hand);
     g.state.players[0].mana = [0, 1, 0, 0, 0, 0];
-    reject(&mut g, Action::AnnounceCast { card: spell });
+    admit(&g, Action::AnnounceCast { card: spell });
     g.state.players[0].mana[5] = 1;
     act(&mut g, Action::AnnounceCast { card: spell });
-    reject(&mut g, Action::ChooseCastBehold { pay: true });
+    admit(&g, Action::ChooseCastBehold { pay: true });
     act(&mut g, Action::ChooseCastBehold { pay: false });
     assert_eq!(g.observe(Player::P0).payment_request.unwrap().generic, 1);
     pay(&mut g);
@@ -919,7 +959,7 @@ fn behold_instead_generic_cost_preserves_colored_mana_and_decline_fee() {
     let spell = put(&mut g, Player::P0, "Opt", Zone::Hand);
     g.state.players[0].mana = [0, 1, 0, 0, 0, 0];
     act(&mut g, Action::AnnounceCast { card: spell });
-    reject(&mut g, Action::ChooseCastBehold { pay: false });
+    admit(&g, Action::ChooseCastBehold { pay: false });
     act(&mut g, Action::ChooseCastBehold { pay: true });
     pay(&mut g);
     behold(&mut g, dragon);
@@ -945,7 +985,7 @@ fn behold_flash_route_requires_actual_payment_and_rejects_decline_off_sorcery_ti
         let mut g = scenario(p);
         g.state.active = p.other();
         let spell = put(&mut g, p, "Divination", Zone::Hand);
-        reject(&mut g, Action::AnnounceCast { card: spell });
+        admit(&g, Action::AnnounceCast { card: spell });
         let dragon = put(&mut g, p, "Shivan Dragon", Zone::Battlefield);
         g.state.objects[dragon as usize].gained_keywords = Keywords::HEXPROOF;
         act(&mut g, Action::AnnounceCast { card: spell });
@@ -1065,7 +1105,7 @@ fn behold_source_card_cannot_supply_its_own_required_hand_witness_in_preflight()
     let mut g = scenario(Player::P0);
     g.state.active = Player::P1;
     let source = put(&mut g, Player::P0, "Shivan Dragon", Zone::Hand);
-    reject(&mut g, Action::AnnounceCast { card: source });
+    admit(&g, Action::AnnounceCast { card: source });
     let extra = put(&mut g, Player::P0, "Shivan Dragon", Zone::Hand);
     act(&mut g, Action::AnnounceCast { card: source });
     act(&mut g, Action::ChooseCastBehold { pay: true });
@@ -1114,7 +1154,7 @@ fn behold_funding_does_not_pay_the_witness_before_a_mana_child_sacrifices_it() {
     let producer = put(&mut g, Player::P0, "Shivan Dragon", Zone::Battlefield);
     let spell = put(&mut g, Player::P0, "Divination", Zone::Hand);
     g.state.players[0].mana = [0; 6];
-    reject(&mut g, Action::AnnounceCast { card: spell });
+    admit(&g, Action::AnnounceCast { card: spell });
     let extra = put(&mut g, Player::P0, "Shivan Dragon", Zone::Hand);
     act(&mut g, Action::AnnounceCast { card: spell });
     act(&mut g, Action::ChooseCastBehold { pay: true });
@@ -1174,7 +1214,7 @@ fn behold_and_bargain_can_share_a_dragon_only_in_the_legal_payment_order() {
         .iter()
         .position(|row| row.clause == CastCostClause::Additional)
         .unwrap();
-    reject(&mut g, Action::ChooseCastCost { clause: bad as u16 });
+    admit(&g, Action::ChooseCastCost { clause: bad as u16 });
     behold(&mut g, dragon);
     cost_row(&mut g, CastCostClause::Additional);
     cost_row(&mut g, CastCostClause::Mana);
@@ -1669,9 +1709,9 @@ fn free_cost_retains_taxes_mandatory_additional_costs_and_zero_printed_x() {
         put(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
         let spell = put(&mut g, p, "Spectral Denial", Zone::Hand);
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
-        reject(&mut g, free(spell));
+        admit(&g, free(spell));
         g.state.players[p.index()].mana[5] = 2;
-        reject(&mut g, free(spell));
+        admit(&g, free(spell));
         let material = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         act(&mut g, free(spell));
         assert!(
@@ -1795,7 +1835,7 @@ fn filtered_free_graveyard_routes_pay_counter_cost_or_exact_permanent_type_allow
         face: CastFace::Normal,
         flash_surcharge: false,
     };
-    reject(&mut g, route.clone());
+    admit(&g, route.clone());
     let helper = put(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);
     g.add_counter(helper, CounterKind::PlusOne, 1);
     act(&mut g, route);

@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import unittest
 
-from rustmage import EngineError, Game, OBSERVATION_SCHEMA
+from rustmage import ACTION_CONTRACT, EngineError, Game, OBSERVATION_SCHEMA
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,6 +25,42 @@ def state(observation):
 
 
 class BindingContractTests(unittest.TestCase):
+    def test_proposal_affordability_is_opt_in_and_preserved_in_branches(self):
+        decks = [["Plains"] * 4 + ["Savannah Lions"] * 4, ["Island"] * 8]
+
+        def first_main(handle):
+            view = handle.observe("P0")
+            for kind in ("Keep", "Keep", "FinishOpeningHand", "FinishOpeningHand", "Pass", "Pass"):
+                view = handle.observe(view["actor"])
+                action = next(a for a in view["actions"] if a["kind"] == kind)
+                view = handle.act(view, action)
+            self.assertEqual((view["actor"], view["step"]), ("P0", "Main1"))
+            return handle.observe("P0")
+
+        with Game(decks, seed=37, deck_rules="Freeform") as handle:
+            unfiltered = first_main(handle)
+            self.assertNotIn("proposal_affordability", unfiltered)
+            cast = next(a for a in unfiltered["actions"] if a["kind"] == "AnnounceCast")
+        outside_pool = {"mode": "CasualCollection", "pools": [[], []]}
+        for outside in (None, outside_pool):
+            with (self.subTest(outside=outside),
+                  Game(decks, seed=37, deck_rules="Freeform", outside=outside,
+                       proposal_affordability=True) as handle):
+                before = first_main(handle)
+                self.assertIs(before["proposal_affordability"], True)
+                self.assertNotIn(cast, before["actions"])
+                with handle.clone() as branch:
+                    self.assertEqual(branch.observe("P0"), before)
+                    with self.assertRaises(EngineError):
+                        branch.act(before, cast)
+                    self.assertEqual(branch.observe("P0"), before)
+                checkpoint = handle.snapshot()
+                play_land = next(a for a in before["actions"] if a["kind"] == "PlayLand")
+                funded = handle.act(before, play_land)
+                self.assertIn(cast, funded["actions"])
+                handle.restore(checkpoint)
+                self.assertEqual(state(handle.observe("P0")), state(before))
+
     def test_planeswalker_loyalty_through_public_actions(self):
         # The fixed opening has four Plains and three Ajanis. Freeform keeps the
         # public fixture deterministic without a special game-state constructor.
@@ -93,6 +129,75 @@ class BindingContractTests(unittest.TestCase):
             ajani = next(obj for obj in restored["objects"] if obj["id"] == walker)
             self.assertEqual(ajani["counters"]["loyalty"], 3)
             self.assertIn(action, restored["actions"])
+
+    def test_auto_tap_preview_execution_and_manual_replay(self):
+        decks = [["Plains"] * 4 + ["Savannah Lions"] * 4, ["Island"] * 8]
+        with Game(decks, seed=37, deck_rules="Freeform") as handle:
+            view = handle.observe("P0")
+            for kind in ("Keep", "Keep", "FinishOpeningHand", "FinishOpeningHand",
+                         "Pass", "Pass", "PlayLand", "AnnounceCast"):
+                view = handle.observe(view["actor"])
+                action = next(a for a in view["actions"] if a["kind"] == kind)
+                view = handle.act(view, action)
+            actor = view["actor"]
+            self.assertEqual(view["attempt"]["stage"], "generate_mana")
+            land = next(obj["reference"] for obj in view["objects"] if obj["zone"] == "Battlefield")
+            options = {"protected_sources": [land]}
+            blocked = handle.plan_mana_payment(view, **options)
+            self.assertEqual(blocked["status"], "insufficient_supported_mana")
+            self.assertEqual(blocked["actions"], [])
+            declined = handle.auto_pay_mana(view, **options)
+            self.assertEqual(declined["auto_tap"], blocked)
+            self.assertEqual(declined["observation"], view)
+
+            fields = dict(actor=actor, revision=view["revision"], attempt_id=view["attempt"]["attempt_id"])
+            opponent = handle.observe("P1")
+            for op in ("plan_mana_payment", "auto_pay_mana"):
+                for invalid in ({"actor": "P1"}, {"attempt_id": fields["attempt_id"] + 1},
+                                {"viewer": "P1"}):
+                    with self.subTest(op=op, invalid=invalid), self.assertRaises(EngineError):
+                        handle.request(op, **{**fields, **invalid})
+                self.assertEqual(handle.observe(actor), view)
+            with self.assertRaises(EngineError):
+                handle.plan_mana_payment(opponent)
+
+            snapshot = handle.snapshot()
+            preview = handle.plan_mana_payment(view)
+            self.assertEqual(preview["status"], "completed")
+            next_spell = next(obj["reference"] for obj in view["objects"]
+                              if obj["zone"] == "Hand" and obj["card"] == "Savannah Lions"
+                              and obj["reference"] != view["attempt"]["source"])
+            hold = {"kind": "cast", "object": next_spell}
+            self.assertEqual(handle.plan_mana_payment(view, follow_up_action=hold), preview)
+            with self.assertRaises(EngineError):
+                handle.auto_pay_mana(view, follow_up_action={"kind": "activate",
+                                                            "object": next_spell, "ability": 1})
+            self.assertEqual(handle.observe(actor), view)
+            self.assertEqual(preview["revision"], view["revision"])
+            self.assertEqual(preview["attempt_id"], fields["attempt_id"])
+            self.assertEqual(preview["payment"], [1, 0, 0, 0, 0, 0])
+            self.assertEqual(preview["actions"][0]["kind"], "TapMana")
+            self.assertEqual(preview["actions"][-1]["kind"], "PayCosts")
+            self.assertEqual(handle.observe(actor), view)
+            with handle.clone() as manual:
+                replay = view
+                for action in preview["actions"]:
+                    replay = manual.act(replay, action)
+                result = handle.auto_pay_mana(view)
+                self.assertEqual(result["auto_tap"], preview)
+                self.assertEqual(result["observation"], replay)
+                self.assertEqual(result["revision"], view["revision"] + len(preview["actions"]))
+                self.assertEqual(handle.observe("P1"), manual.observe("P1"))
+                self.assertEqual(replay["last_attempt_outcome"]["outcome"], "completed")
+
+            handle.restore(snapshot)
+            restored = handle.observe(actor)
+            self.assertEqual(state(restored), state(view))
+            for operation in (handle.auto_pay_mana, handle.plan_mana_payment):
+                with self.assertRaisesRegex(EngineError, "StaleRevision"):
+                    operation(view)
+                self.assertEqual(handle.observe(actor), restored)
+            self.assertEqual(handle.plan_mana_payment(restored)["actions"], preview["actions"])
 
     def test_owned_branch_survives_parent_close(self):
         parent = game()
@@ -212,6 +317,7 @@ class BindingContractTests(unittest.TestCase):
                 with self.subTest(viewer=viewer):
                     observation = handle.observe(viewer)
                     self.assertEqual(observation["schema"], OBSERVATION_SCHEMA)
+                    self.assertEqual(observation["action_contract"], ACTION_CONTRACT)
                     self.assertEqual(observation["viewer"], viewer)
                     self.assertEqual(len(observation["objects"]), 7)
                     self.assertTrue(all((item["zone"], item["owner"], item["card"])

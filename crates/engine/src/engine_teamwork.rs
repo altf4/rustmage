@@ -1,5 +1,6 @@
 //! Optional teamwork declarations and simultaneous, non-targeting creature-tap costs.
 use super::*;
+use crate::cards::StaticAbilityFragment as F;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -12,49 +13,6 @@ pub struct TeamworkChoiceView {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    pub(super) fn teamwork_initial_fundable(
-        &self,
-        actor: Player,
-        id: CardId,
-        base: ManaCost,
-    ) -> bool {
-        let card = self.state.objects[id as usize].card;
-        let spec = card.teamwork().unwrap();
-        let normal_targets = match card.effect() {
-            Effect::Spell(plan, _) => self.cast_targets_available(plan, actor, self.object_ref(id)),
-            Effect::Modal(modes) => modes.iter().enumerate().any(|(i, m)| {
-                i < 64
-                    && spec.normal_modes & (1u64 << i) != 0
-                    && self.spell_mode_eligible(actor, self.object_ref(id), card, i)
-                    && self.cast_targets_available(m.targets, actor, self.object_ref(id))
-            }),
-            _ => true,
-        };
-        if normal_targets {
-            return self.spell_can_fund(actor, id, base);
-        }
-        let Some(cost) = self.reduced_spell_cost(actor, id, base) else {
-            return false;
-        };
-        self.preview_optional_cast_costs(
-            FundingGoal {
-                actor,
-                required: cost.colored,
-                generic: cost.generic,
-                source: None,
-                reserve: None,
-            },
-            self.spell_mana_purpose_for_card(actor, id, card),
-            self.object_ref(id),
-            card.additional_cost(),
-            None,
-            &[],
-            false,
-            &[],
-            &[CastCostClause::Teamwork(spec.minimum)],
-        )
-        .unwrap_or(false)
-    }
     pub(super) fn teamwork_mode_allowed(&self, item: &SpellView, mode: usize) -> bool {
         let Some(spec) = item.source.and_then(|source| source.card.teamwork()) else {
             return true;
@@ -67,31 +25,158 @@ impl Game {
         mode < 64 && bits & (1u64 << mode) != 0
     }
     pub(super) fn teamwork_intent_fundable(&self, announcement: &Announcement, pay: bool) -> bool {
-        let mut a = announcement.clone();
-        a.item.cast.as_mut().unwrap().teamwork = Some(pay);
-        a.initialize_cast_costs(convoke::cost_potential(
-            self,
-            a.item
-                .source
-                .expect("cost announcement has object source")
-                .card,
-        ));
-        if let Some(modes) = a.item.modes() {
-            return modes.iter().enumerate().any(|(i, m)| {
-                if !self.item_mode_eligible(&a.item, i)
-                    || !self.teamwork_mode_allowed(&a.item, i)
-                    || !self.item_targets_available(&a.item, m.targets)
-                {
-                    return false;
-                }
-                let mut choice = a.clone();
-                choice.item.mode = Some(u16::try_from(i).expect("mode index"));
-                choice.plan = m.targets;
-                self.teamwork_proposal_fundable(&choice)
-            });
+        announcement
+            .item
+            .source
+            .and_then(|source| source.card.teamwork())
+            .is_some_and(|spec| {
+                !pay || self.optional_creature_material_available(announcement, Some(spec.minimum))
+            })
+    }
+
+    /// Blight needs one controlled creature of any power. Teamwork needs the
+    /// requested total power among untapped creatures, including summoning-sick ones.
+    pub(super) fn optional_creature_material_available(
+        &self,
+        announcement: &Announcement,
+        minimum_power: Option<u16>,
+    ) -> bool {
+        let state = &self.state;
+        if !state.proposal_affordability
+            || !payment_capacity::stable_optional_material_board(self, announcement)
+        {
+            return true;
         }
-        a.plan = self.target_spec(&a.item);
-        self.item_targets_available(&a.item, a.plan) && self.teamwork_proposal_fundable(&a)
+        let usable = |object: &Object| {
+            object.zone == Zone::Battlefield
+                && object.controller == announcement.item.controller
+                && (minimum_power.is_none() || !object.tapped)
+        };
+        let affected = |reference: ObjectRef| {
+            let object = &state.objects[reference.card as usize];
+            object.generation == reference.generation && usable(object)
+        };
+        // Keep uncertain local forms. A persistent type-setting form can
+        // exclude the creature type if every relevant animation agrees.
+        let mut noncreature_forms = Vec::new();
+        if let Some(roles) = &state.roles {
+            for row in roles.animations.iter().filter(|row| affected(row.object)) {
+                if row.expires_turn.is_some()
+                    || row.while_source_tapped.is_some()
+                    || row.creature_only
+                    || !(row.enchantment_noncreature || row.artifact_noncreature || row.food_only)
+                {
+                    return true;
+                }
+                if noncreature_forms.is_empty() {
+                    noncreature_forms.resize(state.objects.len(), false);
+                }
+                noncreature_forms[row.object.card as usize] = true;
+            }
+        }
+        if state.roles.as_ref().is_some_and(|roles| {
+            !roles.characteristic_sources.is_empty() || !roles.melded_permanents.is_empty()
+        }) || state
+            .crew
+            .as_ref()
+            .is_some_and(|crew| crew.animated.iter().copied().any(affected))
+            || state
+                .copy_recipes
+                .as_ref()
+                .is_some_and(|rows| rows.iter().any(|row| affected(row.object)))
+        {
+            return true;
+        }
+        let simple_power = minimum_power.is_some()
+            && state
+                .objects
+                .iter()
+                .filter(|object| matches!(object.zone, Zone::Battlefield | Zone::Command))
+                .all(|object| {
+                    object
+                        .card
+                        .static_ability_groups()
+                        .iter()
+                        .flat_map(|group| group.fragments)
+                        .all(|fragment| {
+                            matches!(
+                                fragment,
+                                F::IntrinsicKeywords(_)
+                                    | F::CannotBeBlockedByCreaturesWithLessPower
+                                    | F::ChosenBasicLandType
+                                    | F::CostReduction(..)
+                                    | F::PlotCostReduction(..)
+                                    | F::StartYourEngines
+                                    | F::StaticCastRestriction(..)
+                                    | F::HarnessedTrigger(_)
+                                    | F::AdditionalLandPlays(_)
+                                    | F::PlayLandFromGraveyard
+                                    | F::EntryTriggerSuppression(..)
+                            )
+                        })
+                })
+            && state.attachment_sources.is_empty()
+            && state.self_granted_abilities.is_none()
+            && state.roles.as_ref().is_none_or(|roles| {
+                roles.attached.is_empty()
+                    && roles.base_stats.is_empty()
+                    && roles.until_next_turn_stats.is_empty()
+                    && roles.live_static.is_empty()
+            })
+            && state.entry_values.as_ref().is_none_or(|rows| {
+                rows.iter().all(|row| {
+                    let object = &state.objects[row.object.card as usize];
+                    !matches!(object.zone, Zone::Battlefield | Zone::Command)
+                        || object.generation != row.object.generation
+                        || !object.card.static_ability_groups().iter().any(|group| {
+                            group.fragments.iter().any(|fragment| {
+                                matches!(
+                                    fragment,
+                                    crate::cards::StaticAbilityFragment::ChosenModifier(_)
+                                )
+                            })
+                        })
+                })
+            });
+        let mut needed = i128::from(minimum_power.unwrap_or(0));
+        for (id, object) in state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(_, object)| usable(object))
+        {
+            let card = object.card;
+            if card
+                .static_ability_groups()
+                .iter()
+                .any(|group| group.first_layer <= crate::cards::AbilityLayer::Type)
+            {
+                return true;
+            }
+            if !card.is_creature() || noncreature_forms.get(id) == Some(&true) {
+                continue;
+            }
+            if minimum_power.is_none()
+                || !simple_power
+                || card.dynamic_stats().is_some()
+                || card.vehicle_stats().is_some()
+            {
+                return true;
+            }
+            let Effect::Creature(base, _) = card.effect() else {
+                return true;
+            };
+            // Negative power and -1/-1 counters can only lower the achievable sum.
+            let upper = i128::from(base)
+                .max(0)
+                .saturating_add(object.growth.power.max(0))
+                .saturating_add(i128::from(object.counters.plus_one));
+            needed = needed.saturating_sub(upper);
+            if needed <= 0 {
+                return true;
+            }
+        }
+        minimum_power == Some(0)
     }
     pub(super) fn choose_teamwork(&mut self, pay: bool) {
         let improvise = improvise::potential(

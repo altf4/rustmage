@@ -3,6 +3,8 @@ use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct SaddlePayment {
+    /// Exact announcement that owns this provisional selection.
+    pub context: u64,
     pub source: ObjectRef,
     pub actor: Player,
     pub minimum: u16,
@@ -268,13 +270,27 @@ impl Game {
                 .iter()
                 .all(|&r| self.saddle_eligible(f.source, f.actor, r))
     }
+    pub(super) fn saddle_payment_impossible(&self) -> bool {
+        let Some(payment) = self.state.saddle_payment.as_ref() else {
+            return false;
+        };
+        !self.saddle_frame_valid()
+            || !self.contributor_selection_fundable(&payment.selected, false)
+            || !self.saddle_sums(!payment.complete).enough(payment.minimum)
+    }
     fn saddle_sums(&self, maximum: bool) -> PowerSum {
         let f = self.state.saddle_payment.as_ref().unwrap();
         self.contributor_sum(f.source, f.actor, &f.selected, true, maximum, None)
     }
     pub fn saddle_choice(&self) -> Option<SaddleChoiceView> {
         let f = self.state.saddle_payment.as_ref()?;
-        if self.semantic_actor() != Some(f.actor) {
+        if self.semantic_actor() != Some(f.actor)
+            || self
+                .state
+                .announcing
+                .as_ref()
+                .is_none_or(|a| a.item.id != f.context)
+        {
             return None;
         }
         let sum = self.saddle_sums(false);
@@ -306,7 +322,14 @@ impl Game {
                 return true;
             }
         }
-        self.contributor_selection_fundable(&f.selected, true) && emit(Action::FinishSaddle)
+        (self.contributor_selection_fundable(&f.selected, true) && emit(Action::FinishSaddle))
+            || (self
+                .state
+                .announcing
+                .as_ref()
+                .and_then(|a| a.total_cost)
+                .is_some_and(|cost| cost.generic != 0 || cost.colored != [0; 6])
+                && self.visit_local_mana_abilities(emit))
     }
     pub(super) fn start_saddle_payment(&mut self) -> bool {
         let Some(a) = self.state.announcing.as_ref() else {
@@ -330,6 +353,7 @@ impl Game {
             return false;
         }
         self.state.saddle_payment = Some(Box::new(SaddlePayment {
+            context: a.item.id,
             source: a.item.source.expect("Saddle source").object,
             actor: a.item.controller,
             minimum,

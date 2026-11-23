@@ -270,11 +270,11 @@ fn quickwelder_reduces_only_artifact_spells_of_its_controller() {
     assert_eq!(g.object_view(artifact).zone, Zone::Battlefield);
     let spell = put(&mut g, p, "Divination", Zone::Hand);
     g.state.players[0].mana = [0, 1, 0, 0, 0, 1];
-    reject(&mut g, Action::AnnounceCast { card: spell });
+    admit(&g, Action::AnnounceCast { card: spell });
     g.state.objects[welder as usize].controller = Player::P1;
     let other = put(&mut g, p, "Swiftfoot Boots", Zone::Hand);
     g.state.players[0].mana = [0, 0, 0, 0, 0, 1];
-    reject(&mut g, Action::AnnounceCast { card: other });
+    admit(&g, Action::AnnounceCast { card: other });
 }
 
 #[test]

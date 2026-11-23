@@ -2313,8 +2313,8 @@ fn faunsbane_troll_pays_an_attached_aura_and_exiles_even_when_it_cannot_fight() 
             Some(recipient),
         );
         put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
-        reject(
-            &mut game,
+        admit(
+            &game,
             Action::AnnounceActivate {
                 card: troll,
                 ability: 0,

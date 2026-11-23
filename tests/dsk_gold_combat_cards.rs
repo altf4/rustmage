@@ -212,7 +212,7 @@ fn fear_of_exposure_requires_two_distinct_cost_objects_besides_its_mana() {
     let spell = put(&mut game, player, "Fear of Exposure", Zone::Hand);
     let announce = Action::AnnounceCast { card: spell };
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
     let mana = put(&mut game, player, "Forest", Zone::Battlefield);
     act(&mut game, Action::TapMana { card: mana });
     act(&mut game, announce);
@@ -327,7 +327,7 @@ fn leyline_opens_from_hand_and_pays_wubrg_for_an_expensive_spell() {
     let colors = [1, 1, 1, 1, 1, 0];
     game.state.players[player.index()].mana = colors;
     let spell = put(&mut game, player, "Altanak, the Thrice-Called", Zone::Hand);
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    admit(&game, Action::AnnounceCast { card: spell });
     let source = game.object_ref(object.card);
     choose(&mut game, |action| {
         matches!(action, Action::AnnounceCastWithManaAlternative { object, provider, cost, .. }
@@ -461,7 +461,7 @@ fn overgrown_zealot_can_fund_a_spell_or_produce_two_mana_for_turning_face_up() {
     };
     let mut prefunded = game.clone();
     act(&mut prefunded, produce.clone());
-    reject(&mut prefunded, Action::AnnounceCast { card: spell });
+    admit(&prefunded, Action::AnnounceCast { card: spell });
     act(&mut prefunded, begin.clone());
     act(&mut prefunded, Action::PayFaceUp { payment: two_green });
     act(&mut game, begin);

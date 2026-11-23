@@ -115,10 +115,10 @@ fn cast_only_color_permission_follows_provider_control_and_records_actual_mana()
         let noncase = put(&mut game, player, "Savannah Lions", Zone::Hand);
         game.state.players[player.index()].mana = GREEN_TWO;
 
-        reject(&mut game, Action::AnnounceCast { card: case });
+        admit(&game, Action::AnnounceCast { card: case });
         reject(&mut game, cast_action(case, GREEN_TWO));
         game.record_control(game.object_ref(auditor), player, None);
-        reject(&mut game, Action::AnnounceCast { card: noncase });
+        admit(&game, Action::AnnounceCast { card: noncase });
 
         act(&mut game, cast_action(case, GREEN_TWO));
         let cast = game.state.stack.last().unwrap().cast.unwrap();
@@ -140,7 +140,7 @@ fn a_colorless_kicker_keeps_its_colorless_requirement() {
     game.state.players[player.index()].mana = all_green;
     let mut no_colorless = game.clone();
     act(&mut no_colorless, Action::AnnounceCast { card: case });
-    reject(&mut no_colorless, Action::ChooseKicker { pay: true });
+    admit(&no_colorless, Action::ChooseKicker { pay: true });
     act(&mut no_colorless, Action::ChooseKicker { pay: false });
     act(&mut no_colorless, Action::PayCosts { payment: GREEN_TWO });
 
@@ -192,7 +192,7 @@ fn projected_case_mana_funds_the_spell_but_artifact_only_mana_does_not() {
     let case = spawn(&mut game, player, CASE, Zone::Hand);
     let artifact_source = spawn(&mut game, player, artifact_producer, Zone::Battlefield);
     act(&mut game, mana_action(artifact_source, ARTIFACT_MANA));
-    reject(&mut game, Action::AnnounceCast { card: case });
+    admit(&game, Action::AnnounceCast { card: case });
     reject(&mut game, cast_action(case, ARTIFACT_MANA));
 
     let case_source = spawn(&mut game, player, case_producer, Zone::Battlefield);
@@ -231,7 +231,7 @@ fn sacrificing_the_permission_provider_cannot_fund_a_missing_colored_pip() {
     game.state.players[player.index()].mana = [0; 6];
     let source = spawn(&mut game, player, AUDITOR, Zone::Battlefield);
     let case = spawn(&mut game, player, CASE, Zone::Hand);
-    reject(&mut game, Action::AnnounceCast { card: case });
+    admit(&game, Action::AnnounceCast { card: case });
 
     game.state.players[player.index()].mana = [1, 0, 0, 0, 0, 0];
     act(&mut game, Action::AnnounceCast { card: case });

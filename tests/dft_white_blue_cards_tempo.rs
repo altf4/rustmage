@@ -274,7 +274,7 @@ fn tempo_family_cycling_pays_two_and_discards_before_exactly_one_draw() {
             counter_payment: Counters::default(),
         };
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
-        reject(&mut g, action.clone());
+        admit(&g, action.clone());
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
         act(&mut g, action);
         pay(&mut g);
@@ -360,7 +360,7 @@ fn target_discounts_are_paid_for_tapped_permanents_and_mana_value_one_only() {
         put(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
         g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
         let source = put(&mut g, p, "Roadside Blowout", Zone::Hand);
-        reject(&mut g, Action::AnnounceCast { card: source });
+        admit(&g, Action::AnnounceCast { card: source });
     }
 }
 

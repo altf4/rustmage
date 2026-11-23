@@ -249,7 +249,7 @@ fn cactarantula_uses_its_own_desert_discount_and_an_opponents_targeting() {
         "Abraded Bluffs",
         Zone::Battlefield,
     );
-    reject(&mut game, Action::AnnounceCast { card: spider });
+    admit(&game, Action::AnnounceCast { card: spider });
     let desert = put(&mut game, player, "Bristling Backwoods", Zone::Battlefield);
     game.state.objects[desert as usize].tapped = true;
     cast(&mut game, spider, None);
@@ -325,7 +325,7 @@ fn corrupted_conviction_sacrifices_only_its_controllers_creature_as_a_cost() {
     let mut game = scenario(player);
     let spell = put(&mut game, player, "Corrupted Conviction", Zone::Hand);
     let opposing = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    admit(&game, Action::AnnounceCast { card: spell });
     let own = put(&mut game, player, "Hill Giant", Zone::Battlefield);
     act(&mut game, Action::AnnounceCast { card: spell });
     let object = game.object_ref(opposing);
@@ -411,8 +411,8 @@ fn deadeye_duelist_pays_and_taps_to_damage_only_the_opponent() {
     let duelist = put(&mut game, player, "Deadeye Duelist", Zone::Battlefield);
     assert!(game.keywords(duelist).contains(Keywords::REACH));
     game.state.players[player.index()].mana = [0; 6];
-    reject(
-        &mut game,
+    admit(
+        &game,
         Action::AnnounceActivate {
             card: duelist,
             ability: 0,

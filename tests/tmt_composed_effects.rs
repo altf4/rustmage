@@ -227,10 +227,37 @@ fn costed_mana_keeps_the_exact_pending_activation_source_untapped() {
     };
     let actions = g.legal_actions();
     assert!(actions.contains(&announce_mana(other)));
-    assert!(!actions.contains(&announce_mana(source)));
-    let before = g.snapshot();
-    assert_eq!(g.apply(p, announce_mana(source)), Err(Error::IllegalAction));
-    assert_eq!(g.snapshot(), before);
+    admit(&g, announce_mana(source));
+    let mut failed = g.clone();
+    act(&mut failed, announce_mana(source));
+    let forest = failed
+        .state
+        .objects
+        .iter()
+        .position(|o| o.zone == Zone::Battlefield && o.card == Card::Forest)
+        .unwrap() as CardId;
+    act(&mut failed, Action::TapMana { card: forest });
+    pay(&mut failed);
+    assert_eq!(failed.object_view(source).zone, Zone::Graveyard);
+    assert!(
+        !failed
+            .legal_actions()
+            .iter()
+            .any(|a| matches!(a, Action::PayCosts { .. }))
+    );
+    act(&mut failed, Action::EndManaWindow);
+    act(&mut failed, Action::SubmitAttempt);
+    while matches!(failed.state.pending, Pending::ManaRollback { .. }) {
+        act(&mut failed, Action::ChooseManaRollback { keep: false });
+    }
+    assert_eq!(
+        failed.last_attempt_outcome_view(p).unwrap().outcome,
+        AttemptOutcome::Failed
+    );
+    assert_eq!(failed.object_view(source).zone, Zone::Battlefield);
+    assert!(!failed.object_view(source).tapped);
+    assert!(!failed.object_view(forest).tapped);
+    assert_eq!(failed.state.players[p.index()].mana, [0; 6]);
 }
 
 #[test]
@@ -259,10 +286,7 @@ fn five_color_payment_does_not_count_the_same_flexible_source_twice() {
         ability: 0,
         counter_payment: Counters::default(),
     };
-    let before = g.snapshot();
-    assert!(!g.legal_actions().contains(&activate));
-    assert_eq!(g.apply(p, activate.clone()), Err(Error::IllegalAction));
-    assert_eq!(g.snapshot(), before);
+    admit(&g, activate.clone());
 
     put(&mut g, p, "Weather Maker", Zone::Battlefield);
     assert!(g.legal_actions().contains(&activate));

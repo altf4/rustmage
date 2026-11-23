@@ -133,7 +133,29 @@ fn stormcatch_reduces_only_instants_or_sorceries_and_angler_keeps_its_cast_count
     assert_eq!(stats(&game, angler), (3, 3));
 
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 1];
-    reject(&mut game, Action::AnnounceCast { card: equipment });
+    act(&mut game, Action::AnnounceCast { card: equipment });
+    assert_eq!(
+        game.state.announcing.as_ref().unwrap().total_cost,
+        Some(ManaCost {
+            colored: [0; 6],
+            generic: 2
+        })
+    );
+    reject(
+        &mut game,
+        Action::PayCosts {
+            payment: [0, 0, 0, 0, 0, 1],
+        },
+    );
+    act(&mut game, Action::EndManaWindow);
+    act(&mut game, Action::SubmitAttempt);
+    let outcome = game.last_attempt_outcome_view(player).unwrap();
+    assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+    assert_eq!(outcome.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+    assert_eq!(game.object_view(equipment).zone, Zone::Hand);
+    assert_eq!(game.state.players[player.index()].mana, [0, 0, 0, 0, 0, 1]);
+    assert_eq!(stats(&game, mentor), (2, 2));
+    assert_eq!(stats(&game, angler), (3, 3));
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
     cast(&mut game, equipment, None);
     idle(&mut game);

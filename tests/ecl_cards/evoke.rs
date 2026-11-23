@@ -1,5 +1,5 @@
 //! Evoke is an alternative cast cost; colored mana qualification uses actual payment.
-use crate::ecl_scenarios::{checked, named, setup};
+use crate::ecl_scenarios::{checked, named, setup, success_continuation};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
 fn cast_route(g: &mut Game, id: CardId, cost: ManaCost) {
@@ -111,9 +111,8 @@ fn resolve(g: &mut Game, target: Option<Target>, search: Option<CardId>) {
                 actions
                     .iter()
                     .find(|a| matches!(a, Action::FinishTargets | Action::FinishSearch))
-                    .or_else(|| actions.iter().find(|a| !matches!(a, Action::Concede)))
-                    .unwrap()
-                    .clone()
+                    .cloned()
+                    .unwrap_or_else(|| success_continuation(g, &actions))
             }
         });
         checked(g, action);

@@ -36,11 +36,11 @@ fn bilbos_attack_permission_allows_mammoth_bellow_for_harmonize() {
     funded.state.players[p.index()].mana[5] = 1;
     assert!(funded.legal_actions().contains(&normal));
 
-    reject(&mut g, normal);
+    admit(&g, normal);
     let harmonize = Action::AnnounceHarmonize { card: bellow };
     let mut no_helper = g.clone();
     no_helper.state.objects[helper as usize].tapped = true;
-    reject(&mut no_helper, harmonize.clone());
+    admit(&no_helper, harmonize.clone());
 
     let index = g
         .legal_actions()
@@ -52,7 +52,7 @@ fn bilbos_attack_permission_allows_mammoth_bellow_for_harmonize() {
     indexed.apply_index(p, g.revision(), index).unwrap();
     act(&mut g, harmonize.clone());
     assert_eq!(indexed.snapshot(), g.snapshot());
-    reject(&mut g, Action::ChooseHarmonizer { object: None });
+    admit(&g, Action::ChooseHarmonizer { object: None });
     let object = g.object_ref(helper);
     act(
         &mut g,

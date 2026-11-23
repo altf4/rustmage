@@ -14,13 +14,17 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--games", type=int, default=10000)
 parser.add_argument("--repeats", type=int, default=5)
 parser.add_argument("--cpu", type=int)
+parser.add_argument("--auto-tap", action="store_true", help="request auto-pay once per eligible staged attempt")
 parser.add_argument("--output", type=Path)
 args = parser.parse_args()
 if args.games < 1 or args.repeats < 1:
     parser.error("games and repeats must be positive")
 root = Path(__file__).resolve().parents[1]
 target = Path(cargo_environment()['CARGO_TARGET_DIR'])
-command = [str(target / 'release' / executable_name('benchmark')), str(args.games)]
+command = [str(target / 'release' / executable_name('benchmark'))]
+if args.auto_tap:
+    command.append("--auto-tap")
+command.append(str(args.games))
 if args.cpu is not None:
     if not hasattr(os, "sched_getaffinity") or args.cpu not in os.sched_getaffinity(0):
         parser.error("requested CPU is not in this process's allowed affinity")
@@ -57,6 +61,9 @@ report = {
                           "min": min(s[metric] for s in samples), "max": max(s[metric] for s in samples)} for metric in metrics},
     "samples": samples,
 }
+if args.auto_tap:
+    report["auto_tap_protocol"] = "native_auto_tap_v1"
+    report["includes"].append("native auto-pay and declined handoffs")
 output = json.dumps(report, indent=2) + "\n"
 if args.output:
     args.output.parent.mkdir(parents=True, exist_ok=True)

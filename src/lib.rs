@@ -29,6 +29,10 @@ pub use rustmage_core::engine::return_links::PlayerDamageShieldView;
 pub use rustmage_core::engine::temporary_copy::RetainedActivationOrigin;
 pub use rustmage_core::engine::turn_cast_grants::ColoredSpellReductionView;
 pub use rustmage_core::engine::{
+    ACTION_CONTRACT, AttemptDrawView, AttemptFailureReason, AttemptOutcome, AttemptOutcomeView,
+    AttemptStage, AttemptView, AutoTapFollowUp, AutoTapOptions, AutoTapResult, AutoTapStatus,
+};
+pub use rustmage_core::engine::{
     AbilityAvailabilityView, AbilityResolutionView, AbilitySourceTimestampView, Action,
     ActivationCostRoute, AdditionalCostView, AdditionalEndStepsView, AdventurePermission,
     AnimationView, AttachmentTriggerView, AttackDeclaration, AttackPaymentView, AuraAttachmentView,
@@ -96,6 +100,7 @@ pub use rustmage_core::engine::{
     MeldedPermanentView, NoncombatDamageIncreaseView,
 };
 pub use rustmage_core::engine::{ExileZeroOrigin, ExileZeroUseView, PaidCastOrigin};
+pub use rustmage_core::engine::{ManaPaymentAction, ManaPaymentChoice};
 pub use rustmage_core::policy;
 pub use rustmage_core::protocol;
 pub use rustmage_core::{CapacityExceeded, CardName, PermanentType};

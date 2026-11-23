@@ -32,7 +32,7 @@ fn waived_mana_costs_still_allow_teamwork() {
         "teamwork should make Shivan Dragon a legal target"
     );
 
-    reject(&mut g, paid);
+    admit(&g, paid);
     let mut plotted = g.clone();
     let reference = plotted.move_object(alliance, Zone::Exile).after;
     plotted.remember_plotted(p, reference);
@@ -41,7 +41,7 @@ fn waived_mana_costs_still_allow_teamwork() {
     for (mut g, free) in [(g, free), (plotted, plot_cast)] {
         let mut tapped_helper = g.clone();
         tapped_helper.state.objects[helper as usize].tapped = true;
-        reject(&mut tapped_helper, free.clone());
+        admit(&tapped_helper, free.clone());
 
         let index = g
             .legal_actions()
@@ -53,7 +53,22 @@ fn waived_mana_costs_still_allow_teamwork() {
         indexed.apply_index(p, g.revision(), index).unwrap();
         act(&mut g, free.clone());
         assert_eq!(indexed.snapshot(), g.snapshot());
-        reject(&mut g, Action::ChooseTeamwork { pay: false });
+        let mut no_teamwork = g.clone();
+        act(&mut no_teamwork, Action::ChooseTeamwork { pay: false });
+        assert!(
+            !no_teamwork
+                .legal_actions()
+                .iter()
+                .any(|action| matches!(action, Action::ChooseTarget { .. }))
+        );
+        act(&mut no_teamwork, Action::SubmitAttempt);
+        let failed = no_teamwork.last_attempt_outcome_view(p).unwrap();
+        assert_eq!(failed.outcome, AttemptOutcome::Failed);
+        assert_eq!(
+            failed.reason,
+            Some(AttemptFailureReason::UnsatisfiedDeclaration)
+        );
+        assert!(!no_teamwork.object_view(helper).tapped);
         act(&mut g, Action::ChooseTeamwork { pay: true });
         act(
             &mut g,

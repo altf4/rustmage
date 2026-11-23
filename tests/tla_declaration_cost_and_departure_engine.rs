@@ -101,8 +101,16 @@ fn a_live_power_limit_constrains_declarations_and_keeps_existing_blocks() {
             attacker,
         };
         if menace {
-            reject(&mut game, first_block);
-            reject(&mut game, second_block);
+            // Each pair is admissible; the full one-blocker declaration still
+            // violates menace and may be edited before it is submitted.
+            admit(&game, first_block.clone());
+            admit(&game, second_block);
+            act(&mut game, first_block);
+            reject(&mut game, Action::FinishBlockers);
+            choose(&mut game, |action| {
+                matches!(action, Action::CancelBlockDeclaration)
+            });
+            act(&mut game, Action::FinishBlockers);
             continue;
         }
         act(&mut game, first_block);
@@ -217,7 +225,7 @@ fn life_and_mana_are_exclusive_additional_costs_for_retargeting() {
             game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 0];
             let mut short = game.clone();
             short.state.players[player.index()].life = 4;
-            reject(&mut short, action.clone());
+            admit(&short, action.clone());
             short.state.players[player.index()].life = 5;
             assert!(short.legal_actions().contains(&action));
         } else {

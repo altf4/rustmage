@@ -129,6 +129,8 @@ fn two_battlefield_targets_share_an_effective_type_and_departure_uses_exact_fact
         ability: 0,
         counter_payment: Counters::default(),
     };
+    // No two controlled creatures currently share a creature type. This is a
+    // concrete joint-target restriction, independent of future payment.
     reject(&mut game, announce.clone());
 
     let old = game.object_ref(departing);
@@ -143,7 +145,18 @@ fn two_battlefield_targets_share_an_effective_type_and_departure_uses_exact_fact
     );
     assert!(game.has_subtype(departing, "Bear"));
     act(&mut game, announce);
-    reject(&mut game, select_target(alone));
+    let mut stranded = game.clone();
+    act(&mut stranded, select_target(alone));
+    for card in [alone, survivor, departing, foreign] {
+        reject(&mut stranded, select_target(card));
+    }
+    reject(&mut stranded, Action::FinishTargets);
+    act(&mut stranded, Action::SubmitAttempt);
+    assert_eq!(
+        stranded.last_attempt_outcome_view(player).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedDeclaration)
+    );
+    assert!(!stranded.object_view(source).tapped);
     reject(&mut game, select_target(foreign));
     act(&mut game, select_target(survivor));
     reject(&mut game, select_target(survivor));
@@ -217,7 +230,7 @@ fn largest_shared_subtype_supplies_one_color_in_live_and_projected_payments() {
     let mut reduced = game.clone();
     reduced.move_object(cub, Zone::Graveyard);
     assert_eq!(amount(&reduced), 2);
-    reject(&mut reduced, announce.clone());
+    admit(&reduced, announce.clone());
     act(&mut game, announce);
     let white = [3, 0, 0, 0, 0, 0];
     let activate = |production| Action::ActivateMana {
@@ -295,14 +308,14 @@ fn only_a_committed_effective_non_lemur_flyer_consumes_the_own_turn_discount() {
     off_turn.state.priority = player;
     off_turn.state.players[player.index()].mana = [1, 0, 0, 0, 0, 0];
     let flash = put(&mut off_turn, player, "Doorkeeper Thrull", Zone::Hand);
-    reject(&mut off_turn, Action::AnnounceCast { card: flash });
+    admit(&off_turn, Action::AnnounceCast { card: flash });
 
     let angel = put(&mut game, player, "Serra Angel", Zone::Hand);
     game.state.players[player.index()].mana = [2, 0, 0, 0, 0, 2];
     let announce = Action::AnnounceCast { card: angel };
     let mut absent = game.clone();
     absent.move_object(provider, Zone::Graveyard);
-    reject(&mut absent, announce.clone());
+    admit(&absent, announce.clone());
     act(&mut game, announce);
     let observation = game.observe(player);
     assert_eq!(observation.payment_request.unwrap().generic, 2);
@@ -326,7 +339,7 @@ fn only_a_committed_effective_non_lemur_flyer_consumes_the_own_turn_discount() {
     let next = put(&mut game, player, "Glider Kids", Zone::Hand);
     game.state.players[player.index()].mana = [1, 0, 0, 0, 0, 1];
     let announce = Action::AnnounceCast { card: next };
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
     game.state.players[player.index()].mana[5] = 2;
     act(&mut game, announce);
     assert_eq!(game.observe(player).payment_request.unwrap().generic, 2);

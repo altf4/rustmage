@@ -4,6 +4,23 @@ use rustmage as _;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
 
+fn choose_pool_spell_cost(g: &mut Game) {
+    let a = g.state.announcing.as_ref().unwrap();
+    let pool = g.state.players[a.item.controller.index()].mana;
+    let cost = a
+        .cost_choices()
+        .position(|cost| {
+            ManaPaymentDomain {
+                available: pool,
+                required: cost.colored,
+                generic: cost.generic,
+            }
+            .payable()
+        })
+        .expect("scripted pool pays the declared equivalent") as u16;
+    act(g, Action::ChooseSpellCost { cost });
+}
+
 fn activate_target(g: &mut Game, source: CardId, ability: u16, target: CardId) {
     act(
         g,
@@ -147,8 +164,8 @@ fn renew_timing_wrong_zone_and_unaffordable_costs_are_atomic() {
         let source = put(&mut g, Player::P0, name, Zone::Graveyard);
         put(&mut g, Player::P1, "Bear Cub", Zone::Battlefield);
         g.state.players[0].mana = [0; 6];
-        reject(
-            &mut g,
+        admit(
+            &g,
             Action::AnnounceActivate {
                 card: source,
                 ability: 0,
@@ -536,7 +553,7 @@ fn lands_cori_mountain_monastery_pays_three_red_taps_and_authorizes_paid_spell_o
             if name == "Mountain" {
                 act(&mut g, Action::PlayLand { card: top });
             } else {
-                reject(&mut g, Action::AnnounceExile { card: top });
+                admit(&g, Action::AnnounceExile { card: top });
                 g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 1];
                 act(&mut g, Action::AnnounceExile { card: top });
                 pay(&mut g);
@@ -637,7 +654,7 @@ fn spell_card(g: &mut Game, p: Player, name: &str, targets: &[Target]) -> CardId
         act(g, Action::AnnounceCast { card: id });
         // Each exact pool in the twobrid table funds only its corresponding
         // printed route. The general damage case uses the ordinary generic route.
-        choose(g, |a| matches!(a, Action::ChooseSpellCost { .. }));
+        choose_pool_spell_cost(g);
         for &target in targets {
             act(g, Action::ChooseTarget { target });
         }
@@ -861,9 +878,31 @@ fn spells_caustic_exhale_beholds_hand_or_permanent_or_pays_one_and_gives_minus_t
     }
     let mut g = scenario(Player::P0);
     let spell = authored_spell(&mut g, Player::P0, "Caustic Exhale", Zone::Hand);
-    put(&mut g, Player::P1, "Bear Cub", Zone::Battlefield);
+    let target = put(&mut g, Player::P1, "Bear Cub", Zone::Battlefield);
     g.state.players[0].mana = [0, 0, 1, 0, 0, 0];
-    reject(&mut g, Action::AnnounceCast { card: spell });
+    admit(&g, Action::AnnounceCast { card: spell });
+    act(&mut g, Action::AnnounceCast { card: spell });
+    act(&mut g, Action::ChooseCastBehold { pay: false });
+    act(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
+    reject(
+        &mut g,
+        Action::PayCosts {
+            payment: [0, 0, 1, 0, 0, 0],
+        },
+    );
+    act(&mut g, Action::EndManaWindow);
+    act(&mut g, Action::SubmitAttempt);
+    assert_eq!(
+        g.last_attempt_outcome_view(Player::P0).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
+    assert_eq!(g.object_view(spell).zone, Zone::Hand);
+    assert_eq!(stats(&g, target), (2, 2));
 }
 
 #[test]
@@ -2789,8 +2828,8 @@ fn candidates_abzan_devotee_returns_only_its_exact_graveyard_incarnation_after_t
             g.state.active = p.other();
             g.state.priority = p;
             g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 1];
-            reject(
-                &mut g,
+            admit(
+                &g,
                 Action::AnnounceActivate {
                     card: source,
                     ability: 1,
@@ -2894,7 +2933,7 @@ fn candidates_arashin_sunshield_pays_white_and_tap_to_tap_either_players_creatur
             reject(&mut g, announce.clone());
             g.state.objects[source as usize].summoning_sick = false;
             g.state.players[p.index()].mana = [0; 6];
-            reject(&mut g, announce);
+            admit(&g, announce);
             g.state.players[p.index()].mana = one_mana(0);
             activate_target(&mut g, source, 0, target);
             assert!(g.object_view(source).tapped);
@@ -3472,7 +3511,7 @@ fn candidates_equilibrium_adept_exile_permission_requires_mana_lasts_to_next_own
             assert!(!stale.can_play_exiled(p, top));
             if cast_now {
                 g.state.players[p.index()].mana = [0; 6];
-                reject(&mut g, Action::AnnounceExile { card: top });
+                admit(&g, Action::AnnounceExile { card: top });
                 g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 1];
                 act(&mut g, Action::AnnounceExile { card: top });
                 pay(&mut g);
@@ -4766,7 +4805,7 @@ fn special_dispelling_exhale_exact_one_blue_cast_uses_two_or_four_tax_from_paid_
 fn announce_dragonclaw(g: &mut Game, p: Player, own: CardId, other: Option<CardId>) -> CardId {
     let source = authored_spell(g, p, "Dragonclaw Strike", Zone::Hand);
     act(g, Action::AnnounceCast { card: source });
-    choose(g, |a| matches!(a, Action::ChooseSpellCost { .. }));
+    choose_pool_spell_cost(g);
     act(
         g,
         Action::ChooseTarget {
@@ -5368,7 +5407,7 @@ fn special_dragonbroods_relic_mana_requires_source_and_distinct_untapped_owned_c
                 counter_payment: Counters::default(),
                 production: one_mana(color),
             };
-            reject(&mut g, action.clone());
+            admit(&g, action.clone());
             let creature = put(&mut g, p, "Bear Cub", Zone::Battlefield);
             g.state.objects[creature as usize].summoning_sick = true;
             let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
@@ -5415,7 +5454,7 @@ fn special_animated_relic_cannot_pay_both_its_own_tap_and_additional_creature_ta
             counter_payment: Counters::default(),
             production: one_mana(0),
         };
-        reject(&mut g, action.clone());
+        admit(&g, action.clone());
         let creature = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         act(&mut g, action);
         let object = g.object_ref(source);

@@ -633,8 +633,8 @@ fn picard_buffs_other_creatures_observes_creature_and_spacecraft_casts_and_searc
     );
     put(&mut search, player, "Doubling Season", Zone::Battlefield);
     let ship = owned(&mut search, player, "Class-F Shuttlecraft", Zone::Library);
-    reject(
-        &mut search,
+    admit(
+        &search,
         Action::AnnounceActivate {
             card: picard,
             ability: 0,

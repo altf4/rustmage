@@ -551,7 +551,7 @@ fn gazebo_recovers_only_milled_permanents_and_greenhouse_enables_a_new_mana_colo
     };
     let announce = Action::AnnounceCast { card: shock };
     reject(&mut game, tap_red(forest));
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
     game.state.players[player.index()].mana = [0, 0, 0, 0, 1, 2];
     unlock(
         &mut game,

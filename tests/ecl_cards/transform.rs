@@ -1,5 +1,6 @@
 //! Brigid's paid face changes, exact transformation history, and transforming token copies.
 use crate::ecl_scenarios::{cast, checked, named, settle, setup};
+use crate::support::admit;
 use rustmage_core::cards::*;
 use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::engine::*;
@@ -468,13 +469,31 @@ fn ecl_transform_ashling_mana_survives_source_departure_but_only_casts_mv_four_s
         g.state.players[p.index()].mana[5] = 2;
         let low = named(&mut g, p, "Goblin Piker", Zone::Hand);
         let four = named(&mut g, p, "Hill Giant", Zone::Hand);
+        admit(&g, Action::AnnounceCast { card: low });
+        let mut restricted = g.clone();
+        checked(&mut restricted, Action::AnnounceCast { card: low });
         assert!(
-            !g.legal_actions()
-                .contains(&Action::AnnounceCast { card: low })
+            !restricted
+                .legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::PayCosts { .. }))
         );
-        let before = g.snapshot();
-        assert!(g.apply(p, Action::AnnounceCast { card: low }).is_err());
-        assert_eq!(g.snapshot(), before);
+        crate::support::reject(
+            &mut restricted,
+            Action::PayCosts {
+                payment: [0, 0, 0, 1, 0, 1],
+            },
+        );
+        checked(&mut restricted, Action::EndManaWindow);
+        checked(&mut restricted, Action::SubmitAttempt);
+        let failure = restricted.last_attempt_outcome_view(p).unwrap();
+        assert_eq!(failure.outcome, AttemptOutcome::Failed);
+        assert_eq!(failure.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+        assert_eq!(restricted.object_view(low).zone, Zone::Hand);
+        assert_eq!(
+            restricted.state.players[p.index()].mana,
+            g.state.players[p.index()].mana
+        );
         cast(&mut g, four, None, &[]);
         settle(&mut g);
         assert!(g.on_battlefield(four));
@@ -488,23 +507,18 @@ fn ecl_transform_ashling_x_spell_interval_crosses_mana_value_threshold_exactly()
         named(&mut g, p, ASHLING, Zone::Battlefield);
         g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
         ashling_back_mana(&mut g, 4);
-        // Ordinary green + generic pay X0..1; restricted green unlocks X3, leaving X2 illegal.
+        // Ordinary green + generic pay X0..1; restricted green unlocks X3.
+        // X2 remains a valid declaration even though its payment cannot use that lot.
         g.state.players[p.index()].mana[5] = 1;
         g.state.players[p.index()].mana[4] += 1;
         let scourge = named(&mut g, p, "Wildwood Scourge", Zone::Hand);
         checked(&mut g, Action::AnnounceCast { card: scourge });
         assert_eq!(
             g.x_choice().unwrap().intervals,
-            vec![
-                XInterval {
-                    minimum: 0,
-                    maximum: 1
-                },
-                XInterval {
-                    minimum: 3,
-                    maximum: 3
-                }
-            ]
+            vec![XInterval {
+                minimum: 0,
+                maximum: u32::MAX
+            }]
         );
         checked(&mut g, Action::ChooseX { value: 3 });
         for _ in 0..10 {
@@ -860,10 +874,20 @@ fn ecl_transform_eirdu_grant_excludes_noncreatures_opponents_and_blanked_provide
         ));
         let creature = named(&mut g, p, "Great Forest Druid", Zone::Hand);
         g.state.players[p.index()].mana = [0; 6];
-        assert!(
-            !g.legal_actions()
-                .contains(&Action::AnnounceCast { card: creature })
+        admit(&g, Action::AnnounceCast { card: creature });
+        let mut unpaid = g.clone();
+        checked(&mut unpaid, Action::AnnounceCast { card: creature });
+        assert!(!unpaid.legal_actions().iter().any(|action| matches!(
+            action,
+            Action::ChooseConvoker { .. } | Action::PayCosts { .. }
+        )));
+        checked(&mut unpaid, Action::EndManaWindow);
+        checked(&mut unpaid, Action::SubmitAttempt);
+        assert_eq!(
+            unpaid.last_attempt_outcome_view(p).unwrap().reason,
+            Some(AttemptFailureReason::UnsatisfiedMana)
         );
+        assert_eq!(unpaid.object_view(creature).zone, Zone::Hand);
         assert!(
             rustmage_core::engine::convoke::available(
                 &g,

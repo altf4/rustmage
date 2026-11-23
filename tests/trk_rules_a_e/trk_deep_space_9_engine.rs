@@ -47,12 +47,19 @@ fn exiled_permanents_enter_and_nonpermanents_stay_exiled_with_owned_replay() {
         indexed.apply_index(Player::P0, revision, index),
         Err(Error::StaleRevision)
     );
+    assert_eq!(indexed.snapshot(), checkpoint);
+    let mut replay = indexed.clone();
+    replay
+        .apply_index(Player::P0, replay.revision(), index)
+        .unwrap();
     act(&mut indexed, action);
+    pay(&mut replay);
+    settle(&mut replay);
     pay(&mut game);
     pay(&mut indexed);
     settle(&mut game);
     settle(&mut indexed);
-    assert_eq!(game.snapshot(), indexed.snapshot());
+    assert_eq!(replay.snapshot(), indexed.snapshot());
 
     assert_eq!(game.object_view(land).zone, Zone::Battlefield);
     assert_eq!(game.object_view(creature).zone, Zone::Battlefield);

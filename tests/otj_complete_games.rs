@@ -148,6 +148,13 @@ fn saddle_activation<'a>(view: &'a Observation, action: &Action) -> Option<&'a O
 }
 
 fn choose(view: &Observation, plot_paid: bool, saddle_turn: Option<u32>) -> usize {
+    if view.last_attempt_outcome.is_some_and(|outcome| {
+        outcome.player == view.actor.unwrap()
+            && outcome.turn == u64::from(view.turn)
+            && outcome.outcome == rustmage::AttemptOutcome::Failed
+    }) {
+        return policy::smoke_index_from_observation(view, &view.actions);
+    }
     let preferred = view
         .actions
         .iter()
@@ -339,6 +346,8 @@ fn outlaws_standard_games_finish_and_replay_with_real_mechanic_events() {
     let mut draws = 0;
     let mut games = 0;
     let mut actions = 0;
+    let mut failed_attempts = 0;
+    let mut completed_attempts = 0;
     let mut public_branches = 0;
     let mut private_branches = 0;
     let mut gameplay = Duration::ZERO;
@@ -357,6 +366,8 @@ fn outlaws_standard_games_finish_and_replay_with_real_mechanic_events() {
             };
             let mut game = Game::new(config.clone()).unwrap();
             let mut journal = Vec::new();
+            let mut failed_ids = BTreeSet::new();
+            let mut completed_ids = BTreeSet::new();
             let mut plot_paid = false;
             let mut saddle_turn = None;
             let mut branches = [false; 2];
@@ -367,7 +378,19 @@ fn outlaws_standard_games_finish_and_replay_with_real_mechanic_events() {
                 check_privacy(&view, actor);
                 let index = choose(&view, plot_paid, saddle_turn);
                 let action = view.actions[index].clone();
-                assert_ne!(action, Action::Concede);
+                if action == Action::Concede {
+                    write_report(
+                        directory.as_deref(),
+                        &format!("{label}-stalled.json"),
+                        json!({"config": config, "actions": journal, "observation": view}),
+                    );
+                    panic!(
+                        "{label} chose Concede at decision {} in {}: {:?}",
+                        journal.len(),
+                        view.decision,
+                        view.actions
+                    );
+                }
                 let private = private_choice(&view);
                 if private {
                     check_privacy(&game.observe(actor.other()), actor);
@@ -394,7 +417,19 @@ fn outlaws_standard_games_finish_and_replay_with_real_mechanic_events() {
                 if action == Action::FinishSaddle {
                     saddle_turn = Some(view.turn);
                 }
-                coverage.transition(&view, &game.observe(actor));
+                let after = game.observe(actor);
+                if let Some(outcome) = after.last_attempt_outcome {
+                    match outcome.outcome {
+                        rustmage::AttemptOutcome::Failed => {
+                            failed_ids.insert(outcome.attempt_id);
+                        }
+                        rustmage::AttemptOutcome::Completed => {
+                            completed_ids.insert(outcome.attempt_id);
+                        }
+                        _ => (),
+                    }
+                }
+                coverage.transition(&view, &after);
                 journal.push((actor, action));
             }
             gameplay += started.elapsed();
@@ -402,6 +437,11 @@ fn outlaws_standard_games_finish_and_replay_with_real_mechanic_events() {
                 directory.as_deref(),
                 &format!("{label}.json"),
                 json!({
+                    "action_contract": rustmage::ACTION_CONTRACT,
+                    "observation_schema": rustmage::OBSERVATION_SCHEMA,
+                    "caller_contract": "staged_smoke_current_counts_v1",
+                    "primitive_decision_limit": 4096,
+                    "failed_attempts": failed_ids.len(), "completed_attempts": completed_ids.len(),
                     "catalogue": rustmage::CATALOGUE_VERSION, "config": config,
                     "decks": [left_name, right_name], "actions": journal, "outcome": game.outcome(),
                     "public_branch": branches[0], "private_branch": branches[1],
@@ -415,6 +455,8 @@ fn outlaws_standard_games_finish_and_replay_with_real_mechanic_events() {
                 Outcome::Draw => draws += 1,
             }
             actions += journal.len();
+            failed_attempts += failed_ids.len();
+            completed_attempts += completed_ids.len();
             games += 1;
             public_branches += usize::from(branches[0]);
             private_branches += usize::from(branches[1]);
@@ -448,6 +490,11 @@ fn outlaws_standard_games_finish_and_replay_with_real_mechanic_events() {
         );
     }
     let report = json!({
+        "action_contract": rustmage::ACTION_CONTRACT,
+        "observation_schema": rustmage::OBSERVATION_SCHEMA,
+        "caller_contract": "staged_smoke_current_counts_v1",
+        "primitive_decision_limit": 4096,
+        "failed_attempts": failed_attempts, "completed_attempts": completed_attempts,
         "games": games, "decisions": actions, "wins": wins, "draws": draws,
         "colors": coverage.colors, "actual_casts": coverage.casts, "cast_names": coverage.names,
         "events": coverage.events, "public_branches": public_branches,

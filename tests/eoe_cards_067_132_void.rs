@@ -511,7 +511,7 @@ fn dark_endurance_funds_its_single_black_route_only_for_a_blocking_target() {
     let blocker = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
     let spell = put(&mut g, p, "Dark Endurance", Zone::Hand);
     g.state.players[p.index()].mana = BLACK;
-    reject(&mut g, Action::AnnounceCast { card: spell });
+    admit(&g, Action::AnnounceCast { card: spell });
     attack(&mut g, giant);
     until(&mut g, |g| g.state.pending == Pending::Blockers);
     act(
@@ -525,7 +525,7 @@ fn dark_endurance_funds_its_single_black_route_only_for_a_blocking_target() {
     assert_eq!(g.state.players[p.index()].mana, [0; 6]);
     g.state.players[p.index()].mana = BLACK;
     act(&mut g, Action::AnnounceCast { card: spell });
-    reject(&mut g, target(giant));
+    admit(&g, target(giant));
     act(&mut g, target(blocker));
     finish_targets(&mut g);
     pay(&mut g);

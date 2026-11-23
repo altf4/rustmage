@@ -291,7 +291,19 @@ fn distinct_subtype_slots_assign_multitype_objects_without_reusing_one_object() 
     let mut game = scenario(player);
     let source = put(&mut game, player, "Braided Net", Zone::Battlefield);
     let changeling = put(&mut game, player, "Mutable Explorer", Zone::Battlefield);
-    assert!(!game.legal_actions().contains(&announce(source, 0)));
+    assert!(game.legal_actions().contains(&announce(source, 0)));
+    let mut incomplete = game.clone();
+    begin(&mut incomplete, source, 0);
+    select_clause(&mut incomplete, CastCostClause::Additional);
+    act(&mut incomplete, Action::SubmitAttempt);
+    assert_eq!(
+        incomplete
+            .last_attempt_outcome_view(player)
+            .unwrap()
+            .outcome,
+        AttemptOutcome::Failed
+    );
+    assert_eq!(incomplete.object_view(changeling).zone, Zone::Battlefield);
     let dinosaur = put(&mut game, player, "Colossadactyl", Zone::Graveyard);
     let second_dinosaur = put(&mut game, player, "Colossadactyl", Zone::Battlefield);
     let merfolk = put(&mut game, player, "Brineborn Cutthroat", Zone::Graveyard);
@@ -353,8 +365,26 @@ fn material_funding_uses_tapped_and_sacrificed_materials_that_remain_eligible() 
             "Rest in Peace",
             Zone::Battlefield,
         );
-        assert!(!replaced.legal_actions().contains(&announce(source, 0)));
-        reject(&mut replaced, announce(source, 0));
+        assert!(replaced.legal_actions().contains(&announce(source, 0)));
+        act(&mut replaced, announce(source, 0));
+        choose(
+            &mut replaced,
+            |a| matches!(a, Action::ActivateMana { card, .. } if *card == first),
+        );
+        assert_eq!(replaced.object_view(first).zone, Zone::Exile);
+        act(&mut replaced, Action::BeginOrderedCosts);
+        select_clause(&mut replaced, CastCostClause::Additional);
+        act(&mut replaced, Action::SubmitAttempt);
+        assert!(matches!(
+            replaced.state.pending,
+            Pending::ManaRollback { .. }
+        ));
+        act(&mut replaced, Action::ChooseManaRollback { keep: false });
+        assert_eq!(
+            replaced.last_attempt_outcome_view(player).unwrap().outcome,
+            AttemptOutcome::Failed
+        );
+        assert_eq!(replaced.object_view(first).zone, Zone::Battlefield);
 
         act(&mut game, announce(source, 0));
         choose(

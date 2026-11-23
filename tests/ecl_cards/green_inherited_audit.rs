@@ -499,7 +499,7 @@ fn inherited_green_mistmeadow_kithkin_kindred_and_wildvine_five_colors_reduce_on
                 Zone::Hand,
             );
             g.state.players[p.index()].mana = [0, 0, 0, 0, 1, if reduction { 2 } else { 3 }];
-            reject_atomic(&mut g, Action::AnnounceCast { card: id });
+            admit(&g, Action::AnnounceCast { card: id });
             g.state.players[p.index()].mana[5] += 1;
             crate::ecl_scenarios::cast(&mut g, id, None, &[]);
             settle(&mut g);
@@ -533,7 +533,7 @@ fn inherited_green_mistmeadow_kithkin_kindred_and_wildvine_five_colors_reduce_on
                 Zone::Hand,
             );
             g.state.players[p.index()].mana = [0, 0, 0, 0, 1, if reduction { 0 } else { 5 }];
-            reject_atomic(&mut g, Action::AnnounceCast { card: id });
+            admit(&g, Action::AnnounceCast { card: id });
             g.state.players[p.index()].mana[5] += 1;
             crate::ecl_scenarios::cast(&mut g, id, None, &[]);
             settle(&mut g);

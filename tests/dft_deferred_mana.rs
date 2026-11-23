@@ -1,4 +1,5 @@
-//! Deferred indexed mana announcement preflight couples every enclosing payment.
+//! Deferred mana checks its current costs and exact active-instance identity.
+//! Parent-stranding executions recover explicitly after their real effects.
 use crate::support::*;
 use rustmage::Card;
 use rustmage_core::cards::authored::CardRules;
@@ -70,6 +71,23 @@ fn announce(card: CardId, production: Mana) -> Action {
     }
 }
 
+fn fail_and_reverse(game: &mut Game) -> usize {
+    let player = game.actor().unwrap();
+    act(game, Action::EndManaWindow);
+    act(game, Action::SubmitAttempt);
+    let mut reversed = 0;
+    while matches!(game.state.pending, Pending::ManaRollback { .. }) {
+        assert!(reversed < 8, "bounded fixture rollback events");
+        act(game, Action::ChooseManaRollback { keep: false });
+        reversed += 1;
+    }
+    assert_eq!(
+        game.last_attempt_outcome_view(player).unwrap().outcome,
+        AttemptOutcome::Failed
+    );
+    reversed
+}
+
 #[test]
 fn nested_costed_mana_announcements_reject_all_active_ancestor_instances() {
     let _rules = fixture_rules::activate(&[
@@ -120,33 +138,71 @@ fn nested_costed_mana_announcements_reject_all_active_ancestor_instances() {
 }
 
 #[test]
-fn fundable_child_is_rejected_when_its_completion_would_strand_the_parent() {
+fn a_paid_child_may_strand_its_parent_and_the_failed_parent_can_retry() {
     let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &LOSS_SOURCE)]);
     let mut g = scenario(Player::P0);
     let source = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
     let spell = put(&mut g, Player::P0, "Divination", Zone::Hand);
     g.state.players[0].mana = [0, 1, 0, 0, 2, 0];
+    Game::reset_payment_planning_work();
     act(&mut g, Action::AnnounceCast { card: spell });
-    reject(&mut g, announce(source, [0, 0, 0, 0, 1, 0]));
+    act(&mut g, announce(source, [0, 0, 0, 0, 1, 0]));
+    act(
+        &mut g,
+        Action::PayCosts {
+            payment: [0, 0, 0, 0, 2, 0],
+        },
+    );
     assert!(g.state.mana_announcement_stack.is_none());
+    assert_eq!(g.state.players[0].mana, [0, 1, 0, 0, 1, 0]);
+    assert!(
+        !g.legal_actions()
+            .iter()
+            .any(|a| matches!(a, Action::PayCosts { .. }))
+    );
+    assert!(fail_and_reverse(&mut g) > 0);
+    assert_eq!(
+        g.last_attempt_outcome_view(Player::P0).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
+    assert_eq!(g.object_view(spell).zone, Zone::Hand);
+    assert_eq!(g.state.players[0].mana, [0, 1, 0, 0, 2, 0]);
+    assert_eq!(g.state.players[0].cards_drawn_this_turn, 0);
+    act(&mut g, Action::AnnounceCast { card: spell });
     pay(&mut g);
     settle(&mut g);
     assert_eq!(g.state.players[0].cards_drawn_this_turn, 2);
+    assert_eq!(Game::payment_planning_work(), Default::default());
 }
 
 #[test]
-fn payable_parent_does_not_authorize_a_child_with_an_unpayable_color() {
+fn an_unpayable_child_fails_without_discarding_its_payable_parent() {
     let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &UNPAYABLE_SOURCE)]);
     let mut g = scenario(Player::P1);
     let source = put(&mut g, Player::P1, "Grizzly Bears", Zone::Battlefield);
     let spell = put(&mut g, Player::P1, "Divination", Zone::Hand);
     g.state.players[1].mana = BLUE;
+    Game::reset_payment_planning_work();
     act(&mut g, Action::AnnounceCast { card: spell });
-    reject(&mut g, announce(source, BLUE));
+    let parent = g.attempt_view(Player::P1).unwrap().attempt_id;
+    act(&mut g, announce(source, BLUE));
+    assert_eq!(
+        g.attempt_view(Player::P1).unwrap().parent_attempt_id,
+        Some(parent)
+    );
+    assert_eq!(fail_and_reverse(&mut g), 0);
+    assert_eq!(
+        g.last_attempt_outcome_view(Player::P1).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
+    assert_eq!(g.attempt_view(Player::P1).unwrap().attempt_id, parent);
+    assert!(!g.attempt_view(Player::P1).unwrap().mana_window_closed);
+    assert_eq!(g.state.players[1].mana, BLUE);
     assert!(!g.object_view(source).tapped);
     pay(&mut g);
     settle(&mut g);
     assert_eq!(g.state.players[1].cards_drawn_this_turn, 2);
+    assert_eq!(Game::payment_planning_work(), Default::default());
 }
 
 #[test]
@@ -167,8 +223,8 @@ fn a_resolved_child_can_be_activated_again_while_funding_its_restored_parent() {
     let spell = put(&mut g, Player::P0, "Divination", Zone::Hand);
     g.state.players[0].mana = [0; 6];
     act(&mut g, Action::AnnounceCast { card: spell });
-    // Completing the first activation leaves only two mana. Its preflight must
-    // permit a fresh activation after resolution to finish the enclosing spell.
+    // Completing the first activation leaves only two mana. The caller can
+    // choose the now-inactive instance again and finish the enclosing spell.
     act(&mut g, announce(source, [0, 2, 0, 0, 0, 0]));
     act(&mut g, Action::TapMana { card: forest });
     pay(&mut g);
@@ -280,7 +336,17 @@ fn nested_parent_tap_cost_keeps_its_exact_source_distinct_from_an_identical_mana
                 counter_payment: Counters::default(),
                 production: [0, 0, 0, 0, 1, 0],
             };
-            reject(branch, mana(a));
+            let mut stranded = branch.clone();
+            act(&mut stranded, mana(a));
+            pay(&mut stranded); // Child B produces blue, but parent A is tapped.
+            assert!(stranded.object_view(a).tapped);
+            assert!(fail_and_reverse(&mut stranded) > 0);
+            assert_eq!(
+                stranded.last_attempt_outcome_view(p).unwrap().reason,
+                Some(AttemptFailureReason::UnsatisfiedMaterial)
+            );
+            assert!(!stranded.object_view(a).tapped && !stranded.object_view(b).tapped);
+            assert_eq!(stranded.counter_count(a, CounterKind::PlusOne), 0);
             let action = mana(c);
             if i == 1 {
                 let index = branch
@@ -368,7 +434,16 @@ fn a_basic_land_with_an_acquired_mana_template_is_not_interchanged_with_a_plain_
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
         act(&mut g, Action::AnnounceCast { card: spell });
         act(&mut g, announce(b, [0, 0, 0, 0, 1, 0]));
-        reject(&mut g, Action::TapMana { card: a });
+        let mut stranded = g.clone();
+        act(&mut stranded, Action::TapMana { card: a });
+        pay(&mut stranded);
+        assert!(fail_and_reverse(&mut stranded) > 0);
+        assert_eq!(
+            stranded.last_attempt_outcome_view(p).unwrap().reason,
+            Some(AttemptFailureReason::UnsatisfiedMana)
+        );
+        assert_eq!(stranded.object_view(spell).zone, Zone::Hand);
+        assert!(!stranded.object_view(a).tapped);
         act(&mut g, Action::TapMana { card: c });
         pay(&mut g);
         act(
@@ -582,7 +657,17 @@ fn a_nonmana_food_parent_keeps_its_source_through_native_and_borrowed_mana_payme
             );
             let mut unpaid_source = g.clone();
             unpaid_source.state.objects[food as usize].tapped = true;
-            reject(&mut unpaid_source, action.clone());
+            act(&mut unpaid_source, action.clone());
+            act(&mut unpaid_source, Action::TapMana { card: forest });
+            pay(&mut unpaid_source);
+            assert!(fail_and_reverse(&mut unpaid_source) > 0);
+            assert_eq!(
+                unpaid_source.last_attempt_outcome_view(p).unwrap().reason,
+                Some(AttemptFailureReason::UnsatisfiedMaterial)
+            );
+            assert_eq!(unpaid_source.state.players[p.index()].life, life);
+            assert_eq!(unpaid_source.object_ref(food), old_food);
+            assert!(unpaid_source.on_battlefield(food));
             let saved = g.snapshot();
             let mut raw = g.clone();
             let mut indexed = g.clone();
@@ -696,7 +781,10 @@ fn an_outer_discard_receipt_is_retained_without_overwriting_projected_departures
                     .collect::<Vec<_>>(),
                 appended
             );
-            assert!(!world.reachable(&goal, &mut std::collections::HashSet::new()));
+            assert!(
+                world.reachable(&goal, &mut std::collections::HashSet::new()),
+                "a projected parent departure is not a completion filter on this child's current obligations"
+            );
         }
         let saved = g.snapshot();
         let mut raw = g.clone();

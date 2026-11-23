@@ -421,7 +421,7 @@ fn redshift_power_mana_is_one_color_and_pays_activations_but_cannot_cast_a_spell
     assert_eq!(g.state.players[0].mana, production);
     assert!(g.object_view(source).tapped);
     assert!(g.keywords(source).contains(Keywords::VIGILANCE));
-    reject(&mut g, Action::AnnounceCast { card: spell });
+    admit(&g, Action::AnnounceCast { card: spell });
     act(
         &mut g,
         Action::AnnounceActivate {

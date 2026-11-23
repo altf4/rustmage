@@ -171,7 +171,7 @@ fn hand_payment_projects_exact_candidates_and_tracks_revealed_card_lki() {
     let land = put(&mut game, player, "Forest", Zone::Hand);
     let draw = put(&mut game, player, "Quick Study", Zone::Hand);
     let spell = put(&mut game, player, "Divination", Zone::Hand);
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    admit(&game, Action::AnnounceCast { card: spell });
 
     let revealed = put(&mut game, player, "Bear Cub", Zone::Hand);
     let stale = game.object_ref(revealed);

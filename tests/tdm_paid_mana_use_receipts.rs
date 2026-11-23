@@ -1,5 +1,5 @@
-//! A paid late-output child must carry its exact completed activation use into
-//! the virtual parent world, without paying costs again or banning repeatables.
+//! Paid late output retains exact activation-use receipts. Every allowed color
+//! remains selectable; a stranded parent fails explicitly after its mana window.
 use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
@@ -113,13 +113,30 @@ fn paid_choice_once_rejects_fictitious_second_conversion() {
     let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &ONCE)]);
     for p in [Player::P0, Player::P1] {
         let (mut g, source, spell) = late_root(p, "Grizzly Bears");
+        let mut failed = g.clone();
+        act(&mut failed, Action::ChooseMana { production: R });
+        assert_eq!(failed.state.objects[source as usize].used_abilities, 1);
+        reject(&mut failed, direct(source, R, U));
+        reject(&mut failed, Action::PayCosts { payment: R });
+        act(&mut failed, Action::EndManaWindow);
+        act(&mut failed, Action::SubmitAttempt);
+        act(&mut failed, Action::ChooseManaRollback { keep: false });
+        let failure = failed.last_attempt_outcome_view(p).unwrap();
+        assert_eq!(failure.outcome, AttemptOutcome::Failed);
+        assert_eq!(failure.reason, Some(AttemptFailureReason::UnsatisfiedMana));
+        assert_eq!(failed.object_view(spell).zone, Zone::Hand);
+        assert_eq!(failed.state.objects[source as usize].used_abilities, 0);
+        assert_eq!(failed.state.players[p.index()].mana, W);
+
         assert_eq!(
             choices(&g),
-            vec![U],
-            "paid once-only use must constrain the parent promise"
+            vec![R, U, W],
+            "output choices do not promise parent completion"
         );
-        assert_eq!(g.observe(p).mana_choices, vec![U]);
-        reject(&mut g, Action::ChooseMana { production: R });
+        let mut observed = g.observe(p).mana_choices;
+        observed.sort();
+        assert_eq!(observed, vec![R, U, W]);
+        admit(&g, Action::ChooseMana { production: R });
         act(&mut g, Action::ChooseMana { production: U });
         assert_eq!(g.state.objects[source as usize].used_abilities, 1);
         finish_blue(&mut g, p, spell);
@@ -154,14 +171,15 @@ fn paid_choice_exhaust_rejects_fictitious_second_use_including_autarch_reuse() {
             }
             let spell = blue_parent(&mut g, p);
             act(&mut g, direct(source, W, ZERO));
-            assert_eq!(choices(&g), vec![U]);
-            reject(&mut g, Action::ChooseMana { production: R });
+            assert_eq!(choices(&g), vec![R, U, W]);
+            admit(&g, Action::ChooseMana { production: R });
             act(&mut g, Action::ChooseMana { production: U });
             assert!(
                 g.state.players[p.index()]
                     .turn_facts
                     .exhaust_activated_this_turn
             );
+            reject(&mut g, direct(source, U, U));
             finish_blue(&mut g, p, spell);
         }
     }
@@ -175,8 +193,8 @@ fn paid_choice_actual_jeskai_devotee_preserves_parent_completion_and_commit_timi
             g.state.objects[source as usize].used_abilities, 0,
             "actual commit timing stays after the owned output choice"
         );
-        assert_eq!(choices(&g), vec![U]);
-        reject(&mut g, Action::ChooseMana { production: R });
+        assert_eq!(choices(&g), vec![R, U, W]);
+        admit(&g, Action::ChooseMana { production: R });
         act(&mut g, Action::ChooseMana { production: U });
         assert_eq!(g.state.objects[source as usize].used_abilities, 1);
         reject(&mut g, direct(source, U, U));
@@ -238,7 +256,7 @@ fn paid_choice_nested_ancestor_uses_distinct_resources_instead_of_reusing_the_ch
             let spell = blue_parent(&mut g, p);
             act(&mut g, announce(outer, U));
             act(&mut g, direct(child, W, ZERO));
-            assert_eq!(choices(&g).contains(&R), extra);
+            assert!(choices(&g).contains(&R));
             if extra {
                 act(&mut g, Action::ChooseMana { production: R });
                 act(
@@ -248,8 +266,8 @@ fn paid_choice_nested_ancestor_uses_distinct_resources_instead_of_reusing_the_ch
                     },
                 );
             } else {
-                assert_eq!(choices(&g), vec![G]);
-                reject(&mut g, Action::ChooseMana { production: R });
+                assert_eq!(choices(&g).len(), 5);
+                admit(&g, Action::ChooseMana { production: R });
                 act(&mut g, Action::ChooseMana { production: G });
             }
             pay(&mut g);
@@ -309,12 +327,23 @@ fn paid_choice_borrowed_use_belongs_to_the_exact_borrowed_slot() {
                 production: ZERO,
             },
         );
-        assert_eq!(choices(&g), vec![U]);
-        reject(&mut g, Action::ChooseMana { production: R });
+        assert_eq!(choices(&g), vec![R, U, W]);
+        admit(&g, Action::ChooseMana { production: R });
         act(&mut g, Action::ChooseMana { production: U });
         assert_eq!(
             g.state.objects[forge as usize].used_abilities, 0,
             "borrowed receipt must not consume an unrelated printed slot"
+        );
+        reject(
+            &mut g,
+            Action::ActivateBorrowedMana {
+                card: forge,
+                exiled,
+                ability: 0,
+                counter_payment: Counters::default(),
+                payment: U,
+                production: U,
+            },
         );
         finish_blue(&mut g, p, spell);
     }
@@ -363,15 +392,15 @@ fn paid_choice_self_grant_receipts_are_independent_per_acquisition() {
             };
             act(&mut g, start(stamp, ZERO));
             pay(&mut g);
-            assert_eq!(choices(&g).contains(&R), second);
+            assert!(choices(&g).contains(&R));
             if let Some(other) = other_stamp {
                 act(&mut g, Action::ChooseMana { production: R });
                 reject(&mut g, start(stamp, U));
                 act(&mut g, start(other, U));
                 pay(&mut g);
             } else {
-                assert_eq!(choices(&g), vec![U]);
-                reject(&mut g, Action::ChooseMana { production: R });
+                assert_eq!(choices(&g), vec![R, U, W]);
+                admit(&g, Action::ChooseMana { production: R });
                 act(&mut g, Action::ChooseMana { production: U });
             }
             assert_eq!(g.state.objects[source as usize].used_abilities, 0);

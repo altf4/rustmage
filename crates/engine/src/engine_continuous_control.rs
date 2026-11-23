@@ -225,6 +225,7 @@ impl Game {
             state.bases.push(ControlBase { object, controller });
         }
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn record_control(
         &mut self,
         object: ObjectRef,

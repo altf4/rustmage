@@ -190,7 +190,7 @@ fn private_taxed_selection_branches_to_spell_or_tapped_land() {
         });
         raw.state.players[opponent.index()].mana = [0, 1, 0, 0, 0, 0];
         reject(&mut raw, Action::AnnounceExile { card: spell });
-        reject(&mut raw, tax_cast(exact));
+        admit(&raw, tax_cast(exact));
 
         let mut ordinary = raw.clone();
         add_independent_permission(&mut ordinary, opponent);

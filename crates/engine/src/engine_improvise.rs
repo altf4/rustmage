@@ -57,6 +57,7 @@ pub(super) fn eligible<W: CharacteristicWorld + ?Sized>(
         && world.kinds(object.card) & 16 != 0
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[cfg(feature = "test-support")]
 pub(super) fn masks<W: CharacteristicWorld + ?Sized>(
     world: &W,
     player: Player,

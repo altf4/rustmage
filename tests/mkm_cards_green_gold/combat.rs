@@ -233,7 +233,7 @@ fn pride_of_hull_clade_uses_live_toughness_for_cost_and_grants_player_damage_dra
     let wall = put(&mut game, player, "Rune-Sealed Wall", Zone::Battlefield);
     let other = put(&mut game, player, "Bear Cub", Zone::Battlefield);
     game.state.players[player.index()].mana = [0, 0, 0, 0, 1, 0];
-    reject(&mut game, Action::AnnounceCast { card: source });
+    admit(&game, Action::AnnounceCast { card: source });
     game.add_counter(other, CounterKind::PlusOne, 2);
     cast(&mut game, source, None);
     settle(&mut game);
@@ -311,8 +311,8 @@ fn rope_equips_reach_and_a_single_blocker_limit_then_can_be_sacrificed_as_a_clue
     );
     attack(&mut menace, &[wearer]);
     pass_pair(&mut menace);
-    reject(
-        &mut menace,
+    admit(
+        &menace,
         Action::Block {
             blocker: first,
             attacker: wearer,

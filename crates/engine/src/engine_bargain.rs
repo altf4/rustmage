@@ -1,5 +1,4 @@
-//! Optional exact bargain resource declaration. Funding is pure and reserves the
-//! selected permanent against sacrifice-producing mana abilities.
+//! Optional bargain declarations and exact provisional sacrifice shortcuts.
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) const COST: AdditionalCost = AdditionalCost {
@@ -17,49 +16,52 @@ pub(super) const COST: AdditionalCost = AdditionalCost {
 };
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    pub(super) fn bargain_cost_fundable(
-        &self,
-        actor: Player,
-        card: CardId,
-        cost: ManaCost,
-        sacrifice: Option<ObjectRef>,
-    ) -> bool {
-        if let Some(object) = sacrifice
-            && !self.additional_candidate(COST, actor, self.object_ref(card), object)
-        {
-            return false;
+    pub(super) fn bargain_intent_available(&self, a: &Announcement, pay: bool) -> bool {
+        a.item
+            .source
+            .is_some_and(|source| source.card.has_bargain())
+            && if pay {
+                self.bargain_material_may_be_available(a)
+            } else {
+                self.bargain_choice_fundable(a, None)
+            }
+    }
+
+    fn bargain_material_may_be_available(&self, a: &Announcement) -> bool {
+        let state = &self.state;
+        if !state.proposal_affordability {
+            return true;
         }
-        let definition = self.effective_spell_card(card);
-        let discount = if sacrifice.is_some() {
-            definition.bargain_reduction()
-        } else {
-            0
+        let controlled = |object: &Object| {
+            object.zone == Zone::Battlefield && object.controller == a.item.controller
         };
-        let Some(cost) = self.spell_total_with_reductions(
-            actor,
-            card,
-            cost,
-            definition,
-            definition.fixed_mana_value(),
-            0,
-            ManaCost {
-                colored: [0; 6],
-                generic: discount,
-            },
-            0,
-        ) else {
-            return false;
-        };
-        self.can_fund_for(
-            FundingGoal {
-                actor,
-                required: cost.colored,
-                generic: cost.generic,
-                source: None,
-                reserve: sacrifice.map(|r| (r, COST)),
-            },
-            self.spell_mana_purpose_for_card(actor, card, self.effective_spell_card(card)),
-        )
+        self.state
+            .objects
+            .iter()
+            .filter(|object| controlled(object))
+            .any(|object| {
+                object.is_token()
+                    || object.card.kind_mask() & (16 | 32) != 0
+                    || object
+                        .card
+                        .static_ability_groups()
+                        .iter()
+                        .any(|group| group.first_layer <= crate::cards::AbilityLayer::Type)
+            })
+            || state.roles.as_ref().is_some_and(|roles| {
+                // A current form can supply an artifact or enchantment even if
+                // neither type is printed. Credit it without a layered query.
+                roles
+                    .animations
+                    .iter()
+                    .any(|row| controlled(&state.objects[row.object.card as usize]))
+            })
+            || state.crew.as_ref().is_some_and(|crew| {
+                crew.animated
+                    .iter()
+                    .any(|row| controlled(&state.objects[row.card as usize]))
+            })
+            || !payment_capacity::stable_optional_material_board(self, a)
     }
     pub(super) fn initial_bargain_fundable(
         &self,
@@ -67,10 +69,7 @@ impl Game {
         card: CardId,
         cost: ManaCost,
     ) -> bool {
-        self.bargain_cost_fundable(actor, card, cost, None)
-            || (0..self.state.objects.len()).any(|id| {
-                self.bargain_cost_fundable(actor, card, cost, Some(self.object_ref(id as CardId)))
-            })
+        self.spell_cost_option_available(actor, card, cost)
     }
     pub(super) fn visit_bargain_choices(
         &self,
@@ -83,47 +82,25 @@ impl Game {
     }
 
     fn bargain_choice_fundable(&self, a: &Announcement, sacrifice: Option<ObjectRef>) -> bool {
-        let source = a.item.source.expect("Bargain source");
-        let changes_targets = source.card.bargain_targets().is_some();
-        if changes_targets
-            || a.source_mana_alternative().is_some()
-            || a.has_ordered_origin_payment()
-            || a.has_ordered_life_cost()
-            || self.cast_requires_target_payment(a.item.controller, source.card)
-            || a.item.cast.is_some_and(|cast| cast.method.is_harmonize())
-            || source.card.behold_cast().is_some()
-        {
-            if sacrifice.is_some_and(|object| {
-                !self.additional_candidate(COST, a.item.controller, source.object, object)
-            }) {
-                return false;
-            }
-            let mut proposal = a.clone();
-            proposal.item.cast.as_mut().unwrap().bargain = Some(sacrifice.is_some());
-            proposal.additional = sacrifice;
-            if changes_targets {
-                proposal.plan = self.target_spec(&proposal.item);
-                // Targets are declared before the reserved permanent is sacrificed.
-                if !self.cast_definition_targets_available(
-                    proposal.plan,
-                    proposal.item.controller,
-                    source.object,
-                    source.card,
-                ) {
-                    return false;
-                }
-            }
-            return proposal
-                .cost_options()
-                .any(|cost| self.announcement_cost_fundable(&proposal, cost));
-        }
-        a.cost_options()
-            .any(|cost| self.bargain_cost_fundable(a.item.controller, source.id, cost, sacrifice))
+        let Some(source) = a.item.source else {
+            return false;
+        };
+        sacrifice.is_none_or(|object| {
+            self.additional_candidate(COST, a.item.controller, source.object, object)
+        })
     }
 
     pub(super) fn choose_bargain(&mut self, sacrifice: Option<ObjectRef>) {
+        self.set_bargain_declaration(sacrifice.is_some(), sacrifice);
+    }
+
+    pub(super) fn declare_bargain(&mut self, pay: bool) {
+        self.set_bargain_declaration(pay, None);
+    }
+
+    fn set_bargain_declaration(&mut self, pay: bool, sacrifice: Option<ObjectRef>) {
         let a = self.state.announcing.as_mut().unwrap();
-        a.item.cast.as_mut().unwrap().bargain = Some(sacrifice.is_some());
+        a.item.cast.as_mut().unwrap().bargain = Some(pay);
         a.additional = sacrifice;
         if a.item.source.unwrap().card.bargain_targets().is_some() {
             let item = a.item.clone();

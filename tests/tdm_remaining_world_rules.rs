@@ -284,7 +284,7 @@ fn creature_restricted_mana_pays_a_creature_after_its_producer_leaves_but_not_a_
         let source = put(&mut g, p, "Short Bow", Zone::Battlefield);
         mana(&mut g, source, 3);
         let bolt = put(&mut g, p, "Lightning Bolt", Zone::Hand);
-        reject(&mut g, Action::AnnounceCast { card: bolt });
+        admit(&g, Action::AnnounceCast { card: bolt });
         assert_eq!(g.state.players[p.index()].mana[3], 1);
     }
 }
@@ -519,6 +519,7 @@ fn rite_group_owner_and_partial_target_results_are_owned_across_raw_index_restor
     assert_eq!(raw.snapshot(), indexed.snapshot());
     assert_eq!(raw.object_view(x).zone, Zone::Library);
     indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.snapshot(), saved);
     act(&mut indexed, action);
     finish_group(&mut indexed, 2);
     pay(&mut indexed);
@@ -822,6 +823,7 @@ fn optional_resolution_exile_payment_is_owned_and_return_target_is_chosen_only_a
     drain(&mut sibling);
     assert_eq!(sibling.object_view(creature).zone, Zone::Graveyard);
     indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.snapshot(), saved);
     act(&mut indexed, action);
     wait(&mut indexed, |g| {
         matches!(g.state.pending, Pending::Targets { .. })
@@ -915,10 +917,14 @@ fn dragon_union_mana_is_actually_spent_on_a_dragon_and_remains_owned_after_branc
     assert_eq!(raw.snapshot(), indexed.snapshot());
     assert_eq!(raw.object_view(dragon).zone, Zone::Battlefield);
     indexed.restore(&saved).unwrap();
-    act(&mut indexed, action);
-    pay(&mut indexed);
-    drain(&mut indexed);
-    assert_eq!(raw.snapshot(), indexed.snapshot());
+    assert_eq!(indexed.snapshot(), saved);
+    let mut replay = indexed.clone();
+    for branch in [&mut indexed, &mut replay] {
+        act(branch, action.clone());
+        pay(branch);
+        drain(branch);
+    }
+    assert_eq!(replay.snapshot(), indexed.snapshot());
 }
 
 #[test]
@@ -1099,8 +1105,8 @@ fn whole_hand_payment_uses_the_hand_after_a_real_mana_child_and_rejects_unfundab
         let mut g = scenario(p);
         let source = put(&mut g, p, "Short Bow", Zone::Battlefield);
         g.state.players[p.index()].mana = [0; 6];
-        reject(
-            &mut g,
+        admit(
+            &g,
             Action::AnnounceActivate {
                 card: source,
                 ability: 0,
@@ -1170,6 +1176,7 @@ fn whole_hand_payment_is_private_atomic_owned_and_replacement_modified_payment_s
     drain(&mut indexed);
     assert_eq!(raw.snapshot(), indexed.snapshot());
     indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.snapshot(), saved);
     zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|v| v.set(Some(indexed.object_ref(hand))));
     act(&mut indexed, action);
     drain(&mut indexed);
@@ -1364,6 +1371,7 @@ fn source_choice_and_prevention_roots_are_owned_raw_index_restorable_and_reject_
     }
     assert_eq!(raw.snapshot(), indexed.snapshot());
     indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.snapshot(), saved);
     act(&mut indexed, action);
     drain(&mut indexed);
     let hit = event(&indexed, source, p, 2, true);
@@ -1870,9 +1878,9 @@ fn prevention_callback_can_read_both_the_damage_actor_and_its_latest_controller(
 fn source_prevention_layout_matches_the_integrated_shared_state_budget() {
     assert_eq!(std::mem::size_of::<Object>(), 160);
     // The shared state now includes Star Trek's sparse source permissions,
-    // exact counter facts, and player history. The permanent record stays
+    // exact counter facts, player history, and staged attempt outcomes. The permanent record stays
     // at 160 bytes; this pins the expanded inline State footprint.
-    assert_eq!(std::mem::size_of::<State>(), 5744);
+    assert_eq!(std::mem::size_of::<State>(), 5840);
     if let Ok(path) = std::env::var("RUSTMAGE_TDM_WORLD_LAYOUT") {
         let layout = serde_json::json!({
             "Object":std::mem::size_of::<Object>(),"ObjectView":std::mem::size_of::<ObjectView>(),
@@ -1942,6 +1950,27 @@ fn a_waiting_prevention_effect_exposes_its_exact_departed_spell_source_for_anoth
     let attacker = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
     let chosen = g.object_ref(attacker);
     let first = shield(&mut g, chosen);
+    let shields = g
+        .state
+        .roles
+        .as_ref()
+        .unwrap()
+        .source_prevention
+        .as_ref()
+        .unwrap();
+    assert!(shields.choice.is_none());
+    assert_eq!(
+        shields.bytes(),
+        std::mem::size_of::<source_prevention::SourcePreventionState>()
+            + shields
+                .shields
+                .iter()
+                .map(|shield| std::mem::size_of::<source_prevention::Shield>()
+                    + shield.item.owned_bytes())
+                .sum::<usize>()
+    );
+    assert!(g.state_bytes() > std::mem::size_of::<State>());
+
     let old_spell = g.observe(p).chosen_source_shields.unwrap()[0].source;
     assert_ne!(old_spell, g.object_ref(first));
     let second = put(&mut g, p.other(), "Opt", Zone::Hand);
@@ -2105,6 +2134,7 @@ fn source_world_completion_mass_copy_never_awards_a_story_from_a_transient_recip
         drain(&mut indexed);
         assert_eq!(raw.snapshot(), indexed.snapshot());
         indexed.restore(&saved).unwrap();
+        assert_eq!(indexed.snapshot(), saved);
         act(&mut indexed, Action::Pass);
         drain(&mut indexed);
         assert_eq!(raw.snapshot(), indexed.snapshot());
@@ -2403,6 +2433,7 @@ fn source_world_completion_referred_ability_is_a_distinct_legal_no_damage_source
         }
         assert_eq!(raw.snapshot(), indexed.snapshot());
         indexed.restore(&saved).unwrap();
+        assert_eq!(indexed.snapshot(), saved);
         act(&mut indexed, action);
         drain(&mut indexed);
         finish_hits(
@@ -3336,6 +3367,11 @@ fn source_world_completion_reflexive_x_payment_does_not_keep_the_parent_entrants
         }) {
             break;
         }
+        if matches!(g.state.pending, Pending::ResolutionX { .. }) {
+            assert!(g.x_choice().unwrap().contains(1));
+            act(&mut g, Action::ChooseX { value: 1 });
+            continue;
+        }
         choose(&mut g, |a| {
             matches!(
                 a,
@@ -3512,6 +3548,7 @@ fn source_world_completion_semantic_event_group_survives_owned_raw_index_restore
     drain(&mut indexed);
     assert_eq!(raw.snapshot(), indexed.snapshot());
     indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.snapshot(), saved);
     act(&mut indexed, Action::ChooseStackDamageSource { id });
     drain(&mut indexed);
     assert_eq!(
@@ -3519,9 +3556,13 @@ fn source_world_completion_semantic_event_group_survives_owned_raw_index_restore
         DamageSourceRef::StackObject { stack_object: id }
     );
     indexed.restore(&saved).unwrap();
-    act(&mut indexed, action);
-    drain(&mut indexed);
-    assert_eq!(raw.snapshot(), indexed.snapshot());
+    assert_eq!(indexed.snapshot(), saved);
+    let mut replay = indexed.clone();
+    for branch in [&mut indexed, &mut replay] {
+        act(branch, action.clone());
+        drain(branch);
+    }
+    assert_eq!(replay.snapshot(), indexed.snapshot());
 }
 #[test]
 fn source_world_completion_opponent_draw_reference_reveals_no_face_in_paired_hidden_worlds() {
@@ -4298,6 +4339,7 @@ fn waiting_source_boundary_paradigm_waiting_reference_is_owned_and_the_copy_keep
     }
     assert_eq!(raw.snapshot(), indexed.snapshot());
     indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.snapshot(), saved);
     act(&mut indexed, action);
     drain(&mut indexed);
     indexed.begin_step(Step::Main1);
@@ -4555,9 +4597,13 @@ fn semantic_final_boundary_inert_mana_source_is_exact_public_owned_and_not_gener
     drain(&mut indexed);
     assert_eq!(raw.snapshot(), indexed.snapshot());
     indexed.restore(&saved).unwrap();
-    act(&mut indexed, action);
-    drain(&mut indexed);
-    assert_eq!(raw.snapshot(), indexed.snapshot());
+    assert_eq!(indexed.snapshot(), saved);
+    let mut replay = indexed.clone();
+    for branch in [&mut indexed, &mut replay] {
+        act(branch, action.clone());
+        drain(branch);
+    }
+    assert_eq!(replay.snapshot(), indexed.snapshot());
 }
 const AMPLIFIED_GOGGLES: CardRules = CardRules {
     effect: Effect::Permanent,

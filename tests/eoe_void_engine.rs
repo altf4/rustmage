@@ -122,7 +122,7 @@ fn void_requires_nonland_departure_and_resets_after_the_end_step() {
         assert_void(&land_only, false);
 
         let announcement = Action::AnnounceCast { card: spell };
-        reject(&mut land_only, announcement.clone());
+        admit(&land_only, announcement.clone());
         let library_before = raw.state.players[player.index()].library.len();
         act(&mut raw, announcement);
         act(

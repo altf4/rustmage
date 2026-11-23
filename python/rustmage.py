@@ -16,6 +16,7 @@ import sys
 import threading
 
 # Bump this repository contract once, in data/observation-schema.txt.
+ACTION_CONTRACT = "staged_attempts_v1"
 OBSERVATION_SCHEMA = int((Path(__file__).resolve().parents[1] / "data/observation-schema.txt").read_text())
 
 
@@ -31,9 +32,12 @@ class CapacityError(EngineError):
 
 
 class Game:
-    def __init__(self, decks, seed=0, starting_player="P0", deck_rules="Constructed", *, library=None, outside=None):
+    def __init__(self, decks, seed=0, starting_player="P0", deck_rules="Constructed",
+                 *, library=None, outside=None, proposal_affordability: bool = False):
         self._lock = threading.RLock()
         self._handle = None
+        if not isinstance(proposal_affordability, bool):
+            raise TypeError("proposal_affordability must be a bool")
         if library is None:
             library = os.environ.get("RUSTMAGE_LIBRARY")
         if library is None:
@@ -42,19 +46,33 @@ class Game:
         self._lib = ctypes.CDLL(str(library))
         self._configure()
         error = ctypes.c_void_p()
-        config = json.dumps(dict(decks=decks, seed=seed, starting_player=starting_player, deck_rules=deck_rules)).encode()
+        config = dict(decks=decks, seed=seed, starting_player=starting_player, deck_rules=deck_rules)
+        if proposal_affordability:
+            config["proposal_affordability"] = True
         if outside is None:
-            self._handle = self._lib.rm_new(config, ctypes.byref(error))
+            self._handle = self._lib.rm_new(json.dumps(config).encode(), ctypes.byref(error))
         else:
             if not hasattr(self._lib, "rm_new_with_outside"):
                 raise EngineError("native library does not support outside-game pools")
             self._lib.rm_new_with_outside.argtypes = [ctypes.c_char_p, ctypes.POINTER(ctypes.c_void_p)]
             self._lib.rm_new_with_outside.restype = ctypes.c_void_p
-            envelope = json.dumps(dict(config=json.loads(config), outside=outside)).encode()
+            envelope = json.dumps(dict(config=config, outside=outside)).encode()
             self._handle = self._lib.rm_new_with_outside(envelope, ctypes.byref(error))
         if not self._handle:
             message = self._take_string(error.value) if error.value else "engine creation failed"
             raise EngineError(message)
+        # The C ABI is unchanged, but action meanings are not. Old libraries
+        # must not silently supply guaranteed-completable menus to this binding.
+        try:
+            contract = self.observe(starting_player)
+            if (contract.get("action_contract") != ACTION_CONTRACT
+                    or contract.get("schema") != OBSERVATION_SCHEMA):
+                raise EngineError("native library has an incompatible action contract or observation schema")
+            if proposal_affordability and contract.get("proposal_affordability") is not True:
+                raise EngineError("native library does not support proposal affordability")
+        except BaseException:
+            self.close()
+            raise
 
     def _configure(self):
         lib = self._lib
@@ -103,9 +121,40 @@ class Game:
                             viewer=observation["actor"])["observation"]
 
     def act(self, observation, action):
-        """Submit a concrete action, including damage/X values or any six-vector in mana_payment constraints."""
+        """Submit one immediate choice; future payment completion is not guaranteed.
+
+        Accepted failed attempts return an observation with last_attempt_outcome
+        and may require further rollback choices. Rejected requests raise without
+        changing game state or revision.
+        """
         return self.request("act", actor=observation["actor"], revision=observation["revision"],
                             action=action, viewer=observation["actor"])["observation"]
+
+    def _mana_request(self, op, observation, options):
+        if observation["viewer"] != observation["actor"]:
+            raise EngineError("auto-tap requires the acting player's observation")
+        attempt = observation.get("attempt")
+        if attempt is None:
+            raise EngineError("auto-tap requires a payment attempt")
+        return self.request(op, actor=observation["actor"], revision=observation["revision"],
+                            attempt_id=attempt["attempt_id"], options=options)
+
+    def plan_mana_payment(self, observation, **options):
+        """Preview a mana payment for this observation's actor, revision and attempt.
+
+        The report includes the status, proposed raw actions and mana allocation.
+        Pass follow_up for a mana cost, follow_up_action for a visible spell or
+        activation, or protected_sources to keep specific objects available. See docs/staged-payment-attempts.md for the wire format.
+        """
+        return self._mana_request("plan_mana_payment", observation, options)["auto_tap"]
+
+    def auto_pay_mana(self, observation, **options):
+        """Plan and apply one mana payment atomically. Returns the response envelope.
+
+        response["auto_tap"] holds the report and response["observation"] is the
+        requesting actor's resulting view. A declined plan has an empty action trace.
+        """
+        return self._mana_request("auto_pay_mana", observation, options)
 
     def snapshot(self):
         return self.request("snapshot")["snapshot"]

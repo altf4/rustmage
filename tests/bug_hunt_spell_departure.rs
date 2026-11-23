@@ -24,7 +24,7 @@ fn cast_discount_excludes_the_exact_departing_spell_in_both_counted_zones() {
             Action::AnnounceExile { card: swarm }
         };
         g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 6];
-        reject(&mut g, action.clone());
+        admit(&g, action.clone());
 
         let mut discounted = g.clone();
         // Another copy with the same name and origin still contributes.
@@ -76,7 +76,7 @@ fn harmonize_uses_the_power_after_the_spell_leaves_its_graveyard() {
     game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 0];
     let announce = Action::AnnounceHarmonize { card: spell };
     assert_eq!(game.object_view(drake).power, 4);
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
 
     put(&mut game, player, "Opt", Zone::Graveyard);
     act(&mut game, announce);
@@ -129,7 +129,7 @@ fn graveyard_aura_discount_uses_its_targets_post_departure_keywords() {
             .keywords
             .contains(Keywords::FLYING)
     );
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
 
     put(&mut game, player, "Forest", Zone::Graveyard);
     act(&mut game, announce);

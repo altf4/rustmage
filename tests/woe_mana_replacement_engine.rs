@@ -116,7 +116,7 @@ fn projected_payment_respects_capacity_of_replaced_and_trigger_mana_together() {
     let shock = put(&mut game, player, "Shock", Zone::Hand);
     game.state.players[player.index()].mana = [0, 0, 0, 0, u32::MAX - 3, 0];
     let announce = Action::AnnounceCast { card: shock };
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
 
     game.state.players[player.index()].mana[4] -= 1;
     act(&mut game, announce);
@@ -214,7 +214,7 @@ fn an_intrinsic_tap_can_fund_a_spell_and_records_the_scaled_mana() {
 
         let mut without_provider = game.clone();
         without_provider.move_object(multiplier, Zone::Graveyard);
-        reject(&mut without_provider, announce.clone());
+        admit(&without_provider, announce.clone());
         assert!(game.legal_actions().contains(&announce));
 
         // An opposing permanent linked in exile enables the owned cast receipt.
@@ -258,8 +258,8 @@ fn late_output_scales_the_chosen_type_from_the_departed_land_and_keeps_its_quali
 
     let mut without_provider = game.clone();
     without_provider.move_object(multiplier, Zone::Graveyard);
-    reject(&mut without_provider, announce_murder.clone());
-    reject(&mut game, announce_bat.clone());
+    admit(&without_provider, announce_murder.clone());
+    admit(&game, announce_bat.clone());
 
     let mut uncommitted = game.clone();
     act(&mut uncommitted, start_late_mana(forest));
@@ -268,7 +268,7 @@ fn late_output_scales_the_chosen_type_from_the_departed_land_and_keeps_its_quali
         uncommitted.state.players[player.index()].mana,
         [0, 0, 3, 0, 0, 0]
     );
-    reject(&mut uncommitted, announce_bat);
+    admit(&uncommitted, announce_bat);
 
     act(&mut game, announce_murder);
     act(
@@ -284,9 +284,26 @@ fn late_output_scales_the_chosen_type_from_the_departed_land_and_keeps_its_quali
     act(&mut game, start_late_mana(forest));
     assert_ne!(game.object_ref(forest), exact_source);
     assert_eq!(game.object_view(forest).zone, Zone::Graveyard);
-    assert_eq!(game.observe(player).mana_choices, [BLACK]);
+    let choices = game.observe(player).mana_choices;
+    assert_eq!(choices.len(), 2);
+    assert!(choices.contains(&BLACK) && choices.contains(&RED));
     assert!(game.observe(player.other()).mana_choices.is_empty());
-    reject(&mut game, Action::ChooseMana { production: RED });
+    admit(&game, Action::ChooseMana { production: RED });
+    let mut stranded = game.clone();
+    act(&mut stranded, Action::ChooseMana { production: RED });
+    assert!(stranded.mana_payment_domain().is_none());
+    reject(
+        &mut stranded,
+        Action::PayCosts {
+            payment: [0, 0, 0, 3, 0, 0],
+        },
+    );
+    act(&mut stranded, Action::EndManaWindow);
+    act(&mut stranded, Action::SubmitAttempt);
+    assert_eq!(
+        stranded.last_attempt_outcome_view(player).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
     reject(
         &mut game,
         Action::ChooseMana {
@@ -310,8 +327,13 @@ fn late_output_scales_the_chosen_type_from_the_departed_land_and_keeps_its_quali
         indexed.apply_index(player, revision, index),
         Err(Error::StaleRevision)
     );
-    act(&mut indexed, choose_black);
-    assert_eq!(indexed.snapshot(), game.snapshot());
+    assert_eq!(indexed.snapshot(), snapshot);
+    let mut replay = indexed.clone();
+    act(&mut replay, choose_black);
+    indexed
+        .apply_index(player, indexed.revision(), index)
+        .unwrap();
+    assert_eq!(indexed.snapshot(), replay.snapshot());
     assert_eq!(game.state.players[player.index()].mana, [0, 0, 3, 0, 0, 0]);
     pay(&mut game);
     settle(&mut game);

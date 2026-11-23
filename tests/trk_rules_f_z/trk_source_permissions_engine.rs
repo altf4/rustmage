@@ -478,7 +478,7 @@ fn q_grant_exiles_a_hand_card_and_offers_an_exact_paid_copy_cast() {
             source: grant.recipient,
         };
         assert!(!game.observe(actor.other()).actions.contains(&action));
-        assert!(!game.legal_actions().contains(&action));
+        admit(&game, action.clone());
         let payment = put(&mut game, actor, "Forest", Zone::Hand);
         assert!(game.legal_actions().contains(&action));
         act(&mut game, action.clone());

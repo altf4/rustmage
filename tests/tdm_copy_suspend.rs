@@ -465,6 +465,7 @@ fn optional_retarget_copy_policy_is_owned_transactional_and_restorable_after_par
     drain(&mut sibling);
     assert_eq!(sibling.state.players[1].life, 20);
     indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.snapshot(), saved);
     assert_eq!(
         indexed.apply_index(Player::P0, revision, index),
         Err(Error::StaleRevision)
@@ -760,11 +761,14 @@ fn suspend_free_cast_still_pays_mandatory_additional_cost_and_cannot_bypass_cast
             object,
             face: CastFace::Normal,
         };
-        assert!(!g.legal_actions().contains(&cast_action));
-        reject(&mut g, cast_action.clone());
+        if prohibited {
+            reject(&mut g, cast_action.clone());
+        } else {
+            admit(&g, cast_action.clone());
+        }
         let next_fodder = put(&mut g, Player::P0, "Hill Giant", Zone::Battlefield);
         if prohibited {
-            assert!(!g.legal_actions().contains(&cast_action));
+            reject(&mut g, cast_action);
             act(&mut g, Action::FinishResolutionCasts);
             drain(&mut g);
             assert_eq!(g.state.objects[card as usize].zone, Zone::Exile);
@@ -910,15 +914,19 @@ fn suspend_optional_cast_is_public_owned_transactional_and_restorable_after_pare
     drain(&mut sibling);
     assert_eq!(sibling.state.objects[card as usize].zone, Zone::Exile);
     indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.snapshot(), saved);
     assert_eq!(
         indexed.apply_index(Player::P0, revision, index),
         Err(Error::StaleRevision)
     );
-    act(&mut indexed, action);
-    pay(&mut indexed);
-    act(&mut indexed, Action::FinishResolutionCasts);
-    drain(&mut indexed);
-    assert_eq!(raw.snapshot(), indexed.snapshot());
+    let mut replay = indexed.clone();
+    for branch in [&mut indexed, &mut replay] {
+        act(branch, action.clone());
+        pay(branch);
+        act(branch, Action::FinishResolutionCasts);
+        drain(branch);
+    }
+    assert_eq!(replay.snapshot(), indexed.snapshot());
 }
 
 #[test]

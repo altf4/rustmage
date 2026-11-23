@@ -232,6 +232,26 @@ pub(super) fn abilities<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) 
     result.extend(inherited_activations::abilities(world, id));
     result
 }
+/// A craft always records its materials here, even when the resulting
+/// permanent has no ability to borrow them. Only inspect the public host.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn may_supply_borrowed_mana(game: &Game) -> bool {
+    game.state.borrowed_links.as_ref().is_some_and(|links| {
+        links.iter().any(|link| {
+            if !link.craft || link.shared || link.chosen_cohort.is_some() {
+                return true;
+            }
+            let host = &game.state.objects[link.source.card as usize];
+            host.zone != Zone::Battlefield
+                || game.object_ref(link.source.card) != link.source
+                || host.card.borrows_exiled_activations()
+                || host
+                    .card
+                    .other_face()
+                    .is_some_and(Card::borrows_exiled_activations)
+        })
+    })
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn has_shared_links(game: &Game) -> bool {
     game.state.borrowed_links.as_ref().is_some_and(|links| {
@@ -948,11 +968,12 @@ impl Game {
         sorcery: bool,
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
-        if (!self.state.objects[card as usize].card.borrows_activations()
-            && !self.state.objects[card as usize]
-                .card
-                .inherits_creature_activations()
-            && !has_shared_links(self))
+        if self.attempt_draw_is_face_down(self.object_ref(card))
+            || (!self.state.objects[card as usize].card.borrows_activations()
+                && !self.state.objects[card as usize]
+                    .card
+                    .inherits_creature_activations()
+                && !has_shared_links(self))
             || CharacteristicWorld::activation_prohibited(self, actor, card)
         {
             return false;
@@ -1014,15 +1035,86 @@ impl Game {
                             descriptor.definition,
                             descriptor.ability,
                             |production| {
-                                self.mana_packet_fundable(
+                                if !self.mana_packet_admissible(
                                     &packet,
                                     counter_payment.clone(),
                                     production,
-                                ) && emit(descriptor.mana_action(
+                                ) {
+                                    return false;
+                                }
+                                if emit(descriptor.mana_action(
                                     counter_payment.clone(),
                                     None,
                                     production,
-                                ))
+                                )) {
+                                    return true;
+                                }
+                                // A supplied payment uses this acquired instance's
+                                // current source, restrictions, and mana pool. It
+                                // does not prove any enclosing payment completable.
+                                if ability.cost.additional.is_some()
+                                    || ability.has_x_cost()
+                                    || ability.source_counter_cost().is_some()
+                                    || matches!(
+                                        ability.program.first(),
+                                        Some(Instruction::Modal(_))
+                                    )
+                                {
+                                    return false;
+                                }
+                                let goal = FundingGoal {
+                                    actor,
+                                    required: [0; 6],
+                                    generic: 0,
+                                    reserve: None,
+                                    source: Some((
+                                        descriptor.source,
+                                        descriptor.ability,
+                                        counter_payment.clone(),
+                                        descriptor.definition,
+                                        Some(descriptor.slot),
+                                    )),
+                                };
+                                if !funding::activation_counter_placement_payable(self, &goal)
+                                    || !funding::source_exile_payable(self, &goal)
+                                {
+                                    return false;
+                                }
+                                let purpose = self.purpose_for_item(&packet);
+                                for cost in self.activation_mana_costs(
+                                    card,
+                                    descriptor.definition,
+                                    descriptor.ability,
+                                    0,
+                                ) {
+                                    let cost = cast_origins::activation_payment_cost(
+                                        self,
+                                        actor,
+                                        descriptor.source,
+                                        cost,
+                                    );
+                                    let mut stopped = false;
+                                    ManaPaymentDomain {
+                                        available: self.available_mana(actor, purpose),
+                                        required: cost.colored,
+                                        generic: cost.generic,
+                                    }
+                                    .representatives(
+                                        |payment| {
+                                            if !stopped {
+                                                stopped = emit(descriptor.mana_action(
+                                                    counter_payment.clone(),
+                                                    Some(payment),
+                                                    production,
+                                                ));
+                                            }
+                                        },
+                                    );
+                                    if stopped {
+                                        return true;
+                                    }
+                                }
+                                false
                             },
                         );
                     }

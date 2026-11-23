@@ -269,6 +269,16 @@ fn failed_cast_restores_payment_threshold_and_unstacked_expend_trigger() {
     // If they do, the paid spell and its provisional threshold crossing unwind.
     let object = game.object_ref(silver);
     act(&mut game, Action::ChooseAuraAttachment { object });
+    let clause = game
+        .observe(player)
+        .cast_costs
+        .unwrap()
+        .clauses
+        .iter()
+        .position(|row| matches!(row.clause, CastCostClause::Casualty(_)))
+        .unwrap() as u16;
+    act(&mut game, Action::ChooseCastCost { clause });
+    act(&mut game, Action::SubmitAttempt);
     assert_eq!(game.object_view(spell).zone, Zone::Hand);
     assert_eq!(game.object_view(prison).zone, Zone::Battlefield);
     assert_eq!(mana_spent(&game, player), 3);

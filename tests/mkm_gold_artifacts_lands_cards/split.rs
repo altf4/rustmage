@@ -15,9 +15,23 @@ fn begin_split(game: &mut Game, source: CardId, half: SplitHalf) {
             flash_surcharge: false,
         },
     );
-    choose(game, |action| {
-        matches!(action, Action::ChooseSpellCost { .. })
-    });
+    let player = game.actor().unwrap();
+    let payment = game.state.players[player.index()].mana;
+    let cost = game
+        .observe(player)
+        .cost_choices
+        .into_iter()
+        .find(|choice| {
+            ManaPaymentDomain {
+                available: payment,
+                required: choice.cost.colored,
+                generic: choice.cost.generic,
+            }
+            .contains(payment)
+        })
+        .expect("the scripted payment selects a printed split cost")
+        .index;
+    act(game, Action::ChooseSpellCost { cost });
 }
 
 fn choose_card(game: &mut Game, card: CardId) {

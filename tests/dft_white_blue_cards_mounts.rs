@@ -201,10 +201,10 @@ fn saddled_brightfield_attacks_have_distinct_growth_flying_untap_and_counter_res
             ability: 0,
             counter_payment: Counters::default(),
         };
-        reject(&mut g, start.clone());
+        admit(&g, start.clone());
         if minimum == 3 {
             put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
-            reject(&mut g, start);
+            admit(&g, start);
         }
         let contributor = put(
             &mut g,
@@ -527,8 +527,8 @@ fn voyager_glidecar_scries_one_then_taps_three_other_creatures_for_flying_and_a_
     assert_eq!(g.top_library_card(p), Some(top));
     let first = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
     let second = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
-    reject(
-        &mut g,
+    admit(
+        &g,
         Action::AnnounceActivate {
             card: source,
             ability: 0,

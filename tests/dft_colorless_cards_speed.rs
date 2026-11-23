@@ -106,11 +106,11 @@ fn scoreboard_discount_is_live_own_controller_generic_only_and_requires_max_spee
         let creature = put(&mut g, p, "Hill Giant", Zone::Hand);
         g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 2];
         g.state.players[p.index()].speed = 3;
-        reject(&mut g, Action::AnnounceCast { card: creature });
+        admit(&g, Action::AnnounceCast { card: creature });
         g.state.players[p.index()].speed = 4;
         g.state.players[p.other().index()].speed = 4;
         g.state.objects[source as usize].controller = p.other();
-        reject(&mut g, Action::AnnounceCast { card: creature });
+        admit(&g, Action::AnnounceCast { card: creature });
         g.state.objects[source as usize].controller = p;
         cast(&mut g, creature, None);
         drain(&mut g);
@@ -118,7 +118,7 @@ fn scoreboard_discount_is_live_own_controller_generic_only_and_requires_max_spee
         assert_eq!(g.object_view(creature).zone, Zone::Battlefield);
         let strike = put(&mut g, p, "Lightning Strike", Zone::Hand);
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
-        reject(&mut g, Action::AnnounceCast { card: strike });
+        admit(&g, Action::AnnounceCast { card: strike });
         g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 0];
         cast(&mut g, strike, Some(Target::Player(p.other())));
         drain(&mut g);

@@ -319,7 +319,7 @@ fn guidance_failure_targets_spacecraft_and_discounts_only_attacking_creatures() 
     let nonattacker = put(&mut ordinary, player, "Bear Cub", Zone::Battlefield);
     let spell = owned(&mut ordinary, player, "Guidance Failure", Zone::Hand);
     ordinary.state.players[player.index()].mana = [0, 1, 0, 0, 0, 2];
-    reject(&mut ordinary, Action::AnnounceCast { card: spell });
+    admit(&ordinary, Action::AnnounceCast { card: spell });
     ordinary.state.players[player.index()].mana[5] = 3;
     act(&mut ordinary, Action::AnnounceCast { card: spell });
     act(

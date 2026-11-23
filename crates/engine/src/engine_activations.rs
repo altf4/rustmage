@@ -446,7 +446,8 @@ impl Game {
         sorcery: bool,
     ) -> bool {
         let readiness = self.activation_readiness(actor, ability);
-        !pure_loyalty_placement_prohibited(self, self.object_ref(card), &readiness)
+        !self.attempt_draw_is_face_down(self.object_ref(card))
+            && !pure_loyalty_placement_prohibited(self, self.object_ref(card), &readiness)
             && !ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
             && (ability.origin != ActivationOrigin::GraveyardBottomLibrary
                 || !ability_world::CharacteristicWorld::zone_move_prevented(
@@ -576,7 +577,7 @@ impl Game {
         let mut production = [0; 6];
         production[color] = 1;
         let packet = self.activation_packet(actor, card, ability);
-        self.mana_packet_fundable(&packet, Counters::default(), production)
+        self.mana_packet_admissible(&packet, Counters::default(), production)
             && emit(Action::AnnounceMana {
                 card,
                 ability,
@@ -675,7 +676,7 @@ impl Game {
                         let packet = self
                             .granted_mana_packet(actor, card, grant.source, production)
                             .expect("live grant");
-                        self.mana_packet_fundable(&packet, Counters::default(), production)
+                        self.mana_packet_admissible(&packet, Counters::default(), production)
                             && emit(Action::AnnounceGrantedMana {
                                 card,
                                 grantor: grant.source,
@@ -702,7 +703,7 @@ impl Game {
                 grant.granting_card,
                 ability,
                 |production| {
-                    self.mana_packet_fundable(&packet, Counters::default(), production)
+                    self.mana_packet_admissible(&packet, Counters::default(), production)
                         && emit(Action::AnnounceGrantedManaTemplate {
                             source,
                             grantor: grant.source,

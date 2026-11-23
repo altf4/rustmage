@@ -257,7 +257,7 @@ fn a_chosen_type_supports_paid_casting_and_prospective_entry_replacements() {
     let announce = Action::AnnounceCast { card: spell };
     let mut absent = game.clone();
     absent.move_object(source, Zone::Exile);
-    reject(&mut absent, announce.clone());
+    admit(&absent, announce.clone());
     act(&mut game, announce);
     choose(&mut game, |choice| {
         matches!(choice, Action::ActivateMana { card, ability: 1, production, .. }
@@ -311,7 +311,7 @@ fn projected_payment_requires_the_subtype_provider_to_survive_mana_costs() {
     let spell = put(&mut game, player, "Bear Cub", Zone::Hand);
     game.state.players[player.index()].mana = [0; 6];
     let announce = Action::AnnounceCast { card: spell };
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
     let other = put(&mut game, player, "Roiling Dragonstorm", Zone::Battlefield);
     act(&mut game, announce);
     act(
@@ -325,7 +325,7 @@ fn projected_payment_requires_the_subtype_provider_to_survive_mana_costs() {
     );
     let provider = game.object_ref(provider);
     let other = game.object_ref(other);
-    reject(&mut game, Action::ChooseAdditionalCost { object: provider });
+    admit(&game, Action::ChooseAdditionalCost { object: provider });
     act(&mut game, Action::ChooseAdditionalCost { object: other });
     pay(&mut game);
     choose(&mut game, |choice| {

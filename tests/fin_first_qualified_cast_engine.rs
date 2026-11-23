@@ -207,7 +207,7 @@ fn first_legendary_creature_reduces_projected_and_paid_generic_cost() {
     let announce_first = Action::AnnounceCast { card: first };
     let mut absent = parent.clone();
     absent.move_object(provider, Zone::Graveyard);
-    reject(&mut absent, announce_first.clone());
+    admit(&absent, announce_first.clone());
     act(&mut parent, announce_first);
     let observation = parent.observe(player);
     let request = observation.payment_request.unwrap();
@@ -245,7 +245,7 @@ fn first_legendary_creature_reduces_projected_and_paid_generic_cost() {
     let second = put(&mut raw, player, "Yargle, Goliath of Otaria", Zone::Hand);
     raw.state.players[player.index()].mana = [0, 1, 0, 0, 2, 0];
     let announce_second = Action::AnnounceCast { card: second };
-    reject(&mut raw, announce_second.clone());
+    admit(&raw, announce_second.clone());
     raw.state.players[player.index()].mana = [0, 1, 0, 0, 4, 0];
     act(&mut raw, announce_second);
     assert_eq!(raw.observe(player).payment_request.unwrap().generic, 4);
@@ -273,7 +273,7 @@ fn a_prior_countered_legend_consumes_the_discount_for_that_player_and_turn() {
     let black = [0, 0, 1, 0, 0, 0];
     game.state.players[player.index()].mana = black;
     let announce = Action::AnnounceCast { card: flash_legend };
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
 
     start_next_turn(&mut game);
     let opposing_legend = put(&mut game, opponent, "Agent Venom", Zone::Hand);

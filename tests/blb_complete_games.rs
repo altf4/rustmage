@@ -189,30 +189,40 @@ impl Coverage {
     }
 
     fn transition(&mut self, before: &Observation, action: &Action, after: &Observation) {
-        if let Action::ChooseForage { object } = action
-            && let Some(forage) = &before.forage
+        if let Some(forage) = before.forage.as_ref().filter(|f| !f.paid)
             && let Some(route) = forage.route
         {
+            let appended = if let Action::ChooseForage { object } = action {
+                Some(object)
+            } else {
+                None
+            };
+            let selected: Vec<_> = forage.selected.iter().chain(appended).copied().collect();
             match route {
                 ForageRoute::Food
-                    if !after
-                        .objects
-                        .iter()
-                        .any(|row| row.reference == *object && row.zone == Zone::Battlefield) =>
+                    if selected.len() == 1
+                        && before.objects.iter().any(|row| {
+                            row.reference == selected[0] && row.zone == Zone::Battlefield
+                        })
+                        && !after.objects.iter().any(|row| {
+                            row.reference == selected[0] && row.zone == Zone::Battlefield
+                        }) =>
                 {
-                    self.note("Food foraged");
+                    self.note("Food foraged")
                 }
                 ForageRoute::ExileThree
-                    if forage.selected.len() == 2
-                        && forage.selected.iter().chain([object]).all(|selected| {
-                            after.objects.iter().any(|row| {
+                    if selected.len() == 3
+                        && selected.iter().all(|selected| {
+                            before.objects.iter().any(|row| {
+                                row.reference == *selected && row.zone == Zone::Graveyard
+                            }) && after.objects.iter().any(|row| {
                                 row.id == selected.card
                                     && row.reference != *selected
                                     && row.zone == Zone::Exile
                             })
                         }) =>
                 {
-                    self.note("three cards foraged");
+                    self.note("three cards foraged")
                 }
                 _ => (),
             }
@@ -281,20 +291,52 @@ impl Coverage {
 
 fn workload_index(view: &Observation) -> usize {
     let smoke = policy::smoke_index_from_observation(view, &view.actions);
-    if matches!(view.actions[smoke], Action::PlayLand { .. }) {
+    if matches!(view.actions[smoke], Action::PlayLand { .. })
+        || view.last_attempt_outcome.is_some_and(|outcome| {
+            outcome.outcome == rustmage::AttemptOutcome::Failed
+                && outcome.turn == u64::from(view.turn)
+        })
+    {
+        // The workload's Season preference honors the smoke caller's failed
+        // attempt policy. It must not keep overriding a priority pass forever.
         return smoke;
     }
+    let actor = view.actor.unwrap();
+    let mana_budget = view.players[actor.index()]
+        .mana
+        .iter()
+        .map(|&amount| u64::from(amount))
+        .sum::<u64>()
+        + view
+            .objects
+            .iter()
+            .filter(|object| {
+                object.controller == actor
+                    && object.zone == Zone::Battlefield
+                    && object.card.is_land()
+                    && !object.tapped
+            })
+            .count() as u64;
+    // The old exact menus made the Season preference implicitly affordable.
+    // Under staged admission, prefer a spell within this simple current total
+    // estimate. The engine still validates colors, restrictions and modifiers.
     view.actions
         .iter()
-        .position(|action| {
+        .enumerate()
+        .filter_map(|(index, action)| {
             let (Action::AnnounceCast { card } | Action::Cast { card, .. }) = action else {
-                return false;
+                return None;
             };
-            view.objects
-                .iter()
-                .any(|object| object.id == *card && object.card.name().starts_with("Season of "))
+            let object = view.objects.iter().find(|object| object.id == *card)?;
+            let value = object.card.fixed_mana_value();
+            (value <= mana_budget).then_some((
+                index,
+                object.card.name().starts_with("Season of "),
+                value,
+            ))
         })
-        .unwrap_or(smoke)
+        .max_by_key(|&(_, season, value)| (season, value))
+        .map_or(smoke, |(index, _, _)| index)
 }
 
 #[test]
@@ -343,6 +385,8 @@ fn bloomburrow_standard_games_finish_and_replay_with_real_mechanic_events() {
     let mut draws = 0;
     let mut games = 0;
     let mut actions = 0;
+    let mut failed_attempts = 0;
+    let mut completed_attempts = 0;
     let mut public_branches = 0;
     let mut private_branches = 0;
     let mut gameplay = Duration::ZERO;
@@ -367,6 +411,8 @@ fn bloomburrow_standard_games_finish_and_replay_with_real_mechanic_events() {
             let mut game = Game::new(config.clone()).unwrap();
             let mut journal = Vec::new();
             let mut branches = [false; 2];
+            let mut failed_ids = BTreeSet::new();
+            let mut completed_ids = BTreeSet::new();
             let started = Instant::now();
             while game.outcome().is_none() && journal.len() < 4096 {
                 let actor = game.actor().unwrap();
@@ -374,7 +420,21 @@ fn bloomburrow_standard_games_finish_and_replay_with_real_mechanic_events() {
                 check_privacy(&view, actor);
                 let index = workload_index(&view);
                 let action = view.actions[index].clone();
-                assert_ne!(action, Action::Concede);
+                if action == Action::Concede {
+                    write_report(
+                        directory.as_deref(),
+                        &format!("{label}-stalled.json"),
+                        json!({
+                            "config": config, "actions": journal, "observation": view,
+                        }),
+                    );
+                    panic!(
+                        "{label} chose Concede at decision {} in {}: {:?}",
+                        journal.len(),
+                        view.decision,
+                        view.actions
+                    );
+                }
                 let private = private_choice(&view)
                     && view
                         .library_selection
@@ -401,7 +461,19 @@ fn bloomburrow_standard_games_finish_and_replay_with_real_mechanic_events() {
                     );
                     panic!("{label}, decision {} {action:?}: {error}", journal.len());
                 }
-                coverage.transition(&view, &action, &game.observe(actor));
+                let after = game.observe(actor);
+                if let Some(outcome) = after.last_attempt_outcome {
+                    match outcome.outcome {
+                        rustmage::AttemptOutcome::Failed => {
+                            failed_ids.insert(outcome.attempt_id);
+                        }
+                        rustmage::AttemptOutcome::Completed => {
+                            completed_ids.insert(outcome.attempt_id);
+                        }
+                        _ => (),
+                    }
+                }
+                coverage.transition(&view, &action, &after);
                 journal.push((actor, action));
             }
             gameplay += started.elapsed();
@@ -409,7 +481,13 @@ fn bloomburrow_standard_games_finish_and_replay_with_real_mechanic_events() {
                 directory.as_deref(),
                 &format!("{label}.json"),
                 json!({
-                    "catalogue": rustmage::CATALOGUE_VERSION, "config": config,
+                    "catalogue": rustmage::CATALOGUE_VERSION,
+                    "action_contract": rustmage::ACTION_CONTRACT,
+                    "observation_schema": rustmage::OBSERVATION_SCHEMA,
+                    "caller_contract": "staged_smoke_current_counts_v1",
+                    "primitive_decision_limit": 4096,
+                    "failed_attempts": failed_ids.len(), "completed_attempts": completed_ids.len(),
+                    "config": config,
                     "decks": [left_name, right_name], "actions": journal, "outcome": game.outcome(),
                     "public_branch": branches[0], "private_branch": branches[1],
                 }),
@@ -421,6 +499,8 @@ fn bloomburrow_standard_games_finish_and_replay_with_real_mechanic_events() {
                 Outcome::Winner(player) => wins[player.index()] += 1,
                 Outcome::Draw => draws += 1,
             }
+            failed_attempts += failed_ids.len();
+            completed_attempts += completed_ids.len();
             actions += journal.len();
             games += 1;
             public_branches += usize::from(branches[0]);
@@ -463,6 +543,11 @@ fn bloomburrow_standard_games_finish_and_replay_with_real_mechanic_events() {
         );
     }
     let report = json!({
+        "action_contract": rustmage::ACTION_CONTRACT,
+        "observation_schema": rustmage::OBSERVATION_SCHEMA,
+        "caller_contract": "staged_smoke_current_counts_v1",
+        "primitive_decision_limit": 4096,
+        "failed_attempts": failed_attempts, "completed_attempts": completed_attempts,
         "games": games, "decisions": actions, "wins": wins, "draws": draws,
         "colors": coverage.colors, "actual_casts": coverage.casts, "cast_names": coverage.names,
         "events": coverage.events, "public_branches": public_branches,

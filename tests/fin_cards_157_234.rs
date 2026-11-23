@@ -396,7 +396,7 @@ fn catch_a_fish_reveals_only_a_chosen_card_and_its_campsite_can_feed_the_team() 
     reject(&mut game, grow.clone());
     game.state.step = Step::Main1;
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
-    reject(&mut game, grow.clone());
+    admit(&game, grow.clone());
     game.state.players[player.index()].mana[5] = 3;
     act(&mut game, grow);
     let other_artifact = game.object_ref(foreign);
@@ -2037,8 +2037,8 @@ fn relentless_needs_three_blockers_and_returns_tapped_with_finality() {
         passes(branch);
         assert_eq!(branch.state.pending, Pending::Blockers);
     }
-    reject(
-        &mut two,
+    admit(
+        &two,
         Action::Block {
             blocker: blockers[0],
             attacker: spider,

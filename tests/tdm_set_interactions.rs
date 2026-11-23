@@ -28,12 +28,15 @@ fn checked(g: &mut Game, action: Action) {
         );
     }
     g.restore(&saved).unwrap();
+    assert_eq!(g.snapshot(), saved);
     assert_eq!(
         g.apply_index(actor, revision, index),
         Err(Error::StaleRevision)
     );
+    let mut replay = g.clone();
+    replay.apply_index(actor, replay.revision(), index).unwrap();
     act(g, action);
-    assert_eq!(g.snapshot(), owned.snapshot());
+    assert_eq!(g.snapshot(), replay.snapshot());
 }
 fn drain(g: &mut Game, target: Option<CardId>) {
     for _ in 0..96 {

@@ -196,6 +196,27 @@ fn normalized(mut after: State, before: &State, ids: &[CardId]) -> Option<State>
 }
 
 impl Game {
+    fn empty_cycle_activation(&self, action: &Action, ids: &[CardId]) -> bool {
+        let Action::AnnounceActivate { card, ability, .. } = *action else {
+            return false;
+        };
+        // Within this proof the battlefield contains only the three pure
+        // exilers. No forced step produces mana or changes a mana cost. Other
+        // actions (including every mana ability) still prevent the proof.
+        if !ids.contains(&card)
+            || self.state.objects.iter().enumerate().any(|(id, object)| {
+                object.zone == Zone::Battlefield && !ids.contains(&(id as CardId))
+            })
+        {
+            return false;
+        }
+        let source = &self.state.objects[card as usize];
+        self.state.players[source.controller.index()].mana == [0; 6]
+            && self
+                .activation_mana_costs(card, source.card, ability, 0)
+                .all(|cost| cost.generic != 0 || cost.colored.iter().any(|&amount| amount != 0))
+    }
+
     pub(super) fn prove_mandatory_exile_loop(&self) -> bool {
         if !matches!(self.state.pending, Pending::Targets { .. })
             || self.state.outcome.is_some()
@@ -299,7 +320,7 @@ impl Game {
             let mut actions = probe
                 .legal_actions()
                 .into_iter()
-                .filter(|a| *a != Action::Concede);
+                .filter(|a| *a != Action::Concede && !probe.empty_cycle_activation(a, &ids));
             let Some(action) = actions.next() else {
                 return false;
             };

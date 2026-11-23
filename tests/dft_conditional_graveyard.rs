@@ -98,7 +98,7 @@ fn self_graveyard_cast_requires_owner_live_condition_timing_mana_and_target() {
         reject(&mut g, announce(source));
         g.state.step = Step::Main1;
         g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 1];
-        reject(&mut g, announce(source));
+        admit(&g, announce(source));
         g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 1];
         let artifact = put(&mut g, p, "Swiftfoot Boots", Zone::Battlefield);
         act(&mut g, announce(source));

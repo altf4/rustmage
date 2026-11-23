@@ -108,7 +108,7 @@ fn grab_the_prize_requires_a_discard_and_damages_only_for_the_paid_nonland() {
         let mut game = scenario(player);
         let spell = put(&mut game, player, "Grab the Prize", Zone::Hand);
         let cast = Action::AnnounceCast { card: spell };
-        reject(&mut game, cast.clone());
+        admit(&game, cast.clone());
         let discarded = put(&mut game, player, name, Zone::Hand);
         put(&mut game, opponent, "Rest in Peace", Zone::Battlefield);
         game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 1];

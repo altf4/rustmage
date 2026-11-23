@@ -75,10 +75,19 @@ fn the_printed_x_qualifies_at_zero_in_floating_and_prospective_funding() {
                 produce(&mut game, mana_source);
                 game.move_object(mana_source, Zone::Graveyard);
             }
-            assert!(!game.legal_actions().iter().any(|action| matches!(
-                action,
-                Action::AnnounceCast { card } | Action::Cast { card, .. } if *card == cheap
-            )));
+            admit(&game, Action::AnnounceCast { card: cheap });
+            let mut restricted = game.clone();
+            act(&mut restricted, Action::AnnounceCast { card: cheap });
+            if !floated {
+                produce(&mut restricted, mana_source);
+            }
+            assert!(restricted.mana_payment_domain().is_none());
+            reject(
+                &mut restricted,
+                Action::PayCosts {
+                    payment: [0, 1, 0, 0, 0, 0],
+                },
+            );
             act(&mut game, Action::AnnounceCast { card: variable });
             act(&mut game, Action::ChooseX { value: 0 });
             if !floated {
@@ -102,10 +111,18 @@ fn an_expensive_normal_face_does_not_qualify_its_cheaper_adventure() {
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
 
     produce(&mut game, mana_source);
-    assert!(
-        !game
-            .legal_actions()
-            .contains(&Action::AnnounceAdventure { card: adventure })
+    admit(&game, Action::AnnounceAdventure { card: adventure });
+    let mut restricted = game.clone();
+    act(
+        &mut restricted,
+        Action::AnnounceAdventure { card: adventure },
+    );
+    assert!(restricted.mana_payment_domain().is_none());
+    reject(
+        &mut restricted,
+        Action::PayCosts {
+            payment: [0, 0, 0, 0, 1, 1],
+        },
     );
     cast(&mut game, adventure, None);
     settle(&mut game);

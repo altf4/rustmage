@@ -8,7 +8,10 @@ use std::path::{Path, PathBuf};
 use std::sync::OnceLock;
 use std::time::Instant;
 
-pub const WORKLOAD: &str = "TDM_FROZEN_TERMINAL_V1";
+pub const WORKLOAD: &str = "TDM_FROZEN_TERMINAL_STAGED_V2";
+pub const CALLER_CONTRACT: &str = "TDM_STAGED_SMOKE_V1";
+const TRACE_SCHEMA: u32 = 3;
+const RETRY_POLICY: &str = "Shared smoke policy defers paid priority proposals for the acting player's current turn after a failed attempt. A failed mana child prefers current-pool payment or closing the parent mana window. Available payments and mana actions precede ordered-cost and contributor-payment entry while the mana window is open. The harness prefers an offered Omen face within its current pool plus untapped-land mana estimate, after land plays and the failed-turn guard. Generic rejected-attack memory lasts until FinishAttackers. No per-card retry limit; every microstep and retry counts toward 4096 primitive decisions.";
 pub const DECKS_SHA256: &str = "2daf20c80bb409b7f241680b990b39a1177101dd45e35eaa48fffc913d5fb12e";
 pub const REQUIRED: [&str; 8] = [
     "endure",
@@ -481,6 +484,10 @@ pub struct GameReport {
     pub case_id: String,
     pub repetition: usize,
     pub decisions: usize,
+    pub completed_attempts: usize,
+    pub failed_attempts: usize,
+    pub attempt_submissions: usize,
+    pub incomplete_submissions: usize,
     pub turns: u32,
     #[serde(deserialize_with = "deserialize_outcome")]
     pub outcome: Outcome,
@@ -504,6 +511,11 @@ pub struct GameReport {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Report {
     pub workload: String,
+    pub action_contract: String,
+    pub observation_schema: u32,
+    pub caller_contract: String,
+    pub retry_policy: String,
+    pub primitive_decision_limit: usize,
     pub catalogue: String,
     pub deck_source_sha256: String,
     pub harness_source_sha256: String,
@@ -521,6 +533,10 @@ pub struct Report {
     pub witnesses: BTreeMap<String, u64>,
     pub actual_spell_colors: u8,
     pub decisions: usize,
+    pub completed_attempts: usize,
+    pub failed_attempts: usize,
+    pub attempt_submissions: usize,
+    pub incomplete_submissions: usize,
     pub measured_seconds: f64,
     pub games_per_second: f64,
     pub decisions_per_second: f64,
@@ -531,6 +547,11 @@ impl Report {
         ensure(
             self.mode == "verification"
                 && self.workload == WORKLOAD
+                && self.action_contract == ACTION_CONTRACT
+                && self.observation_schema == OBSERVATION_SCHEMA
+                && self.caller_contract == CALLER_CONTRACT
+                && self.retry_policy == RETRY_POLICY
+                && self.primitive_decision_limit == LIMIT
                 && self.catalogue == CATALOGUE_VERSION
                 && self.deck_source_sha256 == DECKS_SHA256
                 && self.harness_source_sha256 == harness_sha256()
@@ -538,6 +559,29 @@ impl Report {
                 && self.printed_outcome_ledger_sha256 == w.proof_ledger_sha256
                 && self.physical_manifest_sha256 == physical_manifest_sha256(),
             "receipt belongs to different executable/workload or benchmark",
+        )?;
+        ensure(
+            self.completed_attempts
+                == self
+                    .games
+                    .iter()
+                    .map(|g| g.completed_attempts)
+                    .sum::<usize>()
+                && self.failed_attempts
+                    == self.games.iter().map(|g| g.failed_attempts).sum::<usize>()
+                && self.attempt_submissions
+                    == self
+                        .games
+                        .iter()
+                        .map(|g| g.attempt_submissions)
+                        .sum::<usize>()
+                && self.incomplete_submissions
+                    == self
+                        .games
+                        .iter()
+                        .map(|g| g.incomplete_submissions)
+                        .sum::<usize>(),
+            "corpus attempt counts differ from the actual game receipts",
         )?;
         let actual: BTreeSet<_> = self
             .games
@@ -715,6 +759,39 @@ impl Basic {
                 self.cards.insert(s.card.name().into());
                 self.colors |= s.card.colors();
                 self.casts += 1;
+            }
+        }
+    }
+}
+
+/// Outcome telemetry reads both seats' existing rows after each accepted action.
+/// It never changes the caller's actor observation or chooses a continuation.
+#[derive(Default, PartialEq, Eq)]
+struct Attempts {
+    completed: BTreeSet<u64>,
+    failed: BTreeSet<u64>,
+    submissions: usize,
+    incomplete_submissions: usize,
+}
+impl Attempts {
+    fn inspect(&mut self, game: &Game, actor: Player, action: &Action) {
+        for outcome in game.state.last_attempt_outcome.iter().flatten() {
+            match outcome.outcome {
+                AttemptOutcome::Completed => {
+                    self.completed.insert(outcome.attempt_id);
+                }
+                AttemptOutcome::Failed => {
+                    self.failed.insert(outcome.attempt_id);
+                }
+                _ => (),
+            }
+        }
+        if matches!(action, Action::SubmitAttempt) {
+            self.submissions += 1;
+            if game.state.last_attempt_outcome[actor.index()]
+                .is_some_and(|outcome| outcome.outcome == AttemptOutcome::Incomplete)
+            {
+                self.incomplete_submissions += 1;
             }
         }
     }
@@ -1492,6 +1569,50 @@ fn terminal(g: &Game, tracker: Option<&Tracker>, decision: usize) -> Result<Term
         g.outcome()
     ))
 }
+fn decision(observation: &Observation, offered: &[Action]) -> usize {
+    let smoke = policy::smoke_index_from_observation(observation, offered);
+    if matches!(offered[smoke], Action::PlayLand { .. })
+        || observation.attempt.is_some()
+        || observation.decision != "priority"
+        || observation.last_attempt_outcome.is_some_and(|outcome| {
+            outcome.turn == u64::from(observation.turn) && outcome.outcome == AttemptOutcome::Failed
+        })
+    {
+        return smoke;
+    }
+    let actor = observation.actor.unwrap();
+    let current_mana = observation.players[actor.index()]
+        .mana
+        .iter()
+        .map(|&amount| u64::from(amount))
+        .sum::<u64>()
+        + observation
+            .objects
+            .iter()
+            .filter(|object| {
+                object.controller == actor
+                    && object.zone == Zone::Battlefield
+                    && object.card.is_land()
+                    && !object.tapped
+            })
+            .count() as u64;
+    offered
+        .iter()
+        .position(|action| {
+            let Action::AnnounceOmen { card } = action else {
+                return false;
+            };
+            observation.objects.iter().any(|object| {
+                object.id == *card
+                    && object
+                        .card
+                        .omen_spell()
+                        .is_some_and(|face| face.fixed_mana_value() <= current_mana)
+            })
+        })
+        .unwrap_or(smoke)
+}
+
 fn run_one(
     w: &Workload,
     case: Case,
@@ -1507,6 +1628,7 @@ fn run_one(
     let mut trace = Vec::new();
     let mut tracker = (mode == Mode::Verify).then(Tracker::default);
     let mut basic = Basic::default();
+    let mut attempts = Attempts::default();
     let mut rejected_attacks = BTreeSet::new();
     let mut pending_attack = None;
     let mut rejected_attack_attempts = 0;
@@ -1520,7 +1642,7 @@ fn run_one(
                 if let Some(dir) = dir {
                     write_json(
                         &dir.join(format!("{}-failure-trace.json", case.id())),
-                        &serde_json::json!({"workload":WORKLOAD,"catalogue":CATALOGUE_VERSION,"deck_source_sha256":DECKS_SHA256,"harness_source_sha256":harness_sha256(),"execution_inputs_sha256":w.execution_inputs_sha256,"printed_outcome_ledger_sha256":w.proof_ledger_sha256,"physical_manifest_sha256":physical_manifest_sha256(),"trace_schema":2,"case_id":case.id(),"case":case,"ordered_config":config,"actions":trace,"failure":"4096 actions without natural terminal"}),
+                        &serde_json::json!({"workload":WORKLOAD,"action_contract":ACTION_CONTRACT,"observation_schema":OBSERVATION_SCHEMA,"caller_contract":CALLER_CONTRACT,"retry_policy":RETRY_POLICY,"primitive_decision_limit":LIMIT,"completed_attempts":attempts.completed.len(),"failed_attempts":attempts.failed.len(),"attempt_submissions":attempts.submissions,"incomplete_submissions":attempts.incomplete_submissions,"catalogue":CATALOGUE_VERSION,"deck_source_sha256":DECKS_SHA256,"harness_source_sha256":harness_sha256(),"execution_inputs_sha256":w.execution_inputs_sha256,"printed_outcome_ledger_sha256":w.proof_ledger_sha256,"physical_manifest_sha256":physical_manifest_sha256(),"trace_schema":TRACE_SCHEMA,"case_id":case.id(),"case":case,"ordered_config":config,"actions":trace,"actor_observation":game.actor().map(|actor|game.observe(actor)),"failure":"4096 primitive decisions without natural terminal"}),
                     )?;
                 }
                 return Err(format!(
@@ -1547,7 +1669,7 @@ fn run_one(
                 "generic rejection memory filtered every action",
             )?;
             let offered: Vec<_> = eligible.iter().map(|(_, a)| a.clone()).collect();
-            let index = eligible[policy::smoke_index(&game, &offered)].0;
+            let index = eligible[decision(&game.observe(actor), &offered)].0;
             let action = actions[index].clone();
             if matches!(action, Action::Concede) {
                 return Err(format!(
@@ -1610,6 +1732,7 @@ fn run_one(
             }
             game.apply(actor, action.clone())
                 .map_err(|e| format!("{} decision{decisions} {action:?}: {e:?}", case.id()))?;
+            attempts.inspect(&game, actor, &action);
             basic.inspect(&game);
             if let (Some(t), Some(before)) = (&mut tracker, before) {
                 let after = Frame::read(&game, &game.observe(actor));
@@ -1618,6 +1741,10 @@ fn run_one(
             decisions += 1;
         }
         let play_seconds = started.elapsed().as_secs_f64();
+        ensure(
+            attempts.completed.is_disjoint(&attempts.failed),
+            "a completed attempt was later reported as failed",
+        )?;
         let cause = if mode == Mode::Benchmark {
             // Verified corpus supplies alternative-win arithmetic for this exact fixed
             // deterministic case. Benchmark does not repeat expensive verification.
@@ -1626,7 +1753,11 @@ fn run_one(
                 game.outcome() == Some(expected.outcome)
                     && decisions == expected.decisions
                     && basic.cards == expected.cards_cast
-                    && basic.colors == expected.spell_colors,
+                    && basic.colors == expected.spell_colors
+                    && attempts.completed.len() == expected.completed_attempts
+                    && attempts.failed.len() == expected.failed_attempts
+                    && attempts.submissions == expected.attempt_submissions
+                    && attempts.incomplete_submissions == expected.incomplete_submissions,
                 "benchmark diverged from the verified deterministic case",
             )?;
             match terminal(&game, None, decisions - 1) {
@@ -1657,21 +1788,24 @@ fn run_one(
             )?;
             let replay_started = Instant::now();
             let mut replay = Game::new(config.clone()).map_err(|e| format!("replay init {e:?}"))?;
+            let mut replay_attempts = Attempts::default();
             for (actor, action) in &trace {
                 replay
                     .apply(*actor, action.clone())
                     .map_err(|e| format!("raw full replay {}: {e:?}", case.id()))?;
+                replay_attempts.inspect(&replay, *actor, action);
             }
             ensure(
                 replay.snapshot() == game.snapshot()
                     && replay.outcome() == game.outcome()
+                    && replay_attempts == attempts
                     && views(&replay)? == views(&game)?,
                 "complete raw replay Snapshot/Outcome/both observations mismatch",
             )?;
             replay_seconds = replay_started.elapsed().as_secs_f64();
             let snapshot_hash = sha256(format!("{:?}", game.snapshot()).as_bytes());
             let observations_hash = sha256(&serde_json::to_vec(&views(&game)?).map_err(err)?);
-            let payload = serde_json::json!({"workload":WORKLOAD,"catalogue":CATALOGUE_VERSION,"deck_source_sha256":DECKS_SHA256,"harness_source_sha256":harness_sha256(),"execution_inputs_sha256":w.execution_inputs_sha256,"printed_outcome_ledger_sha256":w.proof_ledger_sha256,"physical_manifest_sha256":physical_manifest_sha256(),"trace_schema":2,"case_id":case.id(),"case":case,"ordered_config":config,"actions":trace,"decisions":decisions,"repetition":repetition,"turns":game.observe(case.starting_player).turn,"outcome":game.outcome(),"terminal_cause":cause,"cards_cast":basic.cards,"spell_colors":basic.colors,"cast_count":basic.casts,"meaningful_interactions":t.meaningful,"witness_counts":t.counts,"owned_root_proofs":owned_root_proofs,"witness_receipts":t.receipts,"owned_root_kinds":roots,"final_snapshot_debug_sha256":snapshot_hash,"final_both_observations_sha256":observations_hash});
+            let payload = serde_json::json!({"workload":WORKLOAD,"action_contract":ACTION_CONTRACT,"observation_schema":OBSERVATION_SCHEMA,"caller_contract":CALLER_CONTRACT,"retry_policy":RETRY_POLICY,"primitive_decision_limit":LIMIT,"completed_attempts":attempts.completed.len(),"failed_attempts":attempts.failed.len(),"attempt_submissions":attempts.submissions,"incomplete_submissions":attempts.incomplete_submissions,"catalogue":CATALOGUE_VERSION,"deck_source_sha256":DECKS_SHA256,"harness_source_sha256":harness_sha256(),"execution_inputs_sha256":w.execution_inputs_sha256,"printed_outcome_ledger_sha256":w.proof_ledger_sha256,"physical_manifest_sha256":physical_manifest_sha256(),"trace_schema":TRACE_SCHEMA,"case_id":case.id(),"case":case,"ordered_config":config,"actions":trace,"decisions":decisions,"repetition":repetition,"turns":game.observe(case.starting_player).turn,"outcome":game.outcome(),"terminal_cause":cause,"cards_cast":basic.cards,"spell_colors":basic.colors,"cast_count":basic.casts,"meaningful_interactions":t.meaningful,"witness_counts":t.counts,"owned_root_proofs":owned_root_proofs,"witness_receipts":t.receipts,"owned_root_kinds":roots,"final_snapshot_debug_sha256":snapshot_hash,"final_both_observations_sha256":observations_hash});
             let bytes = serde_json::to_vec(&payload).map_err(err)?;
             let digest = sha256(&bytes);
             let path = dir
@@ -1694,6 +1828,10 @@ fn run_one(
             case_id: case.id(),
             repetition,
             decisions,
+            completed_attempts: attempts.completed.len(),
+            failed_attempts: attempts.failed.len(),
+            attempt_submissions: attempts.submissions,
+            incomplete_submissions: attempts.incomplete_submissions,
             turns: game.observe(case.starting_player).turn,
             outcome: game.outcome().unwrap(),
             cause,
@@ -1717,7 +1855,7 @@ fn run_one(
     if let Err(reason) = &result
         && let Some(dir) = dir
     {
-        let failure = serde_json::json!({"workload":WORKLOAD,"catalogue":CATALOGUE_VERSION,"deck_source_sha256":DECKS_SHA256,"harness_source_sha256":harness_sha256(),"execution_inputs_sha256":w.execution_inputs_sha256,"printed_outcome_ledger_sha256":w.proof_ledger_sha256,"physical_manifest_sha256":physical_manifest_sha256(),"trace_schema":2,"case_id":case.id(),"case":case,"ordered_config":config,"attempted_primary_actions":trace,"failure":reason,"outcome":game.outcome()});
+        let failure = serde_json::json!({"workload":WORKLOAD,"action_contract":ACTION_CONTRACT,"observation_schema":OBSERVATION_SCHEMA,"caller_contract":CALLER_CONTRACT,"retry_policy":RETRY_POLICY,"primitive_decision_limit":LIMIT,"completed_attempts":attempts.completed.len(),"failed_attempts":attempts.failed.len(),"attempt_submissions":attempts.submissions,"incomplete_submissions":attempts.incomplete_submissions,"catalogue":CATALOGUE_VERSION,"deck_source_sha256":DECKS_SHA256,"harness_source_sha256":harness_sha256(),"execution_inputs_sha256":w.execution_inputs_sha256,"printed_outcome_ledger_sha256":w.proof_ledger_sha256,"physical_manifest_sha256":physical_manifest_sha256(),"trace_schema":TRACE_SCHEMA,"case_id":case.id(),"case":case,"ordered_config":config,"attempted_primary_actions":trace,"failure":reason,"outcome":game.outcome(),"actor_observation":game.actor().map(|actor|game.observe(actor))});
         write_json(&dir.join(format!("{}-failure.json", case.id())), &failure)?;
     }
     result
@@ -1776,6 +1914,10 @@ pub fn run(
     let mut witnesses = BTreeMap::new();
     let mut colors = 0;
     let mut decisions = 0;
+    let mut completed_attempts = 0;
+    let mut failed_attempts = 0;
+    let mut attempt_submissions = 0;
+    let mut incomplete_submissions = 0;
     let mut seconds = 0.0;
     for (i, &case) in cases.iter().enumerate() {
         let expected = verified.and_then(|r| r.games.iter().find(|g| g.case == case));
@@ -1796,10 +1938,14 @@ pub fn run(
             *witnesses.entry(k.clone()).or_default() += v;
         }
         decisions += g.decisions;
+        completed_attempts += g.completed_attempts;
+        failed_attempts += g.failed_attempts;
+        attempt_submissions += g.attempt_submissions;
+        incomplete_submissions += g.incomplete_submissions;
         seconds += g.measured_seconds;
         games.push(g);
     }
-    Ok(Report{workload:WORKLOAD.into(),catalogue:CATALOGUE_VERSION.into(),deck_source_sha256:DECKS_SHA256.into(),harness_source_sha256:harness_sha256(),execution_inputs_sha256:w.execution_inputs_sha256.clone(),printed_outcome_ledger_sha256:w.proof_ledger_sha256.clone(),physical_manifest_sha256:physical_manifest_sha256(),mode:if mode==Mode::Verify{"verification"}else{"benchmark"}.into(),scope:"Exact frozen TDM-only Standard48 plus separate Cutter Freeform4;4096 actions per game. omen_resolution_shuffle is the frozen legacy key for actual Omen resolution plus owner-library return; shuffle has a separate isolated RNG/order receipt when observable. Not general Standard coverage, gameplay parity, or exhaustive card proof".into(),physical_members:276,standard_cases:cases.iter().filter(|c|!c.freeform).map(|c|c.id()).collect::<BTreeSet<_>>().len(),freeform_cases:cases.iter().filter(|c|c.freeform).map(|c|c.id()).collect::<BTreeSet<_>>().len(),repetitions,decks:w.inputs.standard_decks.iter().chain(std::iter::once(&w.inputs.freeform_cutter_deck)).cloned().collect(),games_per_second:games.len()as f64/seconds,decisions_per_second:decisions as f64/seconds,decisions,measured_seconds:seconds,games,witnesses,actual_spell_colors:colors,measurement:if mode==Mode::Verify{"Sum per-game wall time includes construction, legal-action emission, shared smoke policy/actor observations, before/after verification telemetry, at most5 sampled root categories with independent Config+prefix replay parents and distinct sibling checks, complete raw replay, paired observation comparisons, SHA256 and persistent trace serialization. Omen witness records actual resolution and owner-library return only; separate isolated RNG/order receipts establish an actual shuffle when present. Not a simulation benchmark."}else{"Sum per-game construction+play time includes exact Config cloning, Game::new/shuffle, legal-action emission, generic rejected-attack memory, policy::smoke_index with its actor observation, rules apply, and lightweight committed-cast packet/card/color telemetry. Excludes workload/deck validation, replay/owned checks, detailed mechanic telemetry, trace/per-decision JSON, terminal reconciliation/report serialization, model inference/network/tensors. Same frozen cases as verified corpus, exactly3 repetitions; Freeform separately labelled."}.into()})
+    Ok(Report{workload:WORKLOAD.into(),action_contract:ACTION_CONTRACT.into(),observation_schema:OBSERVATION_SCHEMA,caller_contract:CALLER_CONTRACT.into(),retry_policy:RETRY_POLICY.into(),primitive_decision_limit:LIMIT,catalogue:CATALOGUE_VERSION.into(),deck_source_sha256:DECKS_SHA256.into(),harness_source_sha256:harness_sha256(),execution_inputs_sha256:w.execution_inputs_sha256.clone(),printed_outcome_ledger_sha256:w.proof_ledger_sha256.clone(),physical_manifest_sha256:physical_manifest_sha256(),mode:if mode==Mode::Verify{"verification"}else{"benchmark"}.into(),scope:"Exact frozen TDM-only Standard48 plus separate Cutter Freeform4;4096 primitive decisions per game under the staged action contract. omen_resolution_shuffle is the frozen legacy key for actual Omen resolution plus owner-library return; shuffle has a separate isolated RNG/order receipt when observable. Not general Standard coverage, gameplay parity, or exhaustive card proof".into(),physical_members:276,standard_cases:cases.iter().filter(|c|!c.freeform).map(|c|c.id()).collect::<BTreeSet<_>>().len(),freeform_cases:cases.iter().filter(|c|c.freeform).map(|c|c.id()).collect::<BTreeSet<_>>().len(),repetitions,decks:w.inputs.standard_decks.iter().chain(std::iter::once(&w.inputs.freeform_cutter_deck)).cloned().collect(),games_per_second:games.len()as f64/seconds,decisions_per_second:decisions as f64/seconds,decisions,completed_attempts,failed_attempts,attempt_submissions,incomplete_submissions,measured_seconds:seconds,games,witnesses,actual_spell_colors:colors,measurement:if mode==Mode::Verify{"Sum per-game wall time includes construction, legal-action emission, staged caller/actor observations, unique completed/failed attempt and submission accounting, before/after verification telemetry, at most5 sampled root categories with independent Config+prefix replay parents and distinct sibling checks, complete raw replay, paired observation comparisons, SHA256 and persistent trace serialization. Omen witness records actual resolution and owner-library return only; separate isolated RNG/order receipts establish an actual shuffle when present. Not a simulation benchmark."}else{"Sum per-game construction+play time includes exact Config cloning, Game::new/shuffle, legal-action emission, generic rejected-attack memory, the staged smoke and current-budget Omen caller with its actor observation, rules apply, and lightweight committed-cast packet/card/color and unique completed/failed attempt/submission telemetry. Every microstep and retry counts as a primitive decision. Excludes workload/deck validation, replay/owned checks, detailed mechanic telemetry, trace/per-decision JSON, terminal reconciliation/report serialization, model inference/network/tensors. Same frozen cases as verified corpus, exactly3 repetitions; Freeform separately labelled."}.into()})
 }
 pub fn write_shard(report: &Report, pair: usize, dir: &Path) -> Result<(), String> {
     write_json(&dir.join(format!("pair-{pair}-report.json")), report)
@@ -1813,6 +1959,11 @@ pub fn aggregate(w: &Workload, dir: &Path) -> Result<Report, String> {
         let r: Report = serde_json::from_slice(&bytes).map_err(err)?;
         ensure(
             r.workload == WORKLOAD
+                && r.action_contract == ACTION_CONTRACT
+                && r.observation_schema == OBSERVATION_SCHEMA
+                && r.caller_contract == CALLER_CONTRACT
+                && r.retry_policy == RETRY_POLICY
+                && r.primitive_decision_limit == LIMIT
                 && r.catalogue == CATALOGUE_VERSION
                 && r.deck_source_sha256 == DECKS_SHA256
                 && r.harness_source_sha256 == harness_sha256()
@@ -1860,6 +2011,10 @@ fn merge(a: &mut Report, b: Report) {
     a.games.extend(b.games);
     a.actual_spell_colors |= b.actual_spell_colors;
     a.decisions += b.decisions;
+    a.completed_attempts += b.completed_attempts;
+    a.failed_attempts += b.failed_attempts;
+    a.attempt_submissions += b.attempt_submissions;
+    a.incomplete_submissions += b.incomplete_submissions;
     a.measured_seconds += b.measured_seconds;
     for (k, v) in b.witnesses {
         *a.witnesses.entry(k).or_default() += v;
@@ -2002,6 +2157,13 @@ fn authenticate_game(w: &Workload, g: &GameReport) -> Result<(), String> {
         "verification game action ceiling/replay/repetition mismatch",
     )?;
     ensure(
+        g.completed_attempts > 0
+            && g.completed_attempts + g.failed_attempts <= 2 * g.decisions
+            && g.attempt_submissions <= g.decisions
+            && g.incomplete_submissions <= g.attempt_submissions,
+        "verification attempt/submission counts exceed primitive decisions",
+    )?;
+    ensure(
         !g.owned_decision_roots.is_empty()
             && g.owned_decision_roots.len() <= 5
             && g.owned_decision_roots.iter().collect::<BTreeSet<_>>().len()
@@ -2052,8 +2214,13 @@ fn authenticate_trace(w: &Workload, g: &GameReport) -> Result<(), String> {
     )?;
     let trace: serde_json::Value = serde_json::from_slice(&bytes).map_err(err)?;
     ensure(
-        trace["trace_schema"] == 2
+        trace["trace_schema"] == TRACE_SCHEMA
             && trace["workload"] == WORKLOAD
+            && trace["action_contract"] == ACTION_CONTRACT
+            && trace["observation_schema"] == OBSERVATION_SCHEMA
+            && trace["caller_contract"] == CALLER_CONTRACT
+            && trace["retry_policy"] == RETRY_POLICY
+            && trace["primitive_decision_limit"].as_u64() == Some(LIMIT as u64)
             && trace["catalogue"] == CATALOGUE_VERSION
             && trace["deck_source_sha256"] == DECKS_SHA256
             && trace["harness_source_sha256"] == harness_sha256()
@@ -2069,6 +2236,10 @@ fn authenticate_trace(w: &Workload, g: &GameReport) -> Result<(), String> {
             && trace["outcome"] == serde_json::to_value(g.outcome).map_err(err)?
             && trace["terminal_cause"] == serde_json::to_value(&g.cause).map_err(err)?
             && trace["decisions"].as_u64() == Some(g.decisions as u64)
+            && trace["completed_attempts"].as_u64() == Some(g.completed_attempts as u64)
+            && trace["failed_attempts"].as_u64() == Some(g.failed_attempts as u64)
+            && trace["attempt_submissions"].as_u64() == Some(g.attempt_submissions as u64)
+            && trace["incomplete_submissions"].as_u64() == Some(g.incomplete_submissions as u64)
             && trace["repetition"].as_u64() == Some(g.repetition as u64)
             && trace["turns"].as_u64() == Some(u64::from(g.turns)),
         "trace case/config/outcome/action metadata mismatch",

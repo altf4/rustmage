@@ -342,21 +342,36 @@ fn projected_mana_consumes_one_reuse_but_preserves_enclosing_starting_authorizat
     pay(&mut g);
     drain(&mut g);
     assert_eq!(g.object_view(outer).counters.plus_one, 1);
-    // A fresh search cannot combine two spent exhaust sources under one override.
+    // A concrete execution consumes the single reuse authorization, so a
+    // second spent source cannot provide the remaining mana.
     let mut other = scenario(p);
     put(&mut other, p, "Goblin Piker", Zone::Battlefield);
-    for _ in 0..2 {
-        let id = put(&mut other, p, "Llanowar Elves", Zone::Battlefield);
-        other.state.objects[id as usize].used_abilities = 1;
-    }
+    let sources: Vec<_> = (0..2)
+        .map(|_| {
+            let id = put(&mut other, p, "Llanowar Elves", Zone::Battlefield);
+            other.state.objects[id as usize].used_abilities = 1;
+            id
+        })
+        .collect();
+    let spell = put(&mut other, p, "Earthshaker Dreadmaw", Zone::Hand);
     other.state.players[p.index()].mana = [0; 6];
-    assert!(!other.can_fund(funding::FundingGoal {
-        actor: p,
-        required: [0; 6],
-        generic: 6,
-        reserve: None,
-        source: None
-    }));
+    act(&mut other, Action::AnnounceCast { card: spell });
+    mana(&mut other, sources[0]);
+    assert!(!activation_available(&other, sources[1], 0));
+    assert_eq!(other.state.players[p.index()].mana, [0, 0, 0, 0, 3, 0]);
+    assert!(other.mana_payment_domain().is_none());
+    reject(
+        &mut other,
+        Action::PayCosts {
+            payment: [0, 0, 0, 0, 6, 0],
+        },
+    );
+    act(&mut other, Action::EndManaWindow);
+    act(&mut other, Action::SubmitAttempt);
+    assert_eq!(
+        other.last_attempt_outcome_view(p).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
 }
 
 #[test]
@@ -828,6 +843,22 @@ fn kept_mana_rollback_preserves_exhaust_event_fact_and_exact_original_observer_p
         act(&mut g, Action::ChooseCastCost { clause });
         let object = g.object_ref(silver);
         act(&mut g, Action::ChooseAuraAttachment { object });
+        if g.legal_actions().contains(&Action::EndManaWindow) {
+            act(&mut g, Action::EndManaWindow);
+        }
+        // Select the now-unsatisfied casualty clause. Merely having an unpaid
+        // clause at the ordering boundary is an incomplete execution.
+        let clause = g
+            .observe(p)
+            .cast_costs
+            .unwrap()
+            .clauses
+            .iter()
+            .position(|row| matches!(row.clause, CastCostClause::Casualty(_)))
+            .unwrap() as u16;
+        act(&mut g, Action::ChooseCastCost { clause });
+        assert!(matches!(g.state.pending, Pending::CasualtyPayment { .. }));
+        act(&mut g, Action::SubmitAttempt);
         assert!(matches!(g.state.pending, Pending::ManaRollback { .. }));
         act(&mut g, Action::ChooseManaRollback { keep });
         assert_eq!(fact(&g, p), keep);

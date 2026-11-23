@@ -29,7 +29,12 @@ impl Game {
         };
         assert!(matches!(
             self.state.pending,
-            Pending::PayCosts { .. } | Pending::Evidence { .. }
+            Pending::PayCosts { .. }
+                | Pending::AdditionalCost { .. }
+                | Pending::Evidence { .. }
+                | Pending::Forage { .. }
+                | Pending::Crew { .. }
+                | Pending::Saddle { .. }
         ));
         let quality = self
             .state
@@ -244,6 +249,7 @@ impl Game {
             .filter_map(|row| row.item.mana_activation_key())
             .collect()
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn deferred_mana_parents(&self) -> Vec<ManaAnnouncement> {
         let mut parents = self
             .state

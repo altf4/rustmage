@@ -97,7 +97,7 @@ fn discard_route_owns_the_hand_choice_and_commits_as_one_activation() {
         let enemy = put(&mut game, other, "Bear Cub", Zone::Battlefield);
         let land = put(&mut game, player, "Forest", Zone::Battlefield);
         let foreign_hand = put(&mut game, other, "Opt", Zone::Hand);
-        reject(&mut game, activate(gear));
+        admit(&game, activate(gear));
 
         let first = put(&mut game, player, "Shock", Zone::Hand);
         let second = put(&mut game, player, "Opt", Zone::Hand);
@@ -105,7 +105,13 @@ fn discard_route_owns_the_hand_choice_and_commits_as_one_activation() {
         let second = game.object_ref(second);
         let foreign_hand = game.object_ref(foreign_hand);
         act(&mut game, activate(gear));
-        assert_eq!(routes(&game, player), [ActivationCostRoute::DiscardCard]);
+        assert_eq!(
+            routes(&game, player),
+            [
+                ActivationCostRoute::Printed,
+                ActivationCostRoute::DiscardCard
+            ]
+        );
         assert!(routes(&game, other).is_empty());
         choose_route(&mut game, player, ActivationCostRoute::DiscardCard);
         reject(&mut game, target(enemy));
@@ -133,6 +139,10 @@ fn discard_route_owns_the_hand_choice_and_commits_as_one_activation() {
         );
         assert_eq!(game.object_view(first.card).zone, Zone::Hand);
         assert!(!game.state.players[player.index()].equip_activated_this_turn);
+        // This selected replacement cost requires no mana, so it offers no
+        // payment mana action even while the discard remains provisional.
+        let request = game.observe(player).payment_request.unwrap();
+        assert_eq!((request.required, request.generic), ([0; 6], 0));
         reject(&mut game, Action::TapMana { card: land });
 
         let pay = Action::PayCosts { payment: [0; 6] };
@@ -199,7 +209,7 @@ fn equal_mana_totals_keep_their_own_routes_and_use_the_same_equip_history() {
 
         let mut printed = root.clone();
         choose_route(&mut printed, player, ActivationCostRoute::Printed);
-        reject(&mut printed, target(normal));
+        admit(&printed, target(normal));
         act(&mut printed, target(discounted));
         assert_eq!(printed.observe(player).payment_request.unwrap().generic, 0);
         assert!(printed.observe(player).additional_cost.is_none());
@@ -240,7 +250,32 @@ fn equal_mana_totals_keep_their_own_routes_and_use_the_same_equip_history() {
         settle(&mut root);
         assert_eq!(root.object_view(hand).zone, Zone::Graveyard);
         act(&mut root, activate(gear));
-        assert_eq!(routes(&root, player), [ActivationCostRoute::Printed]);
+        assert_eq!(
+            routes(&root, player),
+            [
+                ActivationCostRoute::Printed,
+                ActivationCostRoute::DiscardCard
+            ]
+        );
+        choose_route(&mut root, player, ActivationCostRoute::DiscardCard);
+        act(&mut root, target(normal));
+        assert!(
+            root.observe(player)
+                .additional_cost
+                .unwrap()
+                .candidates
+                .is_empty()
+        );
+        act(&mut root, Action::EndManaWindow);
+        act(&mut root, Action::SubmitAttempt);
+        assert_eq!(
+            root.last_attempt_outcome_view(player).unwrap().reason,
+            Some(AttemptFailureReason::UnsatisfiedMaterial)
+        );
+        assert_eq!(
+            root.object_view(gear).attached_to,
+            Some(root.object_ref(normal))
+        );
     }
 }
 
@@ -264,10 +299,16 @@ fn a_named_increase_adds_mana_to_the_discard_route() {
             game.object_ref(tax),
             EntryChoiceValue::CardName(rustmage_core::CardName::from_name("Short Bow").unwrap()),
         );
-        reject(&mut game, activate(gear));
+        admit(&game, activate(gear));
         let second = put(&mut game, player, "Forest", Zone::Battlefield);
         act(&mut game, activate(gear));
-        assert_eq!(routes(&game, player), [ActivationCostRoute::DiscardCard]);
+        assert_eq!(
+            routes(&game, player),
+            [
+                ActivationCostRoute::Printed,
+                ActivationCostRoute::DiscardCard
+            ]
+        );
         choose_route(&mut game, player, ActivationCostRoute::DiscardCard);
         act(&mut game, target(bearer));
         let object = game.object_ref(hand);

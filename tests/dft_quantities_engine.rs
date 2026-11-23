@@ -134,7 +134,7 @@ fn activate(g: &mut Game, source: CardId) {
             counter_payment: Counters::default(),
         },
     );
-    if g.legal_actions().contains(&Action::ChooseX { value: 2 }) {
+    if matches!(g.state.pending, Pending::X { .. }) {
         act(g, Action::ChooseX { value: 2 });
     }
     pay(g);

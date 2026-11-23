@@ -206,7 +206,7 @@ fn flashback_reuses_the_same_split_and_exiles_on_resolution_or_counter() {
     let spell = spawn(&mut game, player, memories(), Zone::Graveyard);
     let cast_memories = Action::AnnounceFlashback { card: spell };
     game.state.players[player.index()].mana = [0, 2, 0, 0, 0, 6];
-    reject(&mut game, cast_memories.clone());
+    admit(&game, cast_memories.clone());
     game.state.players[player.index()].mana[5] = 7;
     act(&mut game, cast_memories);
     pay(&mut game);

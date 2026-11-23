@@ -351,7 +351,26 @@ fn disguise_hybrid_payment_uses_the_live_count_of_qualifying_graveyard_cards() {
         .into_iter()
         .filter(|action| matches!(action, Action::BeginFaceUp { .. }))
         .collect();
-    assert_eq!(options, vec![turn_up(object, mixed)]);
+    assert_eq!(
+        options,
+        vec![
+            turn_up(
+                object,
+                ManaCost {
+                    colored: [0, 0, 2, 0, 0, 0],
+                    generic: 2
+                }
+            ),
+            turn_up(object, mixed),
+            turn_up(
+                object,
+                ManaCost {
+                    colored: [0, 0, 0, 0, 2, 0],
+                    generic: 2
+                }
+            ),
+        ]
+    );
 
     let mut no_discount = game.clone();
     no_discount.move_object(second, Zone::Exile);
@@ -699,7 +718,7 @@ fn turn_discount_stacks_for_disguise_from_hand_or_exile_and_expires() {
     settle(&mut game);
     let ordinary = put(&mut game, player, "Grizzly Bears", Zone::Hand);
     game.state.players[player.index()].mana = [0, 0, 0, 0, 1, 0];
-    reject(&mut game, Action::AnnounceCast { card: ordinary });
+    admit(&game, Action::AnnounceCast { card: ordinary });
 
     let mut expired = game.clone();
     expired.state.step = Step::End;
@@ -709,7 +728,7 @@ fn turn_discount_stacks_for_disguise_from_hand_or_exile_and_expires() {
     expired.state.priority = player;
     expired.state.step = Step::Main1;
     expired.state.players[player.index()].mana = [0, 0, 0, 0, 1, 0];
-    reject(&mut expired, Action::AnnounceDisguise { card: hand });
+    admit(&expired, Action::AnnounceDisguise { card: hand });
 
     for card in [hand, exile] {
         let mut branch = game.clone();
@@ -736,7 +755,7 @@ fn turn_discount_stacks_for_disguise_from_hand_or_exile_and_expires() {
         settle(&mut branch);
         let object = branch.object_ref(card);
         branch.state.players[player.index()].mana = [0, 4, 0, 0, 0, 0];
-        reject(&mut branch, turn_up(object, DISGUISE));
+        admit(&branch, turn_up(object, DISGUISE));
     }
 }
 

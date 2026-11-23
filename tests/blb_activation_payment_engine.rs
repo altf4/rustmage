@@ -80,6 +80,32 @@ fn tap_creature(g: &Game, card: CardId) -> Action {
     }
 }
 
+fn fail_unpaid(g: &mut Game, actor: Player, untapped: &[CardId]) {
+    // Beginning either contributor selection has already closed this attempt's
+    // mana window; the unpaid selection can be submitted directly.
+    assert!(g.attempt_view(actor).unwrap().mana_window_closed);
+    assert!(g.mana_payment_domain().is_none());
+    reject(g, Action::PayCosts { payment: [0; 6] });
+    reject(g, Action::EndManaWindow);
+    act(g, Action::SubmitAttempt);
+    assert_eq!(
+        g.last_attempt_outcome_view(actor).unwrap().outcome,
+        AttemptOutcome::Failed
+    );
+    assert_eq!(
+        g.last_attempt_outcome_view(actor).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
+    assert!(g.state.announcing.is_none());
+    assert!(g.state.stack.is_empty());
+    assert_eq!(g.state.players[actor.index()].mana, [0; 6]);
+    assert_eq!(g.state.players[actor.index()].cards_drawn_this_turn, 0);
+    for &card in untapped {
+        assert!(!g.object_view(card).tapped);
+        assert_eq!(g.object_view(card).zone, Zone::Battlefield);
+    }
+}
+
 #[test]
 fn creature_taps_reserve_the_source_and_cannot_reuse_a_mana_producer() {
     let _rules = fixture_rules::activate(&[(Card::GoblinPiker, &TAP_PAYMENT)]);
@@ -93,7 +119,16 @@ fn creature_taps_reserve_the_source_and_cannot_reuse_a_mana_producer() {
         let artifact = put(&mut g, actor, "Short Bow", Zone::Battlefield);
         let enemy = put(&mut g, actor.other(), "Bear Cub", Zone::Battlefield);
         let artifact_creature = put(&mut g, actor, "Gingerbrute", Zone::Battlefield);
-        reject(&mut g, activate(source));
+        act(&mut g, activate(source));
+        act(&mut g, Action::BeginCreatureTapPayment);
+        let source_tap = tap_creature(&g, source);
+        reject(&mut g, source_tap);
+        for contributor in [elves, sick, artifact_creature] {
+            let action = tap_creature(&g, contributor);
+            act(&mut g, action);
+        }
+        assert_eq!(g.creature_tap_payment().unwrap().remaining.generic, 1);
+        fail_unpaid(&mut g, actor, &[source, elves, sick, artifact_creature]);
         let fourth = put(&mut g, actor, "Bear Cub", Zone::Battlefield);
         g.state.step = Step::BeginCombat;
         reject(&mut g, activate(source));
@@ -164,7 +199,24 @@ fn creature_substitution_covers_the_tax_but_waterbend_keeps_its_printed_cap() {
         for _ in 0..5 {
             creatures.push(put(&mut g, actor, "Bear Cub", Zone::Battlefield));
         }
-        reject(&mut g, activate(source));
+        act(&mut g, activate(source));
+        if waterbend {
+            act(&mut g, Action::BeginWaterbend);
+            for card in [artifact, creatures[0], creatures[1], creatures[2]] {
+                let object = g.object_ref(card);
+                act(&mut g, Action::ChooseWaterbender { object });
+            }
+            assert_eq!(g.waterbend_choice().unwrap().remaining.generic, 2);
+        } else {
+            act(&mut g, Action::BeginCreatureTapPayment);
+            for &card in &creatures {
+                let action = tap_creature(&g, card);
+                act(&mut g, action);
+            }
+            assert_eq!(g.creature_tap_payment().unwrap().remaining.generic, 1);
+        }
+        fail_unpaid(&mut g, actor, &[source, artifact]);
+        assert!(creatures.iter().all(|&card| !g.object_view(card).tapped));
         if waterbend {
             g.state.players[actor.index()].mana[5] = 2;
             act(&mut g, activate(source));

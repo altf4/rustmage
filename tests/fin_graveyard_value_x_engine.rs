@@ -99,16 +99,22 @@ fn legal_x_is_the_intersection_of_exact_own_saga_values_and_projected_mana() {
     );
     let available = [0, 0, 0, 0, 0, 2];
     game.state.players[player.index()].mana = available;
-    reject(&mut game, announce(source));
+    admit(&game, announce(source));
     let land = put(&mut game, player, "Forest", Zone::Battlefield);
     let mut only_three = game.clone();
     act(&mut only_three, announce(source));
     assert_eq!(
         only_three.observe(player).x_choice.unwrap().intervals,
-        [XInterval {
-            minimum: 3,
-            maximum: 3
-        }]
+        [
+            XInterval {
+                minimum: 3,
+                maximum: 3
+            },
+            XInterval {
+                minimum: 5,
+                maximum: 5
+            },
+        ]
     );
     let lands = [
         land,
@@ -238,7 +244,7 @@ fn a_borrowed_mana_x_template_uses_the_borrowers_funding_and_exact_saga() {
         counter_payment: Counters::default(),
     };
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
-    reject(&mut game, action.clone());
+    admit(&game, action.clone());
     game.state.players[player.index()].mana[5] = 3;
     act(&mut game, action);
     assert_eq!(

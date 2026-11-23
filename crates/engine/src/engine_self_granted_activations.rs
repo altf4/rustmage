@@ -83,7 +83,7 @@ impl Game {
                             row.granting_card,
                             ability,
                             |production| {
-                                self.mana_packet_fundable(&packet, counters.clone(), production)
+                                self.mana_packet_admissible(&packet, counters.clone(), production)
                                     && emit(Action::AnnounceSelfGrantedMana {
                                         source: row.recipient,
                                         grant_timestamp: row.timestamp,

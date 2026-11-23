@@ -4,6 +4,7 @@ use rustmage::{
     StackKind, Zone,
 };
 use std::collections::{BTreeMap, BTreeSet};
+use std::path::{Path, PathBuf};
 use std::time::Instant;
 
 const PAIRINGS: &[(usize, usize)] = &[
@@ -125,7 +126,60 @@ fn deck(members: &BTreeSet<Card>, lands: &[(&str, usize)], spells: &[&str]) -> V
     deck
 }
 
+fn current_mana(observation: &Observation) -> u64 {
+    let actor = observation.actor.unwrap();
+    observation.players[actor.index()]
+        .mana
+        .iter()
+        .map(|&amount| u64::from(amount))
+        .sum::<u64>()
+        + observation
+            .objects
+            .iter()
+            .filter(|object| {
+                object.controller == actor
+                    && object.zone == Zone::Battlefield
+                    && object.card.is_land()
+                    && !object.tapped
+            })
+            .count() as u64
+}
+
+fn preferred_cast(observation: &Observation, names: &[&str]) -> Option<usize> {
+    let current_mana = current_mana(observation);
+    observation.actions.iter().position(|action| {
+        let (Action::AnnounceCast { card } | Action::Cast { card, .. }) = action else {
+            return false;
+        };
+        observation.objects.iter().any(|object| {
+            object.id == *card
+                && names.contains(&object.card.name())
+                && object.card.fixed_mana_value() <= current_mana
+        })
+    })
+}
+
+fn void_cast(observation: &Observation) -> Option<usize> {
+    observation
+        .void_active_this_turn
+        .then(|| preferred_cast(observation, &["Tragic Trajectory", "Roving Actuator"]))
+        .flatten()
+}
+
 fn decision(observation: &Observation) -> usize {
+    let smoke = rustmage::policy::smoke_index_from_observation(observation, &observation.actions);
+    if matches!(observation.actions[smoke], Action::PlayLand { .. })
+        || (observation.attempt.is_none()
+            && observation.decision == "priority"
+            && observation.last_attempt_outcome.is_some_and(|outcome| {
+                outcome.turn == u64::from(observation.turn)
+                    && outcome.outcome == rustmage::AttemptOutcome::Failed
+            }))
+    {
+        // Warp proposals no longer imply that their payment can finish. Honor
+        // the smoke caller's land preference and failed-attempt retry policy.
+        return smoke;
+    }
     // Explore the optional routes unique to this set when the engine offers them.
     if observation
         .entry_devour
@@ -138,6 +192,15 @@ fn decision(observation: &Observation) -> usize {
     {
         return index;
     }
+    // Prefer an already active Void payoff before proposing another Warp.
+    // This caller estimate uses only the current pool and untapped lands.
+    if let Some(index) = void_cast(observation) {
+        return index;
+    }
+    if let Some(index) = preferred_cast(observation, &["Galactic Wayfarer", "Bioengineered Future"])
+    {
+        return index;
+    }
     if let Some(index) = observation.actions.iter().position(|action| {
         matches!(
             action,
@@ -146,11 +209,21 @@ fn decision(observation: &Observation) -> usize {
     }) {
         return index;
     }
-    rustmage::policy::smoke_index_from_observation(observation, &observation.actions)
+    smoke
 }
 
 fn private(view: &Observation) -> bool {
     view.library_choice.is_some() || view.search_choice.is_some() || view.mana_payment.is_some()
+}
+
+fn write_report(directory: Option<&Path>, name: &str, report: serde_json::Value) {
+    if let Some(directory) = directory {
+        std::fs::write(
+            directory.join(name),
+            serde_json::to_vec_pretty(&report).unwrap(),
+        )
+        .unwrap();
+    }
 }
 
 #[derive(Default)]
@@ -263,6 +336,15 @@ fn eoe_standard_games_reach_terminal_outcomes_and_replay_owned_choices() {
     let start = Instant::now();
     let mut evidence = Evidence::default();
     let trace = std::env::var_os("RUSTMAGE_EOE_TRACE").is_some();
+    let directory = std::env::var_os("RUSTMAGE_EOE_EVIDENCE_DIR")
+        .map(PathBuf::from)
+        .or_else(|| {
+            std::env::var_os("RUSTMAGE_TDM_EVIDENCE_DIR")
+                .map(|directory| PathBuf::from(directory).join("eoe"))
+        });
+    if let Some(directory) = &directory {
+        std::fs::create_dir_all(directory).unwrap();
+    }
     for &(a, b) in PAIRINGS {
         for (i, seed) in [4, 9].into_iter().enumerate() {
             let config = || Config {
@@ -278,15 +360,27 @@ fn eoe_standard_games_reach_terminal_outcomes_and_replay_owned_choices() {
             evidence.warped_refs.clear();
             let mut game = Game::new(config()).unwrap();
             let mut journal = Vec::new();
+            let mut void_windows = Vec::new();
             let case_start = Instant::now();
             if trace {
                 eprintln!("EOE game {a} vs {b} seed {seed} started");
             }
             while game.outcome().is_none() {
-                assert!(
-                    journal.len() < 4096,
-                    "EOE game {a} vs {b}, seed {seed} did not terminate"
-                );
+                if journal.len() >= 4096 {
+                    let actor = game.actor().unwrap();
+                    write_report(
+                        directory.as_deref(),
+                        &format!("{a}-{b}-{seed}-limit.json"),
+                        serde_json::json!({
+                            "action_contract": rustmage::ACTION_CONTRACT,
+                            "observation_schema": rustmage::OBSERVATION_SCHEMA,
+                            "primitive_decision_limit": 4096,
+                            "config": config(), "actions": journal,
+                            "observation": game.observe(actor),
+                        }),
+                    );
+                    panic!("EOE game {a} vs {b}, seed {seed} did not terminate");
+                }
                 let actor = game.actor().unwrap();
                 if trace && journal.len().is_multiple_of(64) {
                     eprintln!(
@@ -298,7 +392,27 @@ fn eoe_standard_games_reach_terminal_outcomes_and_replay_owned_choices() {
                 let before = game.observe(actor);
                 let index = decision(&before);
                 let action = before.actions[index].clone();
-                assert_ne!(action, Action::Concede);
+                if directory.is_some() && before.void_active_this_turn {
+                    void_windows.push(serde_json::json!({
+                        "decision": journal.len(), "turn": before.turn,
+                        "step": before.step, "actor": actor, "chosen": action,
+                        "preferred_void_cast": void_cast(&before).map(|index| &before.actions[index]),
+                    }));
+                }
+                if action == Action::Concede {
+                    write_report(
+                        directory.as_deref(),
+                        &format!("{a}-{b}-{seed}-stalled.json"),
+                        serde_json::json!({
+                            "action_contract": rustmage::ACTION_CONTRACT,
+                            "observation_schema": rustmage::OBSERVATION_SCHEMA,
+                            "primitive_decision_limit": 4096,
+                            "config": config(), "actions": journal,
+                            "observation": before,
+                        }),
+                    );
+                    panic!("EOE game {a} vs {b}, seed {seed} chose Concede");
+                }
                 let sensitive = private(&before);
                 // A Devour choice on a public spell has a public entrant and lands.
                 if sensitive || before.entry_devour.is_some() || journal.len().is_multiple_of(64) {
@@ -330,8 +444,14 @@ fn eoe_standard_games_reach_terminal_outcomes_and_replay_owned_choices() {
                         owned.apply_index(actor, revision, index),
                         Err(Error::StaleRevision)
                     );
+                    assert_eq!(owned.snapshot(), saved);
+                    // Replaying an announcement allocates a fresh monotonic attempt ID.
+                    let mut replayed = owned.clone();
                     owned.apply(actor, action.clone()).unwrap();
-                    assert_eq!(owned.snapshot(), result);
+                    replayed
+                        .apply_index(actor, replayed.revision(), index)
+                        .unwrap();
+                    assert_eq!(owned.snapshot(), replayed.snapshot());
                     evidence.verified_branches += 1;
                     evidence.private_choices += usize::from(sensitive);
                 } else {
@@ -341,6 +461,19 @@ fn eoe_standard_games_reach_terminal_outcomes_and_replay_owned_choices() {
                 evidence.record(&before, &game.observe(observer), &action);
                 journal.push((actor, action));
             }
+            write_report(
+                directory.as_deref(),
+                &format!("{a}-{b}-{seed}-trace.json"),
+                serde_json::json!({
+                    "action_contract": rustmage::ACTION_CONTRACT,
+                    "observation_schema": rustmage::OBSERVATION_SCHEMA,
+                    "caller_contract": "EOE_STAGED_SMOKE_LANDER_VOID_WARP_V1",
+                    "primitive_decision_limit": 4096,
+                    "config": config(), "actions": journal,
+                    "decisions": journal.len(), "outcome": game.outcome(),
+                    "void_windows": void_windows,
+                }),
+            );
             let mut replay = Game::new(config()).unwrap();
             evidence.decisions += journal.len();
             for (actor, action) in journal {

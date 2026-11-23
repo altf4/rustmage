@@ -302,11 +302,13 @@ fn prove_owned_branch(game: &Game, actor: Player, actions: &[Action], selected: 
         sibling.apply_index(actor, revision, selected),
         Err(Error::StaleRevision)
     );
+    let mut replay = sibling.clone();
+    replay.apply(actor, actions[selected].clone()).unwrap();
     sibling
         .apply_index(actor, sibling.revision(), selected)
         .unwrap();
-    assert_eq!(sibling.snapshot(), raw.snapshot());
-    assert_eq!(views(&sibling), views(&raw));
+    assert_eq!(sibling.snapshot(), replay.snapshot());
+    assert_eq!(views(&sibling), views(&replay));
     true
 }
 
@@ -376,6 +378,87 @@ fn record_mechanics(
     }
 }
 
+fn decision(view: &Observation, actions: &[Action]) -> usize {
+    let opening_lands = view
+        .objects
+        .iter()
+        .filter(|object| {
+            object.owner == view.actor.unwrap()
+                && object.zone == Zone::Hand
+                && object.card.is_land()
+        })
+        .count();
+    if let Some(index) = actions
+        .iter()
+        .position(|action| *action == Action::Mulligan)
+        && opening_lands < 3
+    {
+        // The midrange workloads need a current three-land opening, rather
+        // than spending their early turns attempting three-mana spells on two.
+        return index;
+    }
+    // Preserve the quest setup when another nonland can be bottomed instead.
+    if let Some((index, _, _, _)) = actions
+        .iter()
+        .enumerate()
+        .filter_map(|(index, action)| {
+            let Action::Bottom { card } = action else {
+                return None;
+            };
+            let object = view.objects.iter().find(|object| object.id == *card)?;
+            Some((
+                index,
+                object.card.is_land() == (opening_lands > 3),
+                object.card.name() != "Support Mission",
+                object.card.fixed_mana_value(),
+            ))
+        })
+        .max_by_key(|&(_, preferred, other_than_setup, value)| (preferred, other_than_setup, value))
+    {
+        return index;
+    }
+    let smoke = policy::smoke_index_from_observation(view, actions);
+    if view.decision != "priority"
+        || matches!(actions[smoke], Action::PlayLand { .. })
+        || view.last_attempt_outcome.is_some_and(|outcome| {
+            outcome.turn == u64::from(view.turn) && outcome.outcome == AttemptOutcome::Failed
+        })
+    {
+        return smoke;
+    }
+    let actor = view.actor.unwrap();
+    let budget = view.players[actor.index()]
+        .mana
+        .iter()
+        .map(|&n| u64::from(n))
+        .sum::<u64>()
+        + view
+            .objects
+            .iter()
+            .filter(|object| {
+                object.zone == Zone::Battlefield
+                    && object.controller == actor
+                    && object.card.is_land()
+                    && !object.tapped
+            })
+            .count() as u64;
+    // Establish the workload's quest permanent before its creature-entry events.
+    // This is a current resource estimate, not a payment-completion query.
+    actions
+        .iter()
+        .position(|action| {
+            let Action::AnnounceCast { card } = action else {
+                return false;
+            };
+            view.objects.iter().any(|object| {
+                object.id == *card
+                    && object.card.name() == "Support Mission"
+                    && object.card.fixed_mana_value() <= budget
+            })
+        })
+        .unwrap_or(smoke)
+}
+
 fn run_pair(pair_index: usize) {
     let workload = workload();
     let decks = decks(&workload);
@@ -440,7 +523,7 @@ fn run_pair(pair_index: usize) {
                 .map(|(index, action)| (index, action.clone()))
                 .collect();
             let offered: Vec<_> = eligible.iter().map(|(_, action)| action.clone()).collect();
-            let chosen = policy::smoke_index_from_observation(&before, &offered);
+            let chosen = decision(&before, &offered);
             let (index, action) = &eligible[chosen];
             assert!(!matches!(action, Action::Concede), "{label} conceded");
             match action {

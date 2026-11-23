@@ -144,8 +144,8 @@ fn optional_behold_decline_searches_to_hand_and_private_failure_is_allowed() {
         let found = put(&mut g, Player::P0, "Grizzly Bears", Zone::Library);
         let source = put(&mut g, Player::P0, "Divination", Zone::Hand);
         act(&mut g, Action::AnnounceCast { card: source });
-        reject(
-            &mut g,
+        admit(
+            &g,
             Action::ChooseBeholdType {
                 creature_type: Some(CreatureType::from_name("Bear").unwrap()),
             },
@@ -208,10 +208,7 @@ fn flashback_beholds_three_distinct_hand_or_battlefield_creatures_without_tappin
     let a = put(&mut g, Player::P0, "Llanowar Elves", Zone::Hand);
     let b = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
     let source = put(&mut g, Player::P0, "Divination", Zone::Graveyard);
-    assert!(
-        !g.legal_actions()
-            .contains(&Action::AnnounceFlashback { card: source })
-    );
+    admit(&g, Action::AnnounceFlashback { card: source });
     let c = put(&mut g, Player::P0, "Fog Bank", Zone::Battlefield);
     act(&mut g, Action::AnnounceFlashback { card: source });
     finish_cast(&mut g);
@@ -255,12 +252,14 @@ fn behold_funding_probe(
     world.set_payment_context(&a);
     let deficit = world.additional_cost_deficit();
     let mut visited = HashSet::new();
-    let payable = world.reachable(&goal, &mut visited);
-    (deficit, payable, visited.len())
+    // A current witness deficit no longer rejects an otherwise admissible
+    // declaration. Actual supplied witnesses are checked at payment.
+    let admissible = world.reachable(&goal, &mut visited);
+    (deficit, admissible, visited.len())
 }
 
 #[test]
-fn fixed_behold_type_domain_rejects_absent_witnesses_before_dense_mana_search() {
+fn fixed_behold_type_domain_admits_declarations_without_searching_future_witnesses() {
     let _rules = fixture_rules::activate(&[(Card::GiantGrowth, &SEARCH)]);
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
@@ -301,7 +300,7 @@ fn fixed_behold_type_domain_rejects_absent_witnesses_before_dense_mana_search() 
                 } else {
                     assert_eq!(
                         (deficit, payable, visited),
-                        (true, false, 0),
+                        (true, true, 0),
                         "{name}; color Aura {with_color_aura}"
                     );
                 }
@@ -316,13 +315,52 @@ fn fixed_behold_type_domain_rejects_absent_witnesses_before_dense_mana_search() 
         let chosen = Action::ChooseBeholdType {
             creature_type: Some(bear),
         };
+        let mut missing = g.clone();
+        act(
+            &mut missing,
+            Action::ChooseBeholdType {
+                creature_type: Some(CreatureType::from_name("Advisor").unwrap()),
+            },
+        );
+        act(&mut missing, Action::ChooseX { value: 0 });
+        act(&mut missing, Action::EndManaWindow);
+        act(&mut missing, Action::BeginOrderedCosts);
+        let additional = missing
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .cast_costs
+            .as_ref()
+            .unwrap()
+            .clauses
+            .iter()
+            .position(|row| row.clause == CastCostClause::Additional)
+            .unwrap() as u16;
+        act(&mut missing, Action::ChooseCastCost { clause: additional });
+        assert!(
+            !missing
+                .legal_actions()
+                .iter()
+                .any(|action| matches!(action, Action::ChooseAdditionalCost { .. }))
+        );
+        act(&mut missing, Action::SubmitAttempt);
+        let outcome = missing.last_attempt_outcome_view(p).unwrap();
+        assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+        assert_eq!(
+            outcome.reason,
+            Some(AttemptFailureReason::UnsatisfiedMaterial)
+        );
+        assert_eq!(missing.object_view(source).zone, Zone::Hand);
+        assert_eq!(missing.state.players[p.index()].mana, [0; 6]);
+        assert!(!missing.object_view(lands[0]).tapped);
         let actions = g.legal_actions();
         assert_eq!(
             actions
                 .iter()
                 .filter(|action| matches!(action, Action::ChooseBeholdType { .. }))
                 .count(),
-            2
+            CREATURE_TYPES.len() + 1
         );
         assert!(actions.contains(&Action::ChooseBeholdType {
             creature_type: None,
@@ -401,8 +439,8 @@ fn fixed_single_behold_and_exile_deficits_preserve_live_paid_witnesses() {
                 Zone::Hand,
             );
             g.state.players[p.index()].mana = [0; 6];
-            assert_eq!(behold_funding_probe(&g, p, source, None), (true, false, 0));
-            reject(&mut g, Action::AnnounceCast { card: source });
+            assert_eq!(behold_funding_probe(&g, p, source, None), (true, true, 0));
+            admit(&g, Action::AnnounceCast { card: source });
             let witness = put(&mut g, p, "Llanowar Elves", Zone::Hand);
             let (deficit, payable, _) = behold_funding_probe(&g, p, source, None);
             assert!(!deficit && payable);
@@ -474,7 +512,7 @@ fn behold_bound_allows_mana_tapping_and_current_changeling_type_and_control() {
         let (deficit, payable, _) = behold_funding_probe(&g, p, source, Some(dragon));
         assert!(!deficit && payable);
         g.change_controller(g.object_ref(changed), p.other());
-        assert!(!behold_funding_probe(&g, p, source, Some(dragon)).1);
+        assert!(behold_funding_probe(&g, p, source, Some(dragon)).0);
         g.change_controller(g.object_ref(changed), p);
         assert!(behold_funding_probe(&g, p, source, Some(dragon)).1);
 
@@ -617,11 +655,11 @@ fn damage_only_replacement_keeps_flashback_behold_deficits_bounded() {
         let first = put(&mut g, p, "Flamebraider", Zone::Battlefield);
         let source = put(&mut g, p, "Kindle the Inner Flame", Zone::Graveyard);
         g.state.players[p.index()].mana = [0; 6];
-        assert_eq!(behold_funding_probe(&g, p, source, None), (true, false, 0));
-        reject(&mut g, Action::AnnounceFlashback { card: source });
+        assert_eq!(behold_funding_probe(&g, p, source, None), (true, true, 0));
+        admit(&g, Action::AnnounceFlashback { card: source });
         let second = put(&mut g, p, "Flamebraider", Zone::Battlefield);
-        assert_eq!(behold_funding_probe(&g, p, source, None), (true, false, 0));
-        reject(&mut g, Action::AnnounceFlashback { card: source });
+        assert_eq!(behold_funding_probe(&g, p, source, None), (true, true, 0));
+        admit(&g, Action::AnnounceFlashback { card: source });
         let third = put(&mut g, p, "Flamebraider", Zone::Hand);
         let (deficit, payable, _) = behold_funding_probe(&g, p, source, None);
         assert!(!deficit && payable);

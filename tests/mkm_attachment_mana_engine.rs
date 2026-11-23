@@ -5,7 +5,7 @@ use rustmage as _;
 use rustmage_core::cards::authored::{CardRules, one};
 use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::{cards::*, engine::*};
-use std::collections::{BTreeSet, HashSet};
+use std::collections::BTreeSet;
 
 const WHITE: Mana = [1, 0, 0, 0, 0, 0];
 const BLUE: Mana = [0, 1, 0, 0, 0, 0];
@@ -156,14 +156,21 @@ fn two_attached_choices_fund_distinct_colored_pips_and_resume_the_enclosing_cast
         source: None,
         reserve: None,
     };
-    let one = FundingState::from_game(&game, &goal);
-    assert!(!one.reachable(&goal, &mut HashSet::new()));
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    let mut one = game.clone();
+    act(&mut one, Action::AnnounceCast { card: spell });
+    act(&mut one, Action::TapMana { card: land });
+    act(&mut one, Action::ChooseMana { production: WHITE });
+    assert!(one.mana_payment_domain().is_none());
+    act(&mut one, Action::EndManaWindow);
+    act(&mut one, Action::SubmitAttempt);
+    assert_eq!(
+        one.last_attempt_outcome_view(payer).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
 
     let second = put(&mut game, payer.other(), "Pacifism", Zone::Battlefield);
     game.state.objects[second as usize].attached_to = Some(game.object_ref(land));
     let both = FundingState::from_game(&game, &goal);
-    assert!(both.reachable(&goal, &mut HashSet::new()));
     let tap = both
         .moves(&goal)
         .into_iter()
@@ -184,14 +191,29 @@ fn two_attached_choices_fund_distinct_colored_pips_and_resume_the_enclosing_cast
         game.observe(payer).mana_tap_bonus_source,
         Some(game.object_ref(first))
     );
-    assert_eq!(mana_choices(&game), BTreeSet::from([WHITE, BLUE]));
-    reject(&mut game, Action::ChooseMana { production: RED });
+    let colors = BTreeSet::from([WHITE, BLUE, BLACK, RED, GREEN]);
+    assert_eq!(mana_choices(&game), colors);
+    let mut stranded = game.clone();
+    act(&mut stranded, Action::ChooseMana { production: RED });
+    act(&mut stranded, Action::ChooseMana { production: WHITE });
+    reject(
+        &mut stranded,
+        Action::PayCosts {
+            payment: [1, 0, 0, 1, 0, 0],
+        },
+    );
+    act(&mut stranded, Action::EndManaWindow);
+    act(&mut stranded, Action::SubmitAttempt);
+    assert_eq!(
+        stranded.last_attempt_outcome_view(payer).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMana)
+    );
     act(&mut game, Action::ChooseMana { production: BLUE });
     assert_eq!(
         game.observe(payer).mana_tap_bonus_source,
         Some(game.object_ref(second))
     );
-    assert_eq!(mana_choices(&game), BTreeSet::from([WHITE]));
+    assert_eq!(mana_choices(&game), colors);
     act(&mut game, Action::ChooseMana { production: WHITE });
     assert!(matches!(game.state.pending, Pending::PayCosts { .. }));
     pay(&mut game);

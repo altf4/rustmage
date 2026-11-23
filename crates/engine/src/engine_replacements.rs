@@ -1315,6 +1315,7 @@ impl Game {
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[cfg(feature = "test-support")]
 pub(super) fn counter_outcomes<W: super::ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
     placement: &CounterPlacement,
@@ -1360,12 +1361,16 @@ pub(super) fn counter_outcomes<W: super::ability_world::CharacteristicWorld + ?S
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone)]
 pub(super) struct CounterPreview {
+    #[cfg(feature = "test-support")]
     pub index: usize,
+    #[cfg(feature = "test-support")]
     pub placement: CounterPlacement,
+    #[cfg(feature = "test-support")]
     pub used: Vec<CounterReplacementId>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    #[cfg(feature = "test-support")]
     pub(super) fn projected_entry_counter(
         &self,
         choice: Option<CounterReplacementId>,

@@ -392,7 +392,7 @@ fn impending_keeps_mandatory_additional_costs_and_cannot_combine_with_free_casts
     let mut game = scenario(player);
     game.state.players[player.index()].mana = BLACK;
     let card = put(&mut game, player, SOURCE, Zone::Hand);
-    reject(&mut game, Action::AnnounceCast { card });
+    admit(&game, Action::AnnounceCast { card });
     let discard = put(&mut game, player, "Forest", Zone::Hand);
     act(&mut game, Action::AnnounceCast { card });
     let option = choice(&game, player, true);

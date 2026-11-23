@@ -72,7 +72,7 @@ fn ecl_twinflame_triggered_mana_bonus_at_production_and_funding_match_actual() {
             generic: 1,
             ..ordinary
         };
-        assert!(!FundingState::from_game(&g, &goal).reachable(&goal, &mut HashSet::new()));
+        assert!(FundingState::from_game(&g, &goal).reachable(&goal, &mut HashSet::new()));
         let provider = named(&mut g, p, "Twinflame Travelers", Zone::Battlefield);
         let world = FundingState::from_game(&g, &goal);
         let tapped_land = g.object_ref(land);
@@ -129,7 +129,7 @@ fn ecl_twinflame_triggered_mana_bonus_at_production_and_funding_match_actual() {
                 .map(|output| output.total),
             Some(production)
         );
-        assert!(!FundingState::from_game(&g, &goal).reachable(&goal, &mut HashSet::new()));
+        assert!(FundingState::from_game(&g, &goal).reachable(&goal, &mut HashSet::new()));
         // A new production event sees the provider's departure in both worlds.
         checked(&mut g, Action::TapMana { card: land });
         assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 0, 2, 0]);

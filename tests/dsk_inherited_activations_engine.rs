@@ -137,6 +137,18 @@ fn announcement(row: InheritedAbilityView) -> Action {
     }
 }
 
+fn assert_restored_attempt_gameplay(original: &Game, replayed: &Game) {
+    let original_id = original.attempt_view(PLAYER).unwrap().attempt_id;
+    let replayed_id = replayed.attempt_view(PLAYER).unwrap().attempt_id;
+    assert!(
+        replayed_id > original_id,
+        "replayed attempt receives a fresh identity"
+    );
+    let mut normalized = replayed.clone();
+    normalized.state.cast_rollback.as_mut().unwrap().attempt_id = original_id;
+    assert_eq!(original.snapshot(), normalized.snapshot());
+}
+
 #[test]
 fn live_names_controllers_and_exact_donors_gate_independent_source_use() {
     let mimic = named("Grizzly Bears");
@@ -175,7 +187,7 @@ fn live_names_controllers_and_exact_donors_gate_independent_source_use() {
     indexed
         .apply_index(PLAYER, indexed.revision(), index)
         .unwrap();
-    assert_eq!(game.snapshot(), indexed.snapshot());
+    assert_restored_attempt_gameplay(&game, &indexed);
     pay(&mut game);
     reject(&mut game, action.clone());
     game.move_object(donor, Zone::Exile);
@@ -419,7 +431,20 @@ fn land_type_and_attachment_mana_use_the_inheritor_in_actual_and_projected_payme
         let action = Action::AnnounceCast { card: spell };
         let mut absent = game.clone();
         absent.move_object(donor, Zone::Exile);
-        reject(&mut absent, action.clone());
+        act(&mut absent, action.clone());
+        if let Some(target) = target {
+            act(&mut absent, Action::ChooseTarget { target });
+        }
+        assert!(absent.mana_payment_domain().is_none());
+        act(&mut absent, Action::EndManaWindow);
+        act(&mut absent, Action::SubmitAttempt);
+        assert_eq!(
+            absent.last_attempt_outcome_view(PLAYER).unwrap().outcome,
+            AttemptOutcome::Failed
+        );
+        assert_eq!(absent.object_view(spell).zone, Zone::Hand);
+        assert!(absent.state.announcing.is_none());
+        assert_eq!(absent.state.players[PLAYER.index()].mana, ZERO);
         act(&mut game, action);
         if let Some(target) = target {
             act(&mut game, Action::ChooseTarget { target });
@@ -444,6 +469,44 @@ fn land_type_and_attachment_mana_use_the_inheritor_in_actual_and_projected_payme
             assert_eq!(game.object_view(spell).zone, Zone::Battlefield);
         }
     }
+}
+
+#[test]
+fn concrete_inherited_mana_remains_available_inside_an_unfunded_parent() {
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &MIMIC)]);
+    let mut game = scenario(PLAYER);
+    let source = put(&mut game, PLAYER, "Grizzly Bears", Zone::Battlefield);
+    let donor = put(&mut game, PLAYER, "Llanowar Elves", Zone::Battlefield);
+    game.state.objects[donor as usize].tapped = true;
+    game.state.players[PLAYER.index()].mana = ZERO;
+    let row = inherited(&game, source)
+        .into_iter()
+        .find(|row| row.donor.card == donor)
+        .unwrap();
+    let spell = put(&mut game, PLAYER, "Divination", Zone::Hand);
+    act(&mut game, Action::AnnounceCast { card: spell });
+    let action = Action::ActivateInheritedMana {
+        source: row.source,
+        slot: row.slot,
+        counter_payment: Counters::default(),
+        payment: ZERO,
+        production: GREEN,
+    };
+    let mut indexed = game.clone();
+    let before = indexed.snapshot();
+    let at = indexed
+        .legal_actions()
+        .iter()
+        .position(|candidate| candidate == &action)
+        .unwrap();
+    let revision = indexed.revision();
+    indexed.apply_index(PLAYER, revision, at).unwrap();
+    act(&mut game, action.clone());
+    assert_eq!(indexed.snapshot(), game.snapshot());
+    assert!(game.object_view(source).tapped);
+    assert!(game.mana_payment_domain().is_none());
+    indexed.restore(&before).unwrap();
+    assert!(indexed.legal_actions().contains(&action));
 }
 
 fn animated_vacuum(game: &mut Game) -> CardId {
@@ -555,7 +618,7 @@ fn two_vacuums_and_a_curator_have_separate_linked_exile_through_copy_and_sacrifi
     assert_eq!(game.snapshot(), indexed.snapshot());
     game.restore(&checkpoint).unwrap();
     game.apply_index(PLAYER, game.revision(), index).unwrap();
-    assert_eq!(game.snapshot(), indexed.snapshot());
+    assert_restored_attempt_gameplay(&indexed, &game);
     pay(&mut game);
     assert_eq!(game.object_view(source).zone, Zone::Graveyard);
     let packet = game.state.stack.last().unwrap();

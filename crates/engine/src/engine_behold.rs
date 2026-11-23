@@ -65,82 +65,7 @@ impl Game {
         self.continue_announcement_choices(false);
     }
     pub(super) fn behold_announcement_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
-        if self.cast_requires_target_payment(a.item.controller, a.item.source.unwrap().card) {
-            return self.target_payment_announcement_fundable(a, cost);
-        }
-        if a.item.mode.is_none()
-            && let Some(modes) = a.item.modes()
-        {
-            return modes.iter().enumerate().any(|(index, mode)| {
-                let mut proposal = a.clone();
-                proposal.item.mode = Some(u16::try_from(index).expect("mode index"));
-                proposal.plan = mode.targets;
-                self.behold_announcement_fundable(&proposal, cost)
-            });
-        }
-        if a.needs_bargain() {
-            return [false, true].into_iter().any(|pay| {
-                let mut proposal = a.clone();
-                proposal.item.cast.as_mut().unwrap().bargain = Some(pay);
-                self.behold_announcement_fundable(&proposal, cost)
-            });
-        }
-        if a.has_ordered_origin_payment() && a.needs_evidence() {
-            return [false, true].into_iter().any(|pay| {
-                let mut proposal = a.clone();
-                proposal.item.cast.as_mut().unwrap().evidence = Some(pay);
-                self.behold_announcement_fundable(&proposal, cost)
-            });
-        }
-        let mut proposal = a.clone();
-        proposal.cost = Some(cost);
-        if (a.has_ordered_origin_payment() || a.has_ordered_life_cost())
-            && a.forage.is_none()
-            && let Some(spec) = proposal
-                .additional_cost()
-                .filter(|&spec| forage::is_forage_cost(spec))
-        {
-            return [
-                ForageRoute::Food,
-                ForageRoute::ExileThree,
-                ForageRoute::Black,
-            ]
-            .into_iter()
-            .any(|route| {
-                if route == ForageRoute::Black && spec.kind != EffectChoiceKind::ForageOrBlack {
-                    return false;
-                }
-                proposal.forage = Some(Box::new(forage::ForageSelection {
-                    route: Some(route),
-                    selected: Vec::new(),
-                    skip_to: 0,
-                }));
-                self.behold_announcement_fundable(&proposal, cost)
-            });
-        }
-        proposal.cast_costs.get_or_insert_with(Default::default);
-        proposal.initialize_cast_costs(convoke::cost_potential(
-            self,
-            proposal.item.source.unwrap().card,
-        ));
-        let plan = if proposal.plan == TargetPlan::NONE {
-            self.target_spec(&proposal.item)
-        } else {
-            proposal.plan
-        };
-        let Some(total) = self.target_proposal_total(
-            &proposal,
-            Self::announcement_base_cost(&proposal),
-            plan,
-            None,
-            false,
-            Self::announcement_optional_reduction(&proposal),
-        ) else {
-            return false;
-        };
-        // This shared proposal funder installs the same complete cost context;
-        // no Harmonize reduction is applied when its selected object is absent.
-        self.harmonize_proposal_fundable(&proposal, None, total)
+        self.target_payment_announcement_fundable(a, cost)
     }
     pub(super) fn behold_timing_required(&self, item: &SpellView) -> bool {
         let Some(source) = item.source else {
@@ -167,20 +92,11 @@ impl Game {
                 && self.state.stack.is_empty())
     }
     pub(super) fn behold_intent_fundable(&self, a: &Announcement, pay: bool) -> bool {
-        if !pay && a.behold_required {
-            return false;
-        }
-        let mut proposal = a.clone();
-        proposal.item.cast.as_mut().expect("cast receipt").beheld = Some(pay);
-        // Intent precedes the mana equivalent; preview all permitted equivalents.
-        proposal.cost = None;
-        proposal.initialize_cast_costs(convoke::cost_potential(
-            self,
-            proposal.item.source.unwrap().card,
-        ));
-        proposal
-            .cost_options()
-            .any(|cost| self.announcement_cost_fundable(&proposal, cost))
+        a.item
+            .source
+            .and_then(|source| source.card.behold_cast())
+            .is_some()
+            && (pay || !a.behold_required)
     }
     pub(super) fn choose_cast_behold(&mut self, pay: bool) {
         self.state

@@ -86,7 +86,7 @@ fn cargo_mana_pays_only_for_artifact_spells_and_abilities_of_artifacts() {
     let giant = put(&mut parent, player, "Hill Giant", Zone::Hand);
 
     parent.state.players[player.index()].mana = [0, 0, 0, 1, 0, 2];
-    reject(&mut parent, Action::AnnounceCast { card: giant });
+    admit(&parent, Action::AnnounceCast { card: giant });
     parent.state.players[player.index()].mana = COLORLESS;
     let mut cast_branch = parent.clone();
     act(&mut cast_branch, Action::AnnounceCast { card: artifact });
@@ -97,14 +97,14 @@ fn cargo_mana_pays_only_for_artifact_spells_and_abilities_of_artifacts() {
     assert_eq!(cast_branch.state.players[player.index()].mana, [0; 6]);
 
     parent.state.players[player.index()].mana = [0; 6];
-    reject(&mut parent, activate(bearer));
+    admit(&parent, activate(bearer));
     act(&mut parent, ship_mana(source));
     assert_eq!(parent.state.players[player.index()].mana, COLORLESS);
     assert_eq!(
         parent.observe(player).mana_lots[0].restriction,
         ManaRestrictionView::ArtifactSpellOrArtifactActivation
     );
-    reject(&mut parent, activate(bearer));
+    admit(&parent, activate(bearer));
     act(&mut parent, activate(boots));
     act(
         &mut parent,
@@ -177,7 +177,7 @@ fn realm_grants_fundable_mana_to_other_permanents_through_ability_layers() {
         AnimationDuration::EndOfTurn,
     );
     reject(&mut removed, tap(artifact));
-    reject(&mut removed, Action::AnnounceCast { card: shock });
+    admit(&removed, Action::AnnounceCast { card: shock });
     let mut departed = parent.clone();
     departed.move_object(grantor, Zone::Graveyard);
     reject(&mut departed, tap(artifact));
@@ -248,7 +248,7 @@ fn town_discount_uses_other_controlled_towns_in_projection_and_payment() {
     let available = [0, 1, 0, 0, 1, 4];
     game.state.players[player.index()].mana = available;
     assert!(game.has_subtype(source, "Town"));
-    reject(&mut game, activate(source));
+    admit(&game, activate(source));
     let other = put(
         &mut game,
         player,

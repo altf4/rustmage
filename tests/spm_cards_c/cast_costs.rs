@@ -76,7 +76,19 @@ fn goblinoids_and_islanders_require_an_actual_discard_and_pay_their_printed_mayh
         discard_for_mayhem(&mut game, player, card);
         reject(&mut game, Action::AnnounceMayhem { card: milled });
         game.state.players[player.index()].mana = [0, 0, 0, 1, 0, generic - 1];
-        reject(&mut game, Action::AnnounceMayhem { card });
+        admit(&game, Action::AnnounceMayhem { card });
+        let mut short = game.clone();
+        act(&mut short, Action::AnnounceMayhem { card });
+        assert!(short.mana_payment_domain().is_none());
+        reject(
+            &mut short,
+            Action::PayCosts {
+                payment: [0, 0, 0, 1, 0, generic - 1],
+            },
+        );
+        recover_failed_cost(&mut short, AttemptFailureReason::UnsatisfiedMana);
+        assert_eq!(short.object_ref(card), game.object_ref(card));
+        assert_eq!(short.object_view(card).zone, Zone::Graveyard);
         game.state.players[player.index()].mana[5] += 1;
         mayhem(&mut game, card, None);
         settle(&mut game);
@@ -255,7 +267,17 @@ fn web_slinger_can_return_the_stolen_creature_that_funded_the_cast() {
     let card = put(&mut game, player, "Spider-Man, Web-Slinger", Zone::Hand);
     game.state.players[player.index()].mana = [0; 6];
     let action = web_action(card, WHITE, 0);
-    reject(&mut game, action.clone());
+    admit(&game, action.clone());
+    let mut short = game.clone();
+    act(&mut short, action.clone());
+    assert!(short.mana_payment_domain().is_none());
+    reject(&mut short, Action::PayCosts { payment: WHITE });
+    act(&mut short, Action::BeginOrderedCosts);
+    choose_cast_clause(&mut short, |clause| clause == CastCostClause::Mana);
+    recover_failed_cost(&mut short, AttemptFailureReason::UnsatisfiedMana);
+    assert_eq!(short.object_ref(funder), game.object_ref(funder));
+    assert_eq!(short.object_view(funder).controller, owner);
+    assert_eq!(short.object_view(card).zone, Zone::Hand);
     let object = game.object_ref(funder);
     game.change_controller(object, player);
     game.state.objects[funder as usize].summoning_sick = false;

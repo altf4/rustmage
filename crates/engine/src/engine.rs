@@ -300,6 +300,19 @@ pub use gift::{GiftContext, GiftDeclaration};
 pub mod observation_schema;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub const OBSERVATION_SCHEMA: u32 = observation_schema::VERSION;
+/// Choices validate the next supplied step, without proving payment completion.
+pub const ACTION_CONTRACT: &str = "staged_attempts_v1";
+#[path = "engine_auto_tap.rs"]
+mod auto_tap;
+#[path = "engine_auto_tap_solver.rs"]
+mod auto_tap_solver;
+pub use auto_tap::{AutoTapFollowUp, AutoTapOptions, AutoTapResult, AutoTapStatus};
+#[path = "engine_attempts.rs"]
+pub mod attempts;
+pub use attempts::{
+    AttemptDrawView, AttemptFailureReason, AttemptOutcome, AttemptOutcomeView, AttemptStage,
+    AttemptView,
+};
 #[doc(hidden)]
 #[path = "engine_attack_trigger_observers.rs"]
 pub mod attack_trigger_observers;
@@ -324,7 +337,9 @@ pub mod tiered;
 #[doc(hidden)]
 #[path = "engine_warp.rs"]
 pub mod warp;
-pub use cast_payments::{CastPaymentEvent, ManaPaymentDomain};
+pub use cast_payments::{
+    CastPaymentEvent, ManaPaymentAction, ManaPaymentChoice, ManaPaymentDomain,
+};
 pub use earthbend::EarthbendReturnView;
 pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView, OwnTurnDeadline};
 pub use plot::{ForetoldCardView, PlotPaymentView, PlottedCard};
@@ -460,6 +475,12 @@ pub use turn_callbacks::{TurnCallbackExpiry, TurnCallbackView};
 #[doc(hidden)]
 #[path = "engine_nonmana_x.rs"]
 pub mod nonmana_x;
+#[path = "engine_payment_capacity.rs"]
+mod payment_capacity;
+#[path = "engine_proposal_affordability.rs"]
+mod proposal_affordability;
+#[path = "engine_proposal_price.rs"]
+mod proposal_price;
 #[doc(hidden)]
 #[path = "engine_scalar_x.rs"]
 pub mod scalar_x;
@@ -1032,10 +1053,18 @@ define_actions! {
     ChooseBeholdType { creature_type: Option<crate::cards::CreatureType> },
     PayConspire { objects: [ObjectRef; 2] },
     ChooseCastCost {clause:u16},
+    // Close this attempt's mana-generation window before paying costs.
+    EndManaWindow,
+    // Submit the current concrete attempt for completion or failed-action recovery.
+    SubmitAttempt,
+    // Clear only unpaid provisional selections in the current attempt.
+    ResetCostSelection,
+    ChooseConspireObject { object: ObjectRef },
     PayCasualty {object:ObjectRef},
     ChooseBargain {
         sacrifice: Option<ObjectRef>,
     },
+    DeclareBargain { pay: bool },
     ChooseX { value: u32 },
     ChooseSourceCounterAmount { amount: u64 },
     ChooseKicker {
@@ -3443,9 +3472,11 @@ impl Pending {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    proposal_affordability: bool,
     outside_game: Option<Box<OutsideGameState>>,
     library_top: Option<Box<library_top::LibraryTopState>>,
     cast_rollback: Option<Box<cast_rollback::CastRollback>>,
+    last_attempt_outcome: [Option<AttemptOutcomeView>; 2],
     paradigm: Option<Box<paradigm::ParadigmState>>,
     linked_choices: Option<Box<linked_choices::ChoiceState>>,
     combat_rules: Option<Box<combat_allocations::CombatRulesState>>,
@@ -4240,12 +4271,15 @@ pub struct TargetCounterRemovalView {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Serialize)]
 pub struct LegalActionSpace {
+    pub action_contract: &'static str,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub counter_removal: Option<CounterRemovalDomain>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_counter_choice: Option<SourceCounterChoiceView>,
     pub mana_lot_spend: Option<ManaLotSpendRange>,
     pub mana_payment: Option<ManaPaymentDomain>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub special_mana_payments: Vec<ManaPaymentChoice>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mana_split: Option<ManaSplitChoiceView>,
     pub choices: Vec<Action>,
@@ -4265,6 +4299,14 @@ pub struct KeywordChoiceView {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    /// This contract permits attempts whose remaining payment cannot complete.
+    pub action_contract: &'static str,
+    /// This game omits proposals with a proven payment shortage.
+    #[serde(skip_serializing_if = "is_false")]
+    pub proposal_affordability: bool,
+    pub attempt: Option<AttemptView>,
+    pub last_attempt_outcome: Option<AttemptOutcomeView>,
+    pub attempt_draws: Vec<AttemptDrawView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub outside_choice: Option<outside_choices::OutsideChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4416,6 +4458,10 @@ pub struct Observation {
     pub copied_saga_lore: Option<CopiedSagaLoreView>,
     /// Complete exact numeric cost-payment space, visible only to its actor.
     pub mana_payment: Option<ManaPaymentDomain>,
+    /// Full face-up, Room, plot/foretell, or resolution allocation domains.
+    /// Visible only to the actor and players sharing their information.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub special_mana_payments: Vec<ManaPaymentChoice>,
     pub endure_choice: Option<EndureChoiceView>,
     pub convoke_choice: Option<ConvokeChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4665,6 +4711,17 @@ pub struct Observation {
 impl Game {
     pub fn new(config: Config) -> Result<Self, Error> {
         Self::new_inner(config, None)
+    }
+
+    /// Construct a game that omits provably unaffordable spell and ability
+    /// proposals from the priority menu.
+    pub fn new_with_proposal_affordability(config: Config) -> Result<Self, Error> {
+        Self::new(config).map(|game| game.with_proposal_affordability(true))
+    }
+
+    pub(crate) fn with_proposal_affordability(mut self, enabled: bool) -> Self {
+        self.state.proposal_affordability = enabled;
+        self
     }
 
     pub fn new_with_outside(config: Config, outside: OutsideGameConfig) -> Result<Self, Error> {
@@ -4917,6 +4974,7 @@ impl Game {
         let mut game = Self {
             revision: 0,
             state: State {
+                proposal_affordability: false,
                 outside_game: outside.map(|value| {
                     Box::new(OutsideGameState {
                         mode: value.mode,
@@ -4930,6 +4988,7 @@ impl Game {
                 }),
                 library_top: None,
                 cast_rollback: None,
+                last_attempt_outcome: [None; 2],
                 paradigm: None,
                 ending_turn: false,
                 turn_skips: None,
@@ -5262,13 +5321,17 @@ impl Game {
         self.semantic_actor().map(|p| self.decision_controller(p))
     }
 
-    /// Complete legal space, including damage assignments and scalar-X intervals.
+    /// Admissible next choices and parameter domains. Games with the
+    /// affordability check enabled omit proposals with a proven payment
+    /// shortage. A proposal may still fail during declaration or payment.
     pub fn legal_action_space(&self) -> LegalActionSpace {
         LegalActionSpace {
+            action_contract: ACTION_CONTRACT,
             counter_removal: self.counter_removal_domain(),
             source_counter_choice: self.source_counter_choice(),
             mana_lot_spend: self.mana_lot_spend_range(),
             mana_payment: self.mana_payment_domain(),
+            special_mana_payments: self.special_mana_payments(),
             mana_split: self.mana_split_choice(),
             choices: self.legal_actions(),
             x_choice: self.x_choice(),
@@ -5298,7 +5361,8 @@ impl Game {
             maximum: choice.remaining,
         })
     }
-    /// Reuse a caller-owned buffer of concrete indexed choices. Numeric ranges
+    /// Reuse a caller-owned buffer of admissible indexed next steps. Future
+    /// payment completion is not proved. Numeric ranges
     /// up to 64 wide are exhaustive; larger numeric domains provide bounded
     /// representatives. Use legal_action_space for the complete parametric space.
     pub fn legal_actions_into(&self, out: &mut Vec<Action>) {
@@ -5458,13 +5522,19 @@ impl Game {
             if self.semantic_actor() != Some(actor) {
                 return Err(Error::WrongActor);
             }
-            let legal = if let Action::PayCosts { payment } = &action {
+            let legal = if let Action::TapMana { card }
+            | Action::TapGrantedMana { card, .. }
+            | Action::ActivateMana { card, .. } = &action
+                && matches!(self.state.pending, Pending::PayCosts { .. })
+                && self.state.entry_batch.is_none()
+                && self.state.replacements.is_none()
+            {
+                self.supplied_window_mana_action(*card, &action)
+            } else if let Action::PayConspire { objects } = &action {
+                self.conspire_payment_valid(*objects)
+            } else if let Action::PayCosts { payment } = &action {
                 self.mana_payment_domain()
                     .is_some_and(|d| d.contains(*payment))
-                    && self.mana_parent_fundable(
-                        self.state.announcing.as_ref().and_then(|a| a.additional),
-                        Some(*payment),
-                    )
             } else if let Action::PayAttackCost { payment } | Action::PayBlockCost { payment } =
                 &action
             {
@@ -5474,6 +5544,15 @@ impl Game {
                         && self
                             .mana_payment_domain()
                             .is_some_and(|d| d.contains(*payment))
+                })
+            } else if let Action::PayFaceUp { payment }
+            | Action::PayRoomUnlock { payment }
+            | Action::PayPlot { payment }
+            | Action::PayForetell { payment }
+            | Action::PayResolutionMana { payment } = &action
+            {
+                self.special_mana_payments().into_iter().any(|choice| {
+                    choice.action.action(*payment) == action && choice.domain.contains(*payment)
                 })
             } else if let Action::ChooseCounterRemoval { counters } = &action {
                 self.counter_removal_domain()
@@ -5536,6 +5615,11 @@ impl Game {
                     && self.state.room_unlock_payment().is_none()
                     && self.state.combat_payment.is_none()
                 {
+                    self.finish_cast_mana_action();
+                    self.clear_finished_cast_rollback();
+                    if self.miracle_choice_pending() {
+                        break;
+                    }
                     self.state_based_actions();
                     if self.state.entry_batch.is_some() {
                         continue;
@@ -5549,72 +5633,8 @@ impl Game {
             }
         }
         self.finish_cast_mana_action();
-        if self.foreign_cast_choice_pending()
-            && !(self
-                .state
-                .cast_rollback
-                .as_ref()
-                .is_some_and(|r| r.capture.is_some())
-                && (self.state.entry_batch.is_some()
-                    || self.state.replacements.is_some()
-                    || self.mana_tap_bonus_pending()
-                    // CR605: finish the owned mana ability, including its late
-                    // color/allocation choice, before reversing its parent cast.
-                    || (matches!(self.state.pending, Pending::EffectMana { .. })
-                        && self.state.announcing.as_ref().is_some_and(|a| a.mana_output.is_some()))))
-        {
-            let fundable = if self.state.announcing.is_some() {
-                self.current_cast_costs_fundable()
-            } else if let Some(payment) = &self.state.combat_payment {
-                self.combat_tax_fundable(payment.player, payment.generic)
-            } else if self.face_up_payment().is_some() {
-                self.face_up_payment_fundable()
-            } else if let Some(request) = self.plot_payment().filter(|request| request.foretell) {
-                self.plot_payment_fundable(*request)
-            } else if let Some(request) = self.state.room_unlock_payment() {
-                self.can_fund_room_unlock(request)
-            } else {
-                self.current_cast_costs_fundable()
-            };
-            self.finish_cast_rollback(fundable);
-        }
-        if matches!(
-            self.state.pending,
-            Pending::AttackPayment { .. } | Pending::BlockPayment { .. }
-        ) && self
-            .state
-            .combat_payment
-            .as_ref()
-            .is_some_and(|p| !self.combat_tax_fundable(p.player, p.generic))
-        {
-            self.finish_cast_rollback(false);
-        }
-        if matches!(self.state.pending, Pending::FaceUpPayment { .. })
-            && self.state.entry_batch.is_none()
-            && self.state.replacements.is_none()
-            && !self.face_up_payment_fundable()
-        {
-            self.finish_cast_rollback(false);
-        }
-        if matches!(self.state.pending, Pending::PlotPayment { .. })
-            && self.state.entry_batch.is_none()
-            && self.state.replacements.is_none()
-            && self
-                .plot_payment()
-                .is_some_and(|request| request.foretell && !self.plot_payment_fundable(*request))
-        {
-            self.finish_cast_rollback(false);
-        }
-        if matches!(self.state.pending, Pending::RoomUnlockPayment { .. })
-            && self.state.entry_batch.is_none()
-            && self.state.replacements.is_none()
-            && self
-                .state
-                .room_unlock_payment()
-                .is_some_and(|request| !self.can_fund_room_unlock(request))
-        {
-            self.finish_cast_rollback(false);
-        }
+        // Failure is an explicit attempt transition. Post-step processing never
+        // searches alternative future payments after a mandatory choice.
         self.finish_library_visibility();
         self.clear_finished_cast_rollback();
         self.refresh_copy_grant_availability();
@@ -5648,9 +5668,7 @@ impl Game {
     fn visit_actions(&self, mut emit: impl FnMut(Action) -> bool) -> bool {
         if self.state.entry_batch.is_some() {
             return self.visit_unfiltered_actions(&mut |action| {
-                self.mana_action_payable(&action)
-                    && self.cast_entry_action_fundable(&action)
-                    && emit(action)
+                self.mana_action_payable(&action) && emit(action)
             });
         }
         if self.state.mana_lots.is_none() {
@@ -5670,10 +5688,9 @@ impl Game {
         if emit(Action::Concede) {
             return true;
         }
-        // This query is read-only: identical fixed spell costs share a funding
-        // result. Cache capacity affects work only, never the admitted action set.
-        type SpellFundingCacheEntry = (Mana, u32, Card, bool, bool);
-        let mut spell_funding_cache: [Option<SpellFundingCacheEntry>; 8] = [None; 8];
+        if self.visit_attempt_controls(&mut emit) {
+            return true;
+        }
         match s.pending {
             Pending::OutsideEntryReplacement { .. } => {
                 if self.visit_outside_entry_replacements(&mut emit) {
@@ -6379,6 +6396,16 @@ impl Game {
                 }
             }
             Pending::AdditionalCost { .. } => {
+                // Nonmana materials may be created or made usable by an
+                // actual mana ability before the locked payment is committed.
+                if s.announcing.as_ref().is_some_and(|a| {
+                    a.total_cost.is_some_and(|cost| {
+                        cost.generic != 0 || cost.colored.into_iter().any(|amount| amount != 0)
+                    })
+                }) && self.visit_local_mana_abilities(&mut emit)
+                {
+                    return true;
+                }
                 if s.announcing.as_ref().unwrap().paying_origin_discard() {
                     return self.visit_origin_discard_cost(&mut emit);
                 }
@@ -6553,6 +6580,18 @@ impl Game {
                 if emit(Action::Pass) {
                     return true;
                 }
+                let affordability = self
+                    .state
+                    .proposal_affordability
+                    .then(|| proposal_affordability::ProposalAffordability::for_player(self, actor))
+                    .flatten();
+                let mut emit_affordable = |action| {
+                    affordability
+                        .as_ref()
+                        .is_none_or(|bounds| bounds.may_be_affordable(self, &action))
+                        && emit(action)
+                };
+                let mut emit: &mut dyn FnMut(Action) -> bool = &mut emit_affordable;
                 let sorcery = actor == s.active
                     && matches!(s.step, Step::Main1 | Step::Main2)
                     && s.stack.is_empty();
@@ -6639,6 +6678,9 @@ impl Game {
                 }
                 for (i, obj) in s.objects.iter().enumerate() {
                     let card = i as CardId;
+                    if self.attempt_draw_is_face_down(self.object_ref(card)) {
+                        continue;
+                    }
                     // An opposing attachment can grant an ability to this
                     // actor's permanent. The grant checks the recipient's
                     // controller; ordinary source actions keep their own filter.
@@ -7267,6 +7309,9 @@ impl Game {
                             continue;
                         }
                         if completable
+                            && obj.card.cost_options().any(|cost| {
+                                self.spell_immediate_cost_available(actor, obj.card, cost)
+                            })
                             && !self.scalar_x_intervals(actor, card).is_empty()
                             && emit(if exile {
                                 Action::AnnounceExile { card }
@@ -7288,93 +7333,25 @@ impl Game {
                         .then(|| obj.card.impending_spec().map(|spec| spec.cost))
                         .flatten();
                     let costs = costs.chain(impending_cost);
-                    let reduction = if completable {
-                        let has_generic = costs.clone().any(|cost| cost.generic != 0);
-                        self.direct_spell_reduction(actor, card, has_generic)
-                    } else {
-                        Default::default()
-                    };
-                    if completable {
-                        let can_fund = costs.into_iter().any(|cost| {
-                            if !self.spell_cost_option_available(actor, card, cost) {
-                                return false;
-                            }
-                            if obj.card.blight().is_some() {
-                                return self.blight_initial_fundable(actor, card, cost);
-                            }
-                            if obj.card.teamwork().is_some() {
-                                return self.teamwork_initial_fundable(actor, card, cost);
-                            }
-                            if obj.card.tiered_costs().is_some() {
-                                return self.tiered_initial_fundable(actor, card, cost);
-                            }
-                            if target_cost {
-                                return self.initial_target_cost_fundable(actor, card, cost);
-                            }
-                            if obj.card.collect_evidence_cost().is_some() {
-                                return self.evidence_cast_fundable(actor, card, cost, false)
-                                    || self.evidence_cast_fundable(actor, card, cost, true);
-                            }
-                            if obj.card.has_bargain() {
-                                return self.initial_bargain_fundable(actor, card, cost);
-                            }
-                            // Object-specific mana permissions cannot share the
-                            // printed-definition-only prefunding cache.
-                            if self.spell_generic_tax(actor, card, self.effective_spell_card(card))
-                                != 0
-                                || self.foreign_stash(actor, card)
-                                || self.exile_cast_modifiers(actor, card).0
-                                || convoke::potential(self, obj.card)
-                                || improvise::potential(self, obj.card)
-                                || delve::potential(self)
-                                || obj.card.additional_cost().is_some()
-                            {
-                                return self.spell_can_fund(actor, card, cost);
-                            }
-                            let ManaCost { colored, generic } = reduction.apply_to_printed(cost);
-                            let own_hand = obj.zone == Zone::Hand && obj.owner == actor;
-                            let cached = spell_funding_cache
-                                .iter()
-                                .flatten()
-                                .find(|(required, amount, definition, from_hand, _)| {
-                                    *required == colored
-                                        && *amount == generic
-                                        && *definition == obj.card
-                                        && *from_hand == own_hand
-                                })
-                                .map(|(_, _, _, _, result)| *result);
-                            if let Some(result) = cached {
-                                result
-                            } else {
-                                let result = self.can_fund_for(
-                                    FundingGoal {
-                                        reserve: None,
-                                        actor,
-                                        required: colored,
-                                        generic,
-                                        source: None,
-                                    },
-                                    self.spell_mana_purpose_for_card(actor, card, obj.card),
-                                );
-                                if let Some(slot) =
-                                    spell_funding_cache.iter_mut().find(|slot| slot.is_none())
-                                {
-                                    *slot = Some((colored, generic, obj.card, own_hand, result));
-                                }
-                                result
-                            }
-                        });
-                        if can_fund
-                            && emit(if flashback {
-                                Action::AnnounceFlashback { card }
-                            } else if exile {
-                                Action::AnnounceExile { card }
-                            } else {
-                                Action::AnnounceCast { card }
-                            })
-                        {
-                            return true;
-                        }
+                    let reduction = self.direct_spell_reduction(
+                        actor,
+                        card,
+                        costs.clone().any(|cost| cost.generic != 0),
+                    );
+                    if completable
+                        && costs.clone().any(|cost| {
+                            self.spell_cost_option_available(actor, card, cost)
+                                && self.spell_immediate_cost_available(actor, obj.card, cost)
+                        })
+                        && emit(if flashback {
+                            Action::AnnounceFlashback { card }
+                        } else if exile {
+                            Action::AnnounceExile { card }
+                        } else {
+                            Action::AnnounceCast { card }
+                        })
+                    {
+                        return true;
                     }
                     if self.cave_payment_requires_announcement(actor, obj.card)
                         || impending_cost.is_some()
@@ -7538,12 +7515,7 @@ impl Game {
                 {
                     return true;
                 }
-                if !s.selected_attackers.is_empty()
-                    && (self.global_attack_requirements() != [0; 2]
-                        || self.has_attack_tax_provider()
-                        || self.has_planeswalker_attack_limit_provider())
-                    && emit(Action::CancelAttackDeclaration)
-                {
+                if !s.selected_attackers.is_empty() && emit(Action::CancelAttackDeclaration) {
                     return true;
                 }
                 let company = self.has_combat_company_rule(actor);
@@ -7626,8 +7598,7 @@ impl Game {
                 {
                     return true;
                 }
-                if tax != 0 && !s.selected_blocks.is_empty() && emit(Action::CancelBlockDeclaration)
-                {
+                if !s.selected_blocks.is_empty() && emit(Action::CancelBlockDeclaration) {
                     return true;
                 }
                 for (i, _) in s.objects.iter().enumerate() {
@@ -7638,10 +7609,7 @@ impl Game {
                         continue;
                     }
                     for attacker in &s.attackers {
-                        if self.can_block_pair(blocker, attacker.card)
-                            && self
-                                .minimum_block_declaration_with(blocker, attacker.card, tax != 0)
-                                .is_some_and(&mut fundable)
+                        if self.block_choice_admissible(blocker, attacker.card)
                             && emit(Action::Block {
                                 blocker,
                                 attacker: attacker.card,
@@ -7756,7 +7724,14 @@ impl Game {
                 return self.visit_casualty_payments(&mut emit);
             }
             Pending::Bargain { .. } => {
-                return self.visit_bargain_choices(s.announcing.as_ref().unwrap(), |sacrifice| {
+                let a = s.announcing.as_ref().unwrap();
+                for pay in [false, true] {
+                    if self.bargain_intent_available(a, pay) && emit(Action::DeclareBargain { pay })
+                    {
+                        return true;
+                    }
+                }
+                return self.visit_bargain_choices(a, |sacrifice| {
                     emit(Action::ChooseBargain { sacrifice })
                 });
             }
@@ -7964,19 +7939,16 @@ impl Game {
                                 announcement.group,
                                 &announcement.item.targets,
                                 target,
-                            ) && self.shared_type_target_completion(announcement, target)
-                                && !announcement.item.targets.iter().any(|bound| {
-                                    bound.group == announcement.group && bound.target == target
-                                })
-                                && self.announcement_target_fundable(
-                                    announcement,
-                                    None,
-                                    None,
-                                    None,
-                                    Some(target),
-                                    false,
-                                )
-                                && emit(Action::ChooseTarget { target })
+                            ) && !announcement.item.targets.iter().any(|bound| {
+                                bound.group == announcement.group && bound.target == target
+                            }) && self.announcement_target_fundable(
+                                announcement,
+                                None,
+                                None,
+                                None,
+                                Some(target),
+                                false,
+                            ) && emit(Action::ChooseTarget { target })
                         },
                     );
                 }
@@ -9427,6 +9399,10 @@ impl Game {
                 contribution,
             } => self.choose_convoker(object, contribution),
             Action::ChooseManaRollback { keep } => self.choose_mana_rollback(keep),
+            Action::EndManaWindow => self.end_attempt_mana_window(),
+            Action::SubmitAttempt => self.submit_attempt(),
+            Action::ResetCostSelection => self.reset_attempt_cost_selection(),
+            Action::ChooseConspireObject { object } => self.choose_conspire_object(object),
             Action::PayCosts { payment } => {
                 let a = self.state.announcing.as_mut().unwrap();
                 a.payment = Some(payment);
@@ -9665,6 +9641,7 @@ impl Game {
             Action::ChooseCastCost { clause } => self.choose_cast_cost(clause),
             Action::PayCasualty { object } => self.pay_casualty_clause(object),
             Action::ChooseBargain { sacrifice } => self.choose_bargain(sacrifice),
+            Action::DeclareBargain { pay } => self.declare_bargain(pay),
             Action::ChooseMobilizeDefender { defender } => self.choose_mobilize_defender(defender),
             Action::ChooseBlight { pay } => self.choose_blight(pay),
             Action::PayBlight { object } => self.pay_blight(object),
@@ -10510,6 +10487,7 @@ impl Game {
             Some(id) => {
                 let event = self.move_object(id, Zone::Hand);
                 if event.moved && event.destination == Zone::Hand {
+                    self.record_attempt_draw(event.after);
                     self.card_drawn(p, event.after);
                     self.offer_miracle_reveal(p, id);
                     true
@@ -11508,14 +11486,9 @@ impl Game {
                 && before.card
                     == Card::from_name("@face-down/disguise").expect("pinned catalogue identity"))
             && let Some(rollback) = &mut self.state.cast_rollback
-            && rollback
-                .before
-                .objects
-                .get(id as usize)
-                .is_some_and(|original| {
-                    original.zone == before.zone
-                        && original.generation == before.reference.generation
-                })
+            && rollback.knowledge_object(id).is_some_and(|original| {
+                original.zone == before.zone && original.generation == before.reference.generation
+            })
             && !rollback.obscured_hand_cards.contains(&id)
             && !rollback.public_hand_cards.contains(&id)
         {
@@ -12053,6 +12026,7 @@ impl Game {
             source.additional_triggers = 0;
             self.queue_trigger(&source, usize::from(ability));
         }
+        self.record_attempt_library_move(id, before.zone, destination);
         ZoneChange {
             was_card,
             was_face_down: manifested_physical.is_some(),
@@ -13081,7 +13055,8 @@ impl Game {
             .iter()
             .enumerate()
             .filter(|(i, o)| {
-                self.can_view_hideaway(viewer, self.object_ref(*i as CardId))
+                !self.attempt_draw_is_face_down(self.object_ref(*i as CardId))
+                    && self.can_view_hideaway(viewer, self.object_ref(*i as CardId))
                     && o.zone != Zone::Outside
                     && o.zone != Zone::Library
                     && (o.zone != Zone::Hand
@@ -13109,6 +13084,11 @@ impl Game {
             generic: p.generic,
         };
         Observation {
+            action_contract: ACTION_CONTRACT,
+            proposal_affordability: self.state.proposal_affordability,
+            attempt: self.attempt_view(viewer),
+            last_attempt_outcome: self.last_attempt_outcome_view(viewer),
+            attempt_draws: self.attempt_draws_view(viewer),
             outside_choice: self.outside_choice_view(viewer),
             legendary_split_search: self.legendary_split_view(viewer),
             outside_entry_replacement: self.outside_entry_replacement_view(viewer),
@@ -13256,6 +13236,11 @@ impl Game {
             inert_mana_copy_sources: self.inert_mana_copy_source_views(),
             mana_lot_spend: owns_choice.then(|| self.mana_lot_spend_range()).flatten(),
             mana_payment: owns_choice.then(|| self.mana_payment_domain()).flatten(),
+            special_mana_payments: if owns_choice {
+                self.special_mana_payments()
+            } else {
+                Vec::new()
+            },
             endure_choice: if owns_choice {
                 match s.pending {
                     Pending::Endure {

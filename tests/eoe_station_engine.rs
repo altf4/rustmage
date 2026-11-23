@@ -364,7 +364,7 @@ fn threshold_mana_can_fund_a_cast_only_while_the_source_qualifies() {
     let spell = put(&mut game, p, "Llanowar Elves", Zone::Hand);
     let announce = Action::AnnounceCast { card: spell };
     game.add_counter(ship, CounterKind::Charge, 1);
-    reject(&mut game, announce.clone());
+    admit(&game, announce.clone());
     game.add_counter(ship, CounterKind::Charge, 1);
     act(&mut game, announce);
     act(

@@ -175,11 +175,26 @@ fn discount_copies_and_applies_only_to_the_equips_generic_component() {
         counter_payment: Counters::default(),
     };
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 8];
-    assert!(!game.legal_actions().contains(&announce(successor.card, 0)));
+    admit(&game, announce(successor.card, 0));
     game.state.players[player.index()].mana = payment;
     let legal = game.legal_actions();
-    assert!(!legal.contains(&announce(original, 0)));
-    assert!(!legal.contains(&announce(successor.card, 1)));
+    for (card, ability) in [(original, 0), (successor.card, 1)] {
+        let mut unpaid = game.clone();
+        act(&mut unpaid, announce(card, ability));
+        if ability == 0 {
+            act(&mut unpaid, Action::ChooseTarget { target });
+        }
+        let request = unpaid.observe(player).payment_request.unwrap();
+        assert_eq!(request.generic, 3);
+        assert_eq!(request.required, [0, 0, 0, 1, 0, 0]);
+        reject(&mut unpaid, Action::PayCosts { payment });
+        act(&mut unpaid, Action::EndManaWindow);
+        act(&mut unpaid, Action::SubmitAttempt);
+        assert_eq!(
+            unpaid.last_attempt_outcome_view(player).unwrap().reason,
+            Some(AttemptFailureReason::UnsatisfiedMana)
+        );
+    }
     assert!(legal.contains(&direct(temporary)));
     assert!(legal.contains(&direct(successor)));
 

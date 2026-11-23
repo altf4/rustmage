@@ -227,9 +227,12 @@ fn signed_last_known_power_exiles_the_exact_top_cohort_and_offers_only_spell_fac
             .unwrap();
         act(&mut game, cast_x.clone());
         assert_eq!(game.snapshot(), indexed.snapshot());
+        let mut replay = game.clone();
+        replay.restore(&saved).unwrap();
         indexed.restore(&saved).unwrap();
+        act(&mut replay, cast_x.clone());
         act(&mut indexed, cast_x);
-        assert_eq!(game.snapshot(), indexed.snapshot());
+        assert_eq!(replay.snapshot(), indexed.snapshot());
         reject(&mut game, Action::ChooseX { value: 1 });
         finish_cast(&mut game, None, None);
         assert_eq!(game.state.stack.last().unwrap().x, Some(0));

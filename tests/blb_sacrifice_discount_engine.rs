@@ -61,7 +61,7 @@ fn declare_more_sacrifices_than_generic_and_pay_in_either_order() {
         root.state.objects[own_land as usize].tapped = true;
         let foe_food = put(&mut root, p.other(), "Candy Trail", Zone::Battlefield);
         let announce = Action::AnnounceCast { card: viper };
-        reject(&mut root, announce.clone());
+        admit(&root, announce.clone());
         cost.push(put(&mut root, p, "Candy Trail", Zone::Battlefield));
         cost.push(put(&mut root, p, "Short Bow", Zone::Battlefield));
         act(&mut root, announce);
@@ -69,12 +69,27 @@ fn declare_more_sacrifices_than_generic_and_pay_in_either_order() {
         assert_eq!(
             domain.intervals,
             vec![XInterval {
-                minimum: 3,
-                maximum: 4
+                minimum: 0,
+                maximum: u32::MAX
             }]
         );
-        reject(&mut root, Action::ChooseX { value: 2 });
-        reject(&mut root, Action::ChooseX { value: 5 });
+        let mut missing = root.clone();
+        act(&mut missing, Action::ChooseX { value: 5 });
+        act(&mut missing, Action::BeginOrderedCosts);
+        select_clause(&mut missing, CastCostClause::Additional);
+        act(&mut missing, Action::SubmitAttempt);
+        assert_eq!(
+            missing.last_attempt_outcome_view(p).unwrap().outcome,
+            AttemptOutcome::Failed
+        );
+        assert_eq!(
+            missing.last_attempt_outcome_view(p).unwrap().reason,
+            Some(AttemptFailureReason::UnsatisfiedMaterial)
+        );
+        assert!(
+            cost.iter()
+                .all(|&id| missing.object_view(id).zone == Zone::Battlefield)
+        );
 
         let declaration = Action::ChooseX { value: 4 };
         let before = root.snapshot();
@@ -82,17 +97,19 @@ fn declare_more_sacrifices_than_generic_and_pay_in_either_order() {
         let index = root
             .legal_actions()
             .iter()
-            .position(|a| *a == declaration)
+            .position(|a| *a == Action::ChooseX { value: 0 })
             .unwrap();
         let mut indexed = root.clone();
-        act(&mut root, declaration.clone());
+        act(&mut root, Action::ChooseX { value: 0 });
         indexed.apply_index(p, revision, index).unwrap();
         assert_eq!(root.snapshot(), indexed.snapshot());
+        root.restore(&before).unwrap();
         indexed.restore(&before).unwrap();
         assert_eq!(
             indexed.apply_index(p, revision, index),
             Err(Error::StaleRevision)
         );
+        act(&mut root, declaration.clone());
         act(&mut indexed, declaration);
         assert_eq!(root.snapshot(), indexed.snapshot());
         assert_eq!(root.state.announcing.as_ref().unwrap().item.x, None);
@@ -177,8 +194,8 @@ fn zero_sacrifices_and_tapping_a_later_sacrifice_are_legal_routes() {
         assert_eq!(
             discounted.x_choice().unwrap().intervals,
             vec![XInterval {
-                minimum: 2,
-                maximum: 2
+                minimum: 0,
+                maximum: u32::MAX
             }]
         );
         act(&mut discounted, Action::ChooseX { value: 2 });

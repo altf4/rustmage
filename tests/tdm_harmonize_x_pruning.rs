@@ -1,5 +1,5 @@
-//! Conservative mana capacity counts alternative ways to tap one exact source
-//! once. Exact funding still determines X, colors and shared cost participants.
+//! Legacy projection bounds remain white-box fixtures; live declarations use
+//! current legality, representation bounds and concrete payment validation.
 use crate::support::*;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
@@ -157,9 +157,10 @@ fn pruning_root_shape_seven_physical_taps_have_capacity_seven() {
 }
 
 #[test]
-fn pruning_root_shape_keeps_full_x_domain_and_exact_helper_frontier() {
+fn live_x_and_harmonizer_choices_do_not_search_future_funding() {
     let _rules = scope();
     for p in [Player::P0, Player::P1] {
+        Game::reset_payment_planning_work();
         let r = x_root(p);
         let start = Instant::now();
         let domain = r.game.x_choice().unwrap();
@@ -171,20 +172,16 @@ fn pruning_root_shape_keeps_full_x_domain_and_exact_helper_frontier() {
             domain.intervals,
             vec![XInterval {
                 minimum: 0,
-                maximum: 11
+                maximum: u32::MAX
             }]
         );
-        for (x, expected) in [
-            (
-                10,
-                vec![
-                    Some(r.providers[0]),
-                    Some(r.providers[1]),
-                    Some(r.converter),
-                ],
-            ),
-            (11, vec![Some(r.providers[0]), Some(r.providers[1])]),
-        ] {
+        let expected = vec![
+            None,
+            Some(r.providers[0]),
+            Some(r.providers[1]),
+            Some(r.converter),
+        ];
+        for x in [10, 11, 12, u32::MAX] {
             let mut a = r.game.state.announcing.as_ref().unwrap().clone();
             a.item.x = Some(x);
             let start = Instant::now();
@@ -206,6 +203,7 @@ fn pruning_root_shape_keeps_full_x_domain_and_exact_helper_frontier() {
             );
             assert_eq!(actual, expected);
         }
+        assert_eq!(Game::payment_planning_work(), Default::default());
     }
 }
 
@@ -363,13 +361,28 @@ fn pruning_linked_return_paths_keep_the_existing_optimistic_escape() {
     }
 }
 
-fn finish_root(r: &mut Root, p: Player, helper: CardId) {
+fn listed_action(game: &mut Game, action: Action, indexed: bool) {
+    if indexed {
+        let index = game
+            .legal_actions()
+            .iter()
+            .position(|candidate| *candidate == action)
+            .unwrap();
+        game.apply_index(game.actor().unwrap(), game.revision(), index)
+            .unwrap();
+    } else {
+        act(game, action);
+    }
+}
+
+fn finish_root(r: &mut Root, p: Player, helper: CardId, indexed: bool) {
     let object = r.game.object_ref(helper);
-    act(
+    listed_action(
         &mut r.game,
         Action::ChooseHarmonizer {
             object: Some(object),
         },
+        indexed,
     );
     for (i, &land) in r.lands.iter().enumerate() {
         let mut production = ZERO;
@@ -390,9 +403,15 @@ fn finish_root(r: &mut Root, p: Player, helper: CardId) {
                     || matches!(a, Action::TapMana { card } if *card == land)
             })
             .expect("exact land output");
-        act(&mut r.game, action);
+        listed_action(&mut r.game, action, indexed);
     }
-    pay(&mut r.game);
+    let payment = r
+        .game
+        .legal_actions()
+        .into_iter()
+        .find(|action| matches!(action, Action::PayCosts { .. }))
+        .unwrap();
+    listed_action(&mut r.game, payment, indexed);
     let clause = r
         .game
         .state
@@ -408,11 +427,12 @@ fn finish_root(r: &mut Root, p: Player, helper: CardId) {
             !row.paid && row.clause == CastCostClause::Harmonize(r.game.object_ref(helper))
         })
         .unwrap();
-    act(
+    listed_action(
         &mut r.game,
         Action::ChooseCastCost {
             clause: clause as u16,
         },
+        indexed,
     );
     settle(&mut r.game);
     assert_eq!(r.game.state.players[p.index()].mana, ZERO);
@@ -422,9 +442,10 @@ fn finish_root(r: &mut Root, p: Player, helper: CardId) {
 }
 
 #[test]
-fn pruning_owned_x_root_preserves_exact_actions_privacy_rollback_and_branches() {
+fn staged_x_root_preserves_representatives_payments_privacy_and_owned_branches() {
     let _rules = scope();
     for p in [Player::P0, Player::P1] {
+        Game::reset_payment_planning_work();
         let r = x_root(p);
         let start = Instant::now();
         let space = r.game.legal_action_space();
@@ -436,13 +457,13 @@ fn pruning_owned_x_root_preserves_exact_actions_privacy_rollback_and_branches() 
             space.x_choice.as_ref().unwrap().intervals,
             vec![XInterval {
                 minimum: 0,
-                maximum: 11
+                maximum: u32::MAX
             }]
         );
         assert_eq!(
             space.choices,
             std::iter::once(Action::Concede)
-                .chain((0..=11).map(|value| Action::ChooseX { value }))
+                .chain([0, u32::MAX / 2, u32::MAX].map(|value| Action::ChooseX { value }))
                 .collect::<Vec<_>>()
         );
         assert_eq!(r.game.observe(p).x_choice, space.x_choice);
@@ -450,7 +471,25 @@ fn pruning_owned_x_root_preserves_exact_actions_privacy_rollback_and_branches() 
         let action = Action::ChooseX { value: 11 };
         let revision = r.game.revision();
         let saved = r.game.snapshot();
-        let index = space.choices.iter().position(|a| *a == action).unwrap();
+        // Large domains expose representatives. Verify every indexed X, then
+        // submit the successful interior value through the raw scalar API.
+        let index = space
+            .choices
+            .iter()
+            .position(|a| *a == Action::ChooseX { value: 0 })
+            .unwrap();
+        for (choice_index, choice) in space
+            .choices
+            .iter()
+            .enumerate()
+            .filter(|(_, a)| matches!(a, Action::ChooseX { .. }))
+        {
+            let mut raw = r.game.clone();
+            let mut indexed = r.game.clone();
+            act(&mut raw, choice.clone());
+            indexed.apply_index(p, revision, choice_index).unwrap();
+            assert_eq!(raw.snapshot(), indexed.snapshot());
+        }
         let make = || Root {
             game: r.game.clone(),
             spell: r.spell,
@@ -468,15 +507,25 @@ fn pruning_owned_x_root_preserves_exact_actions_privacy_rollback_and_branches() 
             Err(Error::WrongActor)
         );
         assert_eq!(raw.game.snapshot(), saved);
-        reject(&mut raw.game, Action::ChooseX { value: 12 });
+        assert_eq!(raw.game.revision(), revision);
+        let mut unfunded = raw.game.clone();
+        act(&mut unfunded, Action::ChooseX { value: 12 });
+        act(&mut unfunded, Action::ChooseHarmonizer { object: None });
+        act(&mut unfunded, Action::EndManaWindow);
+        act(&mut unfunded, Action::SubmitAttempt);
+        assert_eq!(
+            unfunded.last_attempt_outcome_view(p).unwrap().outcome,
+            AttemptOutcome::Failed
+        );
+        assert_eq!(unfunded.object_view(raw.spell).zone, Zone::Graveyard);
         raw.game.apply(p, action.clone()).unwrap();
-        indexed.game.apply_index(p, revision, index).unwrap();
+        indexed.game.apply(p, action.clone()).unwrap();
         act(&mut sibling.game, action.clone());
         let a = raw.providers[0];
         let b = sibling.providers[1];
-        finish_root(&mut raw, p, a);
-        finish_root(&mut indexed, p, a);
-        finish_root(&mut sibling, p, b);
+        finish_root(&mut raw, p, a, false);
+        finish_root(&mut indexed, p, a, true);
+        finish_root(&mut sibling, p, b, false);
         assert_eq!(raw.game.snapshot(), indexed.game.snapshot());
         assert!(!raw.game.object_view(b).tapped && !sibling.game.object_view(a).tapped);
         for child in [&raw, &indexed, &sibling] {
@@ -503,8 +552,9 @@ fn pruning_owned_x_root_preserves_exact_actions_privacy_rollback_and_branches() 
             Err(Error::StaleRevision)
         );
         act(&mut indexed.game, action);
-        finish_root(&mut indexed, p, a);
+        finish_root(&mut indexed, p, a, true);
         assert_eq!(raw.game.snapshot(), indexed.game.snapshot());
+        assert_eq!(Game::payment_planning_work(), Default::default());
     }
 }
 

@@ -201,18 +201,32 @@ fn a_mana_payment_cannot_consume_its_only_legendary_grant() {
     let victim = target_spell(&mut game, player);
     game.state.players[player.index()].mana = [0; 6];
 
-    // This Aura can pay U by sacrificing itself, but that would remove the
-    // only legendary creature witness from the resulting funding world.
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    // The Aura's supplied mana payment may strand the parent's selected cost.
+    admit(&game, Action::AnnounceCast { card: spell });
     let mut primary = game.clone();
     let land = put(&mut primary, player, "Island", Zone::Battlefield);
     announce(&mut primary, spell, 0, Target::Spell(victim));
     let selected = select(&primary, creature);
     act(&mut primary, selected);
-    assert!(!primary.legal_actions().iter().any(|action| {
-        matches!(action, Action::ActivateMana { card, .. } | Action::AnnounceMana { card, .. }
-            if *card == aura)
-    }));
+    let mana = primary
+        .legal_actions()
+        .into_iter()
+        .find(|action| {
+            matches!(action,
+            Action::ActivateMana { card, .. } if *card == aura)
+        })
+        .unwrap();
+    let mut stranded = primary.clone();
+    act(&mut stranded, mana);
+    assert_eq!(stranded.object_view(aura).zone, Zone::Graveyard);
+    assert!(!stranded.object_view(creature).is_legendary());
+    reject(&mut stranded, Action::PayCosts { payment: BLUE });
+    act(&mut stranded, Action::EndManaWindow);
+    act(&mut stranded, Action::SubmitAttempt);
+    assert_eq!(
+        stranded.last_attempt_outcome_view(player).unwrap().reason,
+        Some(AttemptFailureReason::UnsatisfiedMaterial)
+    );
     act(&mut primary, Action::TapMana { card: land });
     act(&mut primary, Action::PayCosts { payment: BLUE });
     assert_eq!(primary.object_view(creature).zone, Zone::Graveyard);

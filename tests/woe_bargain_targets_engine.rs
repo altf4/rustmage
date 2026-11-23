@@ -63,7 +63,7 @@ fn target(id: CardId) -> Action {
 }
 
 #[test]
-fn only_fundable_bargain_routes_with_available_targets_start_casting() {
+fn bargain_routes_declare_before_current_target_and_payment_checks() {
     let card = Card::from_name("Quick Study").unwrap();
     let _rules = fixture_rules::activate(&[(card, &BARGAIN)]);
     for player in [Player::P0, Player::P1] {
@@ -73,12 +73,22 @@ fn only_fundable_bargain_routes_with_available_targets_start_casting() {
         let foreign = put(&mut game, player.other(), "Forest", Zone::Battlefield);
         game.state.players[player.index()].mana = BLUE;
         let start = Action::AnnounceCast { card: spell };
-        // Only the discounted cost would be payable, but no land can be targeted.
-        reject(&mut game, start.clone());
+        // An unfunded ordinary route and a currently targetless bargain may be declared.
+        admit(&game, start.clone());
 
         let own = put(&mut game, player, "Forest", Zone::Battlefield);
         act(&mut game, start);
-        reject(&mut game, DECLINE);
+        admit(&game, DECLINE);
+        let mut unfunded = game.clone();
+        act(&mut unfunded, DECLINE);
+        assert!(unfunded.mana_payment_domain().is_none());
+        reject(&mut unfunded, Action::PayCosts { payment: BLUE });
+        act(&mut unfunded, Action::EndManaWindow);
+        act(&mut unfunded, Action::SubmitAttempt);
+        assert_eq!(
+            unfunded.last_attempt_outcome_view(player).unwrap().reason,
+            Some(AttemptFailureReason::UnsatisfiedMana)
+        );
         let sacrifice = game.object_ref(offering);
         act(
             &mut game,
@@ -121,12 +131,26 @@ fn free_cast_can_decline_bargain_without_a_target_or_payment() {
         },
     );
     let sacrifice = game.object_ref(offering);
-    reject(
-        &mut game,
+    let mut missing_target = game.clone();
+    act(
+        &mut missing_target,
         Action::ChooseBargain {
             sacrifice: Some(sacrifice),
         },
     );
+    assert_eq!(missing_target.state.pending, Pending::Targets { player });
+    admit(&missing_target, Action::SubmitAttempt);
+    act(&mut missing_target, Action::SubmitAttempt);
+    let outcome = missing_target.last_attempt_outcome_view(player).unwrap();
+    assert_eq!(outcome.outcome, AttemptOutcome::Failed);
+    assert_eq!(
+        outcome.reason,
+        Some(AttemptFailureReason::UnsatisfiedDeclaration)
+    );
+    assert_eq!(missing_target.object_ref(offering), sacrifice);
+    assert_eq!(missing_target.object_view(offering).zone, Zone::Battlefield);
+    assert_eq!(missing_target.object_ref(spell), object);
+    assert_eq!(missing_target.object_view(spell).zone, Zone::Exile);
     act(&mut game, DECLINE);
     assert_eq!(game.state.pending, Pending::PayCosts { player });
     pay(&mut game);

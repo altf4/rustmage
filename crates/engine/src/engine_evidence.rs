@@ -329,6 +329,12 @@ impl Game {
     }
     pub(super) fn evidence_intent_fundable(&self, collect: bool) -> bool {
         let a = self.state.announcing.as_ref().unwrap();
+        if collect
+            && self.state.proposal_affordability
+            && !self.evidence_material_may_be_available(a)
+        {
+            return false;
+        }
         if a.has_ordered_origin_payment()
             || a.has_ordered_life_cost()
             || self.cast_requires_target_payment(a.item.controller, a.item.source.unwrap().card)
@@ -350,6 +356,53 @@ impl Game {
                 collect,
             )
         })
+    }
+
+    fn evidence_material_may_be_available(&self, a: &Announcement) -> bool {
+        let source = a.item.source.expect("evidence declaration has a spell");
+        let Some(threshold) = source.card.collect_evidence_cost() else {
+            return true;
+        };
+        let actor = a.item.controller;
+        let mut value = 0u128;
+        let enough_evidence = self.state.objects.iter().any(|object| {
+            // Credit every owned graveyard card. Exact exile restrictions are
+            // checked when paying and can only reduce this optimistic total.
+            if object.owner != actor || object.zone != Zone::Graveyard || !object.is_card() {
+                return false;
+            }
+            value += u128::from(object.card.fixed_mana_value());
+            value >= u128::from(threshold)
+        });
+        // A battlefield card could enter the graveyard during a state-based
+        // action even when no available mana ability directly moves it.
+        threshold == 0
+            || enough_evidence
+            || self
+                .state
+                .roles
+                .as_ref()
+                .is_some_and(|roles| !roles.animations.is_empty())
+            || self
+                .state
+                .crew
+                .as_ref()
+                .is_some_and(|crew| !crew.animated.is_empty())
+            || self.state.objects.iter().any(|object| {
+                object.owner == actor
+                    && object.zone == Zone::Battlefield
+                    && object.is_card()
+                    && (object.card.kind_mask() & (1 | 64 | crate::cards::BATTLE_KIND) != 0
+                        || object.attached_to.is_some()
+                        || object.attached_to_player.is_some()
+                        || object.card.saga_final_chapter().is_some()
+                        || object
+                            .card
+                            .static_ability_groups()
+                            .iter()
+                            .any(|group| group.first_layer <= crate::cards::AbilityLayer::Type))
+            })
+            || !payment_capacity::stable_optional_material_board(self, a)
     }
     fn evidence_selection(&self) -> &EvidenceSelection {
         self.state
@@ -470,36 +523,21 @@ impl Game {
         true
     }
     fn evidence_selection_fundable(&self, extra: Option<ObjectRef>, exact: bool) -> bool {
-        let Some(a) = &self.state.announcing else {
-            let e = self.evidence_selection();
-            return e
-                .source_exiles
-                .iter()
-                .all(|&object| self.source_exilable(object))
-                && (!exact
-                    || self.evidence_selection_total(e.player, e.excluded, &e.selected)
-                        == Some(e.total));
-        };
-        if a.production.is_some() {
-            let mut proposal = a.clone();
-            let selection = proposal.evidence.as_mut().unwrap();
-            if let Some(object) = extra {
-                selection.selected.push(object);
-                selection.total += u128::from(
-                    self.state.objects[object.card as usize]
-                        .card
-                        .fixed_mana_value(),
-                );
+        let selection = self.evidence_selection();
+        let mut selected = selection.selected.clone();
+        if let Some(object) = extra {
+            if selected.contains(&object) || !self.evidence_card(selection.player, object) {
+                return false;
             }
-            selection.complete = exact;
-            return self.activation_total_fundable(&proposal);
+            selected.push(object);
         }
-        if !self.cast_costs_mana_paid() {
-            return true;
-        }
-        let mut selected = self.evidence_selection().selected.clone();
-        selected.extend(extra);
-        self.cast_cost_group_fundable(&selected, exact)
+        selection
+            .source_exiles
+            .iter()
+            .all(|&object| self.source_exilable(object))
+            && self
+                .evidence_selection_total(selection.player, selection.excluded, &selected)
+                .is_some_and(|total| !exact || total >= u128::from(selection.threshold))
     }
 
     fn evidence_candidate(&self, r: ObjectRef) -> bool {

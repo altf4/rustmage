@@ -118,7 +118,7 @@ fn each_exact_exile_card_owner_can_pay_to_cast_or_play_a_land_later() {
 
         next_main(&mut game);
         let cast_action = Action::AnnounceExile { card: creature };
-        reject(&mut game, cast_action.clone()); // No mana remains from the previous turn.
+        admit(&game, cast_action.clone()); // No mana remains from the previous turn.
         let play_land = Action::PlayLand { card: land };
         let revision = game.revision();
         let index = game

@@ -9029,6 +9029,7 @@ impl ActivatedAbility {
         ManaCounterFollowup::from_program(self.mana_program())
     }
     /// A Time counter is removed after production if the same permanent is still present.
+    #[cfg(feature = "test-support")]
     pub(crate) fn mana_removes_time_counter(&self) -> bool {
         self.mana_counter_followup() == Some(ManaCounterFollowup::RemoveTime)
     }

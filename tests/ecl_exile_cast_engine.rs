@@ -303,7 +303,7 @@ fn linked_counter_permission_keeps_mana_and_printed_sacrifice_cost_in_either_pay
             face: CastFace::Normal,
             flash_surcharge: false,
         };
-        reject(&mut g, announcement);
+        admit(&g, announcement);
         g.state.players[0].mana = [0, 0, 0, 1, 0, 3];
         act(
             &mut g,
@@ -609,6 +609,42 @@ fn source_bound_cast_permission_requires_the_exiled_card_to_be_an_instant_or_sor
     reject(&mut g, Action::AnnounceExile { card: adventure });
 }
 
+fn fail_origin_counters(g: &mut Game, donor: CardId, counter: CounterKind) {
+    let actor = g.actor().unwrap();
+    act(g, Action::BeginOrderedCosts);
+    let cost = g
+        .state
+        .announcing
+        .as_ref()
+        .unwrap()
+        .cast_costs
+        .as_ref()
+        .unwrap()
+        .clauses
+        .iter()
+        .position(|row| matches!(row.clause, CastCostClause::OriginCounters(_)))
+        .unwrap() as u16;
+    act(g, Action::ChooseCastCost { clause: cost });
+    let choice = Action::ChooseCreatureCounterCost {
+        object: g.object_ref(donor),
+        counter,
+    };
+    while g.legal_actions().contains(&choice) {
+        act(g, choice.clone());
+    }
+    reject(g, choice);
+    act(g, Action::SubmitAttempt);
+    while matches!(g.state.pending, Pending::ManaRollback { .. }) {
+        act(g, Action::ChooseManaRollback { keep: false });
+    }
+    let failure = g.last_attempt_outcome_view(actor).unwrap();
+    assert_eq!(failure.outcome, AttemptOutcome::Failed);
+    assert_eq!(
+        failure.reason,
+        Some(AttemptFailureReason::UnsatisfiedMaterial)
+    );
+}
+
 fn pay_origin_counters(g: &mut Game, donor: CardId, counter: CounterKind) {
     for _ in 0..30 {
         if g.state.announcing.is_none() {
@@ -654,16 +690,19 @@ fn linked_counter_permission_reserves_counters_against_mana_abilities() {
             face: CastFace::Normal,
             flash_surcharge: false,
         };
-        if amount == 7 {
-            reject(&mut g, action);
-            continue;
-        }
         act(&mut g, action);
         choose(
             &mut g,
             |a| matches!(a, Action::ActivateMana { card, .. } if *card == donor),
         );
-        assert_eq!(g.counter_count(donor, CounterKind::PlusOne), 3);
+        assert_eq!(g.counter_count(donor, CounterKind::PlusOne), amount - 5);
+        if amount == 7 {
+            fail_origin_counters(&mut g, donor, CounterKind::PlusOne);
+            assert_eq!(g.counter_count(donor, CounterKind::PlusOne), amount);
+            assert_eq!(g.object_view(spell).zone, Zone::Exile);
+            assert_eq!(g.state.players[0].mana, [0; 6]);
+            continue;
+        }
         pay_origin_counters(&mut g, donor, CounterKind::PlusOne);
         assert_eq!(g.counter_count(donor, CounterKind::PlusOne), 0);
         drain(&mut g);
@@ -684,12 +723,12 @@ fn linked_counter_permission_preserves_declared_x_and_requires_existing_counters
         face: CastFace::Normal,
         flash_surcharge: false,
     };
-    reject(&mut g, action.clone());
+    admit(&g, action.clone());
     g.add_counter(source, CounterKind::Flying, 3);
     act(&mut g, action);
     assert!(g.x_choice().unwrap().contains(4));
-    assert!(!g.x_choice().unwrap().contains(5));
-    reject(&mut g, Action::ChooseX { value: 5 });
+    assert!(g.x_choice().unwrap().contains(u32::MAX));
+    admit(&g, Action::ChooseX { value: 5 });
     act(&mut g, Action::ChooseX { value: 4 });
     pay_origin_counters(&mut g, source, CounterKind::Flying);
     assert_eq!(g.state.players[0].mana, [0; 6]);
@@ -711,7 +750,7 @@ fn linked_counter_shortfall_rejects_without_spending_interchangeable_lands() {
     }
     g.state.players[0].mana = [0; 6];
     let source = g.object_ref(source);
-    reject(
+    act(
         &mut g,
         Action::AnnounceLinkedExileCounterCost {
             card: spell,
@@ -719,6 +758,17 @@ fn linked_counter_shortfall_rejects_without_spending_interchangeable_lands() {
             face: CastFace::Normal,
             flash_surcharge: false,
         },
+    );
+    fail_origin_counters(&mut g, source.card, CounterKind::Flying);
+    assert_eq!(g.counter_count(source.card, CounterKind::Flying), 2);
+    assert_eq!(g.object_view(spell).zone, Zone::Exile);
+    assert_eq!(g.state.players[0].mana, [0; 6]);
+    assert!(
+        g.state
+            .objects
+            .iter()
+            .filter(|o| o.card == Card::Forest && o.zone == Zone::Battlefield)
+            .all(|o| !o.tapped)
     );
 }
 
@@ -812,7 +862,7 @@ fn linked_counter_shortfall_can_be_repaired_by_a_mana_ability() {
             flash_surcharge: false,
         };
         if !succeeds {
-            reject(&mut g, cast);
+            admit(&g, cast);
             continue;
         }
         act(&mut g, cast);
@@ -865,7 +915,7 @@ fn linked_counter_cast_uses_the_selected_modal_creature_face_and_its_full_cost()
             // A blue mana casts the front but cannot pay the chosen back face.
             if face == CastFace::Back {
                 g.state.players[0].mana = [0, 1, 0, 0, 0, 0];
-                reject(&mut g, action.clone());
+                admit(&g, action.clone());
                 assert!(
                     g.legal_actions()
                         .contains(&Action::AnnounceLinkedExileCounterCost {
@@ -1142,6 +1192,21 @@ fn foreign_aura_invalidating_linked_cast_restores_permission_and_offers_exact_ma
         act(&mut g, Action::ChooseEntryCopy { object });
         let object = g.object_ref(remaining_mana);
         act(&mut g, Action::ChooseAuraAttachment { object });
+        assert_eq!(g.object_view(spell).zone, Zone::Stack);
+        act(&mut g, Action::EndManaWindow);
+        if g.legal_actions().contains(&Action::BeginOrderedCosts) {
+            act(&mut g, Action::BeginOrderedCosts);
+            let clause = g
+                .observe(Player::P0)
+                .cast_costs
+                .unwrap()
+                .clauses
+                .iter()
+                .position(|row| row.clause == CastCostClause::Mana)
+                .unwrap() as u16;
+            act(&mut g, Action::ChooseCastCost { clause });
+        }
+        act(&mut g, Action::SubmitAttempt);
         assert_eq!(g.object_view(spell).zone, Zone::Exile);
         assert_eq!(g.object_ref(spell), physical);
         assert!(matches!(g.state.pending, Pending::ManaRollback { .. }));

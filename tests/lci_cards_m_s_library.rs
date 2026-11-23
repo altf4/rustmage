@@ -54,7 +54,7 @@ fn oaken_siren_funds_artifact_spells_and_artifact_source_activations() {
             game.keywords(siren)
                 .contains(Keywords::FLYING.union(Keywords::VIGILANCE))
         );
-        reject(&mut game, Action::AnnounceCast { card: opt });
+        admit(&game, Action::AnnounceCast { card: opt });
         act(&mut game, Action::AnnounceCast { card: artifact });
         act(&mut game, blue_mana(siren));
         pay(&mut game);

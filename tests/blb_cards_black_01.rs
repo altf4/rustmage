@@ -286,7 +286,56 @@ fn bloomburrow_equipment_tokens_have_real_equip_cost_and_printed_effects() {
         assert_eq!(stats(&game, bearer), (2, 2));
         assert!(!game.legal_actions().iter().any(|action| matches!(action, Action::Activate { card, target: Some(Target::Card(target)), .. } if *card == equipment && *target == opposing)));
         game.state.players[player.index()].mana = [1, 0, 0, 0, 0, 0];
-        assert!(!available(&game, equipment));
+        assert!(available(&game, equipment));
+        let equipment_object = game.object_ref(equipment);
+        let bearer_object = game.object_ref(bearer);
+        choose(
+            &mut game,
+            |action| matches!(action, Action::AnnounceActivate { card, .. } if *card == equipment),
+        );
+        reject(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(opposing),
+            },
+        );
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(bearer),
+            },
+        );
+        if game.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut game, Action::FinishTargets);
+        }
+        assert!(game.mana_payment_domain().is_none());
+        reject(
+            &mut game,
+            Action::PayCosts {
+                payment: [1, 0, 0, 0, 0, 0],
+            },
+        );
+        act(&mut game, Action::EndManaWindow);
+        let mut indexed = game.clone();
+        let at = indexed
+            .legal_actions()
+            .iter()
+            .position(|action| *action == Action::SubmitAttempt)
+            .unwrap();
+        indexed.apply_index(player, indexed.revision(), at).unwrap();
+        act(&mut game, Action::SubmitAttempt);
+        assert_eq!(game.snapshot(), indexed.snapshot());
+        assert_eq!(
+            game.last_attempt_outcome_view(player).unwrap().outcome,
+            AttemptOutcome::Failed
+        );
+        assert!(game.state.announcing.is_none());
+        assert!(game.state.stack.is_empty());
+        assert_eq!(game.object_ref(equipment), equipment_object);
+        assert_eq!(game.object_ref(bearer), bearer_object);
+        assert_eq!(game.state.objects[equipment as usize].attached_to, None);
+        assert_eq!(stats(&game, bearer), (2, 2));
+        assert_eq!(game.state.players[player.index()].mana, [1, 0, 0, 0, 0, 0]);
         game.state.players[player.index()].mana = [2, 0, 0, 0, 0, 0];
         activate(&mut game, equipment, Some(Target::Card(bearer)));
         settle(&mut game);

@@ -217,15 +217,17 @@ fn paid_x_creates_tapped_treasure_only_for_damage_beyond_remaining_lethal() {
         if game.state.announcing.is_none() {
             break;
         }
-        choose(&mut game, |action| {
-            matches!(
-                action,
-                Action::ChooseX { value: 4 } | Action::FinishTargets | Action::PayCosts { .. }
-            ) || *action
-                == Action::ChooseTarget {
-                    target: Target::Card(victim),
-                }
-        });
+        if matches!(game.state.pending, Pending::X { .. }) {
+            act(&mut game, Action::ChooseX { value: 4 });
+        } else {
+            choose(&mut game, |action| {
+                matches!(action, Action::FinishTargets | Action::PayCosts { .. })
+                    || *action
+                        == Action::ChooseTarget {
+                            target: Target::Card(victim),
+                        }
+            });
+        }
     }
     settle(&mut game);
     assert_eq!(game.object_view(victim).zone, Zone::Graveyard);

@@ -94,7 +94,7 @@ fn polygraph_orb_keeps_the_library_choice_private_and_requires_all_activation_co
 
     let mut no_mana = game.clone();
     no_mana.state.players[player.index()].mana = [0; 6];
-    reject(&mut no_mana, activation(orb));
+    admit(&no_mana, activation(orb));
     act(&mut game, activation(orb));
     assert!(!game.object_view(orb).tapped);
     reject(&mut game, Action::FinishEvidence);
