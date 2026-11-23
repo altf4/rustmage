@@ -3,9 +3,11 @@
 //! reduce the available mana. Unbounded or unrecognized funding paths abstain.
 use super::*;
 use crate::cards::{
-    ActivationGuard, ActivationOrigin, BasicLandType, EntryChoiceValue, ManaRestriction,
-    StaticAbilityFragment as F,
+    ActivationGuard, ActivationOrigin, BATTLE_KIND, BasicLandType, EntryChoiceValue,
+    ManaRestriction, StaticAbilityFragment as F,
 };
+use mana_lots::{ManaRestrictionView as LotRestriction, Purpose, Quality};
+use std::collections::HashMap;
 
 #[derive(Clone, Copy, Default)]
 struct Source {
@@ -46,7 +48,7 @@ impl Source {
 
 // Each view excludes only outputs known to be unusable for a particular
 // spell purpose. A filter land still contributes its whole output, even if
-// restricted mana would be needed to activate it. Floating mana stays generous.
+// restricted mana would be needed to activate it.
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum SpellRestriction {
     ActivationOnly,
@@ -92,27 +94,81 @@ impl SpellRestriction {
     }
 }
 
+/// Aggregate only restrictions whose spell-purpose inputs can be bounded here.
+fn floating_spell_restrictions(game: &Game, actor: Player) -> Vec<(LotRestriction, [u128; 6])> {
+    use LotRestriction::*;
+
+    let mut totals = HashMap::<_, [u128; 6]>::new();
+    for lot in game.mana_lots(actor) {
+        let rule = match lot.quality.restriction {
+            CreatureSpellOrActivation(kind) => CreatureSpell(kind),
+            rule @ (AbilityActivation
+            | ArtifactActivation
+            | CreatureActivation
+            | LandActivation
+            | TurnFaceUp
+            | CastFromExile
+            | CreatureSpells
+            | InstantSorcery
+            | NoncreatureSpell
+            | ArtifactSpell
+            | ArtifactSpellOrActivation
+            | ArtifactSpellOrArtifactActivation
+            | ExceptNonArtifactSpells
+            | PlaneswalkerSpell
+            | CreatureSpell(_)
+            | Unavailable) => rule,
+            _ => continue,
+        };
+        for (total, amount) in totals.entry(rule).or_default().iter_mut().zip(lot.amounts) {
+            *total += amount;
+        }
+    }
+    // The occupied groups are bounded by fixed rules plus the finite creature
+    // type catalogue, regardless of the size or provenance of the floating pool.
+    totals.into_iter().collect()
+}
+
 pub(super) struct PaymentCapacity {
     // A subset counts every physical source that could produce any of its colors once.
     // Generously grant that source's whole largest output to the subset.
     subset: [u128; 64],
     sources: Vec<Source>,
     restrictions: Vec<(SpellRestriction, [u128; 64])>,
+    floating_restrictions: Vec<(LotRestriction, [u128; 6])>,
 }
 
 impl PaymentCapacity {
     pub(super) fn for_player(game: &Game, actor: Player) -> Option<Self> {
         let s = &game.state;
-        if !s.exile_links.is_empty()
-            || s.borrowed_links.is_some()
-            || s.graveyard_borrowing.is_some()
+        let linked_returns = !s.exile_links.is_empty();
+        if s.graveyard_borrowing.is_some()
             || s.self_granted_abilities.is_some()
-            || s.temporary_abilities.is_some()
+            // A spell-cast grant sees a committed spell. It cannot fire inside payment.
+            || s.temporary_abilities.as_ref().is_some_and(|rows| rows.iter().any(|grant| {
+                !grant.granting_card.triggers().get(usize::from(grant.ability)).is_some_and(
+                    |trigger| matches!(trigger.condition.event(), TriggerCondition::SpellCast { .. }),
+                )
+            }))
             || s.controls.is_some()
             || s.temporary_controls.is_some()
-            || s.copy_recipes.is_some()
             || s.temporary_copies.is_some()
             || s.manifest.as_ref().is_some_and(|m| !m.permanents.is_empty())
+            || s.copy_recipes.as_ref().is_some_and(|rows| rows.iter().any(|row| {
+                let object = &s.objects[row.object.card as usize];
+                if object.zone != Zone::Battlefield
+                    || !object.is_copy_token()
+                    || game.object_ref(row.object.card) != row.object
+                {
+                    return true;
+                }
+                // Base power/toughness cannot fund a supported mana mode. Require
+                // the scanned public definition and every other copiable field to match.
+                let mut expected = CopyRecipe::new(object.card);
+                expected.exceptions.base = row.recipe.exceptions.base;
+                row.recipe != expected
+            }))
+            || borrowed_activations::may_supply_borrowed_mana(game)
             // Earthbend only queues a delayed return; it cannot resolve while paying.
             // The zone-rules cache may be preallocated because of a card in an
             // unseen library. Check the live public providers below instead.
@@ -142,6 +198,9 @@ impl PaymentCapacity {
                     || r.control_change_sources.is_some()
             })
         {
+            return None;
+        }
+        if linked_returns && !fixed_exile_return_sources(game) {
             return None;
         }
 
@@ -195,6 +254,17 @@ impl PaymentCapacity {
                     .any(|(_, grant)| grant.contains(Keywords::HASTE));
             for group in object.card.static_ability_groups() {
                 for &fragment in group.fragments {
+                    // This grant turns on one printed slot at max speed. A nonmana
+                    // activation needs priority and cannot run during payment.
+                    if let F::SourceMaxSpeedActivation(slot) = fragment
+                        && object
+                            .card
+                            .activations()
+                            .get(usize::from(slot))
+                            .is_some_and(|ability| ability.mana_production().is_none())
+                    {
+                        continue;
+                    }
                     // Restrict the sickness proof to providers with no ability to
                     // grant keywords or activation-as-haste, under any condition.
                     fixed_creature_taps &= match fragment {
@@ -329,7 +399,7 @@ impl PaymentCapacity {
                 source.mode(chosen[id], u64::from(chosen[id] != 0));
             }
             let mut spell_sources = [*source; SpellRestriction::ALL.len()];
-            for ability in object.card.activations() {
+            for (index, ability) in object.card.activations().iter().enumerate() {
                 let Some(production) = ability.mana_production() else {
                     continue;
                 };
@@ -347,6 +417,16 @@ impl PaymentCapacity {
                 }
                 if !can_tap {
                     continue;
+                }
+                if linked_returns
+                    && (ability.cost.sacrifice
+                        || ability.cost.exile_self
+                        || ability.cost.discard
+                        || ability.cost.remove.is_some()
+                        || ability.cost.loyalty.is_some()
+                        || object.card.activation_put_counter(index as u16).is_some())
+                {
+                    return None;
                 }
                 // Extra prerequisites only reduce capacity. Effects beyond producing mana
                 // can change what other sources may do during the payment window.
@@ -386,8 +466,8 @@ impl PaymentCapacity {
             }
         }
 
-        let mut pool = s.players[actor.index()].mana.map(u64::from);
-        pool[3] += u64::from(s.players[actor.index()].combat_red_mana);
+        // The concrete pool already includes tagged mana and retained combat red.
+        let pool = s.players[actor.index()].mana.map(u64::from);
         let subset = Self::subsets(histogram, pool);
         let restrictions = SpellRestriction::ALL
             .into_iter()
@@ -400,6 +480,7 @@ impl PaymentCapacity {
             subset,
             sources,
             restrictions,
+            floating_restrictions: floating_spell_restrictions(game, actor),
         })
     }
 
@@ -427,11 +508,61 @@ impl PaymentCapacity {
         definition: Card,
         origin: Zone,
     ) -> bool {
-        self.permits(colored, generic, None)
-            && self.restrictions.iter().all(|(kind, subset)| {
-                !kind.excludes(definition, origin)
-                    || Self::covers(subset, colored, generic, Source::default())
+        let mut excluded = [0; 6];
+        if !self.floating_restrictions.is_empty() {
+            let purpose = Purpose::Spell(mana_lots::Source {
+                card: definition,
+                mana_value: definition.fixed_mana_value(),
+                kinds: definition.kind_mask(),
+                subtypes: GrantedSubtypes::default(),
+                foreign_stash: false,
+                cast_from_hand: false,
+                cast_from_exile: origin == Zone::Exile,
+                spend_any_mana: false,
+                linked_mana_source: None,
+                activation_object: None,
+                equip: false,
+            });
+            for &(restriction, amounts) in &self.floating_restrictions {
+                // The capacity world excludes live subtype grants across zones.
+                // Outside the hand, cast permissions can add creature subtypes.
+                if matches!(restriction, LotRestriction::CreatureSpell(_))
+                    && definition.is_creature()
+                    && origin != Zone::Hand
+                {
+                    continue;
+                }
+                if !(Quality {
+                    restriction,
+                    ..Quality::ORDINARY
+                })
+                .eligible(purpose)
+                {
+                    for (total, amount) in excluded.iter_mut().zip(amounts) {
+                        *total += amount;
+                    }
+                }
+            }
+        }
+        let cover = |subset: &[u128; 64]| {
+            Self::covers(colored, generic, |mask| {
+                if excluded == [0; 6] {
+                    return subset[mask];
+                }
+                let remove = excluded
+                    .iter()
+                    .enumerate()
+                    .filter(|(i, _)| mask & (1 << i) != 0)
+                    .map(|(_, amount)| amount)
+                    .sum();
+                subset[mask].saturating_sub(remove)
             })
+        };
+        cover(&self.subset)
+            && self
+                .restrictions
+                .iter()
+                .all(|(kind, subset)| !kind.excludes(definition, origin) || cover(subset))
     }
 
     pub(super) fn permits(
@@ -441,18 +572,17 @@ impl PaymentCapacity {
         reserved_tap: Option<CardId>,
     ) -> bool {
         let reserved = reserved_tap.map_or(Source::default(), |id| self.sources[id as usize]);
-        Self::covers(&self.subset, colored, generic, reserved)
-    }
-
-    fn covers(subset: &[u128; 64], colored: Mana, generic: u32, reserved: Source) -> bool {
-        let upper = |mask: usize| {
-            subset[mask]
+        Self::covers(colored, generic, |mask| {
+            self.subset[mask]
                 - if usize::from(reserved.colors) & mask != 0 {
                     u128::from(reserved.maximum)
                 } else {
                     0
                 }
-        };
+        })
+    }
+
+    fn covers(colored: Mana, generic: u32, upper: impl Fn(usize) -> u128) -> bool {
         let mut colors = 0;
         let mut total = u128::from(generic);
         for (bit, &amount) in colored.iter().enumerate() {
@@ -479,4 +609,37 @@ impl PaymentCapacity {
         }
         true
     }
+}
+
+/// An immediate linked return only fires when its exact host leaves. For a
+/// tap-only funding window, certify hosts that cannot leave through creature,
+/// Aura, Saga, battle, or loyalty state-based actions. The caller separately
+/// excludes costs that could move permanents or change their counters.
+fn fixed_exile_return_sources(game: &Game) -> bool {
+    let state = &game.state;
+    let mut animated = vec![false; state.objects.len()];
+    if let Some(roles) = &state.roles {
+        for row in &roles.animations {
+            animated[row.object.card as usize] = true;
+        }
+    }
+    state.exile_links.iter().all(|link| {
+        let id = link.source.card;
+        let host = &state.objects[id as usize];
+        host.zone == Zone::Battlefield
+            && game.object_ref(id) == link.source
+            && !animated[id as usize]
+            && host.attached_to.is_none()
+            && host.attached_to_player.is_none()
+            && host.card.kind_mask() & (1 | 64 | BATTLE_KIND) == 0
+            && host.card.vehicle_stats().is_none()
+            && host.card.saga_final_chapter().is_none()
+            && !matches!(host.card.effect(), Effect::Aura(_))
+            && !host.card.static_ability_groups().iter().any(|group| {
+                group
+                    .fragments
+                    .iter()
+                    .any(|row| matches!(row, F::SourceCounterCreature { .. }))
+            })
+    })
 }

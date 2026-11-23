@@ -38,6 +38,24 @@ impl ProposalAffordability {
         } else {
             return true;
         };
+        if !game.state.exile_links.is_empty()
+            && (spell.cost.is_some()
+                || !matches!(
+                    spell.method,
+                    CastMethod::Normal
+                        | CastMethod::Airbend
+                        | CastMethod::Harmonize
+                        | CastMethod::GrantedHarmonize
+                )
+                || definition.additional_cost().is_some()
+                || definition.kicker_additional_cost().is_some()
+                || definition.has_bargain()
+                || definition.blight().is_some()
+                || definition.behold_cast().is_some())
+        {
+            // Keep routes that can change the battlefield before paying mana.
+            return true;
+        }
         let permits = |price: ManaCost| {
             game.spell_mana_lower_bound(
                 definition,
@@ -141,7 +159,16 @@ impl ProposalAffordability {
     fn activation_may_be_affordable(&self, game: &Game, source: CardId, ability: u16) -> bool {
         let definition = game.state.objects[source as usize].card;
         let activation = definition.activation(ability);
-        if activation.equip_discard_alternative() {
+        if activation.equip_discard_alternative()
+            || (!game.state.exile_links.is_empty()
+                && (activation.cost.additional.is_some()
+                    || activation.cost.sacrifice
+                    || activation.cost.exile_self
+                    || activation.cost.discard
+                    || activation.cost.remove.is_some()
+                    || activation.cost.loyalty.is_some()
+                    || definition.activation_put_counter(ability).is_some()))
+        {
             return true;
         }
         let reserved = activation.cost.tap.then_some(source);

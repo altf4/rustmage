@@ -232,6 +232,26 @@ pub(super) fn abilities<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) 
     result.extend(inherited_activations::abilities(world, id));
     result
 }
+/// A craft always records its materials here, even when the resulting
+/// permanent has no ability to borrow them. Only inspect the public host.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn may_supply_borrowed_mana(game: &Game) -> bool {
+    game.state.borrowed_links.as_ref().is_some_and(|links| {
+        links.iter().any(|link| {
+            if !link.craft || link.shared || link.chosen_cohort.is_some() {
+                return true;
+            }
+            let host = &game.state.objects[link.source.card as usize];
+            host.zone != Zone::Battlefield
+                || game.object_ref(link.source.card) != link.source
+                || host.card.borrows_exiled_activations()
+                || host
+                    .card
+                    .other_face()
+                    .is_some_and(Card::borrows_exiled_activations)
+        })
+    })
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn has_shared_links(game: &Game) -> bool {
     game.state.borrowed_links.as_ref().is_some_and(|links| {

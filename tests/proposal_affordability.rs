@@ -14,6 +14,109 @@ fn reject_at_priority(game: &mut Game, player: Player, action: Action) {
 }
 
 #[test]
+fn linked_returns_only_disable_the_bound_when_funding_can_release_them() {
+    let player = Player::P0;
+    let mut game = scenario(player).with_proposal_affordability(true);
+    game.state.players[player.index()].mana = [0; 6];
+    let host = put(&mut game, player, "Perilous Snare", Zone::Battlefield);
+    let producer = put(&mut game, player, "The Mind Stone", Zone::Exile);
+    game.state.exile_links.push(ExileLink {
+        ability_origin: None,
+        source: game.object_ref(host),
+        exiled: game.object_ref(producer),
+        return_zone: Zone::Battlefield,
+    });
+    let opt = put(&mut game, player, "Opt", Zone::Hand);
+    reject_at_priority(&mut game, player, Action::AnnounceCast { card: opt });
+
+    let treasure = put(&mut game, player, "Buried Treasure", Zone::Battlefield);
+    game.state.exile_links[0].source = game.object_ref(treasure);
+    let drowner = put(&mut game, player, "Floodpits Drowner", Zone::Hand);
+    act(&mut game, Action::AnnounceCast { card: drowner });
+    act(
+        &mut game,
+        Action::ActivateMana {
+            card: treasure,
+            ability: 0,
+            payment: [0; 6],
+            counter_payment: Counters::default(),
+            production: [0, 1, 0, 0, 0, 0],
+        },
+    );
+    assert_eq!(game.object_view(producer).zone, Zone::Battlefield);
+    choose(
+        &mut game,
+        |action| matches!(action, Action::TapMana { card } | Action::ActivateMana { card, .. } if *card == producer),
+    );
+    pay(&mut game);
+    assert_eq!(game.object_view(drowner).zone, Zone::Stack);
+}
+
+#[test]
+fn floating_spell_mana_respects_all_restrictions_and_the_cast_origin() {
+    let player = Player::P0;
+    let mut game = scenario(player).with_proposal_affordability(true);
+    game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 2];
+    for restriction in [
+        ManaRestrictionView::CastFromExile,
+        ManaRestrictionView::AbilityActivation,
+    ] {
+        game.add_quality_mana(
+            player,
+            [0, 0, 0, 0, 0, 1],
+            Some(mana_lots::Quality {
+                restriction,
+                ..mana_lots::Quality::ORDINARY
+            }),
+        );
+    }
+
+    let from_hand = put(&mut game, player, "Hill Giant", Zone::Hand);
+    reject_at_priority(&mut game, player, Action::AnnounceCast { card: from_hand });
+
+    let from_exile = put(&mut game, player, "Hill Giant", Zone::Exile);
+    game.grant_exile_play_permission(player, game.object_ref(from_exile), false);
+    act(&mut game, Action::AnnounceExile { card: from_exile });
+    act(
+        &mut game,
+        Action::PayCosts {
+            payment: [0, 0, 0, 1, 0, 3],
+        },
+    );
+    assert_eq!(game.state.players[player.index()].spells_cast_this_turn, 1);
+}
+
+#[test]
+fn floating_creature_mana_requires_the_spells_creature_type() {
+    use rustmage_core::cards::CreatureType;
+
+    let player = Player::P0;
+    for (creature_type, eligible) in [("Cat", false), ("Elf", true)] {
+        let mut game = scenario(player).with_proposal_affordability(true);
+        game.state.players[player.index()].mana = [0; 6];
+        let creature_type = CreatureType::from_name(creature_type).unwrap();
+        game.add_quality_mana(
+            player,
+            [0, 0, 0, 0, 1, 0],
+            Some(mana_lots::Quality {
+                restriction: ManaRestrictionView::CreatureSpell(creature_type),
+                ..mana_lots::Quality::ORDINARY
+            }),
+        );
+
+        let spell = put(&mut game, player, "Llanowar Elves", Zone::Hand);
+        let cast = Action::AnnounceCast { card: spell };
+        if eligible {
+            act(&mut game, cast);
+            pay(&mut game);
+            assert_eq!(game.state.players[player.index()].spells_cast_this_turn, 1);
+        } else {
+            reject_at_priority(&mut game, player, cast);
+        }
+    }
+}
+
+#[test]
 fn unpaid_spell_is_hidden_and_funded_spell_casts_from_either_seat() {
     for player in [Player::P0, Player::P1] {
         let mut game = scenario(player).with_proposal_affordability(true);
@@ -92,6 +195,114 @@ fn sick_mana_creature_ignores_unrelated_keywords_and_counters_but_can_tap_with_h
         },
     );
     assert_eq!(game.state.players[player.index()].spells_cast_this_turn, 1);
+}
+
+#[test]
+fn craft_materials_only_supply_mana_when_the_host_can_borrow_their_abilities() {
+    let player = Player::P0;
+    for (host, borrows) in [("Braided Quipu", false), ("Locus of Enlightenment", true)] {
+        let mut game = scenario(player).with_proposal_affordability(true);
+        game.state.players[player.index()].mana = [0; 6];
+        let host = put(&mut game, player, host, Zone::Battlefield);
+        let donor = put(&mut game, player, "Llanowar Elves", Zone::Exile);
+        let spell = put(&mut game, player, "Candy Trail", Zone::Hand);
+        let donor = game.object_ref(donor);
+        game.register_craft_materials(game.object_ref(host), &[donor]);
+        game.state.borrowed_slots = borrowed_activations::refreshed_slots(&game);
+        let cast = Action::AnnounceCast { card: spell };
+        if borrows {
+            assert!(game.legal_actions().contains(&cast));
+            choose(&mut game, |action| {
+                matches!(action,
+                Action::AnnounceBorrowedMana { card, exiled, .. } if *card == host && *exiled == donor)
+            });
+            if matches!(game.state.pending, Pending::PayCosts { .. }) {
+                pay(&mut game);
+            }
+            assert_eq!(game.state.players[player.index()].mana[4], 1);
+            act(&mut game, cast);
+            pay(&mut game);
+            assert_eq!(game.state.players[player.index()].spells_cast_this_turn, 1);
+        } else {
+            reject_at_priority(&mut game, player, cast);
+        }
+    }
+}
+
+#[test]
+fn spell_cast_trigger_granted_by_animation_cannot_fund_the_cast() {
+    let player = Player::P0;
+    let mut game = scenario(player).with_proposal_affordability(true);
+    let hall = put(
+        &mut game,
+        player,
+        "Great Hall of the Biblioplex",
+        Zone::Battlefield,
+    );
+    act(
+        &mut game,
+        Action::AnnounceActivate {
+            card: hall,
+            ability: 2,
+            counter_payment: Counters::default(),
+        },
+    );
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.state.temporary_abilities.as_ref().unwrap().len(), 1);
+    game.state.players[player.index()].mana = [0; 6];
+    let giant = put(&mut game, player, "Hill Giant", Zone::Hand);
+    reject_at_priority(&mut game, player, Action::AnnounceCast { card: giant });
+    game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 3];
+    announce(&mut game, giant, &[]);
+}
+
+#[test]
+fn offspring_base_override_keeps_the_token_definition_for_funding() {
+    use rustmage_core::cards::{Card, RetainedCopyActivation};
+    let player = Player::P0;
+    let mut game = scenario(player).with_proposal_affordability(true);
+    game.state.players[player.index()].mana = [0; 6];
+    let mut recipe = CopyRecipe::new(Card::from_name("Starscape Cleric").unwrap());
+    recipe.exceptions.base = Some((1, 1));
+    game.stage_copy_creation(player, recipe, 1);
+    game.advance_entries();
+    let token = game
+        .observe(player)
+        .objects
+        .into_iter()
+        .find(|object| object.zone == Zone::Battlefield && object.is_token())
+        .unwrap()
+        .id;
+    let spell = put(&mut game, player, "Llanowar Elves", Zone::Hand);
+    let cast = Action::AnnounceCast { card: spell };
+    reject_at_priority(&mut game, player, cast.clone());
+
+    // A retained slot is an extra ability absent from the definition scanned above.
+    recipe.exceptions.retained_activation = Some(RetainedCopyActivation {
+        definition: Card::from_name("Candy Trail").unwrap(),
+        ability: 0,
+    });
+    game.set_copy_recipe(game.object_ref(token), recipe);
+    assert!(game.legal_actions().contains(&cast));
+}
+
+#[test]
+fn max_speed_enables_its_nonmana_slot_without_funding_a_spell() {
+    let player = Player::P0;
+    let mut game = scenario(player).with_proposal_affordability(true);
+    let snare = put(&mut game, player, "Perilous Snare", Zone::Battlefield);
+    put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let spell = put(&mut game, player, "Llanowar Elves", Zone::Hand);
+    game.state.players[player.index()].mana = [0; 6];
+    game.state.players[player.index()].speed = 4;
+    assert!(game.legal_actions().contains(&Action::AnnounceSourceGrant {
+        source: game.object_ref(snare),
+        ability: 0,
+    }));
+    reject_at_priority(&mut game, player, Action::AnnounceCast { card: spell });
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 1, 0];
+    announce(&mut game, spell, &[]);
 }
 
 #[test]

@@ -127,8 +127,7 @@ impl ProposalPriceFacts {
                 .state
                 .manifest
                 .as_ref()
-                .is_some_and(|manifest| !manifest.permanents.is_empty())
-                || !game.state.exile_links.is_empty(),
+                .is_some_and(|manifest| !manifest.permanents.is_empty()),
             affinity_grants: game
                 .player_cast_grants_view(actor.index())
                 .map_or(0, |grants| grants.next_noncreature_artifact_affinity),
