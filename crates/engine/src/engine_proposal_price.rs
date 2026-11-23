@@ -4,7 +4,7 @@
 //! discount cannot be bounded cheaply, credit its entire affected component.
 //! Prices are necessary conditions, never permission to execute a proposal.
 use super::*;
-use crate::cards::{SpellReductionAmount, StaticAbilityFragment};
+use crate::cards::{CostTurn, SpellReductionAmount, StaticAbilityFragment};
 
 #[derive(Clone, Copy, Default)]
 struct PriceReduction {
@@ -51,20 +51,55 @@ fn count_zone(zone: CountZone) -> usize {
     }
 }
 
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum DiscountOrigin {
+    OwnHand,
+    OwnGraveyard,
+    Exile,
+    Other,
+}
+
+impl DiscountOrigin {
+    const ALL: [Self; 4] = [Self::OwnHand, Self::OwnGraveyard, Self::Exile, Self::Other];
+
+    fn new(zone: Zone, owned: bool) -> Self {
+        match (zone, owned) {
+            (Zone::Hand, true) => Self::OwnHand,
+            (Zone::Graveyard, true) => Self::OwnGraveyard,
+            (Zone::Exile, _) => Self::Exile,
+            _ => Self::Other,
+        }
+    }
+
+    fn permits(self, condition: CostTurn, own_turn: bool) -> bool {
+        match condition {
+            CostTurn::Any => true,
+            CostTurn::Graveyard => self == Self::OwnGraveyard,
+            CostTurn::GraveyardOrExile => matches!(self, Self::OwnGraveyard | Self::Exile),
+            CostTurn::NonHand => self != Self::OwnHand,
+            CostTurn::Own => own_turn,
+            CostTurn::Other => !own_turn,
+        }
+    }
+}
+
 pub(super) struct ProposalPriceFacts {
     actor: Player,
     counts: [[PriceCounts; 2]; 3],
     battlefield_untapped: u64,
+    harmonize_power: u64,
     attackers: u64,
     copied_characteristics: bool,
     loose_board: bool,
     affinity_grants: u64,
-    static_spell_discounts: PriceReduction,
+    static_spell_discounts: [PriceReduction; DiscountOrigin::ALL.len()],
     convoke_creatures: bool,
     improvise: bool,
     delve: bool,
     spell_any_mana: bool,
     spell_any_color: bool,
+    foreign_stash_any_mana: bool,
+    flexible_origin: Option<Vec<bool>>,
     activation_any_color: bool,
     equip_target_discount: u64,
     free_equip: bool,
@@ -84,24 +119,53 @@ impl ProposalPriceFacts {
             actor,
             counts: [[PriceCounts::default(); 2]; 3],
             battlefield_untapped: 0,
+            harmonize_power: 0,
             attackers: game.state.attacked_this_turn.len() as u64,
             copied_characteristics: game.state.copy_recipes.is_some()
                 || game.state.temporary_copies.is_some(),
-            loose_board: game.state.manifest.is_some() || !game.state.exile_links.is_empty(),
+            loose_board: game
+                .state
+                .manifest
+                .as_ref()
+                .is_some_and(|manifest| !manifest.permanents.is_empty())
+                || !game.state.exile_links.is_empty(),
             affinity_grants: game
                 .player_cast_grants_view(actor.index())
                 .map_or(0, |grants| grants.next_noncreature_artifact_affinity),
-            static_spell_discounts: PriceReduction::default(),
+            static_spell_discounts: [PriceReduction::default(); DiscountOrigin::ALL.len()],
             convoke_creatures: false,
             improvise: false,
             delve: false,
             spell_any_mana: false,
             spell_any_color: false,
+            foreign_stash_any_mana: false,
+            flexible_origin: None,
             activation_any_color: false,
             equip_target_discount: 0,
             free_equip: false,
             provisional_activation_reduction: false,
         };
+        let known_power = game.state.static_sources.is_empty()
+            && game.state.attachment_sources.is_empty()
+            && game.state.roles.is_none()
+            && game.state.self_granted_abilities.is_none()
+            && game.state.temporary_abilities.is_none()
+            && !facts.copied_characteristics
+            && !game.state.entry_values.as_ref().is_some_and(|rows| {
+                rows.iter().any(|row| {
+                    let object = &game.state.objects[row.object.card as usize];
+                    object.generation == row.object.generation
+                        && matches!(object.zone, Zone::Battlefield | Zone::Command)
+                        && object
+                            .card
+                            .static_ability_groups()
+                            .iter()
+                            .flat_map(|group| group.fragments)
+                            .any(|fragment| {
+                                matches!(fragment, StaticAbilityFragment::ChosenModifier(_))
+                            })
+                })
+            });
         for object in &game.state.objects {
             let (zone, related) = match object.zone {
                 Zone::Battlefield => (CountZone::Battlefield, object.controller),
@@ -138,25 +202,70 @@ impl ProposalPriceFacts {
             }
             if object.zone == Zone::Battlefield && related == actor && !object.tapped {
                 facts.battlefield_untapped += 1;
+                // A possible Harmonize choice reduces the price by its power.
+                // Only use printed power plus local growth on boards without
+                // external power layers. Anything else gets an unlimited
+                // reduction, except when there is no untapped permanent at all.
+                let upper = if known_power && card.dynamic_stats().is_none() {
+                    let base = match card.effect() {
+                        Effect::Creature(power, _) => i128::from(power),
+                        _ => card.vehicle_stats().map_or(0, |(power, _)| power),
+                    };
+                    base.max(0)
+                        .saturating_add(object.growth.power.max(0))
+                        .saturating_add(i128::from(object.counters.plus_one))
+                        .min(i128::from(u64::MAX)) as u64
+                } else {
+                    u64::MAX
+                };
+                facts.harmonize_power = facts.harmonize_power.max(upper);
             }
         }
         if facts.loose_board {
             return facts;
         }
 
+        // The existence of a matching typed permission is sufficient to credit
+        // flexible spending. Leave its duration/guard evaluation to the actual
+        // cast. Index exact current incarnations once, rather than inspecting
+        // the complete permission list for every priority option.
+        for row in &game.state.exile_permissions {
+            if row.player == actor && row.spend_any_mana {
+                facts.record_flexible_origin(game, row.object);
+            }
+        }
+        if let Some(choices) = &game.state.linked_choices {
+            for link in &choices.null_cast_links {
+                facts.record_flexible_origin(game, link.exiled);
+            }
+        }
+        if let Some(offer) = &game.state.resolution_free_casts
+            && offer.player == actor
+            && offer.paid.is_some_and(|paid| paid.spend_any_mana)
+        {
+            for &object in &offer.remaining {
+                facts.record_flexible_origin(game, object);
+            }
+        }
+
+        let own_turn = game.state.active == actor;
         for object in game.state.objects.iter().filter(|object| {
             matches!(object.zone, Zone::Battlefield | Zone::Command) && object.controller == actor
         }) {
             let card = object.card;
-            // Ignore all guards and layer removal. Over-crediting a printed
-            // discount includes reducers a candidate may expose before lock.
+            // Origin and active turn are fixed for this proposal. Ignore
+            // other applicability guards and layer removal.
             for reduction in card
                 .cost_reductions()
                 .iter()
                 .filter(|rule| !rule.source_only)
             {
                 let amount = facts.amount(reduction.amount);
-                facts.static_spell_discounts.add(reduction.amount, amount);
+                for origin in DiscountOrigin::ALL {
+                    if origin.permits(reduction.turn, own_turn) {
+                        facts.static_spell_discounts[origin as usize].add(reduction.amount, amount);
+                    }
+                }
             }
             let mut equip_discount: u64 = 0;
             for fragment in card
@@ -171,6 +280,9 @@ impl ProposalPriceFacts {
                     StaticAbilityFragment::SpendAnyManaForCreatures => facts.spell_any_mana = true,
                     StaticAbilityFragment::SpendAnyColorForSpellSubtype(_) => {
                         facts.spell_any_color = true;
+                    }
+                    StaticAbilityFragment::ForeignStashPlay => {
+                        facts.foreign_stash_any_mana = true;
                     }
                     StaticAbilityFragment::SpendAnyColorForCreatureActivations => {
                         facts.activation_any_color = true;
@@ -190,6 +302,19 @@ impl ProposalPriceFacts {
             facts.equip_target_discount = facts.equip_target_discount.max(equip_discount);
         }
         facts
+    }
+
+    fn record_flexible_origin(&mut self, game: &Game, reference: ObjectRef) {
+        let id = reference.card as usize;
+        if game
+            .state
+            .objects
+            .get(id)
+            .is_some_and(|object| object.generation == reference.generation)
+        {
+            self.flexible_origin
+                .get_or_insert_with(|| vec![false; game.state.objects.len()])[id] = true;
+        }
     }
 
     fn aggregate(&self, filter: CountFilter, read: impl Fn(PriceCounts) -> u64, max: bool) -> u64 {
@@ -268,7 +393,7 @@ impl Game {
     pub(super) fn spell_mana_lower_bound(
         &self,
         definition: Card,
-        _source: CardId,
+        source: CardId,
         origin: Zone,
         method: CastMethod,
         printed: ManaCost,
@@ -277,11 +402,16 @@ impl Game {
         if facts.loose_board {
             return None;
         }
-        let mut discount = facts.static_spell_discounts;
+        let discount_origin = DiscountOrigin::new(
+            origin,
+            self.state.objects[source as usize].owner == facts.actor,
+        );
+        let own_turn = self.state.active == facts.actor;
+        let mut discount = facts.static_spell_discounts[discount_origin as usize];
         for rule in definition
             .cost_reductions()
             .iter()
-            .filter(|rule| rule.source_only)
+            .filter(|rule| rule.source_only && discount_origin.permits(rule.turn, own_turn))
         {
             discount.add(rule.amount, facts.amount(rule.amount));
         }
@@ -307,7 +437,7 @@ impl Game {
             discount.generic = discount.generic.saturating_add(battlefield);
         }
         if method.is_harmonize() {
-            discount.generic = u64::MAX;
+            discount.generic = discount.generic.saturating_add(facts.harmonize_power);
         }
         // Pay every potential contribution under an intentionally generous
         // resource bound. Exact contribution and source conflicts remain the
@@ -331,9 +461,16 @@ impl Game {
                 .saturating_add(facts.counts[1][facts.actor.index()].total);
         }
         let price = discount.apply(printed);
+        let origin_flexibility = facts
+            .flexible_origin
+            .as_ref()
+            .is_some_and(|indexed| indexed[source as usize]);
+        let stash_flexibility = origin == Zone::Exile
+            && facts.foreign_stash_any_mana
+            && self.state.objects[source as usize].owner != facts.actor;
         if (definition.is_creature() && facts.spell_any_mana)
-            || origin == Zone::Exile
-                && !matches!(method, CastMethod::Airbend | CastMethod::Foretell)
+            || origin_flexibility
+            || stash_flexibility
         {
             Some(spend_as_generic(price, 6))
         } else if facts.spell_any_color {

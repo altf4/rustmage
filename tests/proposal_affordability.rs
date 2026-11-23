@@ -62,6 +62,39 @@ fn unpaid_spell_is_hidden_and_funded_spell_casts_from_either_seat() {
 }
 
 #[test]
+fn sick_mana_creature_ignores_unrelated_keywords_and_counters_but_can_tap_with_haste() {
+    use rustmage_core::cards::CounterKind;
+
+    let player = Player::P0;
+    let mut game = scenario(player).with_proposal_affordability(true);
+    game.state.players[player.index()].mana = [0; 6];
+    let source = put(&mut game, player, "Llanowar Elves", Zone::Battlefield);
+    game.state.objects[source as usize].summoning_sick = true;
+    let flyer = put(
+        &mut game,
+        player.other(),
+        "Spyglass Siren",
+        Zone::Battlefield,
+    );
+    game.add_counter(flyer, CounterKind::Quest, 1);
+    put(&mut game, player, "Slickshot Show-Off", Zone::Battlefield);
+    let spell = put(&mut game, player, "Llanowar Elves", Zone::Hand);
+    let cast = Action::AnnounceCast { card: spell };
+    reject_at_priority(&mut game, player, cast.clone());
+
+    game.add_counter(source, CounterKind::Haste, 1);
+    act(&mut game, cast);
+    act(&mut game, Action::TapMana { card: source });
+    act(
+        &mut game,
+        Action::PayCosts {
+            payment: [0, 0, 0, 0, 1, 0],
+        },
+    );
+    assert_eq!(game.state.players[player.index()].spells_cast_this_turn, 1);
+}
+
+#[test]
 fn tap_cost_reserves_the_activating_permanent_for_fomori_vault() {
     let player = Player::P0;
     let mut game = scenario(player).with_proposal_affordability(true);
@@ -177,6 +210,197 @@ fn a_turn_discount_keeps_a_face_down_cast_available() {
         &mut game,
         Action::PayCosts {
             payment: [0, 0, 0, 0, 0, 1],
+        },
+    );
+    assert_eq!(game.state.players[player.index()].spells_cast_this_turn, 1);
+}
+
+#[test]
+fn an_exile_discount_does_not_reduce_a_hand_cast() {
+    let player = Player::P0;
+    let mut game = scenario(player).with_proposal_affordability(true);
+    put(
+        &mut game,
+        player,
+        "Doc Aurlock, Grizzled Genius",
+        Zone::Battlefield,
+    );
+    let hand = put(&mut game, player, "Bramble Familiar", Zone::Hand);
+    let exiled = put(&mut game, player, "Bramble Familiar", Zone::Exile);
+    game.grant_exile_play_permission(player, game.object_ref(exiled), false);
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 1, 0];
+
+    reject_at_priority(&mut game, player, Action::AnnounceCast { card: hand });
+    act(&mut game, Action::AnnounceExile { card: exiled });
+    act(
+        &mut game,
+        Action::PayCosts {
+            payment: [0, 0, 0, 0, 1, 0],
+        },
+    );
+    assert_eq!(game.state.players[player.index()].spells_cast_this_turn, 1);
+    assert_eq!(game.object_view(exiled).zone, Zone::Stack);
+}
+
+#[test]
+fn a_sacrifice_or_mana_spell_requires_the_mana_route_when_no_material_matches() {
+    let player = Player::P0;
+    let mut game = scenario(player).with_proposal_affordability(true);
+    let spell = put(&mut game, player, "Stir Up Trouble", Zone::Hand);
+    put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+    let cast = Action::AnnounceCast { card: spell };
+
+    // The target is present. Only our permanents can pay the sacrifice.
+    put(&mut game, player, "Swamp", Zone::Battlefield);
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
+    reject_at_priority(&mut game, player, cast.clone());
+
+    let mut mana_route = game.clone();
+    mana_route.state.players[player.index()].mana[5] = 4;
+    act(&mut mana_route, cast.clone());
+
+    let mut sacrifice_route = game;
+    sacrifice_route.state.players[player.index()].mana[5] = 0;
+    put(&mut sacrifice_route, player, "Bear Cub", Zone::Battlefield);
+    act(&mut sacrifice_route, cast);
+}
+
+#[test]
+fn an_exile_cast_keeps_its_colors_unless_the_permission_allows_flexible_spending() {
+    let player = Player::P0;
+    let mut game = scenario(player).with_proposal_affordability(true);
+    game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 0];
+    let spell = put(&mut game, player, "Opt", Zone::Exile);
+    game.grant_exile_play_permission(player, game.object_ref(spell), false);
+    let cast = Action::AnnounceExile { card: spell };
+    reject_at_priority(&mut game, player, cast.clone());
+
+    game.state
+        .exile_permissions
+        .last_mut()
+        .unwrap()
+        .spend_any_mana = true;
+    act(&mut game, cast);
+    act(
+        &mut game,
+        Action::PayCosts {
+            payment: [0, 0, 0, 1, 0, 0],
+        },
+    );
+    assert_eq!(game.state.players[player.index()].spells_cast_this_turn, 1);
+}
+
+#[test]
+fn harmonize_checks_the_mana_shortfall_after_the_largest_available_discount() {
+    let player = Player::P0;
+    let mut game = scenario(player).with_proposal_affordability(true);
+    game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 2];
+    let spell = put(&mut game, player, "Winternight Stories", Zone::Graveyard);
+    let helper = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let cast = Action::AnnounceHarmonize { card: spell };
+    game.state.objects[helper as usize].tapped = true;
+    reject_at_priority(&mut game, player, cast.clone());
+
+    game.state.objects[helper as usize].tapped = false;
+    act(&mut game, cast);
+    let creature = game.object_ref(helper);
+    act(
+        &mut game,
+        Action::ChooseHarmonizer {
+            object: Some(creature),
+        },
+    );
+    act(
+        &mut game,
+        Action::PayCosts {
+            payment: [0, 1, 0, 0, 0, 2],
+        },
+    );
+    act(&mut game, Action::ChooseCastCost { clause: 0 });
+    assert_eq!(game.state.players[player.index()].spells_cast_this_turn, 1);
+}
+
+#[test]
+fn an_unrelated_blocking_rule_does_not_disable_affordability() {
+    let player = Player::P0;
+    let mut game = scenario(player).with_proposal_affordability(true);
+    game.state.players[player.index()].mana = [0; 6];
+    put(
+        &mut game,
+        player.other(),
+        "Elusive Otter",
+        Zone::Battlefield,
+    );
+    let spell = put(&mut game, player, "Opt", Zone::Hand);
+    let cast = Action::AnnounceCast { card: spell };
+    reject_at_priority(&mut game, player, cast.clone());
+
+    game.state.players[player.index()].mana[1] = 1;
+    act(&mut game, cast);
+    act(
+        &mut game,
+        Action::PayCosts {
+            payment: [0, 1, 0, 0, 0, 0],
+        },
+    );
+    assert_eq!(game.state.players[player.index()].spells_cast_this_turn, 1);
+}
+
+#[test]
+fn allocating_the_zone_rules_cache_does_not_change_priority_offers() {
+    let player = Player::P0;
+    let mut game = scenario(player).with_proposal_affordability(true);
+    game.state.players[player.index()].mana = [0; 6];
+    let spell = put(&mut game, player, "Opt", Zone::Hand);
+    let cast = Action::AnnounceCast { card: spell };
+    game.state.zone_rules = None;
+    let visible = game.legal_actions();
+    assert!(!visible.contains(&cast));
+
+    // This storage may be allocated based on cards outside the player's view.
+    game.state.zone_rules = Some(Box::default());
+    assert_eq!(game.legal_actions(), visible);
+}
+
+#[test]
+fn summoning_sickness_excludes_a_creatures_tap_mana_in_a_simple_board() {
+    let player = Player::P0;
+    let mut game = scenario(player).with_proposal_affordability(true);
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 1];
+    let elf = put(&mut game, player, "Llanowar Elves", Zone::Battlefield);
+    let spell = put(&mut game, player, "Bear Cub", Zone::Hand);
+    let cast = Action::AnnounceCast { card: spell };
+    game.state.objects[elf as usize].summoning_sick = true;
+    reject_at_priority(&mut game, player, cast.clone());
+
+    game.state.objects[elf as usize].summoning_sick = false;
+    act(&mut game, cast);
+    act(&mut game, Action::TapMana { card: elf });
+    act(
+        &mut game,
+        Action::PayCosts {
+            payment: [0, 0, 0, 0, 1, 1],
+        },
+    );
+    assert_eq!(game.state.players[player.index()].spells_cast_this_turn, 1);
+}
+
+#[test]
+fn mana_for_activations_does_not_count_toward_a_spell() {
+    let player = Player::P0;
+    let mut game = scenario(player).with_proposal_affordability(true);
+    game.state.players[player.index()].mana = [0; 6];
+    put(&mut game, player, "The Enigma Jewel", Zone::Battlefield);
+    let spell = put(&mut game, player, "Torpor Orb", Zone::Hand);
+    let cast = Action::AnnounceCast { card: spell };
+    reject_at_priority(&mut game, player, cast.clone());
+
+    game.state.players[player.index()].mana[5] = 2;
+    act(&mut game, cast);
+    act(
+        &mut game,
+        Action::PayCosts {
+            payment: [0, 0, 0, 0, 0, 2],
         },
     );
     assert_eq!(game.state.players[player.index()].spells_cast_this_turn, 1);

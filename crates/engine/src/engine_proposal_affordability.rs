@@ -4,12 +4,14 @@
 //! then checks its own typed cost options against those summaries. An unmodeled
 //! cost, source, or way to contribute keeps the proposal available.
 use super::*;
+use crate::cards::AbilityLayer;
 use payment_capacity::PaymentCapacity;
 use proposal_price::ProposalPriceFacts;
 
 pub(super) struct ProposalAffordability {
     capacity: PaymentCapacity,
     price: ProposalPriceFacts,
+    sacrifice_kinds: Option<u16>,
 }
 
 impl ProposalAffordability {
@@ -17,6 +19,7 @@ impl ProposalAffordability {
         Some(Self {
             capacity: PaymentCapacity::for_player(game, actor)?,
             price: ProposalPriceFacts::new(game, actor),
+            sacrifice_kinds: stable_sacrifice_kinds(game, actor),
         })
     }
 
@@ -44,10 +47,34 @@ impl ProposalAffordability {
                 price,
                 &self.price,
             )
-            .is_none_or(|cost| self.capacity.permits(cost.colored, cost.generic, None))
+            .is_none_or(|cost| {
+                self.capacity
+                    .permits_spell(cost.colored, cost.generic, definition, object.zone)
+            })
         };
         if let Some(cost) = spell.cost {
             return permits(cost);
+        }
+        if spell.method == CastMethod::Normal
+            && object.zone == Zone::Hand
+            && self.requires_mana_instead_of_sacrifice(definition)
+        {
+            if let Some(fee) = definition.explicit_additional_mana() {
+                return definition.cost_options().any(|base| {
+                    permits(ManaCost {
+                        colored: std::array::from_fn(|i| {
+                            base.colored[i].saturating_add(fee.colored[i])
+                        }),
+                        generic: base.generic.saturating_add(fee.generic),
+                    })
+                });
+            }
+            let mut alternatives = definition
+                .cost_options()
+                .filter(|&cost| definition.mana_alternative_replaces_additional(cost));
+            return alternatives
+                .next()
+                .is_none_or(|cost| permits(cost) || alternatives.any(permits));
         }
         match spell.method {
             CastMethod::Airbend => permits(ManaCost {
@@ -89,6 +116,28 @@ impl ProposalAffordability {
         }
     }
 
+    fn requires_mana_instead_of_sacrifice(&self, definition: Card) -> bool {
+        let Some(kinds) = self.sacrifice_kinds else {
+            return false;
+        };
+        // Optional declarations and alternative spell modes can replace the
+        // printed material requirement. Keep those branches with the caller.
+        if definition.has_bargain()
+            || definition.collect_evidence_cost().is_some()
+            || definition.kicker_additional_cost().is_some()
+            || definition.impending_spec().is_some()
+            || !definition.evoke_costs().is_empty()
+            || definition.mana_additional_alternative().is_none()
+        {
+            return false;
+        }
+        definition.additional_cost().is_some_and(|cost| {
+            cost.kind == EffectChoiceKind::Sacrifice
+                && cost.filter.kinds != 0
+                && kinds & u16::from(cost.filter.kinds) == 0
+        })
+    }
+
     fn activation_may_be_affordable(&self, game: &Game, source: CardId, ability: u16) -> bool {
         let definition = game.state.objects[source as usize].card;
         let activation = definition.activation(ability);
@@ -101,6 +150,46 @@ impl ProposalAffordability {
                 .is_none_or(|cost| self.capacity.permits(cost.colored, cost.generic, reserved))
         })
     }
+}
+
+/// Optimistic union of materials available for a sacrifice. Allow any
+/// permanent of the printed kinds even if the particular cost excludes it.
+/// Unsettled type, control, or linked-entry effects leave the union unknown.
+fn stable_sacrifice_kinds(game: &Game, actor: Player) -> Option<u16> {
+    let state = &game.state;
+    if !state.exile_links.is_empty()
+        || state.controls.is_some()
+        || state.temporary_controls.is_some()
+        || state.copy_recipes.is_some()
+        || state.temporary_copies.is_some()
+        || state.manifest.is_some()
+        || state.earthbend_returns.is_some()
+        || state.roles.as_ref().is_some_and(|roles| {
+            !roles.animations.is_empty()
+                || !roles.source_linked_effects.is_empty()
+                || roles.control_change_sources.is_some()
+        })
+    {
+        return None;
+    }
+    let mut kinds = 0;
+    for object in &state.objects {
+        if !matches!(object.zone, Zone::Battlefield | Zone::Command) {
+            continue;
+        }
+        if object
+            .card
+            .static_ability_groups()
+            .iter()
+            .any(|group| group.first_layer <= AbilityLayer::Type)
+        {
+            return None;
+        }
+        if object.zone == Zone::Battlefield && object.controller == actor {
+            kinds |= object.card.kind_mask();
+        }
+    }
+    Some(kinds)
 }
 
 struct SpellProposal {

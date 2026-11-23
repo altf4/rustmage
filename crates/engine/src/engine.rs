@@ -475,16 +475,16 @@ pub use turn_callbacks::{TurnCallbackExpiry, TurnCallbackView};
 #[doc(hidden)]
 #[path = "engine_nonmana_x.rs"]
 pub mod nonmana_x;
-#[doc(hidden)]
-#[path = "engine_scalar_x.rs"]
-pub mod scalar_x;
-#[doc(hidden)]
 #[path = "engine_payment_capacity.rs"]
 mod payment_capacity;
 #[path = "engine_proposal_affordability.rs"]
 mod proposal_affordability;
 #[path = "engine_proposal_price.rs"]
 mod proposal_price;
+#[doc(hidden)]
+#[path = "engine_scalar_x.rs"]
+pub mod scalar_x;
+#[doc(hidden)]
 #[path = "engine_spell_costs.rs"]
 pub mod spell_costs;
 #[doc(hidden)]
