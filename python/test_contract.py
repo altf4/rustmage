@@ -25,6 +25,42 @@ def state(observation):
 
 
 class BindingContractTests(unittest.TestCase):
+    def test_proposal_affordability_is_opt_in_and_preserved_in_branches(self):
+        decks = [["Plains"] * 4 + ["Savannah Lions"] * 4, ["Island"] * 8]
+
+        def first_main(handle):
+            view = handle.observe("P0")
+            for kind in ("Keep", "Keep", "FinishOpeningHand", "FinishOpeningHand", "Pass", "Pass"):
+                view = handle.observe(view["actor"])
+                action = next(a for a in view["actions"] if a["kind"] == kind)
+                view = handle.act(view, action)
+            self.assertEqual((view["actor"], view["step"]), ("P0", "Main1"))
+            return handle.observe("P0")
+
+        with Game(decks, seed=37, deck_rules="Freeform") as handle:
+            unfiltered = first_main(handle)
+            self.assertNotIn("proposal_affordability", unfiltered)
+            cast = next(a for a in unfiltered["actions"] if a["kind"] == "AnnounceCast")
+        outside_pool = {"mode": "CasualCollection", "pools": [[], []]}
+        for outside in (None, outside_pool):
+            with (self.subTest(outside=outside),
+                  Game(decks, seed=37, deck_rules="Freeform", outside=outside,
+                       proposal_affordability=True) as handle):
+                before = first_main(handle)
+                self.assertIs(before["proposal_affordability"], True)
+                self.assertNotIn(cast, before["actions"])
+                with handle.clone() as branch:
+                    self.assertEqual(branch.observe("P0"), before)
+                    with self.assertRaises(EngineError):
+                        branch.act(before, cast)
+                    self.assertEqual(branch.observe("P0"), before)
+                checkpoint = handle.snapshot()
+                play_land = next(a for a in before["actions"] if a["kind"] == "PlayLand")
+                funded = handle.act(before, play_land)
+                self.assertIn(cast, funded["actions"])
+                handle.restore(checkpoint)
+                self.assertEqual(state(handle.observe("P0")), state(before))
+
     def test_planeswalker_loyalty_through_public_actions(self):
         # The fixed opening has four Plains and three Ajanis. Freeform keeps the
         # public fixture deterministic without a special game-state constructor.

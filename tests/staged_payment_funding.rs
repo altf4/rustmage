@@ -1384,3 +1384,33 @@ fn an_unpaid_counter_clause_can_enter_ordered_costs_after_the_mana_window() {
         no_projection_work();
     }
 }
+
+#[test]
+fn a_tapped_creature_can_still_be_sacrificed_for_spell_mana() {
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &SACRIFICIAL_MANA)]);
+    let player = Player::P0;
+    let mut game = scenario(player).with_proposal_affordability(true);
+    game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 1];
+    let bears = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    game.state.objects[bears as usize].tapped = true;
+    let spell = put(&mut game, player, "Hill Giant", Zone::Hand);
+    act(&mut game, Action::AnnounceCast { card: spell });
+    act(
+        &mut game,
+        Action::ActivateMana {
+            card: bears,
+            ability: 0,
+            counter_payment: Counters::default(),
+            production: [0, 0, 0, 0, 2, 0],
+            payment: [0; 6],
+        },
+    );
+    act(
+        &mut game,
+        Action::PayCosts {
+            payment: [0, 0, 0, 1, 2, 1],
+        },
+    );
+    assert_eq!(game.state.players[player.index()].spells_cast_this_turn, 1);
+    assert_eq!(game.object_view(bears).zone, Zone::Graveyard);
+}

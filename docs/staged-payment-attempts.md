@@ -1,10 +1,12 @@
 # Staged payment attempts
 
-RustMage's action contract is `staged_attempts_v1`, with observation schema **227**. This is the default contract for every game. There is no configuration flag or retained guaranteed-completable menu mode. The C ABI remains version 1 and the JSON response envelope remains schema 2; neither identifies the meaning of an action menu. Consumers must check `observation.action_contract` and `observation.schema`.
+RustMage's action contract is `staged_attempts_v1`, with observation schema **227**. Every game uses this staged contract. The C ABI remains version 1 and the JSON response envelope remains schema 2; neither identifies the meaning of an action menu. Consumers must check `observation.action_contract` and `observation.schema`.
 
 An action in `legal_actions()`, `LegalActionSpace.choices`, or `observation.actions` is an admissible **next choice**. It does not guarantee that later declarations and payments can finish. The caller chooses an execution; the engine validates its concrete steps against current state and existing declarations. The production admission, numeric-domain and payment paths do not explore alternate future payments, simulate mana abilities to discover future resources, or enumerate complete material subsets to filter the next prompt.
 
 Timing, permissions, actors, source incarnations, target restrictions, selected-object constraints and concrete payments remain rules checks. Cheap current-state checks can reject an immediately unavailable option: an activation requiring two life is unavailable at one life, for example. An undeclared discard-or-life cost still admits its discard route. Declaration-dependent permissions remain important: a library permission requiring mana value four can admit a two-mana X spell whose valid X declarations start at two, independently of available mana.
+
+Bots can enable the priority affordability check with `proposal_affordability=True` in the Python `Game` constructor or with `Game::new_with_proposal_affordability` in Rust. The check omits a spell or activated ability when every payment route has a proven shortage. It aggregates mana sources once for each priority menu and reuses that summary across proposals. Only one mana mode per modeled tap source contributes to the bound. Unsupported costs, producers and interactions preserve the proposal for staged payment. The game owns the setting, so clones and snapshots retain it. The observation reports `proposal_affordability: true` when enabled.
 
 ## Stages and actions
 

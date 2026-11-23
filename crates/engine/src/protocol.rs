@@ -64,6 +64,15 @@ impl Response {
     }
 }
 
+/// Session-only JSON settings. Native Rust callers keep using `Config`.
+#[derive(Deserialize)]
+pub struct SessionConfig {
+    #[serde(flatten)]
+    config: Config,
+    #[serde(default)]
+    proposal_affordability: bool,
+}
+
 #[derive(Clone)]
 pub struct Session {
     game: Game,
@@ -80,6 +89,22 @@ impl Session {
         outside: crate::OutsideGameConfig,
     ) -> Result<Self, crate::Error> {
         Ok(Self::from_game(Game::new_with_outside(config, outside)?))
+    }
+    pub fn from_config(
+        config: SessionConfig,
+        outside: Option<crate::OutsideGameConfig>,
+    ) -> Result<Self, crate::Error> {
+        let SessionConfig {
+            config,
+            proposal_affordability,
+        } = config;
+        let game = match outside {
+            Some(outside) => Game::new_with_outside(config, outside)?,
+            None => Game::new(config)?,
+        };
+        Ok(Self::from_game(
+            game.with_proposal_affordability(proposal_affordability),
+        ))
     }
     /// Wrap an existing owned native game in the optional control interface.
     pub fn from_game(game: Game) -> Self {

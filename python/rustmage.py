@@ -32,9 +32,12 @@ class CapacityError(EngineError):
 
 
 class Game:
-    def __init__(self, decks, seed=0, starting_player="P0", deck_rules="Constructed", *, library=None, outside=None):
+    def __init__(self, decks, seed=0, starting_player="P0", deck_rules="Constructed",
+                 *, library=None, outside=None, proposal_affordability: bool = False):
         self._lock = threading.RLock()
         self._handle = None
+        if not isinstance(proposal_affordability, bool):
+            raise TypeError("proposal_affordability must be a bool")
         if library is None:
             library = os.environ.get("RUSTMAGE_LIBRARY")
         if library is None:
@@ -43,15 +46,17 @@ class Game:
         self._lib = ctypes.CDLL(str(library))
         self._configure()
         error = ctypes.c_void_p()
-        config = json.dumps(dict(decks=decks, seed=seed, starting_player=starting_player, deck_rules=deck_rules)).encode()
+        config = dict(decks=decks, seed=seed, starting_player=starting_player, deck_rules=deck_rules)
+        if proposal_affordability:
+            config["proposal_affordability"] = True
         if outside is None:
-            self._handle = self._lib.rm_new(config, ctypes.byref(error))
+            self._handle = self._lib.rm_new(json.dumps(config).encode(), ctypes.byref(error))
         else:
             if not hasattr(self._lib, "rm_new_with_outside"):
                 raise EngineError("native library does not support outside-game pools")
             self._lib.rm_new_with_outside.argtypes = [ctypes.c_char_p, ctypes.POINTER(ctypes.c_void_p)]
             self._lib.rm_new_with_outside.restype = ctypes.c_void_p
-            envelope = json.dumps(dict(config=json.loads(config), outside=outside)).encode()
+            envelope = json.dumps(dict(config=config, outside=outside)).encode()
             self._handle = self._lib.rm_new_with_outside(envelope, ctypes.byref(error))
         if not self._handle:
             message = self._take_string(error.value) if error.value else "engine creation failed"
@@ -63,6 +68,8 @@ class Game:
             if (contract.get("action_contract") != ACTION_CONTRACT
                     or contract.get("schema") != OBSERVATION_SCHEMA):
                 raise EngineError("native library has an incompatible action contract or observation schema")
+            if proposal_affordability and contract.get("proposal_affordability") is not True:
+                raise EngineError("native library does not support proposal affordability")
         except BaseException:
             self.close()
             raise

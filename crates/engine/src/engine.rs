@@ -479,6 +479,12 @@ pub mod nonmana_x;
 #[path = "engine_scalar_x.rs"]
 pub mod scalar_x;
 #[doc(hidden)]
+#[path = "engine_payment_capacity.rs"]
+mod payment_capacity;
+#[path = "engine_proposal_affordability.rs"]
+mod proposal_affordability;
+#[path = "engine_proposal_price.rs"]
+mod proposal_price;
 #[path = "engine_spell_costs.rs"]
 pub mod spell_costs;
 #[doc(hidden)]
@@ -3466,6 +3472,7 @@ impl Pending {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    proposal_affordability: bool,
     outside_game: Option<Box<OutsideGameState>>,
     library_top: Option<Box<library_top::LibraryTopState>>,
     cast_rollback: Option<Box<cast_rollback::CastRollback>>,
@@ -4294,6 +4301,9 @@ pub struct KeywordChoiceView {
 pub struct Observation {
     /// This contract permits attempts whose remaining payment cannot complete.
     pub action_contract: &'static str,
+    /// This game omits proposals with a proven payment shortage.
+    #[serde(skip_serializing_if = "is_false")]
+    pub proposal_affordability: bool,
     pub attempt: Option<AttemptView>,
     pub last_attempt_outcome: Option<AttemptOutcomeView>,
     pub attempt_draws: Vec<AttemptDrawView>,
@@ -4703,6 +4713,17 @@ impl Game {
         Self::new_inner(config, None)
     }
 
+    /// Construct a game that omits provably unaffordable spell and ability
+    /// proposals from the priority menu.
+    pub fn new_with_proposal_affordability(config: Config) -> Result<Self, Error> {
+        Self::new(config).map(|game| game.with_proposal_affordability(true))
+    }
+
+    pub(crate) fn with_proposal_affordability(mut self, enabled: bool) -> Self {
+        self.state.proposal_affordability = enabled;
+        self
+    }
+
     pub fn new_with_outside(config: Config, outside: OutsideGameConfig) -> Result<Self, Error> {
         if outside.mode == OutsideGameMode::ConstructedSideboard
             && config.deck_rules == DeckRules::Freeform
@@ -4953,6 +4974,7 @@ impl Game {
         let mut game = Self {
             revision: 0,
             state: State {
+                proposal_affordability: false,
                 outside_game: outside.map(|value| {
                     Box::new(OutsideGameState {
                         mode: value.mode,
@@ -5299,8 +5321,9 @@ impl Game {
         self.semantic_actor().map(|p| self.decision_controller(p))
     }
 
-    /// Admissible next choices and parameter domains. A choice does not promise
-    /// that future declarations or payments can complete the current attempt.
+    /// Admissible next choices and parameter domains. Games with the
+    /// affordability check enabled omit proposals with a proven payment
+    /// shortage. A proposal may still fail during declaration or payment.
     pub fn legal_action_space(&self) -> LegalActionSpace {
         LegalActionSpace {
             action_contract: ACTION_CONTRACT,
@@ -6557,6 +6580,18 @@ impl Game {
                 if emit(Action::Pass) {
                     return true;
                 }
+                let affordability = self
+                    .state
+                    .proposal_affordability
+                    .then(|| proposal_affordability::ProposalAffordability::for_player(self, actor))
+                    .flatten();
+                let mut emit_affordable = |action| {
+                    affordability
+                        .as_ref()
+                        .is_none_or(|bounds| bounds.may_be_affordable(self, &action))
+                        && emit(action)
+                };
+                let mut emit: &mut dyn FnMut(Action) -> bool = &mut emit_affordable;
                 let sorcery = actor == s.active
                     && matches!(s.step, Step::Main1 | Step::Main2)
                     && s.stack.is_empty();
@@ -13050,6 +13085,7 @@ impl Game {
         };
         Observation {
             action_contract: ACTION_CONTRACT,
+            proposal_affordability: self.state.proposal_affordability,
             attempt: self.attempt_view(viewer),
             last_attempt_outcome: self.last_attempt_outcome_view(viewer),
             attempt_draws: self.attempt_draws_view(viewer),

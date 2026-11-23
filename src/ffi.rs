@@ -1,6 +1,6 @@
 //! C ABI: caller owns each Session and returned string; never use one handle
 //! concurrently or after free. All panics are caught before crossing the ABI.
-use crate::protocol::Session;
+use crate::protocol::{Session, SessionConfig};
 use std::ffi::{CStr, CString, c_char};
 use std::panic::{AssertUnwindSafe, catch_unwind};
 
@@ -14,7 +14,7 @@ fn output(value: String) -> *mut c_char {
 }
 
 /// # Safety
-/// input must point to a valid NUL-terminated UTF-8 JSON Config. error must point
+/// input must point to a valid NUL-terminated UTF-8 JSON session config. error must point
 /// to writable pointer storage. A non-null error is freed with rm_string_free.
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn rm_new(input: *const c_char, error: *mut *mut c_char) -> *mut Session {
@@ -32,7 +32,7 @@ pub unsafe extern "C" fn rm_new(input: *const c_char, error: *mut *mut c_char) -
             .to_str()
             .map_err(|e| e.to_string())?;
         let config = serde_json::from_str(text).map_err(|e| e.to_string())?;
-        Session::new(config).map_err(|e| e.to_string())
+        Session::from_config(config, None).map_err(|e| e.to_string())
     }));
     match result {
         Ok(Ok(session)) => Box::into_raw(Box::new(session)),
@@ -51,8 +51,8 @@ pub unsafe extern "C" fn rm_new(input: *const c_char, error: *mut *mut c_char) -
     }
 }
 
-/// Construct a session with an explicit outside-game pool. The legacy `rm_new`
-/// JSON shape and ABI remain unchanged.
+/// Construct a session with an explicit outside-game pool. Configuration keys
+/// inside the envelope are the same ones accepted by `rm_new`.
 ///
 /// # Safety
 /// `input` must be a NUL-terminated UTF-8 JSON envelope and `error` writable.
@@ -70,7 +70,7 @@ pub unsafe extern "C" fn rm_new_with_outside(
     #[derive(serde::Deserialize)]
     #[serde(deny_unknown_fields)]
     struct Envelope {
-        config: crate::Config,
+        config: SessionConfig,
         outside: crate::OutsideGameConfig,
     }
     let result = catch_unwind(AssertUnwindSafe(|| -> Result<Session, String> {
@@ -81,7 +81,7 @@ pub unsafe extern "C" fn rm_new_with_outside(
             .to_str()
             .map_err(|e| e.to_string())?;
         let envelope: Envelope = serde_json::from_str(text).map_err(|e| e.to_string())?;
-        Session::new_with_outside(envelope.config, envelope.outside).map_err(|e| e.to_string())
+        Session::from_config(envelope.config, Some(envelope.outside)).map_err(|e| e.to_string())
     }));
     match result {
         Ok(Ok(session)) => Box::into_raw(Box::new(session)),
